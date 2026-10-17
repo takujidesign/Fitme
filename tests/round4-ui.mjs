@@ -1,0 +1,32 @@
+import assert from 'node:assert/strict';
+const {Window}=await import(process.env.HAPPY_DOM_PATH||'happy-dom');
+const window=new Window({url:'http://localhost/#/account'});
+for(const k of ['window','document','localStorage','sessionStorage','navigator','location','FormData','Event'])Object.defineProperty(globalThis,k,{configurable:true,value:k==='window'?window:window[k]});
+globalThis.requestAnimationFrame=()=>1;
+const {getState,setState,todayISO,addDays}=await import('../app/js/store.js');
+const {views,actions,setRenderer}=await import('../app/js/core.js');
+const {CONFIG}=await import('../app/js/config.js');
+const {syncNow}=await import('../app/js/account.js');
+const {startMetrics}=await import('../app/js/metrics.js');
+for(const name of ['account','trainer','chat','challenges','replan','admin'])await import('../app/js/views/'+name+'.js');
+const s=getState(),root=document.createElement('main');document.body.appendChild(root);let current='account';
+const render=()=>{root.innerHTML=views[current]();};setRenderer(render);
+for(const lang of ['th','en'])for(const theme of ['dark','light']){setState(s=>{s.lang=lang;s.theme=theme;});for(const name of ['account','trainer','coach','challenges','replan','admin']){current=name;render();assert(!root.textContent.includes('undefined'),name);assert(!root.textContent.includes('???'),name);}}
+CONFIG.API_BASE='https://fake';let puts=0;
+setState(s=>{s.account={token:'session',user:{email:'client@example.com',role:'user'}};s.profile.name='Newer';s.updatedAt.profile=20;},{remote:true});
+globalThis.fetch=async(url,opts)=>{
+ if(opts.method==='GET')return Response.json({json:{profile:{...s.profile,name:'Server'},updatedAt:{profile:10}},version:1,updated_at:1});
+ puts++;const b=JSON.parse(opts.body);
+ if(puts===1)return Response.json({error:'Conflict',server:{json:{profile:{...s.profile,name:'Conflict'},updatedAt:{profile:15}},version:2}},{status:409});
+ assert.equal(b.baseVersion,2);assert.equal(b.json.profile.name,'Newer');return Response.json({json:b.json,version:3,updated_at:3});
+};
+await syncNow();assert.equal(puts,2);assert.equal(s.account.version,3);assert.equal(s.profile.name,'Newer');assert(s.account.lastSync);
+current='challenges';render();actions['challenge-join']({dataset:{id:'water'}});assert.equal(s.challenges.length,1);actions['challenge-join']({dataset:{id:'water'}});assert.equal(s.challenges.length,1);
+setState(s=>{s.profile.startDate=addDays(todayISO(),-28);s.profile.goal='cut';s.weights=[{date:s.profile.startDate,kg:70},{date:addDays(todayISO(),-1),kg:70}];s.profile.sessionMin=45;});current='replan';render();const start=s.profile.startDate;actions['replan-apply']();assert.equal(s.profile.startDate,start);assert.equal(s.blocks.length,2);assert.equal(s.profile.sessionMin,35);
+current='account';render();globalThis.fetch=async()=>Response.json({links:[{id:'trainer'}],notes:[{id:'note',text:'<img src=x onerror=bad()>',created_at:1,suggestions:{sessionMin:30}}]});await views.account.mount(root);assert(!root.querySelector('img'));actions['trainer-accept']({dataset:{id:'note'}});assert.equal(s.profile.sessionMin,30);assert.equal(s.suggestionDecisions.note,'accepted');
+setState(s=>{s.premium={token:'pro',until:new Date(Date.now()+86400000).toISOString()};});
+current='coach';render();document.getElementById('chat-input').value='Change workout';globalThis.fetch=async()=>Response.json({text:'Try 25 minutes',suggestions:[{type:'sessionMin',value:25}]});await actions['chat-send']();assert.equal(s.profile.sessionMin,30);assert.equal(s.chat.length,2);actions['chat-apply']({dataset:{i:'1',j:'0'}});assert.equal(s.profile.sessionMin,25);
+current='admin';render();actions['key-random']();assert.match(document.getElementById('key-random-value').value,/^[a-f0-9]{64}$/);
+startMetrics();setState(s=>{s.logs[todayISO()]={done:{},foodLog:[{totals:{kcal:1000}}]};});assert(s.logs[todayISO()].targets.kcal);assert(Number.isFinite(s.logs[todayISO()].kcalAdherence));
+console.log('PASS Round 4 TH/EN and both-theme DOM routes, sync 409 merge/retry, join deduplication, replan apply/history, escaped trainer notes and approval, chat explicit approval, random helper, adherence snapshots.');
+await window.happyDOM.close();

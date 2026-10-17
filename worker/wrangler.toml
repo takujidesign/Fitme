@@ -27,6 +27,15 @@ RECEIVER_NAME = ""
 # binding = "CONFIG"
 # id = "<your CONFIG KV namespace id>"
 # Secret: ADMIN_PASSWORD (npx wrangler secret put ADMIN_PASSWORD)
+# Secret: MASTER_KEY (32+ random characters; encrypts service keys in CONFIG)
+
+# Accounts and trainer mode: create D1, insert its ID, then uncomment.
+# npx wrangler d1 create fitme
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "fitme"
+# database_id = "<your D1 database id>"
+# migrations_dir = "migrations"
 
 # Web Push: create PUSH KV and uncomment the binding below before enabling clients.
 # npx wrangler kv namespace create PUSH

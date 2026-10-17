@@ -1,3 +1,4 @@
+import { earnedBadges } from './challenges.js';
 import { getState, todayISO, addDays, diffDays } from './store.js';
 import { actions, pickFiles } from './core.js';
 import { L, sheet, toast } from './ui.js';
@@ -14,6 +15,7 @@ export async function drawShare(canvas,photos=[]){
   const metrics=[[stats.days,L('วันในแผน','days on plan')],[stats.workouts,L('ครั้งที่ฝึก','workouts done')],[stats.streak,L('วันต่อเนื่อง','day streak')],[stats.change===null?'—':`${stats.change>0?'+':''}${stats.change.toFixed(1)} kg`,L('น้ำหนักเปลี่ยนแปลง','weight change')]];
   metrics.forEach(([value,label],i)=>{const x=72+(i%2)*480,y=345+Math.floor(i/2)*180;c.fillStyle='#19E3C4';c.font='bold 64px Kanit, sans-serif';c.fillText(String(value),x,y,440);c.fillStyle='#EEF3F9';c.font='32px Kanit, sans-serif';c.fillText(label,x,y+55,440);});
   for(let i=0;i<photos.length;i++){const bmp=await createImageBitmap(photos[i]);const x=72+i*480,y=670,w=456,h=520,scale=Math.min(w/bmp.width,h/bmp.height);c.drawImage(bmp,x+(w-bmp.width*scale)/2,y+(h-bmp.height*scale)/2,bmp.width*scale,bmp.height*scale);bmp.close();c.fillStyle='#EEF3F9';c.font='28px Kanit, sans-serif';c.fillText(i?L('หลัง','After'):L('ก่อน','Before'),x,y+h+40);}
+  c.fillStyle='#C8F31D';c.font='28px Kanit, sans-serif';c.fillText(L('เหรียญรางวัล','Badges')+': '+earnedBadges(s).length,72,1260);
   c.fillStyle='#8C9AAE';c.font='26px Kanit, sans-serif';c.fillText(todayISO()+' · Fix me',72,1300);
 }
 actions['share-card']=()=>{

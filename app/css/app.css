@@ -411,3 +411,20 @@ details summary::-webkit-details-marker { display: none; }
 .sheet input, .sheet select { min-width: 0; max-width: 100%; }
 .sheet .input-wrap select { width: 100%; }
 .print-doc table { width: 100%; border-collapse: collapse; }
+
+/* Round 4 account, coach and progress views. */
+.v-account input,.v-trainer input,.v-coach textarea,.v-admin input{max-width:100%;min-width:0}
+.v-account .btn,.v-trainer .btn,.v-coach .btn,.v-challenges .btn,.v-replan .btn,#admin-key-settings .btn{white-space:normal;overflow-wrap:anywhere;height:auto;min-height:40px;padding:10px 14px;max-width:100%;margin:3px 0}
+.v-account .field>input,.v-trainer .field>input,.v-trainer .field>select,.v-trainer textarea,.v-coach textarea,#admin-key-settings input{display:block;width:100%;margin-top:6px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--text);font:inherit;box-sizing:border-box}
+.v-trainer textarea,.v-coach textarea{min-height:96px;resize:vertical}
+.v-trainer pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}
+.v-trainer p,.v-account p,.chat-text{overflow-wrap:anywhere;white-space:pre-wrap}
+.chat-user{margin-left:24px;border-color:var(--teal)}
+.chat-assistant{margin-right:16px}
+.badge-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.badge{text-align:center;display:grid;gap:4px;overflow-wrap:anywhere}.badge span{font-size:28px;color:var(--lime)}
+.badge.locked{opacity:.35;filter:grayscale(1)}
+.challenge-checks{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}.challenge-checks span{display:grid;text-align:center;min-width:28px}
+.badge-confetti{position:fixed;z-index:10000;top:25%;left:10%;width:80%;text-align:center;pointer-events:none;font-size:42px;color:var(--lime);animation:badge-burst 1.8s ease-out forwards}
+@keyframes badge-burst{from{transform:translateY(40px) scale(.3);opacity:1}to{transform:translateY(-120px) scale(1.5);opacity:0}}
+@media(prefers-reduced-motion:reduce){.badge-confetti{animation:none;display:none}}

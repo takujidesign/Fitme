@@ -1,3 +1,6 @@
+import { z } from 'zod/v4';
+import { input as readInput } from './security.js';
+import { getSecret } from './security.js';
 // WebCrypto-only RFC 8291 single-record aes128gcm and RFC 8292 VAPID.
 const enc = new TextEncoder();
 export const b64 = bytes => btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
@@ -6,8 +9,8 @@ const join = (...parts) => { const out=new Uint8Array(parts.reduce((n,p)=>n+p.le
 async function hkdf(ikm,salt,info,length){const key=await crypto.subtle.importKey('raw',ikm,'HKDF',false,['deriveBits']);return new Uint8Array(await crypto.subtle.deriveBits({name:'HKDF',hash:'SHA-256',salt,info},key,length*8));}
 export async function generateVapidKeys(){const keys=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']);const jwk=await crypto.subtle.exportKey('jwk',keys.privateKey);return {publicKey:b64(await crypto.subtle.exportKey('raw',keys.publicKey)),privateKey:jwk.d};}
 export async function vapidJWT(endpoint,env,now=Date.now()){
-  const pub=unb64(env.VAPID_PUBLIC_KEY);
-  const key=await crypto.subtle.importKey('jwk',{kty:'EC',crv:'P-256',x:b64(pub.slice(1,33)),y:b64(pub.slice(33)),d:env.VAPID_PRIVATE_KEY},{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
+  const pub=unb64((await getSecret(env, 'vapidPublicKey')));
+  const key=await crypto.subtle.importKey('jwk',{kty:'EC',crv:'P-256',x:b64(pub.slice(1,33)),y:b64(pub.slice(33)),d:(await getSecret(env, 'vapidPrivateKey'))},{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
   const unsigned=b64(enc.encode(JSON.stringify({typ:'JWT',alg:'ES256'})))+'.'+b64(enc.encode(JSON.stringify({aud:new URL(endpoint).origin,exp:Math.floor(now/1000)+3600,sub:env.VAPID_SUBJECT})));
   return unsigned+'.'+b64(await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},key,enc.encode(unsigned)));
 }
@@ -31,8 +34,8 @@ function validEndpoint(endpoint){
   return u.protocol==='https:'&&!u.port&&!u.username&&!u.password&&(u.hostname==='fcm.googleapis.com'||u.hostname==='updates.push.services.mozilla.com'||u.hostname.endsWith('.push.services.mozilla.com')||u.hostname==='web.push.apple.com'||u.hostname.endsWith('.notify.windows.com'));
 }
 export async function pushRequest(req,env,unsubscribe=false){
-  if(!env.PUSH||!env.VAPID_PUBLIC_KEY||!env.VAPID_PRIVATE_KEY||!env.VAPID_SUBJECT)throw Object.assign(Error('Push server is not configured'),{status:503});
-  const raw=await req.text();if(raw.length>150000)throw fail('Request too large');const input=JSON.parse(raw);
+  if(!env.PUSH||!(await getSecret(env, 'vapidPublicKey'))||!(await getSecret(env, 'vapidPrivateKey'))||!env.VAPID_SUBJECT)throw Object.assign(Error('Push server is not configured'),{status:503});
+  const input=await readInput(req,unsubscribe?z.object({deviceId:z.string().uuid()}).strict():z.object({deviceId:z.string().uuid().optional(),subscription:z.object({endpoint:z.string().url().max(4096),expirationTime:z.number().nullable().optional(),keys:z.object({p256dh:z.string().max(200),auth:z.string().max(100)}).strict()}).strict(),tz:z.string().max(100),reminders:z.array(z.object({time:z.string().max(5),title:z.string().max(120),body:z.string().max(500),days:z.array(z.number().int().min(0).max(6)).max(7).optional(),date:z.string().max(10).optional(),route:z.string().max(30).optional()}).strict()).max(300)}).strict(),150000);
   const id=input.deviceId;
   if(id&&!/^[a-f0-9-]{36}$/.test(id))throw fail('Invalid device id');
   if(unsubscribe){if(!id)throw fail('Device id required');await env.PUSH.delete('device:'+id);return {};}
@@ -55,14 +58,14 @@ export function dueReminders(record,now){
   }return due;
 }
 export async function sendScheduled(env,now=Date.now()){
-  if(!env.PUSH||!env.VAPID_PRIVATE_KEY||!env.VAPID_PUBLIC_KEY||!env.VAPID_SUBJECT)return;
+  if(!env.PUSH||!(await getSecret(env, 'vapidPrivateKey'))||!(await getSecret(env, 'vapidPublicKey'))||!env.VAPID_SUBJECT)return;
   let cursor;
   do{const page=await env.PUSH.list({prefix:'device:',...(cursor?{cursor}:{})});
     for(const {name} of page.keys){try{
       const record=await env.PUSH.get(name,'json');if(!record||record.expires<now)continue;
       record.lastSent||={};let expired=false;
       for(const {r,key} of dueReminders(record,now)){
-        const res=await fetch(record.subscription.endpoint,{method:'POST',redirect:'error',headers:{TTL:'300','Content-Encoding':'aes128gcm','Content-Type':'application/octet-stream',Authorization:`vapid t=${await vapidJWT(record.subscription.endpoint,env,now)}, k=${env.VAPID_PUBLIC_KEY}`},body:await encryptPush(record.subscription,{title:r.title,body:r.body,route:r.route||'#/today',tag:key})});
+        const res=await fetch(record.subscription.endpoint,{method:'POST',redirect:'error',headers:{TTL:'300','Content-Encoding':'aes128gcm','Content-Type':'application/octet-stream',Authorization:`vapid t=${await vapidJWT(record.subscription.endpoint,env,now)}, k=${(await getSecret(env, 'vapidPublicKey'))}`},body:await encryptPush(record.subscription,{title:r.title,body:r.body,route:r.route||'#/today',tag:key})});
         if(res.status===404||res.status===410){await env.PUSH.delete(name);expired=true;break;}if(res.ok)record.lastSent[key]=now;
       }
       if(!expired){record.lastSent=Object.fromEntries(Object.entries(record.lastSent).filter(([,at])=>at>now-86400000));await env.PUSH.put(name,JSON.stringify(record),{expirationTtl:Math.max(60,Math.ceil((record.expires-now)/1000))});}

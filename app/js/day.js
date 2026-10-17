@@ -1,3 +1,4 @@
+import { blockProfile } from './replan.js';
 import { eatingWindow, inWindow, windowMinute } from './fasting.js';
 // Combines workout, meals, supplements, hydration and sleep into one daily timeline.
 import { getState, addDays, diffDays } from './store.js';
@@ -9,7 +10,7 @@ import { toMin, toHHMM } from './ui.js';
 
 export function planDay(iso) {
   const s = getState();
-  const p = s.profile;
+  const p = blockProfile(s, iso);
   const train = isTrainingDay(p, iso) && diffDays(p.startDate, iso) >= 0;
   const supps = s.supplements;
   const sm = suppMacros(supps, p, iso, train);

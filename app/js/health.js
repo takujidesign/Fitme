@@ -23,6 +23,9 @@ export function sleepByDate(samples){
 }
 export function importHealth(data){
   setState(s=>{
+    const steps={};for(const sample of data.steps||[]){const d=new Date(sample.startDate);if(Number.isFinite(d.getTime())&&Number.isFinite(sample.value)&&sample.value>=0){const date=todayISO(d);steps[date]=(steps[date]||0)+sample.value;}}
+    for(const [date,total] of Object.entries(steps)){const log=s.logs[date]||={done:{},water:0};log.health={...log.health,steps:total};}
+
     for(const sample of data.weight||[]){const at=new Date(sample.startDate);if(!Number.isFinite(at.getTime())||!(sample.value>25&&sample.value<300)||sample.unit&&sample.unit!=='kilogram')continue;const date=todayISO(at);if(!s.weights.some(w=>w.date===date))s.weights.push({date,kg:sample.value,source:'health'});}
     s.weights.sort((a,b)=>a.date.localeCompare(b.date));
     for(const [date,sleep] of Object.entries(sleepByDate(data.sleep||[]))){const log=s.logs[date]||={done:{},water:0};if(!log.sleep)log.sleep=sleep;}

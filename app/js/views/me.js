@@ -1,3 +1,6 @@
+import { accountCard, mountTrainerNotes } from './account.js';
+import { badgeGrid } from './challenges.js';
+import { replanCard } from './replan.js';
 import { healthCard } from '../health.js';
 import '../measurements.js';
 import { progressCard } from '../progress.js';
@@ -32,7 +35,7 @@ views.me = () => {
   const done = Object.values(s.logs).filter((l) => l.done?.workout).length;
   return `<header class="top"><div><small class="muted">${L('โปรไฟล์', 'Profile')}</small><h1>${esc(p.name) || L('ฉัน', 'Me')}</h1></div>
     <button class="icon-btn" data-act="me-edit">${icon('settings')}</button></header>
-    ${progressCard(sparkline(s.weights.slice(-20).map(w => ({v:w.kg}))))}<section class="card profile">
+    ${accountCard()}${badgeGrid()}${replanCard()}${progressCard(sparkline(s.weights.slice(-20).map(w => ({v:w.kg}))))}<section class="card profile">
       <div class="sum-grid">
         <div class="stat"><small>${L('น้ำหนัก', 'Weight')}</small><b>${p.weight}</b><span class="tag">kg</span></div>
         <div class="stat"><small>BMI</small><b>${b.toFixed(1)}</b><span class="tag ${bc.c}">${L(bc)}</span></div>
@@ -89,6 +92,7 @@ views.me = () => {
     <p class="muted sm center">Fix me · ${L('คำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์', 'General guidance, not medical advice')}</p>`;
 };
 views.me.mount = async (root) => {
+  mountTrainerNotes(root);
   for (const el of root.querySelectorAll('[data-img]')) {
     const u = await imageURL(el.dataset.img);
     if (u) el.style.backgroundImage = `url(${u})`;

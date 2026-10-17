@@ -2,14 +2,14 @@ import assert from 'node:assert/strict';
 import worker from './src/index.js';
 import { CONFIG } from '../app/js/config.js';
 const env={TOKEN_SECRET:'test-token-secret',ADMIN_PASSWORD:'test-admin',ANTHROPIC_API_KEY:'test-ai',STRIPE_SECRET_KEY:'test-stripe',THUNDER_API_KEY:'test-thunder'};
-let saved=null; env.CONFIG={get:async()=>saved,put:async(k,v)=>{saved=JSON.parse(v)}};
+const configKV=new Map();env.CONFIG={get:async(k,type)=>configKV.has(k)?(type==='json'?JSON.parse(configKV.get(k)):configKV.get(k)):null,put:async(k,v)=>configKV.set(k,v)};
 const request=(path,body,auth='',method='POST')=>worker.fetch(new Request('https://test'+path,{method,headers:{'Content-Type':'application/json',Authorization:'Bearer '+auth},body:body===undefined?undefined:JSON.stringify(body)}),env);
 const config={promptpayId:CONFIG.PROMPTPAY_ID,promptpayName:'Test',receiverName:'Expected Receiver',products:structuredClone(CONFIG.PRODUCTS),freePlanDays:7,freeSupplements:3};
 config.products.pro30.thb=123;config.products.pro30.days=15;
 assert.equal((await request('/api/admin/config',config,'','PUT')).status,401);
 assert.equal((await request('/api/admin/config',config,'test-admin','PUT')).status,200);
 assert.equal((await request('/api/admin/config',{...config,freePlanDays:-1},'test-admin','PUT')).status,400);
-const pub=await (await request('/api/config',undefined,'','GET')).json();assert.equal(pub.config.products.pro30.thb,123);assert(!JSON.stringify(pub).includes('test-admin'));assert.equal(pub.secrets.anthropic,true);
+const pub=await (await request('/api/config',undefined,'','GET')).json();assert.equal(pub.config.products.pro30.thb,123);assert(!JSON.stringify(pub).includes('test-admin'));assert.equal(pub.secrets.anthropicApiKey.set,true);
 let calls=[]; let aiResult={advice:[{th:'ok',en:'ok'}],swaps:[],warnings:[]};
 globalThis.fetch=async(url,opts)=>{
  calls.push({url:String(url),body:opts.body});
@@ -64,4 +64,6 @@ let pushCount=0;globalThis.fetch=async()=>{pushCount++;return new Response(null,
 for(const [k,v] of kv){const record=JSON.parse(v);record.lastSent={};kv.set(k,JSON.stringify(record));}
 globalThis.fetch=async()=>new Response(null,{status:410});await sendScheduled(env,now);assert.equal(kv.size,0);
 console.log('PASS meal-photo Pro/input/structured output; push validation/subscribe/update/unsubscribe; VAPID signature; RFC8291 receiver decryption; timezone due window, deduplication and expired subscription cleanup.');
+
+await import('./round4.test.mjs');
 

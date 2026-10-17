@@ -1,3 +1,11 @@
+import { startMetrics } from './metrics.js';
+import { blockDue } from './replan.js';
+import { startAccountSync } from './account.js';
+import './views/account.js';
+import './views/trainer.js';
+import './views/chat.js';
+import './views/challenges.js';
+import './views/replan.js';
 import { applyTheme } from './theme.js';
 import './custom-foods.js';
 import './share.js';
@@ -89,7 +97,10 @@ if (!window.Capacitor?.isNativePlatform?.() && 'serviceWorker' in navigator && l
 
 await loadConfig();
 startPushSync();
+startMetrics();
+startAccountSync();
 handleStripeReturn().then((r) => r && toast(L('ชำระเงินสำเร็จ 🎉', 'Payment confirmed 🎉'))).catch((e) => toast(e.message, 'warn'));
 lastHash = location.hash;
+if ((!location.hash || location.hash === '#/today') && getState().onboarded && blockDue(getState())) location.hash = '#/replan';
 render();
 export { rerender };

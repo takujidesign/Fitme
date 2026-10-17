@@ -58,7 +58,7 @@ npx wrangler deploy
 ### Admin settings
 Open `#/admin` directly or use the small Admin link on Me. Set `ADMIN_PASSWORD` with `npx wrangler secret put ADMIN_PASSWORD`. Create a CONFIG KV namespace (`npx wrangler kv namespace create CONFIG`) and uncomment its binding/id in `worker/wrangler.toml` before deploying.
 
-The admin form saves PromptPay details, slip receiver matching, product prices/names/descriptions/entitlements, and free limits. Public `GET /api/config` supplies these settings and boolean secret status; `PUT /api/admin/config` requires the admin bearer password. The browser loads settings at startup and caches the last response for offline use. Without KV settings, built-in defaults apply. The password stays in sessionStorage only; API keys remain Wrangler secrets. KV updates can take time to propagate.
+The admin form saves PromptPay details, slip receiver matching, product prices/names/descriptions/entitlements, and free limits. Public `GET /api/config` supplies these settings and masked service-key metadata; `PUT /api/admin/config` requires the admin bearer password. The browser loads settings at startup and caches the last response for offline use. Without KV settings, built-in defaults apply. The password stays in sessionStorage only; API keys can be encrypted in CONFIG through the API keys section, with existing Wrangler secrets taking precedence. KV updates can take time to propagate.
 
 ## ข้อควรรู้
 - ข้อมูลทั้งหมด (รวมรูปร่างกาย) เก็บในเบราว์เซอร์ของผู้ใช้ (localStorage + IndexedDB) ไม่ส่งขึ้นเซิร์ฟเวอร์ ยกเว้นรูปสลิป รูปฉลาก และข้อมูลแผน/รูปร่างที่ผู้ใช้เลือกส่งให้ AI
@@ -79,7 +79,7 @@ Run `node worker/test.mjs` for mocked config, payment-config and AI endpoint che
 ### Round 2: planning and progress
 
 - Display name is **Fix me**. Existing `fitme:v1` localStorage data and the `fitme` image database remain compatible; repo and deployment URLs are unchanged.
-- Admin has service readiness rows, a tab-only password with show/hide, PromptPay validation, bilingual package fields with live price/duration previews and best-value toggles, free-limit steppers, setup commands, and an unsaved-change bar. Keys remain Wrangler secrets. CONFIG KV readiness is returned as a boolean.
+- Admin has service readiness rows, a tab-only password with show/hide, PromptPay validation, bilingual package fields with live price/duration previews and best-value toggles, free-limit steppers, setup commands, and an unsaved-change bar. Keys can be entered in the encrypted API keys section (see Round 4 setup below). CONFIG KV readiness is returned as a boolean.
 - Train → **Exercise preferences / ตั้งค่าท่า**: toggle allowed exercises by muscle group, apply knee/back/shoulder/wrist avoid presets, and choose preferred exercises. Exclusions apply to warm-up, main work, finishers, cool-down and recovery. An empty allowed pool produces no exercises. Each exercise's swap button stores an allowed same-group replacement for that date, shared by the plan and player.
 - Open **Calendar / ปฏิทิน** from Train or the Food week strip. Tap a day to open its plan; reopen its calendar to edit that date as normal, extra training, or off. Vacation ranges mark all dates off. Split rotation counts actual training days, and food targets follow the same overrides.
 - Food onboarding and Food preferences offer 12:12, 14:10, 16:8, 18:6, 20:4 and OMAD with a configurable window start (default noon). Meals fit within the window, including windows crossing midnight; shorter windows reduce meal count. OMAD uses one meal. Food-dependent or caloric supplements move into the window; zero-calorie morning/night doses can stay outside it. IF is disabled under 18, and the UI includes the requested suitability warning. Today shows a timer updated each minute; eating/fasting boundaries are included in the timeline, PDF and ICS.
@@ -128,7 +128,7 @@ The sender uses WebCrypto for [RFC 8291 aes128gcm encryption](https://www.rfc-ed
 
 ### Native Android / iOS shell
 
-`mobile/` pins Capacitor 8 and [`@capgo/capacitor-health`](https://github.com/Cap-go/capacitor-health), supporting HealthKit and Health Connect. The native bridge uses the installed plugin's `Health` methods through Capacitor's injected bridge; the static web app needs no SDK bundle or build step. Me hides Health data in ordinary browsers. In a native build, users explicitly request read access for steps, sleep, resting heart rate, active calories and weight for the last seven days. Empty/denied data is shown without treating it as zero. Import fills missing weight/sleep dates only, unions overlapping sleep intervals and does not write back to HealthKit/Health Connect. Raw read results stay in memory; imported logs stay on the device and in user-requested backups.
+`mobile/` pins Capacitor 8 and [`@capgo/capacitor-health`](https://github.com/Cap-go/capacitor-health), supporting HealthKit and Health Connect. The native bridge uses the installed plugin's `Health` methods through Capacitor's injected bridge; the static web app needs no SDK bundle or build step. Me hides Health data in ordinary browsers. In a native build, users explicitly request read access for steps, sleep, resting heart rate, active calories and weight for the last seven days. Empty/denied data is shown without treating it as zero. Import fills missing weight/sleep dates and refreshes imported daily step totals, unions overlapping sleep intervals and does not write back to HealthKit/Health Connect. Raw read results stay in memory; imported logs stay on the device and in user-requested backups, and sync when an account is connected.
 
 Use Node 22+ and the platform tooling required by Capacitor 8:
 
@@ -163,3 +163,59 @@ cd worker && npx wrangler deploy --dry-run
 On Windows, set environment variables using `$env:HAPPY_DOM_PATH` / `$env:PLAYWRIGHT_PATH`. `CHROME_PATH` optionally selects an installed Chrome executable. The browser test creates an isolated localhost server and test browser profile, checks 375px routes in both languages/themes and offline reload, and writes screenshots to the OS temporary directory. Worker tests mock Claude and push HTTP; they verify the VAPID signature, receiver-side payload decryption, subscription lifecycle, due windows and expired-subscription cleanup without paid requests.
 
 Validation in the Round 3 workspace: `tests/test.mjs`, `tests/ui-test.mjs`, `tests/round3.mjs` and `worker/test.mjs` passed. Connected Chrome checked nine routes in Thai/English and dark/light at 375px with no observed JS errors or horizontal overflow; share canvas dimensions and quick-food persistence/totals were verified. Reloading after stopping the local HTTP server confirmed cached app operation and saved logs. The standalone Playwright runner and Wrangler dry-run were blocked by the environment's `spawn EPERM`; this is not a successful Worker bundle check. Real Claude requests, push delivery, native builds/health permissions and hardware speech output remain unverified.
+
+## Round 4: encrypted keys, accounts, trainers and coaching
+
+The app remains usable offline without an account. Me → Account & sync adds registration, login, role selection, sync status and trainer invitations. `#/trainer` shows linked clients and read-only summaries; notes and plan suggestions require client approval. `#/coach` keeps the last 50 messages locally (and in account sync); sending requires online Pro access. `#/challenges` computes daily checks from logs. Me shows earned and locked badges. After 28 days, `#/replan` presents the completed block and proposed changes; applying or keeping a plan opens a new block without changing `profile.startDate` or old logs.
+
+### First-time server setup checklist
+
+Run these commands from `worker/` using your own Cloudflare account. These are setup instructions, not actions performed by the tests.
+
+1. Run `npm ci`, then `npx wrangler login`.
+2. Run `npx wrangler kv namespace create CONFIG`. Uncomment its binding in `wrangler.toml` and paste the returned namespace ID. CONFIG stores business settings, encrypted service keys, and authentication rate counters.
+3. Run `npx wrangler d1 create fitme`. Uncomment the `[[d1_databases]]` block with binding `DB`, database name `fitme`, the returned database ID, and `migrations_dir = "migrations"`.
+4. Apply the schema: `npx wrangler d1 migrations apply fitme --local` for local development; `npx wrangler d1 migrations apply fitme --remote` when intentionally setting up the remote database. Migration `worker/migrations/0001_init.sql` creates users, sessions, user_state, trainer_links, invites and notes. Do not apply to an existing unrelated database.
+5. Set the three bootstrap secrets individually:
+
+   ```bash
+   npx wrangler secret put ADMIN_PASSWORD
+   npx wrangler secret put TOKEN_SECRET
+   npx wrangler secret put MASTER_KEY
+   ```
+
+   Generate independent random values (32+ characters) using Admin → API keys → Generate random string, then copy each value to its Wrangler prompt. Keep MASTER_KEY stable: changing it without re-entering the service keys makes existing encrypted values unreadable. TOKEN_SECRET rotation invalidates existing entitlement signatures.
+6. Set `ALLOWED_ORIGINS` to your app origin and `CONFIG.API_BASE` in `app/js/config.js` to the Worker URL. Run `npx wrangler deploy --dry-run` to check the bundle. Deploy only when ready to publish.
+7. Open `#/admin`, enter ADMIN_PASSWORD, and save Thunder, Stripe, Claude and optional VAPID keys in the API keys section. Use Test connection for each service. Thunder uses the authenticated [GET /v2/info endpoint](https://document.thunder.in.th/en/guide/authentication), Stripe uses `/v1/balance`, and Claude uses `/v1/models`. VAPID testing validates the key pair locally in the Worker.
+8. Optional notifications: configure the PUSH namespace and VAPID_SUBJECT as described above. Supply a matching generated VAPID public/private pair. Enable notifications only after these bindings are configured.
+9. Register two test accounts, verify cross-device sync, switch one to trainer, create a 48-hour invitation from the client, and test linking, approving a suggestion and unlinking before inviting real clients.
+
+Service secrets use HKDF-SHA256 → AES-256-GCM with random 12-byte IVs and authenticated key names. KV `secrets` contains base64 IV+ciphertext, never plaintext. Existing Wrangler service secrets take precedence over KV values; the admin Delete button deletes only the KV override. `/api/config` and secret-management responses expose only `{set,last4}` metadata for service keys. `/api/push/key` intentionally returns the **public** application-server key needed by PushManager; it never returns the private key. Provider error bodies are not forwarded to clients.
+
+Accounts use PBKDF2-SHA256 (100,000 iterations, 16 random salt bytes), random 32-byte bearer tokens, hashed session storage and 30-day expiry. Auth and admin attempts are counted in CONFIG by hashed IP+email in 15-minute buckets (10 attempts). KV counters are eventually consistent, so this is an application throttle, not a globally atomic abuse-prevention guarantee. Use Cloudflare edge rate limiting if a strict cross-region cap is needed.
+
+Sync runs on open, returning to the app, reconnecting, and five seconds after edits. D1 compare-and-swap prevents lost writes; a 409 returns the server copy, the client merges modification timestamps and retries once. Sync requests are limited to 1 MiB. Per-date logs and per-ID supplements, weights, measurements and custom foods merge independently; other fields use their top-level timestamps. Device clocks determine which edit is newer. Body/food photos and local image references, notification subscriptions, and account credentials are excluded. Premium tokens are signature-checked, expiry-checked, and their fields are reconstructed server-side. Images remain on the original device. Logging out offline clears the device token; server revocation requires a successful online logout or expiry.
+
+Challenge hydration uses saved daily targets; meal challenges require 80% of planned meals ticked, Health steps are shown only after importing actual step data, and fasting completion is explicitly confirmed by the user. A freeze preserves the streak but is not a completed day. Replanning uses recorded calorie adherence, scheduled workouts, logged weights, top-set estimated 1RM and available sleep records; missing measurements do not trigger calorie/recovery adjustments. Suggestions always require a tap before changing the plan.
+
+### Round 4 validation
+
+Use Node 24+ for the built-in SQLite test adapter, which executes the actual migration and SQL used by the D1 implementation.
+
+```bash
+node tests/test.mjs
+node tests/round4.mjs
+node worker/test.mjs
+# With HAPPY_DOM_PATH pointing to an installed happy-dom/lib/index.js:
+node tests/ui-test.mjs
+node tests/round3.mjs
+node tests/round4-ui.mjs
+# With PLAYWRIGHT_PATH and optionally CHROME_PATH configured:
+node tests/browser.mjs
+# From worker/:
+npx wrangler deploy --dry-run
+```
+
+Worker tests include encrypted secret round-trip/redaction/precedence/deletion, password hashing, registration/login/logout/throttling, sync compare-and-swap and concurrent conflict, premium rejection, linked/unlinked trainer permissions, invitations and notes, and bounded chat requests with mocked structured responses. UI tests cover the conflict merge/retry path and explicit approval of trainer/chat/replan changes. No paid provider requests are made by tests.
+
+Round 4 workspace verification: all six Node/DOM suites above passed. Connected Chrome exercised 12 routes (including coach, trainer, account, challenges and replan) in Thai/English and dark/light at 375px without observed console errors. A visual check caught and fixed chat prompt wrapping; cached coach reload worked after stopping the local HTTP server. The standalone Playwright runner and `npx wrangler deploy --dry-run` were blocked by sandbox `spawn EPERM`; bundling and remote D1/Cloudflare deployment are not verified. Real provider authentication, paid Claude chat, push delivery and real cross-device accounts still require the configured server.

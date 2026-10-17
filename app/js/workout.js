@@ -1,3 +1,4 @@
+import { blockProfile } from './replan.js';
 // Builds a periodised training plan for any number of days from the profile.
 import { EXERCISES, EX } from './exercises.js';
 import { addDays, diffDays, getState } from './store.js';
@@ -51,6 +52,7 @@ export function isTrainingDay(p, iso) {
 }
 
 export function sessionFor(p, iso) {
+  if (p === getState().profile) p = blockProfile(getState(), iso);
   const day = diffDays(p.startDate, iso);
   if (day < 0 || getState().dayOverrides?.[iso] === 'off') return null;
   if (!isTrainingDay(p, iso)) return recoverySession(p, iso, day);
@@ -59,12 +61,12 @@ export function sessionFor(p, iso) {
   for (let d = 0; d < day; d++) if (isTrainingDay(p, addDays(p.startDate, d))) idx++;
   const rot = rotation(p.trainDays.length);
   const splitKey = rot[idx % rot.length];
-  const week = Math.floor(day / 7) + 1;
+  const week = Math.floor(diffDays(p.blockStart || p.startDate, iso) / 7) + 1;
   const { deload, extraReps } = weekMod(week);
   const sc = SCHEME[p.goal] || SCHEME.maintain;
   const lvlSets = p.level === 'beginner' ? -1 : p.level === 'advanced' ? 1 : 0;
   const pool = allowed(p);
-  const r = rng(`${splitKey}-${Math.floor((week - 1) / 2)}-${p.location}`); // exercise choice changes every 2 weeks
+  const r = rng(`${splitKey}-${Math.floor((week - 1) / 2)}-${p.location}${p.planSeed ? "-" + p.planSeed : ""}`); // exercise choice changes every 2 weeks
   const mainCount = Math.max(3, Math.min(6, Math.round((p.sessionMin - 15) / 8)));
   const used = new Set();
   const main = [];
@@ -79,7 +81,7 @@ export function sessionFor(p, iso) {
     opts.sort((a, b) => rank(b, p) - rank(a, p) + (r() - 0.5) * 1.5);
     const ex = opts[0];
     used.add(ex.id);
-    const sets = Math.max(2, sc.sets + lvlSets - (deload ? 1 : 0));
+    const sets = Math.max(1, sc.sets + lvlSets - (deload ? 1 : 0) + (p.volumeAdjustment || 0));
     main.push(ex.type === 'time'
       ? { id: ex.id, sets, sec: Math.min(60, 25 + (p.level === 'beginner' ? 0 : 10) + extraReps * 5), rest: Math.min(sc.rest, 60) }
       : { id: ex.id, sets, reps: bumpReps(sc.reps, extraReps), rest: sc.rest });
@@ -92,7 +94,7 @@ export function sessionFor(p, iso) {
 }
 
 function recoverySession(p, iso, day) {
-  const week = Math.floor(day / 7) + 1;
+  const week = Math.floor(diffDays(p.blockStart || p.startDate, iso) / 7) + 1;
   const baseItems = [
     { id: 'walk', sets: 1, sec: 20 * 60, rest: 0, phase: 'main' },
     { id: 'quad_stretch', sets: 2, sec: 30, rest: 5, phase: 'cool' },

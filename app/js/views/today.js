@@ -1,3 +1,4 @@
+import { replanCard } from './replan.js';
 import { mealLogButtons } from './food-log.js';
 import { fastingCard } from '../fasting.js';
 import { actions, views, go, rerender } from '../core.js';
@@ -55,7 +56,7 @@ views.today = ({ query }) => {
   const hello = hr < 12 ? L('อรุณสวัสดิ์', 'Good morning') : hr < 17 ? L('สวัสดีตอนบ่าย', 'Good afternoon') : L('สวัสดีตอนเย็น', 'Good evening');
   const lastNight = s.logs[iso]?.sleep;
   const sess = d.sess;
-  return `<header class="top">
+  return `${replanCard()}<header class="top"><a class="btn ghost xs" href="#/coach">${L('AI โค้ช','AI coach')}</a>
       <div><small class="muted">${dateLabel(iso, { weekday: 'long', day: 'numeric', month: 'long' })}</small><h1>${hello}${p.name ? ', ' + esc(p.name) : ''}</h1></div>
       <div class="day-nav"><button class="icon-btn" data-act="go" data-to="#/today?d=${addDays(iso, -1)}">${icon('back', 18)}</button><button class="icon-btn" data-act="go" data-to="#/today?d=${addDays(iso, 1)}">${icon('chev', 18)}</button></div>
     </header>

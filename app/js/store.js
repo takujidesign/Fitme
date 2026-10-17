@@ -1,3 +1,4 @@
+import { syncKeys } from './sync-data.js';
 // App state in localStorage, images in IndexedDB.
 const KEY = 'fitme:v1';
 const listeners = new Set();
@@ -26,6 +27,7 @@ const defaults = () => ({
     mealsPerDay: 4, diet: 'normal', exclude: [],
     planDays: 30, startDate: todayISO(),
   },
+  account: { token:null, user:null, version:0, lastSync:0, error:'' }, updatedAt:{}, chat:[], challenges:[], badges:[], blocks:[], suggestionDecisions:{},
   theme: 'auto', voiceCoach: false, measurements: [], customFoods: [],
   notifications: { enabled: false, deviceId: null, meals: true, supplements: true, workout: true, water: false, sleep: true, fasting: true },
   weights: [],
@@ -54,10 +56,22 @@ function load() {
 
 export const getState = () => state;
 
-export function setState(mutator) {
+export function setState(mutator, {remote = false} = {}) {
+  const before = remote ? null : Object.fromEntries(syncKeys.map(k=>[k, JSON.stringify(state[k])]));
+  const rows = remote ? null : Object.fromEntries(['logs','foodLog','supplements','weights','measurements','customFoods'].map(k=>[k, structuredClone(state[k] || (['logs','foodLog'].includes(k)?{}:[]))]));
   mutator(state);
+  if (!remote) {
+    const now=Date.now();state.updatedAt ||= {};
+    for(const k of syncKeys) if(before[k]!==JSON.stringify(state[k])) {
+      state.updatedAt[k]=now;
+      if(rows[k]) {
+        if(Array.isArray(state[k])) { const id=v=>v.uid||v.id||v.date;const old=new Map(rows[k].map(v=>[id(v),JSON.stringify(v)]));for(const v of state[k])if(old.get(id(v))!==JSON.stringify(v))v.updatedAt=now; }
+        else for(const [id,v] of Object.entries(state[k]||{}))if(v && typeof v==='object' && JSON.stringify(rows[k][id])!==JSON.stringify(v))v.updatedAt=now;
+      }
+    }
+  }
   try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { console.warn('save failed', e); }
-  listeners.forEach((fn) => fn(state));
+  listeners.forEach((fn) => fn(state, {remote}));
 }
 export const subscribe = (fn) => (listeners.add(fn), () => listeners.delete(fn));
 

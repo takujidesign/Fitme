@@ -21,7 +21,7 @@ try{
   await page.waitForSelector('.v-today');
   for(const lang of ['th','en'])for(const theme of ['dark','light']){
     await page.evaluate(async({lang,theme})=>{const {setState}=await import('./js/store.js');setState(s=>{s.lang=lang;s.theme=theme;});},{lang,theme});
-    for(const route of ['today','workout','food','supps','me','pay','admin','onboarding?edit=1','player/'+new Date().toISOString().slice(0,10)]){
+    for(const route of ['today','workout','food','supps','me','pay','admin','coach','trainer','account','challenges','replan','onboarding?edit=1','player/'+new Date().toISOString().slice(0,10)]){
       await page.evaluate(route=>{location.hash='#/'+route;},route);await page.waitForTimeout(100);
       assert(await page.locator('#view').innerText(),route);
       assert(!await page.locator('#view').innerText().then(t=>t.includes('undefined')||t.includes('???')),route+' text');
@@ -43,5 +43,5 @@ try{
   await context.setOffline(true);await page.reload();await page.waitForSelector('.v-today');await page.evaluate(()=>location.hash='#/me');await page.waitForSelector('.v-me');
   const significant=errors.filter(e=>!e.includes('net::ERR_FAILED')&&!e.includes('net::ERR_INTERNET_DISCONNECTED')&&!e.includes('favicon'));
   assert.deepEqual(significant,[]);
-  console.log('PASS Chromium 375px: 9 routes × TH/EN × dark/light; new sheets, canvas PNG, no overflow or JS errors; offline reload. Screenshots: '+artifacts);
+  console.log('PASS Chromium 375px: 14 routes × TH/EN × dark/light; new sheets, canvas PNG, no overflow or JS errors; offline reload. Screenshots: '+artifacts);
 }finally{await browser?.close();await new Promise(resolve=>server.close(resolve));}

@@ -47,6 +47,8 @@ actions.notifications=()=>{
     root.querySelector('#push-enable').onclick=async()=>{try{
       if(!CONFIG.API_BASE)throw Error(L('ต้องมีเซิร์ฟเวอร์','A server is required'));
       if(!('Notification' in window)||!navigator.serviceWorker||!('PushManager' in window))throw Error(L('อุปกรณ์นี้ยังไม่รองรับ Web Push','Web Push is unavailable on this device'));
+      const keyResponse=await fetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/push/key');
+      if(keyResponse.ok)CONFIG.VAPID_PUBLIC_KEY=(await keyResponse.json()).publicKey;
       if(!CONFIG.VAPID_PUBLIC_KEY)throw Error(L('เซิร์ฟเวอร์ยังไม่ได้ตั้งค่า Push','Push is not configured on the server'));
       if(await Notification.requestPermission()!=='granted')throw Error(L('ไม่ได้รับอนุญาตแจ้งเตือน','Notification permission was not granted'));
       const reg=await navigator.serviceWorker.ready,key=Uint8Array.from(atob(CONFIG.VAPID_PUBLIC_KEY.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
