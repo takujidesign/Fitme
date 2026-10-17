@@ -1,0 +1,11 @@
+# Reference photos (personal body photo + scan) — never publish
+/*.jpg
+/*.jpeg
+/*.png
+/*.heic
+
+node_modules/
+worker/.dev.vars
+worker/.wrangler/
+worker/dist/
+.DS_Store

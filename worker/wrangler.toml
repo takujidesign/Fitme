@@ -1,0 +1,22 @@
+name = "fitme-api"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# Comma-separated origins allowed to call the API (your GitHub Pages URL).
+ALLOWED_ORIGINS = "https://takujidesign.github.io"
+# Optional: only accept slips paid to this receiver name (match any of "|"-separated parts).
+RECEIVER_NAME = ""
+# THUNDER_API_URL = "https://api.thunder.in.th/v2/verify/bank"
+
+# Secrets (set with `npx wrangler secret put NAME`):
+#   TOKEN_SECRET       random 32+ character string used to sign entitlement tokens
+#   THUNDER_API_KEY    Thunder Solution API key (slip verification)
+#   STRIPE_SECRET_KEY  Stripe secret key (sk_live_... or sk_test_...)
+#   ANTHROPIC_API_KEY  Claude API key (supplement label reading)
+
+# Optional extra replay protection for slips:
+# [[kv_namespaces]]
+# binding = "SLIPS"
+# id = "<your KV namespace id>"

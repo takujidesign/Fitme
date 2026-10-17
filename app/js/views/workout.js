@@ -1,0 +1,177 @@
+import { actions, views, go, rerender } from '../core.js';
+import { getState, todayISO, addDays, diffDays, updateLog, dayLog } from '../store.js';
+import { L, esc, icon, dateLabel, WEEKDAYS, sheet, toast } from '../ui.js';
+import { sessionFor, splitName, sessionKcal } from '../workout.js';
+import { EX, EXERCISES, GROUPS, EQUIP } from '../exercises.js';
+import { figureSVG, animateFigure } from '../figure.js';
+import { fmtSec } from '../export.js';
+import { hasPro } from '../pay.js';
+import { CONFIG } from '../config.js';
+
+let tab = 'plan', filter = 'all';
+export const isLockedDay = (iso) => !hasPro() && diffDays(getState().profile.startDate, iso) >= CONFIG.FREE_PLAN_DAYS;
+
+const target = (it) => (it.reps ? `${it.sets} × ${it.reps} ${L('ครั้ง', 'reps')}` : `${it.sets > 1 ? it.sets + ' × ' : ''}${fmtSec(it.sec)}`);
+const PHASE = { warm: { th: 'วอร์มอัพ', en: 'Warm-up' }, finisher: { th: 'ปิดท้าย (เผาผลาญ)', en: 'Finisher' }, cool: { th: 'คูลดาวน์', en: 'Cool-down' }, main: { th: 'หลัก', en: 'Main' } };
+
+export function weekStrip(selected, route) {
+  const p = getState().profile;
+  const start = addDays(selected, -((new Date(selected + 'T00:00:00').getDay() + 6) % 7));
+  return `<div class="week">${Array.from({ length: 7 }, (_, i) => {
+    const iso = addDays(start, i);
+    const dt = new Date(iso + 'T00:00:00');
+    const tr = p.trainDays.includes(dt.getDay()) && diffDays(p.startDate, iso) >= 0;
+    const done = dayLog(iso).done.workout;
+    return `<button class="wd ${iso === selected ? 'on' : ''} ${tr ? 'tr' : ''} ${iso === todayISO() ? 'today' : ''}" data-act="go" data-to="${route}${iso}">
+      <small>${WEEKDAYS()[dt.getDay()]}</small><b>${dt.getDate()}</b><i>${done ? '✓' : ''}</i>${isLockedDay(iso) ? `<span class="lk">${icon('lock', 10)}</span>` : ''}</button>`;
+  }).join('')}</div>`;
+}
+
+export const lockCard = (what) => `<div class="lock-card">${icon('lock', 28)}<b>${L('ปลดล็อกแผนเต็มด้วย FitMe Pro', 'Unlock the full plan with FitMe Pro')}</b>
+  <small>${what || L(`ฟรีดูได้ ${CONFIG.FREE_PLAN_DAYS} วันแรก`, `Free covers the first ${CONFIG.FREE_PLAN_DAYS} days`)}</small><button class="btn primary" data-act="go" data-to="#/pay">${icon('spark', 18)} ${L('ดูแพ็กเกจ', 'See plans')}</button></div>`;
+
+views.workout = ({ params }) => {
+  const iso = params[0] || todayISO();
+  const p = getState().profile;
+  const head = `<header class="top"><div><small class="muted">${L('การออกกำลังกาย', 'Training')}</small><h1>${tab === 'plan' ? L('แผนของฉัน', 'My plan') : L('คลังท่า', 'Exercise library')}</h1></div></header>
+    <div class="seg tabs">${['plan', 'lib'].map((t) => `<button class="chip ${tab === t ? 'on' : ''}" data-act="wo-tab" data-v="${t}">${t === 'plan' ? L('แผน', 'Plan') : L('ท่าทั้งหมด', 'All exercises')}</button>`).join('')}</div>`;
+  if (tab === 'lib') {
+    const list = EXERCISES.filter((e) => filter === 'all' || e.group === filter);
+    return head + `<div class="chips scroll">${['all', ...Object.keys(GROUPS)].map((g) => `<button class="chip ${filter === g ? 'on' : ''}" data-act="wo-filter" data-v="${g}">${g === 'all' ? L('ทั้งหมด', 'All') : L(GROUPS[g])}</button>`).join('')}</div>
+      <div class="ex-grid">${list.map((e) => `<button class="ex-card" data-act="ex-open" data-id="${e.id}"><div class="fig" data-anim="${e.id}"></div><b>${L(e.name)}</b><small>${L(EQUIP[e.equip])} · ${L(e.muscles)}</small></button>`).join('')}</div>`;
+  }
+  const sess = sessionFor(p, iso);
+  const locked = isLockedDay(iso);
+  if (!sess) return head + weekStrip(iso, '#/workout/') + `<div class="empty">${L('แผนเริ่มวันที่', 'Plan starts on')} ${dateLabel(p.startDate)}</div>`;
+  const groups = {};
+  sess.items.forEach((it, i) => (groups[it.phase || 'main'] ||= []).push({ ...it, i }));
+  return head + weekStrip(iso, '#/workout/') + `
+    <section class="card session">
+      <div class="row between"><div><small class="muted">${dateLabel(iso, { weekday: 'long', day: 'numeric', month: 'short' })} · ${L('สัปดาห์', 'Week')} ${sess.week}</small>
+      <h2>${sess.type === 'train' ? L(splitName(sess.split)) : L('ฟื้นฟูร่างกาย (Active recovery)', 'Active recovery')}</h2></div>
+      ${sess.deload ? `<span class="tag amber">Deload</span>` : ''}</div>
+      <div class="meta">${icon('clock', 16)} ${sess.minutes} ${L('นาที', 'min')} ${icon('flame', 16)} ~${sessionKcal(sess, p.weight)} kcal ${icon('dumbbell', 16)} ${sess.items.length} ${L('ท่า', 'moves')}</div>
+      ${sess.deload ? `<p class="note">${icon('info', 16)} ${L('สัปดาห์ Deload: ลดปริมาณเพื่อให้ร่างกายฟื้นตัวและแข็งแรงขึ้น', 'Deload week: lower volume so your body can adapt')}</p>` : ''}
+      ${sess.type === 'rest' ? `<p class="note">${icon('moon', 16)} ${L('วันพัก: เดินเบาๆ ยืดเหยียด ดื่มน้ำให้พอ และนอนให้ครบ — กล้ามเนื้อเติบโตตอนพัก', 'Rest day: easy walk, stretch, hydrate and sleep — muscles grow while you recover')}</p>` : ''}
+    </section>
+    ${locked ? lockCard() : `${Object.entries(groups).map(([ph, items]) => `<h3 class="sec">${L(PHASE[ph])}</h3>
+      <ul class="ex-list">${items.map((it) => `<li data-act="ex-open" data-id="${it.id}"><div class="fig sm" data-anim="${it.id}"></div><div><b>${L(EX[it.id].name)}</b><small>${target(it)}${it.rest ? ` · ${L('พัก', 'rest')} ${it.rest}s` : ''}</small></div>${icon('chev', 18)}</li>`).join('')}</ul>`).join('')}
+    <div class="sticky-cta"><button class="btn primary block lg" data-act="go" data-to="#/player/${iso}">${icon('play', 20)} ${L('เริ่มเลย', 'Start workout')}</button></div>`}`;
+};
+views.workout.mount = (root) => {
+  const io = new IntersectionObserver((ents) => ents.forEach((en) => {
+    if (en.isIntersecting && !en.target.dataset.on) { en.target.dataset.on = 1; animateFigure(en.target, EX[en.target.dataset.anim], { speed: 0.9 }); }
+  }));
+  root.querySelectorAll('[data-anim]').forEach((el) => io.observe(el));
+};
+
+actions['wo-tab'] = (el) => { tab = el.dataset.v; rerender(); };
+actions['wo-filter'] = (el) => { filter = el.dataset.v; rerender(); };
+actions['ex-open'] = (el) => {
+  const ex = EX[el.dataset.id];
+  sheet(`<div class="sheet-head"><div><small class="muted">${L(GROUPS[ex.group])} · ${L(EQUIP[ex.equip])}</small><h2>${L(ex.name)}</h2></div><button class="icon-btn" data-close>${icon('x')}</button></div>
+    <div class="fig xl" id="ex-anim"></div>
+    <p class="muted">${L('กล้ามเนื้อหลัก', 'Target')}: <b>${L(ex.muscles)}</b></p>
+    <ol class="cues">${L(ex.cues).map((c) => `<li>${esc(c)}</li>`).join('')}</ol>`, { onMount: (r) => animateFigure(r.querySelector('#ex-anim'), ex) });
+};
+
+// ---------------- Player ----------------
+let P = null;
+function buildSteps(sess) {
+  const steps = [];
+  sess.items.forEach((it, idx) => {
+    for (let s = 1; s <= it.sets; s++) {
+      steps.push({ kind: 'work', it, set: s, idx });
+      const last = idx === sess.items.length - 1 && s === it.sets;
+      if (it.rest && !last) steps.push({ kind: 'rest', sec: it.rest, next: s < it.sets ? it : sess.items[idx + 1], nextSet: s < it.sets ? s + 1 : 1 });
+    }
+  });
+  return steps;
+}
+let audio;
+function beep(f = 880, d = 0.12) {
+  try {
+    audio ||= new (window.AudioContext || window.webkitAudioContext)();
+    const o = audio.createOscillator(), g = audio.createGain();
+    o.frequency.value = f; o.connect(g); g.connect(audio.destination);
+    g.gain.setValueAtTime(0.2, audio.currentTime); g.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + d);
+    o.start(); o.stop(audio.currentTime + d);
+  } catch {}
+}
+
+views.player = ({ params }) => {
+  const iso = params[0] || todayISO();
+  if (isLockedDay(iso)) return `<div class="pad">${lockCard()}</div>`;
+  const sess = sessionFor(getState().profile, iso);
+  if (!sess) { setTimeout(() => go('#/today'), 0); return ''; }
+  if (!P || P.iso !== iso) P = { iso, sess, steps: buildSteps(sess), i: 0, left: 0, paused: false, started: Date.now() };
+  return `<div class="player" id="player"></div>`;
+};
+views.player.mount = (root) => { renderStep(root.querySelector('#player')); requestWake(); };
+views.player.full = true;
+
+let wakeLock;
+async function requestWake() { try { wakeLock = await navigator.wakeLock?.request('screen'); } catch {} }
+
+let timer, anim;
+function renderStep(host) {
+  clearInterval(timer);
+  anim?.stop();
+  if (!host?.isConnected) return;
+  const st = P.steps[P.i];
+  if (!st) return finish(host);
+  const pct = (P.i / P.steps.length) * 100;
+  const top = `<div class="pl-top"><button class="icon-btn" data-act="pl-exit">${icon('x')}</button><div class="pl-bar"><i style="width:${pct}%"></i></div><span class="muted sm">${Math.round(pct)}%</span></div>`;
+  if (st.kind === 'rest') {
+    P.left = st.sec;
+    const nx = EX[st.next.id];
+    host.innerHTML = `${top}<div class="pl-rest"><small>${L('พัก', 'Rest')}</small><div class="big-count" id="cnt">${P.left}</div>
+      <div class="row gap center"><button class="btn ghost" data-act="pl-add">+15s</button><button class="btn primary" data-act="pl-next">${L('ข้าม', 'Skip')} ${icon('skip', 16)}</button></div>
+      <div class="next-up"><small>${L('ต่อไป', 'Up next')} · ${L('เซ็ต', 'Set')} ${st.nextSet}/${st.next.sets}</small><div class="fig md" id="pl-fig"></div><b>${L(nx.name)}</b><span>${target(st.next)}</span></div></div>`;
+    anim = animateFigure(host.querySelector('#pl-fig'), nx, { speed: 0.8 });
+    tick(host);
+    return;
+  }
+  const it = st.it, ex = EX[it.id];
+  const timed = !!it.sec;
+  P.left = timed ? it.sec : 0;
+  host.innerHTML = `${top}<div class="pl-work">
+    <div class="fig xl" id="pl-fig"></div>
+    <small class="muted">${L(PHASE[it.phase || 'main'])} · ${L('เซ็ต', 'Set')} ${st.set}/${it.sets}</small>
+    <h1>${L(ex.name)}</h1>
+    ${timed ? `<div class="big-count" id="cnt">${P.left}</div>` : `<div class="reps">${it.reps}<small>${L('ครั้ง', 'reps')}</small></div>`}
+    <p class="cue">${esc(L(ex.cues)[st.set % 3])}</p>
+    <div class="pl-ctrl"><button class="icon-btn lg" data-act="pl-prev">${icon('back')}</button>
+      ${timed ? `<button class="btn primary round" data-act="pl-pause" id="pp">${icon(P.paused ? 'play' : 'pause', 28)}</button>` : `<button class="btn primary round" data-act="pl-next">${icon('check', 30)}</button>`}
+      <button class="icon-btn lg" data-act="pl-next">${icon('skip')}</button></div></div>`;
+  anim = animateFigure(host.querySelector('#pl-fig'), ex);
+  if (timed) tick(host);
+}
+function tick(host) {
+  timer = setInterval(() => {
+    if (P.paused) return;
+    P.left--;
+    const c = host.querySelector('#cnt');
+    if (c) c.textContent = Math.max(0, P.left);
+    if (P.left <= 3 && P.left > 0) beep(660);
+    if (P.left <= 0) { beep(990, 0.25); navigator.vibrate?.(200); P.i++; renderStep(host); }
+  }, 1000);
+}
+function finish(host) {
+  const mins = Math.max(1, Math.round((Date.now() - P.started) / 60000));
+  const kcal = sessionKcal(P.sess, getState().profile.weight);
+  updateLog(P.iso, (l) => { l.done.workout = true; l.workout = { minutes: mins, kcal, at: new Date().toISOString() }; });
+  host.innerHTML = `<div class="pl-done"><div class="burst">${icon('check', 46)}</div><h1>${L('เยี่ยมมาก!', 'Great work!')}</h1>
+    <p>${L('จบการฝึกวันนี้แล้ว', 'Session complete')}</p><div class="sum-grid"><div class="stat"><small>${L('เวลา', 'Time')}</small><b>${mins}</b><span class="tag">${L('นาที', 'min')}</span></div><div class="stat"><small>${L('เผาผลาญ', 'Burned')}</small><b>~${kcal}</b><span class="tag">kcal</span></div></div>
+    <p class="muted">${L('อย่าลืมมื้อหลังออกกำลังกาย และดื่มน้ำ 500 มล.', 'Have your post-workout meal and 500 ml of water')}</p>
+    <button class="btn primary block" data-act="pl-close">${L('กลับหน้าหลัก', 'Back to today')}</button></div>`;
+  beep(880, 0.15); setTimeout(() => beep(1320, 0.3), 160);
+  wakeLock?.release?.();
+}
+const host = () => document.getElementById('player');
+actions['pl-next'] = () => { P.i++; renderStep(host()); };
+actions['pl-prev'] = () => { P.i = Math.max(0, P.i - 1); while (P.i > 0 && P.steps[P.i].kind === 'rest') P.i--; renderStep(host()); };
+actions['pl-add'] = () => { P.left += 15; const c = document.getElementById('cnt'); if (c) c.textContent = P.left; };
+actions['pl-pause'] = (el) => { P.paused = !P.paused; el.innerHTML = icon(P.paused ? 'play' : 'pause', 28); P.paused ? anim?.pause() : anim?.play(); };
+actions['pl-exit'] = () => { if (confirm(L('ออกจากการฝึก? ความคืบหน้าจะไม่ถูกบันทึก', 'Quit the workout? Progress will not be saved'))) { clearInterval(timer); anim?.stop(); P = null; wakeLock?.release?.(); history.back(); } };
+actions['pl-close'] = () => { P = null; go('#/today'); toast(L('บันทึกการฝึกแล้ว 💪', 'Workout saved 💪')); };

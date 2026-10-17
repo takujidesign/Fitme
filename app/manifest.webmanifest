@@ -1,0 +1,23 @@
+{
+  "name": "FitMe — ออกกำลังกาย อาหาร อาหารเสริม",
+  "short_name": "FitMe",
+  "description": "แผนออกกำลังกาย อาหาร อาหารเสริม และการพักผ่อน ที่คำนวณเฉพาะคุณ",
+  "start_url": "./#/today",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B0F14",
+  "theme_color": "#0B0F14",
+  "lang": "th",
+  "categories": ["health", "fitness", "lifestyle"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "shortcuts": [
+    { "name": "เริ่มออกกำลังกาย", "url": "./#/workout", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "อาหารเสริมวันนี้", "url": "./#/supps", "icons": [{ "src": "icons/icon-192.png", "sizes": "192x192" }] }
+  ]
+}
