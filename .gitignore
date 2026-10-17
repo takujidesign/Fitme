@@ -10,3 +10,6 @@ worker/.wrangler/
 worker/dist/
 .DS_Store
 .claude/settings.local.json
+
+mobile/android/
+mobile/ios/

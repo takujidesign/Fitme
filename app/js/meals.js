@@ -69,7 +69,7 @@ function choose(foods, pred, r) {
 // Build one meal that hits macro targets {p,c,f} as closely as possible.
 export function buildMeal(p, slot, tgt, seed) {
   const r = rng(seed);
-  const foods = allowedFoods(p);
+  const foods = allowedFoods(p).filter(f => (f.cat !== 'protein' && f.cat !== 'dairyp' || f.p > 0) && (f.cat !== 'carb' || f.c > 0));
   const kind = slot.kind;
   const isMain = kind === 'lunch' || kind === 'dinner';
   const isBreakfast = kind === 'breakfast';
@@ -80,15 +80,15 @@ export function buildMeal(p, slot, tgt, seed) {
     prot = choose(foods, (f) => f.cat === 'protein' && !['egg_white', 'tuna'].includes(f.id), r) || choose(foods, (f) => f.cat === 'protein', r);
     carb = choose(foods, (f) => f.cat === 'carb' && mealOk(f), r);
     veg = choose(foods, (f) => f.cat === 'veg', r);
-    fat = foods.find((f) => f.id === 'olive_oil');
+    fat = choose(foods, f => f.cat === 'fat' && (f.id === 'olive_oil' || f.id.startsWith('my-')) && f.f > 0, r);
   } else if (isBreakfast) {
-    prot = choose(foods, (f) => ['egg', 'greek_yogurt', 'tofu', 'chicken_breast', 'soy_milk', 'milk_lowfat'].includes(f.id), r) || choose(foods, (f) => f.cat === 'protein' || f.cat === 'dairyp', r);
+    prot = choose(foods, (f) => (['egg', 'greek_yogurt', 'tofu', 'chicken_breast', 'soy_milk', 'milk_lowfat'].includes(f.id) || f.id.startsWith('my-') && ['protein','dairyp'].includes(f.cat)), r) || choose(foods, (f) => f.cat === 'protein' || f.cat === 'dairyp', r);
     carb = choose(foods, (f) => f.cat === 'carb' && mealOk(f), r);
     fruit = choose(foods, (f) => f.cat === 'fruit' && f.id !== 'avocado', r);
     fat = choose(foods, (f) => ['almonds', 'peanut_butter', 'avocado'].includes(f.id), r);
   } else {
     // snacks / pre / post: light and easy to digest
-    prot = choose(foods, (f) => ['greek_yogurt', 'egg', 'milk_lowfat', 'soy_milk', 'tuna', 'chicken_breast', 'tofu'].includes(f.id), r) || choose(foods, (f) => f.cat === 'protein' || f.cat === 'dairyp', r);
+    prot = choose(foods, (f) => (['greek_yogurt', 'egg', 'milk_lowfat', 'soy_milk', 'tuna', 'chicken_breast', 'tofu'].includes(f.id) || f.id.startsWith('my-') && ['protein','dairyp'].includes(f.cat)), r) || choose(foods, (f) => f.cat === 'protein' || f.cat === 'dairyp', r);
     fruit = choose(foods, (f) => f.cat === 'fruit' && f.id !== 'avocado', r);
     carb = fruit && kind !== 'post' ? null : choose(foods, (f) => f.cat === 'carb' && (kind === 'post' ? ['sweet_potato', 'ww_bread', 'jasmine_rice', 'oats'] : ['sweet_potato', 'ww_bread', 'oats', 'corn']).includes(f.id), r);
     fat = kind === 'snack' ? choose(foods, (f) => ['almonds', 'peanut_butter'].includes(f.id), r) : null;

@@ -4,6 +4,7 @@ compatibility_date = "2026-09-01"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
+VAPID_SUBJECT = "mailto:replace-with-your-email@example.com"
 # Comma-separated origins allowed to call the API (your GitHub Pages URL).
 ALLOWED_ORIGINS = "https://takujidesign.github.io"
 # Optional: only accept slips paid to this receiver name (match any of "|"-separated parts).
@@ -26,3 +27,13 @@ RECEIVER_NAME = ""
 # binding = "CONFIG"
 # id = "<your CONFIG KV namespace id>"
 # Secret: ADMIN_PASSWORD (npx wrangler secret put ADMIN_PASSWORD)
+
+# Web Push: create PUSH KV and uncomment the binding below before enabling clients.
+# npx wrangler kv namespace create PUSH
+# [[kv_namespaces]]
+# binding = "PUSH"
+# id = "<your PUSH KV namespace id>"
+# Secrets: VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY (generate once; keep stable).
+# Cron is a no-op until PUSH and VAPID secrets are configured.
+[triggers]
+crons = ["*/5 * * * *"]

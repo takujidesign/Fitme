@@ -1,3 +1,4 @@
+import { measurementsPrint } from './measurements.js';
 // Plan export: printable PDF view, calendar (.ics) reminders and JSON backup.
 import { getState } from './store.js';
 import { planRange } from './day.js';
@@ -36,7 +37,7 @@ export function printHTML(days) {
   <header class="pd-head"><div><h1>Fix me ${L('แผนสุขภาพส่วนตัว', 'Personal plan')}</h1>
   <p>${esc(p.name || '')} · ${p.age} ${L('ปี', 'y')} · ${p.height} cm · ${p.weight} kg · BMI ${bmi(p).toFixed(1)} · ${L(GOALS[p.goal])}</p>
   <p>${dateLabel(plan[0].iso, { day: 'numeric', month: 'long', year: 'numeric' })} – ${dateLabel(plan.at(-1).iso, { day: 'numeric', month: 'long', year: 'numeric' })} (${days} ${L('วัน', 'days')})</p></div></header>
-  <section class="pd-grid">
+  ${measurementsPrint()}<section class="pd-grid">
     <div><h3>${L('พลังงาน วันฝึก / วันพัก', 'kcal train / rest')}</h3><b>${fmt(targets(p, true).kcal)} / ${fmt(targets(p, false).kcal)}</b><small>BMR ${fmt(first.t.bmr)} · TDEE ${fmt(first.t.tdee)}</small></div>
     <div><h3>${L('โปรตีน', 'Protein')}</h3><b>${first.t.protein} g</b></div>
     <div><h3>${L('คาร์บ / ไขมัน', 'Carbs / fat')}</h3><b>${first.t.carbs} / ${first.t.fat} g</b></div>
@@ -60,7 +61,7 @@ function eventText(e, lang) {
   if (e.type === 'fasting') return e.eating ? L('เริ่มกินได้', 'Eating window starts') : L('เริ่ม IF', 'Fasting starts');
   if (e.type === 'meal') {
     const m = e.meal;
-    return `<b>${L(mealKind(m.kind))}</b>: ${esc(L(m.name))}<br><small>${m.items.map((it) => `${L({ th: FOOD[it.id].th, en: FOOD[it.id].en })} ${it.g}g ${unitText(FOOD[it.id], it.g, lang)}`).join(', ')} — ${m.total.k} kcal, P${m.total.p} C${m.total.c} F${m.total.f}</small>`;
+    return `<b>${L(mealKind(m.kind))}</b>: ${esc(L(m.name))}<br><small>${m.items.map((it) => `${esc(L({ th: FOOD[it.id].th, en: FOOD[it.id].en }))} ${it.g}g ${esc(unitText(FOOD[it.id], it.g, lang))}`).join(', ')} — ${m.total.k} kcal, P${m.total.p} C${m.total.c} F${m.total.f}</small>`;
   }
   if (e.type === 'workout') return `<b>${L('ออกกำลังกาย', 'Workout')} (${e.sess.minutes} ${L('นาที', 'min')}, ~${e.kcal} kcal)</b><br><small>${e.sess.items.map(exLine).join('<br>')}</small>`;
   if (e.type === 'supp') return `<b>${L(e.slotInfo)}</b>: ${e.list.map((x) => `${L(x.prod.name)} ${x.amount} ${L(x.prod.unit)}`).join(', ')}`;

@@ -1,3 +1,7 @@
+import { applyTheme } from './theme.js';
+import './custom-foods.js';
+import './share.js';
+import { startPushSync } from './notifications.js';
 import { actions, views, setRenderer, route, go, rerender } from './core.js';
 import { getState } from './store.js';
 import { L, icon, toast } from './ui.js';
@@ -26,6 +30,7 @@ const viewEl = document.getElementById('view');
 const tabEl = document.getElementById('tabbar');
 
 function render() {
+  applyTheme();
   const r = route();
   if (!getState().onboarded && !['onboarding', 'admin'].includes(r.name)) return go('#/onboarding');
   const v = views[r.name] || views.today;
@@ -78,11 +83,12 @@ function showInstall() {
 }
 setTimeout(showInstall, 4000);
 
-if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+if (!window.Capacitor?.isNativePlatform?.() && 'serviceWorker' in navigator && location.protocol !== 'file:') {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
 
 await loadConfig();
+startPushSync();
 handleStripeReturn().then((r) => r && toast(L('ชำระเงินสำเร็จ 🎉', 'Payment confirmed 🎉'))).catch((e) => toast(e.message, 'warn'));
 lastHash = location.hash;
 render();

@@ -6,7 +6,8 @@ import { planDay } from '../day.js';
 import { mealKind, unitText } from '../meals.js';
 import { FOOD, DIETS, EXCLUDES } from '../foods.js';
 import { weekStrip, isLockedDay, lockCard } from './workout.js';
-import { mealSheet } from './today.js';
+import { mealLogButtons, foodLogHTML } from './food-log.js';
+import { eaten, mealSheet } from './today.js';
 
 const bar = (label, val, tgt, color) => {
   const pct = Math.min(120, (val / (tgt || 1)) * 100);
@@ -19,10 +20,10 @@ views.food = ({ params }) => {
   const d = planDay(iso);
   const lang = getState().lang;
   const log = dayLog(iso);
-  const tot = { p: d.foodTotal.p + d.sm.protein, c: d.foodTotal.c + d.sm.carbs, f: d.foodTotal.f + d.sm.fat, k: d.foodTotal.k + d.sm.kcal };
+  const tot = eaten(d, log);
   const head = `<header class="top"><div><small class="muted">${L('โภชนาการ', 'Nutrition')}</small><h1>${L('แผนอาหาร', 'Meal plan')}</h1></div>
     <button class="icon-btn" data-act="food-prefs" aria-label="prefs">${icon('settings')}</button></header>`;
-  return head + `<button class="btn ghost block" data-act="shopping" data-iso="${iso}">${L('รายการซื้อของ 7 วัน', '7-day shopping list')}</button>${eatingWindow(p) && d.train && !inWindow(Number(p.workoutTime.slice(0,2))*60+Number(p.workoutTime.slice(3)), eatingWindow(p)) ? `<p class="note">${L('เวลาออกกำลังกายอยู่ในช่วงอด ลองเลื่อนมาใกล้เวลาเริ่มกิน', 'Your workout falls in the fast. Consider moving it near the eating window start.')}</p>` : ""}` + weekStrip(iso, '#/food/') + `
+  return head + mealLogButtons(iso) + foodLogHTML(iso) + `<button class="btn ghost block" data-act="shopping" data-iso="${iso}">${L('รายการซื้อของ 7 วัน', '7-day shopping list')}</button>${eatingWindow(p) && d.train && !inWindow(Number(p.workoutTime.slice(0,2))*60+Number(p.workoutTime.slice(3)), eatingWindow(p)) ? `<p class="note">${L('เวลาออกกำลังกายอยู่ในช่วงอด ลองเลื่อนมาใกล้เวลาเริ่มกิน', 'Your workout falls in the fast. Consider moving it near the eating window start.')}</p>` : ""}` + weekStrip(iso, '#/food/') + `
     <section class="card">
       <div class="row between"><div><small class="muted">${dateLabel(iso, { weekday: 'long', day: 'numeric', month: 'short' })} · ${d.train ? L('วันออกกำลังกาย', 'Training day') : L('วันพัก', 'Rest day')}</small>
         <h2>${tot.k.toLocaleString()} <small class="muted">/ ${d.t.kcal.toLocaleString()} kcal</small></h2></div>
@@ -30,12 +31,12 @@ views.food = ({ params }) => {
       ${bar(L('โปรตีน', 'Protein'), tot.p, d.t.protein, 'var(--teal)')}
       ${bar(L('คาร์โบไฮเดรต', 'Carbs'), tot.c, d.t.carbs, 'var(--lime)')}
       ${bar(L('ไขมัน', 'Fat'), tot.f, d.t.fat, 'var(--amber)')}
-      ${d.sm.kcal ? `<p class="muted sm">${icon('pill', 14)} ${L(`รวมอาหารเสริม ${d.sm.kcal} kcal · โปรตีน ${d.sm.protein} g`, `Includes supplements: ${d.sm.kcal} kcal · ${d.sm.protein} g protein`)}</p>` : ''}
+      <p class="muted sm">${L('รวมเฉพาะที่ทานแล้ว', 'Includes eaten meals, checked supplements and extra food logs')}</p>
       ${p.exclude.length ? `<div class="chips">${p.exclude.map((e) => `<span class="chip sm on">${L(EXCLUDES[e])}</span>`).join('')}</div>` : ''}
     </section>
     ${isLockedDay(iso) ? lockCard() : d.meals.map((m) => `<article class="meal ${log.done['meal-' + m.key] ? 'done' : ''}" data-act="meal-open2" data-iso="${iso}" data-k="${m.key}">
       <div class="meal-head"><span class="meal-ic">${icon(mealKind(m.kind).icon, 18)}</span><div><small>${m.time} · ${L(mealKind(m.kind))}</small><b>${esc(L(m.name))}</b></div><em>${m.total.k}<small>kcal</small></em></div>
-      <ul class="food-chips">${m.items.map((it) => { const f = FOOD[it.id]; return `<li><span class="fcat ${f.cat}"></span>${L({ th: f.th, en: f.en })} <b>${it.g}g</b> <small>${unitText(f, it.g, lang)}</small></li>`; }).join('')}</ul>
+      <ul class="food-chips">${m.items.map((it) => { const f = FOOD[it.id]; return `<li><span class="fcat ${f.cat}"></span>${esc(L({ th: f.th, en: f.en }))} <b>${it.g}g</b> <small>${esc(unitText(f, it.g, lang))}</small></li>`; }).join('')}</ul>
       <div class="meal-mac"><span>P ${m.total.p}g</span><span>C ${m.total.c}g</span><span>F ${m.total.f}g</span>${log.done['meal-' + m.key] ? `<span class="ok">${icon('check', 14)} ${L('ทานแล้ว', 'Eaten')}</span>` : ''}</div>
     </article>`).join('')}
     <section class="card"><h2>${L('AI โค้ช', 'AI coach')}</h2><p class="muted sm">${L('ทบทวนอาหารและอาหารเสริมวันนี้ (Pro)', "Review today's meals and supplements (Pro)")}</p><button class="btn primary" data-act="ai-plan">${L('ทบทวนแผนวันนี้', "Review today's plan")}</button></section>
@@ -52,7 +53,7 @@ actions['meal-open2'] = (el) => {
 actions['food-prefs'] = () => {
   const p = getState().profile;
   sheet(`<div class="sheet-head"><h2>${L('ความชอบด้านอาหาร', 'Food preferences')}</h2><button class="icon-btn" data-close>${icon('x')}</button></div>
-    <h3>${L('รูปแบบการกิน', 'Eating style')}</h3>
+    <button class="btn ghost block" data-act="custom-foods">${L('เมนูของฉัน', 'My foods')}</button><h3>${L('รูปแบบการกิน', 'Eating style')}</h3>
     <div class="chips">${Object.entries(DIETS).map(([k, d]) => `<button class="chip ${p.diet === k ? 'on' : ''}" data-act="fp-diet" data-v="${k}">${L(d)}</button>`).join('')}</div>
     <h3>${L('ไม่ทาน / แพ้', 'Exclude')}</h3>
     <div class="chips">${Object.entries(EXCLUDES).map(([k, d]) => `<button class="chip ${p.exclude.includes(k) ? 'on' : ''}" data-act="fp-ex" data-v="${k}">${L(d)}</button>`).join('')}</div>

@@ -1,5 +1,5 @@
 // npm install --no-save happy-dom (or set HAPPY_DOM_PATH to its lib/index.js).
-// Run: node app/ui-test.mjs. Uses a simulated DOM and BLE device; no network.
+// Run: node tests/ui-test.mjs. Uses a simulated DOM and BLE device; no network.
 import assert from 'node:assert/strict';
 const { Window } = await import(process.env.HAPPY_DOM_PATH || 'happy-dom');
 const window = new Window({url:'http://localhost:5173/#/today'});
@@ -10,11 +10,11 @@ globalThis.requestAnimationFrame=fn=>{fn(0);return 1;};
 // Disable continuous figure animation while still creating the real SVG DOM.
 let frames=0;globalThis.requestAnimationFrame=fn=>{if(frames++<1)fn(0);return frames;};
 globalThis.confirm=()=>true;
-const {getState,setState,todayISO,addDays}=await import('./js/store.js');
-const {views,actions,setRenderer}=await import('./js/core.js');
-const {CONFIG,currentConfig}=await import('./js/config.js');
-const {sessionFor}=await import('./js/workout.js');
-for(const name of ['today','workout','food','supps','me','pay','admin','coach','planning'])await import(`./js/views/${name}.js`);
+const {getState,setState,todayISO,addDays}=await import('../app/js/store.js');
+const {views,actions,setRenderer}=await import('../app/js/core.js');
+const {CONFIG,currentConfig}=await import('../app/js/config.js');
+const {sessionFor}=await import('../app/js/workout.js');
+for(const name of ['today','workout','food','supps','me','pay','admin','coach','planning'])await import(`../app/js/views/${name}.js`);
 const iso=todayISO(),s=getState();
 setState(s=>{s.onboarded=true;Object.assign(s.profile,{startDate:iso,trainDays:[0,1,2,3,4,5,6],location:'gym',level:'advanced',fasting:'16:8'});});
 const root=document.createElement('main');root.id='view';document.body.append(root);
@@ -31,7 +31,7 @@ actions.calendar(el({iso}));actions['day-override'](el({v:'off'}));assert.equal(
 document.querySelectorAll('.sheet-wrap:not(:last-child)').forEach(e=>e.remove());
 document.getElementById('off-start').value=addDays(iso,1);document.getElementById('off-end').value=addDays(iso,2);actions.vacation();assert.equal(s.dayOverrides[addDays(iso,2)],'off');
 actions.shopping(el({iso}));assert(sheet().querySelectorAll('[data-shopping]').length);const check=sheet().querySelector('[data-shopping]');check.checked=true;check.dispatchEvent(new Event('change'));assert.equal(s.shoppingChecks[check.dataset.shopping],true);
-const {shoppingItems}=await import('./js/views/planning.js');assert.equal(shoppingItems(iso).days,3);
+const {shoppingItems}=await import('../app/js/views/planning.js');assert.equal(shoppingItems(iso).days,3);
 current='food';render();actions['food-prefs']();const pattern=sheet().querySelector('[data-fasting]');pattern.value='20:4';pattern.dispatchEvent(new Event('change'));assert.equal(s.profile.fasting,'20:4');
 document.querySelectorAll('.sheet-wrap').forEach(e=>e.remove());
 // Real player handlers + simulated standard BLE notification characteristic.

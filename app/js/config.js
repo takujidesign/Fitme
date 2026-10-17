@@ -22,6 +22,7 @@ export const isDemo = () => !CONFIG.API_BASE;
 
 const fields = { promptpayId: 'PROMPTPAY_ID', promptpayName: 'PROMPTPAY_NAME', receiverName: 'RECEIVER_NAME', products: 'PRODUCTS', freePlanDays: 'FREE_PLAN_DAYS', freeSupplements: 'FREE_SUPPLEMENTS' };
 export function mergeConfig(config) {
+  if (config.vapidPublicKey !== undefined) CONFIG.VAPID_PUBLIC_KEY = config.vapidPublicKey;
   for (const [key, target] of Object.entries(fields)) if (config[key] !== undefined) CONFIG[target] = config[key];
 }
 export function currentConfig() {

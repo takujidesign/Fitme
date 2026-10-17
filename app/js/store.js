@@ -26,6 +26,8 @@ const defaults = () => ({
     mealsPerDay: 4, diet: 'normal', exclude: [],
     planDays: 30, startDate: todayISO(),
   },
+  theme: 'auto', voiceCoach: false, measurements: [], customFoods: [],
+  notifications: { enabled: false, deviceId: null, meals: true, supplements: true, workout: true, water: false, sleep: true, fasting: true },
   weights: [],
   photos: [], // {id, date, pose}
   supplements: [], // {uid, productId, startDate, photoId, custom?}
@@ -44,7 +46,7 @@ function load() {
     if (!raw) return defaults();
     const s = JSON.parse(raw);
     const d = defaults();
-    return { ...d, ...s, profile: { ...d.profile, ...(s.profile || {}) }, premium: { ...d.premium, ...(s.premium || {}) }, dayOverrides: s.dayOverrides || {}, exSwaps: s.exSwaps || {}, shoppingChecks: s.shoppingChecks || {} };
+    return { ...d, ...s, notifications: { ...d.notifications, ...s.notifications }, measurements: s.measurements || [], customFoods: s.customFoods || [], profile: { ...d.profile, ...(s.profile || {}) }, premium: { ...d.premium, ...(s.premium || {}) }, dayOverrides: s.dayOverrides || {}, exSwaps: s.exSwaps || {}, shoppingChecks: s.shoppingChecks || {} };
   } catch {
     return defaults();
   }
@@ -77,7 +79,7 @@ export function resetAll() {
 }
 export function importState(obj) {
   const d = defaults();
-  setState((s) => Object.assign(s, d, obj, { profile: { ...d.profile, ...obj.profile }, premium: { ...d.premium, ...s.premium, ...obj.premium }, dayOverrides: obj.dayOverrides || {}, exSwaps: obj.exSwaps || {}, shoppingChecks: obj.shoppingChecks || {} }));
+  setState((s) => Object.assign(s, d, obj, { notifications: { ...d.notifications, ...obj.notifications }, measurements: obj.measurements || [], customFoods: obj.customFoods || [], profile: { ...d.profile, ...obj.profile }, premium: { ...d.premium, ...s.premium, ...obj.premium }, dayOverrides: obj.dayOverrides || {}, exSwaps: obj.exSwaps || {}, shoppingChecks: obj.shoppingChecks || {} }));
 }
 
 // ---------- IndexedDB for images ----------

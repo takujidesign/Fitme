@@ -1,14 +1,14 @@
-// Run: node app/test.mjs (no dependencies, network, or paid APIs).
+// Run: node tests/test.mjs (no dependencies, network, or paid APIs).
 import assert from 'node:assert/strict';
 const saved = new Map([['fitme:v1', JSON.stringify({onboarded:true,lang:'en',profile:{name:'Existing user',startDate:'2026-10-12',trainDays:[1,3,5]}})]]);
 globalThis.localStorage = {getItem:k=>saved.get(k)||null,setItem:(k,v)=>saved.set(k,v)};
-const {getState,setState,importState,addDays}=await import('./js/store.js');
-const {sessionFor,isTrainingDay,allowed}=await import('./js/workout.js');
-const {EXERCISES,EX}=await import('./js/exercises.js');
-const {mealSlots}=await import('./js/meals.js');
-const {eatingWindow,inWindow}=await import('./js/fasting.js');
-const {planDay}=await import('./js/day.js');
-const {parseHeartRate,hrCalories}=await import('./js/progress.js');
+const {getState,setState,importState,addDays}=await import('../app/js/store.js');
+const {sessionFor,isTrainingDay,allowed}=await import('../app/js/workout.js');
+const {EXERCISES,EX}=await import('../app/js/exercises.js');
+const {mealSlots}=await import('../app/js/meals.js');
+const {eatingWindow,inWindow}=await import('../app/js/fasting.js');
+const {planDay}=await import('../app/js/day.js');
+const {parseHeartRate,hrCalories}=await import('../app/js/progress.js');
 const s=getState(),p=s.profile;
 assert.equal(p.name,'Existing user');assert.deepEqual(p.avoidEx,[]);assert.equal(p.eatStart,'12:00');assert.deepEqual(s.exSwaps,{});
 const base=structuredClone(p);
@@ -41,14 +41,14 @@ assert.equal(parseHeartRate(new DataView(Uint8Array.from([0,135]).buffer)),135);
 assert.equal(parseHeartRate(new DataView(Uint8Array.from([1,180,0]).buffer)),180);
 assert.equal(parseHeartRate(new DataView(Uint8Array.from([1,180]).buffer)),null);
 assert(hrCalories(140,30,p)>0);assert(hrCalories(140,30,{...p,sex:'female'})>0);
-const {printHTML,exportICS}=await import('./js/export.js');
+const {printHTML,exportICS}=await import('../app/js/export.js');
 assert(printHTML(1).includes('Eating window starts'));assert(printHTML(1).includes('Fasting starts'));
 let exportBlob;const create=URL.createObjectURL;URL.createObjectURL=blob=>(exportBlob=blob,'blob:test');
 globalThis.document={createElement:()=>({click(){},remove(){}}),body:{appendChild(){}}};
 exportICS(1);const calendar=await exportBlob.text();URL.createObjectURL=create;
 assert(calendar.includes('X-WR-CALNAME:Fix me'));assert(calendar.includes('SUMMARY:Eating window starts'));assert(calendar.includes('SUMMARY:Fasting starts'));
-const {readFileSync,existsSync}=await import('node:fs');const shell=readFileSync(new URL('./sw.js',import.meta.url),'utf8');
+const {readFileSync,existsSync}=await import('node:fs');const shell=readFileSync(new URL('../app/sw.js',import.meta.url),'utf8');
 assert(shell.includes("const VERSION = 'fitme-v1';"));
-for(const file of ['js/fasting.js','js/progress.js','js/views/planning.js']){assert(shell.includes(`'./${file}'`));assert(existsSync(new URL(file,import.meta.url)));}
+for(const file of ['js/fasting.js','js/progress.js','js/views/planning.js']){assert(shell.includes(`'./${file}'`));assert(existsSync(new URL('../app/'+file,import.meta.url)));}
 importState({profile:{name:'Old backup'},logs:{}});assert.equal(getState().profile.fasting,'none');assert.deepEqual(getState().shoppingChecks,{});
 console.log('PASS old-state load/import, avoidance across all phases/equipment/levels, preferences, safe swaps, override rotation, every IF window including midnight/under-18, supplement relocation, BLE flags/HR calories, PDF/ICS fasting boundaries and offline shell.');

@@ -1,3 +1,4 @@
+import { speak, stopVoice, voiceButton } from '../voice.js';
 import { parseHeartRate, hrZone, hrCalories, exerciseHistory, historyHTML } from '../progress.js';
 import { actions, views, go, rerender } from '../core.js';
 import { getState, todayISO, addDays, diffDays, updateLog, dayLog } from '../store.js';
@@ -122,8 +123,9 @@ function renderStep(host) {
   const st = P.steps[P.i];
   if (!st) return finish(host);
   const pct = (P.i / P.steps.length) * 100;
-  const top = `<div class="pl-top"><button class="icon-btn" data-act="pl-exit">${icon('x')}</button><div class="pl-bar"><i style="width:${pct}%"></i></div><span class="muted sm">${Math.round(pct)}%</span></div>`;
+  const top = `<div class="pl-top">${voiceButton()}<button class="icon-btn" data-act="pl-exit">${icon('x')}</button><div class="pl-bar"><i style="width:${pct}%"></i></div><span class="muted sm">${Math.round(pct)}%</span></div>`;
   if (st.kind === 'rest') {
+    speak('พัก', 'Rest starts');
     P.left = st.sec;
     const nx = EX[st.next.id];
     host.innerHTML = `${top}${heartUI()}<div class="pl-rest"><small>${L('พัก', 'Rest')}</small><div class="big-count" id="cnt">${P.left}</div>
@@ -134,6 +136,7 @@ function renderStep(host) {
     return;
   }
   const it = st.it, ex = EX[it.id];
+  speak(`${P.steps[P.i-1]?.kind === 'rest' ? 'หมดเวลาพัก ' : ''}${ex.name.th} เซ็ต ${st.set} ${ex.cues.th[st.set % 3]}`, `${P.steps[P.i-1]?.kind === 'rest' ? 'Rest ends. ' : ''}${ex.name.en}. Set ${st.set}. ${ex.cues.en[st.set % 3]}`);
   const timed = !!it.sec;
   P.left = timed ? it.sec : 0;
   host.innerHTML = `${top}${heartUI()}<div class="pl-work">
@@ -155,11 +158,13 @@ function tick(host) {
     P.left--;
     const c = host.querySelector('#cnt');
     if (c) c.textContent = Math.max(0, P.left);
+    if (P.left === 3) speak('อีก 3 วินาที', '3 seconds left');
     if (P.left <= 3 && P.left > 0) beep(660);
     if (P.left <= 0) { beep(990, 0.25); navigator.vibrate?.(200); P.i++; renderStep(host); }
   }, 1000);
 }
 function finish(host) {
+  stopVoice();
   const mins = Math.max(1, Math.round((Date.now() - P.started) / 60000));
   const avgHR = P.samples.length ? Math.round(P.samples.reduce((n,s)=>n+s.bpm,0)/P.samples.length) : null;
   const maxHR = P.samples.length ? P.samples.reduce((max,s)=>Math.max(max,s.bpm),0) : null;
@@ -177,8 +182,8 @@ const host = () => document.getElementById('player');
 actions['pl-next'] = () => { if (saveSet() === false) return; P.i++; renderStep(host()); };
 actions['pl-prev'] = () => { P.i = Math.max(0, P.i - 1); while (P.i > 0 && P.steps[P.i].kind === 'rest') P.i--; renderStep(host()); };
 actions['pl-add'] = () => { P.left += 15; const c = document.getElementById('cnt'); if (c) c.textContent = P.left; };
-actions['pl-pause'] = (el) => { P.paused = !P.paused; el.innerHTML = icon(P.paused ? 'play' : 'pause', 28); P.paused ? anim?.pause() : anim?.play(); };
-actions['pl-exit'] = () => { if (confirm(L('ออกจากการฝึก? ความคืบหน้าจะไม่ถูกบันทึก', 'Quit the workout? Progress will not be saved'))) { clearInterval(timer); anim?.stop(); disconnectHR(); P = null; wakeLock?.release?.(); history.back(); } };
+actions['pl-pause'] = (el) => { P.paused = !P.paused; el.innerHTML = icon(P.paused ? 'play' : 'pause', 28); P.paused ? anim?.pause() : anim?.play(); if (P.paused) stopVoice(); };
+actions['pl-exit'] = () => { if (confirm(L('ออกจากการฝึก? ความคืบหน้าจะไม่ถูกบันทึก', 'Quit the workout? Progress will not be saved'))) { stopVoice(); clearInterval(timer); anim?.stop(); disconnectHR(); P = null; wakeLock?.release?.(); history.back(); } };
 actions['pl-close'] = () => { P = null; go('#/today'); toast(L('บันทึกการฝึกแล้ว 💪', 'Workout saved 💪')); };
 
 let hrDevice, hrCharacteristic, hrConnecting = false;
@@ -208,7 +213,7 @@ actions['hr-connect']=async()=>{
   hrCharacteristic=characteristic;characteristic.addEventListener('characteristicvaluechanged',hrChanged);await characteristic.startNotifications();
  }catch(e){disconnectHR();if(e.name!=='NotFoundError')toast(L('เชื่อมต่อไม่ได้ ตรวจโหมด broadcast HR แล้วลองอีกครั้ง', 'Could not connect. Check broadcast HR mode and try again.'),'warn');}finally{hrConnecting=false;}
 };
-window.addEventListener('hashchange',()=>{if(!location.hash.startsWith('#/player/')){clearInterval(timer);anim?.stop();disconnectHR();wakeLock?.release?.();P=null;}});
+window.addEventListener('hashchange',()=>{if(!location.hash.startsWith('#/player/')){stopVoice();clearInterval(timer);anim?.stop();disconnectHR();wakeLock?.release?.();P=null;}});
 function setInputs(st) {
  if(st.kind!=='work'||!st.it.reps||!['db','gym'].includes(EX[st.it.id].equip))return '';
  const prev=P.sets.find(s=>s.index===st.idx && s.set===st.set) || exerciseHistory(st.it.id,P.iso)[0]?.sets.find(s=>s.set===st.set);

@@ -1,3 +1,4 @@
+import { mealLogButtons } from './food-log.js';
 import { fastingCard } from '../fasting.js';
 import { actions, views, go, rerender } from '../core.js';
 import { getState, todayISO, dayLog, updateLog, addDays } from '../store.js';
@@ -12,13 +13,14 @@ import { sleepNeed } from '../calc.js';
 import { isLockedDay, lockCard } from './workout.js';
 
 export function eaten(d, log) {
-  let k = 0, pr = 0;
+  const total = { k: 0, p: 0, c: 0, f: 0 };
   for (const e of d.events) {
-    if (!log.done[e.key]) continue;
-    if (e.type === 'meal') { k += e.meal.total.k; pr += e.meal.total.p; }
-    if (e.type === 'supp') for (const x of e.list) { k += (x.prod.nutrition?.k || 0) * x.amount; pr += (x.prod.nutrition?.p || 0) * x.amount; }
+    if (!log.done?.[e.key]) continue;
+    if (e.type === 'meal') for (const k of Object.keys(total)) total[k] += e.meal.total[k] || 0;
+    if (e.type === 'supp') for (const x of e.list) for (const k of Object.keys(total)) total[k] += (x.prod.nutrition?.[k] || 0) * x.amount;
   }
-  return { k: Math.round(k), p: Math.round(pr) };
+  for (const entry of log.foodLog || []) for (const k of Object.keys(total)) total[k] += entry.totals?.[k === 'k' ? 'kcal' : k] || 0;
+  return Object.fromEntries(Object.entries(total).map(([k,v]) => [k, Math.round(v)]));
 }
 
 function eventRow(e, log, iso) {
@@ -99,8 +101,8 @@ actions['meal-open'] = (el) => {
 export function mealSheet(m, iso) {
   const lang = getState().lang;
   sheet(`<div class="sheet-head"><div><small class="muted">${m.time} · ${L(mealKind(m.kind))}</small><h2>${esc(L(m.name))}</h2></div><button class="icon-btn" data-close>${icon('x')}</button></div>
-    <div class="macro-row"><div><b>${m.total.k}</b><small>kcal</small></div><div><b>${m.total.p}g</b><small>${L('โปรตีน', 'Protein')}</small></div><div><b>${m.total.c}g</b><small>${L('คาร์บ', 'Carbs')}</small></div><div><b>${m.total.f}g</b><small>${L('ไขมัน', 'Fat')}</small></div></div>
-    <ul class="food-list">${m.items.map((it) => { const f = FOOD[it.id]; return `<li><span class="fcat ${f.cat}"></span><div><b>${L({ th: f.th, en: f.en })}</b><small>${unitText(f, it.g, lang)}</small></div><em>${it.g} g</em></li>`; }).join('')}</ul>
+    ${mealLogButtons(iso)}<div class="macro-row"><div><b>${m.total.k}</b><small>kcal</small></div><div><b>${m.total.p}g</b><small>${L('โปรตีน', 'Protein')}</small></div><div><b>${m.total.c}g</b><small>${L('คาร์บ', 'Carbs')}</small></div><div><b>${m.total.f}g</b><small>${L('ไขมัน', 'Fat')}</small></div></div>
+    <ul class="food-list">${m.items.map((it) => { const f = FOOD[it.id]; return `<li><span class="fcat ${f.cat}"></span><div><b>${esc(L({ th: f.th, en: f.en }))}</b><small>${esc(unitText(f, it.g, lang))}</small></div><em>${it.g} g</em></li>`; }).join('')}</ul>
     ${m.post ? `<p class="note">${icon('info', 16)} ${L('มื้อหลังออกกำลังกาย: เน้นคาร์บ + โปรตีน ภายใน 1-2 ชม. เพื่อฟื้นฟูกล้ามเนื้อ', 'Post-workout: carbs + protein within 1-2 h to recover')}</p>` : ''}
     ${m.pre ? `<p class="note">${icon('info', 16)} ${L('มื้อก่อนออกกำลังกาย: ทานก่อน 60-90 นาที ไขมันต่ำ ย่อยง่าย', 'Pre-workout: 60-90 min before, low fat, easy to digest')}</p>` : ''}
     <div class="row gap"><button class="btn ghost block" data-act="meal-swap" data-iso="${iso}" data-k="${m.key}">${icon('refresh', 18)} ${L('สุ่มเมนูใหม่', 'Swap meal')}</button>

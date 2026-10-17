@@ -90,11 +90,76 @@ Run `node worker/test.mjs` for mocked config, payment-config and AI endpoint che
 Validation:
 
 ```bash
-node app/test.mjs
+node tests/test.mjs
 node worker/test.mjs
 # Optional DOM/action integration tests (no live services or Bluetooth hardware):
 npm install --prefix /tmp/fixme-tests happy-dom
-HAPPY_DOM_PATH=file:///tmp/fixme-tests/node_modules/happy-dom/lib/index.js node app/ui-test.mjs
+HAPPY_DOM_PATH=file:///tmp/fixme-tests/node_modules/happy-dom/lib/index.js node tests/ui-test.mjs
 ```
 
-`app/test.mjs` covers old-state compatibility, avoidance, preferences/swaps, day rotation, IF windows, supplements and BLE parsing. `app/ui-test.mjs` covers both-language views and actions, simulated BLE session completion, set/HR persistence, shopping and mocked admin saving. Native Chrome route checks were also performed at 375px in Thai and English. Real BLE hardware, live payment/config services and deployment were not exercised.
+`tests/test.mjs` covers old-state compatibility, avoidance, preferences/swaps, day rotation, IF windows, supplements and BLE parsing. `tests/ui-test.mjs` covers both-language views and actions, simulated BLE session completion, set/HR persistence, shopping and mocked admin saving. Real BLE hardware, live payment/config services and deployment are separate checks.
+
+### Round 3
+
+- Food and meal details offer **Meal photo / ถ่ายรูปอาหาร** (Pro). Select 1–2 views of the same meal and an optional note. Claude returns bilingual foods, portion/macronutrient estimates and confidence; adjust grams before saving. Images go to the Worker/provider only after the user agrees. The Worker does not persist photos; provider retention policies apply. **Keep photo** saves the first image locally in IndexedDB. Extra food logs without photos work offline. Today rings and Food totals now count eaten meals, checked supplements and extra logs, rather than the whole planned day.
+- Food preferences → **My foods / เมนูของฉัน** accepts per-100-g or per-serving nutrition, household units, diet/allergen tags and recipes assembled from existing foods. Recipe macros and tags are calculated from ingredients. Enable **Use in meal plan** to make a food eligible for generation. Custom foods have `my-` IDs and are included in backups. Tag ingredients accurately so diet filters can exclude them.
+- Me → **Body measurements** stores dated waist, hip, chest, arm and thigh measurements, trends, WHR/WHtR and the requested reference thresholds. Measurements also appear in the printable PDF.
+- Me → **Share results** creates a local 1080×1350 PNG with days on plan, completed workouts, daily streak and change between logged weights. Before/after photos are optional selections made for that card only. Share uses the platform file share sheet when supported and otherwise downloads the PNG.
+- The workout player's **Voice coach** toggle is remembered. Local speech synthesis announces exercises, sets, form cues, rest boundaries and three seconds remaining; Thai uses a Thai voice when installed, otherwise English. No speech service is called.
+- Me → **Theme** selects automatic, dark or light. Automatic follows the OS preference. New state fields have defaults, and existing localStorage/IndexedDB names remain unchanged.
+
+### Web Push setup
+
+Generate a VAPID key pair **once** locally, using Node 20+ (do not commit the output):
+
+```bash
+cd worker
+node --input-type=module -e "import {generateVapidKeys} from './src/push.js'; console.log(await generateVapidKeys())"
+npx wrangler secret put VAPID_PUBLIC_KEY
+npx wrangler secret put VAPID_PRIVATE_KEY
+npx wrangler kv namespace create PUSH
+```
+
+Set `VAPID_SUBJECT` in `worker/wrangler.toml` to your contact `mailto:` URI, and uncomment the `PUSH` namespace binding with its actual ID. The public key is returned through `/api/config`; the private key stays in Worker secrets. Keep the pair stable across deployments. The existing cron entry `*/5 * * * *` runs every five minutes and does nothing until PUSH and all VAPID settings exist. No deployment is performed by tests.
+
+Me → **Notifications** lets users select meals, supplements, workout, two-hour water reminders within waking hours, bedtime minus 30 minutes, and IF boundaries. Enabling asks browser permission and subscribes through the service worker. The next seven plan days are uploaded with the IANA timezone; schedules refresh on plan changes, app open, foregrounding and reconnection. Open the app at least weekly; records expire after eight days. Disable removes the server record and browser subscription. A random device ID acts as an unguessable management credential; keep backups private. Demo mode explains the server requirement. iPhone requires iOS 16.4+ and **Add to Home Screen**.
+
+The sender uses WebCrypto for [RFC 8291 aes128gcm encryption](https://www.rfc-editor.org/rfc/rfc8291) and ES256 VAPID. It checks the current five-minute window, handles local dates across midnight, supports `days` weekday filters, and deletes 404/410 subscriptions. KV propagation and overlapping cron execution mean delivery is best effort, not exactly once; reminders can be delayed by up to five minutes and by browser/OS scheduling. Supported endpoint hosts are explicitly limited to browser push services. Put rate limits on the public subscribe route before a public launch.
+
+### Native Android / iOS shell
+
+`mobile/` pins Capacitor 8 and [`@capgo/capacitor-health`](https://github.com/Cap-go/capacitor-health), supporting HealthKit and Health Connect. The native bridge uses the installed plugin's `Health` methods through Capacitor's injected bridge; the static web app needs no SDK bundle or build step. Me hides Health data in ordinary browsers. In a native build, users explicitly request read access for steps, sleep, resting heart rate, active calories and weight for the last seven days. Empty/denied data is shown without treating it as zero. Import fills missing weight/sleep dates only, unions overlapping sleep intervals and does not write back to HealthKit/Health Connect. Raw read results stay in memory; imported logs stay on the device and in user-requested backups.
+
+Use Node 22+ and the platform tooling required by Capacitor 8:
+
+```bash
+cd mobile
+npm ci
+npx cap add android
+npx cap sync android
+npx cap open android
+# On a Mac with Xcode:
+npx cap add ios
+npx cap sync ios
+npx cap open ios
+```
+
+Build/run Android from Android Studio on a device with Health Connect (built in on Android 14+, install it on supported earlier versions). Review the merged manifest for the plugin's health permissions. This app requests read-only `READ_STEPS`, `READ_SLEEP`, `READ_RESTING_HEART_RATE`, `READ_ACTIVE_CALORIES_BURNED` and `READ_WEIGHT`; remove unnecessary write permissions from the app's merged manifest before distribution. Provide the Health Connect permission rationale and a privacy policy via the `health_connect_privacy_policy_url` Android string resource. Complete Google Play's Health Connect declaration before distribution.
+
+On a Mac, enable the **HealthKit** capability for the iOS target in Xcode and set `NSHealthShareUsageDescription` in Info.plist (for example, “Read steps, sleep, resting heart rate, energy and weight to display your progress”). The plugin also documents `NSHealthUpdateUsageDescription`; supply a truthful description if required by your target, but this app requests no write access. Configure signing and run on an iPhone with sample health records. Generated `mobile/android/`, `mobile/ios/` and all `node_modules` are ignored. Re-run `npx cap sync` after web or plugin changes. Native health access **cannot be tested from the web build**; Android/iOS compilation, permissions and real health records require platform/device verification.
+
+Round 3 checks (all test scripts are outside the published app):
+
+```bash
+node tests/test.mjs
+node worker/test.mjs
+# Install happy-dom / playwright in a temporary directory, then set their module paths:
+HAPPY_DOM_PATH=file:///tmp/fixme-tests/node_modules/happy-dom/lib/index.js node tests/ui-test.mjs
+HAPPY_DOM_PATH=file:///tmp/fixme-tests/node_modules/happy-dom/lib/index.js node tests/round3.mjs
+PLAYWRIGHT_PATH=file:///tmp/fixme-tests/node_modules/playwright/index.mjs node tests/browser.mjs
+cd worker && npx wrangler deploy --dry-run
+```
+
+On Windows, set environment variables using `$env:HAPPY_DOM_PATH` / `$env:PLAYWRIGHT_PATH`. `CHROME_PATH` optionally selects an installed Chrome executable. The browser test creates an isolated localhost server and test browser profile, checks 375px routes in both languages/themes and offline reload, and writes screenshots to the OS temporary directory. Worker tests mock Claude and push HTTP; they verify the VAPID signature, receiver-side payload decryption, subscription lifecycle, due windows and expired-subscription cleanup without paid requests.
+
+Validation in the Round 3 workspace: `tests/test.mjs`, `tests/ui-test.mjs`, `tests/round3.mjs` and `worker/test.mjs` passed. Connected Chrome checked nine routes in Thai/English and dark/light at 375px with no observed JS errors or horizontal overflow; share canvas dimensions and quick-food persistence/totals were verified. Reloading after stopping the local HTTP server confirmed cached app operation and saved logs. The standalone Playwright runner and Wrangler dry-run were blocked by the environment's `spawn EPERM`; this is not a successful Worker bundle check. Real Claude requests, push delivery, native builds/health permissions and hardware speech output remain unverified.

@@ -22,6 +22,7 @@ export function pickFiles({ accept = 'image/*', multiple = false, capture } = {}
     i.multiple = multiple;
     if (capture) i.capture = capture;
     i.onchange = () => res([...(i.files || [])]);
+    i.oncancel = () => res([]);
     i.click();
   });
 }

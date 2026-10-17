@@ -2,6 +2,9 @@
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const SHELL = [
   './', './index.html', './manifest.webmanifest', './css/app.css', './icons/icon.svg', './icons/icon-192.png',
+  './js/views/food-log.js',
+  './js/notifications.js',
+  './js/measurements.js', './js/share.js', './js/custom-foods.js', './js/health.js', './js/voice.js', './js/theme.js',
   './js/app.js', './js/core.js', './js/config.js', './js/store.js', './js/ui.js', './js/calc.js', './js/figure.js',
   './js/exercises.js', './js/workout.js', './js/foods.js', './js/meals.js', './js/supplements.js', './js/day.js',
   './js/fasting.js', './js/views/planning.js', './js/progress.js', './js/pay.js', './js/export.js',
@@ -34,5 +37,20 @@ self.addEventListener('fetch', (e) => {
     } catch {
       return hit || (req.mode === 'navigate' ? cache.match('./index.html') : Response.error());
     }
+  }));
+});
+
+self.addEventListener('push', e => {
+  let data; try { data = e.data?.json(); } catch {}
+  const route = /^#\/(today|food|workout|supps|me)$/.test(data?.route) ? data.route : '#/today';
+  e.waitUntil(self.registration.showNotification(data?.title || 'Fix me', {body:data?.body || '',icon:'./icons/icon-192.png',tag:data?.tag,data:{route}}));
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const route = /^#\/(today|food|workout|supps|me)$/.test(e.notification.data?.route) ? e.notification.data.route : '#/today';
+  const url = new URL('./', self.registration.scope); url.hash = route;
+  e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(async clients => {
+    const client = clients.find(c => c.url.startsWith(self.registration.scope));
+    if(client){await client.navigate(url.href);await client.focus();}else await self.clients.openWindow(url.href);
   }));
 });

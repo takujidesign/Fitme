@@ -67,6 +67,13 @@ export const FOODS = [
   { id: 'avocado', cat: 'fat', k: 160, p: 2, c: 9, f: 15, tags: ['fruit', 'vegan'], unit: U.piece, th: 'อะโวคาโด', en: 'Avocado', unitG: 70 },
 ];
 export const FOOD = Object.fromEntries(FOODS.map((f) => [f.id, f]));
+const BUILTIN = FOODS.slice();
+export function mergeCustomFoods(custom = []) {
+  const valid = custom.filter(f => /^my-[a-z0-9-]+$/.test(f.id) && typeof f.th === 'string' && typeof f.en === 'string' && ['protein','carb','veg','fruit','fat','dairyp'].includes(f.cat) && ['k','p','c','f'].every(k => Number.isFinite(f[k]) && f[k] >= 0) && Array.isArray(f.tags) && f.unit?.g > 0);
+  FOODS.splice(0, FOODS.length, ...BUILTIN, ...valid);
+  for (const id of Object.keys(FOOD)) delete FOOD[id];
+  Object.assign(FOOD, Object.fromEntries(FOODS.map(f => [f.id, f])));
+}
 
 export const DIETS = {
   normal: { th: 'ทานได้ทุกอย่าง', en: 'Everything', no: [] },
@@ -93,5 +100,5 @@ export const EXCLUDES = {
 export function allowedFoods(p) {
   const banned = new Set([...(DIETS[p.diet]?.no || []), ...(p.exclude || [])]);
   if (banned.has('seafood')) banned.add('fish');
-  return FOODS.filter((f) => !f.tags.some((t) => banned.has(t)));
+  return FOODS.filter((f) => (!f.id.startsWith('my-') || f.useInPlan) && !f.tags.some((t) => banned.has(t)));
 }

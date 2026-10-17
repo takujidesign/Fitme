@@ -1,3 +1,5 @@
+import { healthCard } from '../health.js';
+import '../measurements.js';
 import { progressCard } from '../progress.js';
 import { actions, views, go, rerender, pickFiles } from '../core.js';
 import { getState, setState, todayISO, addDays, putImage, imageURL, compressImage, uid, delImage, resetAll, importState } from '../store.js';
@@ -71,6 +73,7 @@ views.me = () => {
       <p class="muted sm">${L('PDF: กด "บันทึกเป็น PDF" ในหน้าพิมพ์ · ปฏิทิน: นำเข้า Google/Apple Calendar เพื่อแจ้งเตือนมื้ออาหาร อาหารเสริม และเวลาออกกำลังกาย', 'PDF: choose "Save as PDF" in the print dialog · Calendar: import into Google/Apple Calendar for meal, supplement and workout reminders')}</p>
     </section>
 
+    ${healthCard()}<section class="card"><div class="list"><button data-act="measurements">${L('สัดส่วนร่างกาย', 'Body measurements')}</button><button data-act="share-card">${L('แชร์ผลลัพธ์', 'Share results')}</button><button data-act="notifications">${L('การแจ้งเตือน', 'Notifications')}</button><button data-act="theme">${L('ธีม', 'Theme')}</button></div></section>
     <section class="card">
       <h2>${icon('settings', 20)} ${L('ตั้งค่า', 'Settings')}</h2>
       <div class="list">
