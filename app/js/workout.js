@@ -1,3 +1,5 @@
+import { healthAllowed, healthSession } from './womens-health.js';
+import { programSession, PROGRAMS } from './programs.js';
 import { blockProfile } from './replan.js';
 // Builds a periodised training plan for any number of days from the profile.
 import { EXERCISES, EX } from './exercises.js';
@@ -14,7 +16,7 @@ const SPLITS = {
   legs: { th: 'Legs (ขา/ก้น)', en: 'Legs', groups: ['legs', 'legs', 'legs', 'legs', 'core', 'legs'] },
   hiit: { th: 'คาร์ดิโอ HIIT', en: 'HIIT cardio', groups: ['cardio', 'core', 'cardio', 'legs', 'cardio', 'core'] },
 };
-export const splitName = (k) => SPLITS[k];
+export const splitName = (k) => SPLITS[k] || {th:'โปรแกรม / ฟื้นตัว',en:'Program / recovery'};
 
 function rotation(n) {
   if (n <= 1) return ['full'];
@@ -36,7 +38,7 @@ const SCHEME = {
 export function allowed(p) {
   const eq = p.location === 'gym' ? ['none', 'db', 'gym'] : p.location === 'db' ? ['none', 'db'] : ['none'];
   const maxLvl = p.level === 'beginner' ? 1 : p.level === 'intermediate' ? 2 : 3;
-  return EXERCISES.filter((e) => !p.avoidEx?.includes(e.id) && eq.includes(e.equip) && e.level <= maxLvl + (e.group === 'core' ? 1 : 0));
+  return EXERCISES.filter((e) => healthAllowed(p,e.id) && !p.avoidEx?.includes(e.id) && eq.includes(e.equip) && e.level <= maxLvl + (e.group === 'core' ? 1 : 0));
 }
 
 // Week-based progression: weeks 1-3 build, week 4 deloads.
@@ -46,15 +48,20 @@ function weekMod(week) {
 }
 
 export function isTrainingDay(p, iso) {
+  if(PROGRAMS[p.program?.id]){const special=programSession(p,iso);if(special)return special.type==='train';}
   const override = getState().dayOverrides?.[iso];
   if (override) return override === 'train';
   return p.trainDays.includes(new Date(iso + 'T00:00:00').getDay());
 }
 
 export function sessionFor(p, iso) {
+  const result = rawSession(p,iso); if(!result)return result; const adjusted=healthSession(p,result,iso);return {...adjusted,minutes:estimateMin(adjusted.items)};
+}
+function rawSession(p, iso) {
   if (p === getState().profile) p = blockProfile(getState(), iso);
   const day = diffDays(p.startDate, iso);
   if (day < 0 || getState().dayOverrides?.[iso] === 'off') return null;
+  const special=programSession(p,iso);if(special)return special;
   if (!isTrainingDay(p, iso)) return recoverySession(p, iso, day);
   // count training days since start to rotate the split
   let idx = 0;

@@ -1,5 +1,45 @@
 # Fix me
 
+## Round 5a (sections 1–9 only)
+
+Sections 10–28 of `docs/CODEX_TASKS_5.md` are not part of this round.
+
+Before releasing this version, apply `worker/migrations/0002_round5a.sql` after `0001_init.sql`, using `npx wrangler d1 migrations apply fitme --remote` from `worker/`. This adds payment orders/ledger, promo codes, referrals, trainer plans/purchases/payables, push ownership, telemetry and video metadata. No remote migration or deployment was performed by this task.
+
+For uploaded exercise videos, create `fitme-media` with `npx wrangler r2 bucket create fitme-media` and enable the commented `MEDIA` R2 binding in `worker/wrangler.toml`. Admin → Exercise videos accepts YouTube/Vimeo/HTTPS MP4 links or MP4 uploads up to 25 MB. Uploads require the admin bearer; playback is public. YouTube uses youtube-nocookie and Vimeo uses `dnt=1`. Players load only after a tap; animation remains the default/offline fallback. Video downloads are outside this round.
+
+Enable Stripe Connect for the platform and configure the existing encrypted Stripe secret. Trainers use Account → Sell plans / earnings → Connect Stripe Express. The Worker requests card-payments/transfers capabilities and checks charge/payout readiness before checkout. Approved templates use [destination charges and application fees](https://docs.stripe.com/connect/destination-charges). Default trainer share is 70% of gross sales; processing fees reduce the platform remainder. Admin → Settings configures this share and referral reward days. PromptPay sales create payables: the admin must transfer funds before marking a payment paid; the button records bookkeeping only.
+
+Trainers submit their current workout settings plus name, description, THB/USD prices, duration and weekly notes for admin approval. Purchased plans can be applied from the marketplace and link the buyer to their trainer. Promo product IDs are `export1`, `pro30`, `pro90` or `plan_<uuid>` from the submitted template.
+
+Checkout first requests an authoritative price quote. Promo capacity is reserved for one hour and usage increments only on completion. Stripe needs at least 30 minutes remaining on the quote; otherwise refresh it. Prices, currency, duration and trainer share are frozen in the order. Fully discounted orders use a server-validated zero-price confirmation with no provider charge. Unique payment references and a D1 transaction prevent repeat entitlements, promo counts and referral rewards. A new referred account's first purchase grants both sides the configured Pro days. Signed account entitlement refresh runs at login, startup and the Me referral card. Guest purchases cannot earn referrals or buy trainer plans.
+
+Stripe confirmation occurs when the buyer returns to the app. Webhook reconciliation and recurring Billing are outside this round; an interrupted return must be retried with the same Checkout session. No live payment or paid AI call was used during development.
+
+Privacy/terms are bilingual **drafts requiring legal review before launch**. Set a real contact email in Admin → Settings and have counsel define the statutory accounting retention period. Terms and sensitive-health consent are separate, versioned choices. Withdrawal stops app sync and gates health screens; account export/deletion remain available. Body photos stay local except when explicitly selected for the existing AI photo-analysis feature. Export includes local image data and server records. Deletion removes account relationships, state, sessions, referrals, plans and linked push subscriptions; required payment/payable records retain a fresh random replacement user identifier. Providers may retain their own legally required records.
+
+Optional telemetry defaults on and can be disabled in Me. Raw exception text, personal state and health data are not transmitted. The Worker stores sanitized error categories/allowlisted locations and event aggregates; a hashed install-ID counter limits batches to 30/hour, at most 20 events each. Records older than 90 days and rate buckets older than 24 hours are pruned on telemetry receipt. Dashboard AI counts reflect opted-in telemetry, not a billing audit.
+
+Women’s health requires explicit opt-in on female profiles. Cycle adjustments can be disabled; pregnancy/postpartum restrictions stay active across regular and special programs. Medical clearance is required for pregnancy/postpartum. Pregnancy disables fasting and calorie deficits and removes specified supine/high-impact exercises. Early postpartum uses walking/breathing/pelvic-floor cards; breastfeeding disables fasting and adds 450 kcal guidance. These conservative product rules need clinical review and are not medical prescriptions. References: [ACOG exercise guidance](https://www.acog.org/womens-health/faqs/exercise-during-pregnancy), [breastfeeding nutrition](https://www.acog.org/womens-health/faqs/breastfeeding-your-baby). Supplement flags follow existing label warnings; contraindications are not invented for silent labels.
+
+Workout → Programs offers eight-week 5K walk/run intervals, back care, active 60+ and a two-week habit builder. Programs override the regular split until completed or cancelled. The 5K progression builds to 30 minutes of running; distance varies with pace. Every new pose uses the existing keyframe renderer.
+
+Run with Node 24+ (`happy-dom` is in `tests/package.json`):
+
+```text
+node tests/test.mjs
+node tests/round3.mjs
+node tests/round4.mjs
+node tests/ui-test.mjs
+node tests/round4-ui.mjs
+node tests/round5.mjs
+node worker/test.mjs
+```
+
+The Worker runner includes rounds 4 and 5a. Tests use real local SQLite SQL and mocked providers to cover promo reservations/math/expiry, authoritative amounts, replay protection, referral rewards, plan approval/access, destination fees, payouts, telemetry redaction/throttling, admin media and export/deletion. DOM tests cover TH/EN routes/themes, separate/versioned consent, telemetry opt-out, cycle calculations, pregnancy/postpartum restrictions across programs, run progression and all new side/front poses.
+
+`tests/round5-browser.mjs` adds a 375px Chromium check with `PLAYWRIGHT_PATH` and optional `CHROME_PATH`. Browser launch was blocked here by sandbox `spawn EPERM`; actual layout/console checks remain unverified. DOM tests do not prove visual layout. Real D1/R2, Stripe Connect/Thunder payments, cross-device accounts and push delivery also remain unverified.
+
 Mobile-first PWA (ติดตั้งเป็นแอปได้) สำหรับวางแผน **ออกกำลังกาย + อาหาร + อาหารเสริม + การพักผ่อน** เฉพาะบุคคล ภาษาไทย/อังกฤษ
 
 ## ฟีเจอร์

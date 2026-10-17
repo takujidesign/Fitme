@@ -174,3 +174,5 @@ export function warnings(supps, profile) {
   if (count('carnitine') && profile.sex === 'female') out.push({ th: 'แอล-คาร์นิทีน: ไม่ควรใช้ระหว่างตั้งครรภ์หรือให้นมบุตร', en: 'L-carnitine: avoid during pregnancy or breastfeeding' });
   return out;
 }
+
+for(const p of CATALOG) p.notPregnancy = /pregnan|breastfeed|ตั้งครรภ์|ให้นม/.test(JSON.stringify(p.note));

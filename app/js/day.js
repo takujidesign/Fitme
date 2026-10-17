@@ -14,7 +14,7 @@ export function planDay(iso) {
   const train = isTrainingDay(p, iso) && diffDays(p.startDate, iso) >= 0;
   const supps = s.supplements;
   const sm = suppMacros(supps, p, iso, train);
-  const t = targets(p, train, sm);
+  const t = targets(p, train, sm, iso);
   if (supps.some((x) => !x.paused && productOf(x)?.category === 'creatine')) t.water += 500;
   const sess = sessionFor(p, iso);
   const meals = dayMeals(p, iso, train, t, s.mealSeed);

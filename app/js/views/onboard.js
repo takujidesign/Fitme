@@ -1,3 +1,5 @@
+import { consentFields, consentCurrent, acceptConsent } from '../legal.js';
+import { track } from '../telemetry.js';
 import { fastingFields } from '../fasting.js';
 import { actions, views, go, rerender } from '../core.js';
 import { getState, setState, todayISO } from '../store.js';
@@ -51,7 +53,7 @@ views.onboarding = ({ query }) => {
     () => {
       const t = targets(p, true), tr = targets(p, false), b = bmi(p), bc = bmiClass(b), m = bmr(p);
       return `<h2>${L('แผนของคุณพร้อมแล้ว', 'Your plan is ready')}</h2>
-      <div class="sum-grid">
+      ${!consentCurrent()?consentFields():''}<div class="sum-grid">
         <div class="stat"><small>BMI</small><b>${b.toFixed(1)}</b><span class="tag ${bc.c}">${L(bc)}</span></div>
         <div class="stat"><small>BMR</small><b>${fmt(t.bmr)}</b><span class="tag">${{ scan: L('จากเครื่องสแกน', 'from scan'), katch: 'Katch-McArdle', mifflin: 'Mifflin-St Jeor' }[m.method]}</span></div>
         <div class="stat"><small>${L('วันออกกำลังกาย', 'Training day')}</small><b>${fmt(t.kcal)}</b><span class="tag">kcal</span></div>
@@ -122,6 +124,8 @@ actions['ob-next'] = () => {
     return;
   }
   if (step < STEPS - 1) { step++; rerender(); window.scrollTo(0, 0); return; }
+  if(!consentCurrent()&&!acceptConsent())return;
+  track('onboarding_done');
   const wasOnboarded = getState().onboarded;
   setState((s) => {
     s.onboarded = true;

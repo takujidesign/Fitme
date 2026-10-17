@@ -2,6 +2,7 @@
 // API_BASE: URL of the deployed Cloudflare Worker (see /worker). Leave empty to run in demo mode:
 // payments are simulated and AI label reading is disabled.
 export const CONFIG = {
+  CONTACT_EMAIL: '', REFERRAL_DAYS: 7, TRAINER_SHARE: 70,
   API_BASE: '',
   // PromptPay receiver (mobile number 0812345678 or 13-digit tax ID). Used to build the payment QR.
   PROMPTPAY_ID: '0812345678',
@@ -22,6 +23,7 @@ export const isDemo = () => !CONFIG.API_BASE;
 
 const fields = { promptpayId: 'PROMPTPAY_ID', promptpayName: 'PROMPTPAY_NAME', receiverName: 'RECEIVER_NAME', products: 'PRODUCTS', freePlanDays: 'FREE_PLAN_DAYS', freeSupplements: 'FREE_SUPPLEMENTS' };
 export function mergeConfig(config) {
+  for(const [k,v] of Object.entries({contactEmail:'CONTACT_EMAIL',referralDays:'REFERRAL_DAYS',trainerShare:'TRAINER_SHARE'}))if(config[k]!==undefined)CONFIG[v]=config[k];
   if (config.vapidPublicKey !== undefined) CONFIG.VAPID_PUBLIC_KEY = config.vapidPublicKey;
   for (const [key, target] of Object.entries(fields)) if (config[key] !== undefined) CONFIG[target] = config[key];
 }

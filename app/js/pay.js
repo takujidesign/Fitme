@@ -1,3 +1,5 @@
+import { api as accountAPI } from './account.js';
+import { track } from './telemetry.js';
 // Payments (PromptPay slip via Thunder API, Stripe Checkout) and entitlements.
 import { CONFIG, isDemo } from './config.js';
 import { getState, setState, blobToBase64 } from './store.js';
@@ -33,26 +35,29 @@ async function api(path, opts = {}) {
   return data;
 }
 
-export async function verifySlip(pid, blob) {
+export async function verifySlip(pid, blob, quote) {
   if (isDemo()) {
     await new Promise((r) => setTimeout(r, 1200));
     applyEntitlement({ pid, ref: 'DEMO-' + Date.now() }, 'demo', 'promptpay-demo');
     return { demo: true };
   }
   const image = await blobToBase64(blob);
-  const data = await api('/api/slip/verify', { method: 'POST', body: JSON.stringify({ productId: pid, image }) });
-  applyEntitlement(data.entitlement, data.token, 'promptpay');
+  quote ||= await createQuote(pid,'thb');
+  const data = await accountAPI('slip/verify',{orderId:quote.orderId,image});
+  if(data.entitlement)applyEntitlement(data.entitlement, data.token, 'promptpay');
+  track('purchase_completed');
   return data;
 }
 
-export async function stripeCheckout(pid) {
+export async function stripeCheckout(pid, quote) {
   if (isDemo()) {
     await new Promise((r) => setTimeout(r, 900));
     applyEntitlement({ pid, ref: 'DEMO-STRIPE' }, 'demo', 'stripe-demo');
     return { demo: true };
   }
   const returnUrl = location.href.split('#')[0];
-  const data = await api('/api/stripe/checkout', { method: 'POST', body: JSON.stringify({ productId: pid, currency: getState().lang === 'th' ? 'thb' : 'usd', returnUrl }) });
+  quote ||= await createQuote(pid,getState().lang === 'th' ? 'thb' : 'usd');
+  const data = await accountAPI('stripe/checkout',{orderId:quote.orderId,returnUrl});
   location.href = data.url;
   return data;
 }
@@ -64,8 +69,10 @@ export async function handleStripeReturn() {
   if (!sid || isDemo()) return null;
   history.replaceState(null, '', location.pathname + location.hash);
   if (getState().payments.some((p) => p.ref === sid)) return null;
-  const data = await api('/api/stripe/confirm?session_id=' + encodeURIComponent(sid));
-  applyEntitlement({ ...data.entitlement, ref: sid }, data.token, 'stripe');
+  const data = await accountAPI('stripe/confirm?session_id=' + encodeURIComponent(sid));
+  if(data.entitlement)applyEntitlement({ ...data.entitlement, ref: sid }, data.token, 'stripe');
+  if(data.planId)location.hash='#/plans';
+  track('purchase_completed');
   return data;
 }
 
@@ -73,6 +80,7 @@ export async function analyzeLabel(blobs) {
   if (isDemo()) throw new Error('demo');
   const images = await Promise.all(blobs.map(async (b) => ({ data: await blobToBase64(b), media_type: 'image/jpeg' })));
   const data = await api('/api/label/analyze', { method: 'POST', body: JSON.stringify({ images, lang: getState().lang }) });
+  track('ai_used');
   return data.product;
 }
 
@@ -116,5 +124,9 @@ export async function qrSVG(text) {
 export async function askCoach(kind, input) {
   if (isDemo()) throw new Error('AI requires a configured API');
   const data = await api('/api/ai/' + kind, { method: 'POST', body: JSON.stringify(input) });
+  track('ai_used');
   return data.review;
 }
+
+export async function createQuote(productId,currency,promo=''){const r=await accountAPI('quote',{productId,currency,...(promo?{promo}: {})});track('purchase_started');return r;}
+export async function claimQuote(quote){const r=await accountAPI('orders/claim',{orderId:quote.orderId});if(r.entitlement)applyEntitlement(r.entitlement,r.token,'promo');track('purchase_completed');return r;}

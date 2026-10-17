@@ -22,7 +22,7 @@ export function reminderPlan(start=todayISO()) {
     if(prefs.sleep)add(iso,bed-30,L('เตรียมนอน','Prepare for sleep'),'Fix me','#/me');
   }return out;
 }
-async function post(path,body){const r=await fetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/push/'+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw Object.assign(Error(data.error||L('บันทึกไม่ได้','Could not save')),{status:r.status});return data;}
+async function post(path,body){const r=await fetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/push/'+path,{method:'POST',headers:{'Content-Type':'application/json',...(getState().account?.token?{Authorization:'Bearer '+getState().account.token}:{})},body:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw Object.assign(Error(data.error||L('บันทึกไม่ได้','Could not save')),{status:r.status});return data;}
 let syncing=false,again=false;
 export async function syncPush(){
   if(syncing){again=true;return;}if(window.Capacitor?.isNativePlatform?.()||!getState().notifications.enabled||!CONFIG.API_BASE||!navigator.serviceWorker)return;

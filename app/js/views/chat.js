@@ -1,3 +1,4 @@
+import { track } from '../telemetry.js';
 import { views, actions, rerender } from '../core.js';
 import { getState, setState, todayISO, addDays } from '../store.js';
 import { L, esc, toast } from '../ui.js';
@@ -21,6 +22,7 @@ actions['chat-send']=async()=>{
   let size=0;const messages=[];
   for(const m of getState().chat.slice(-12).reverse()){if(size+m.text.length>8000)break;messages.unshift({role:m.role,text:m.text});size+=m.text.length;}
   const r=await api('ai/chat',{messages,context:chatContext()},'POST',getState().premium.token);
+  track('ai_used');
   setState(s=>{s.chat=[...s.chat,{role:'assistant',text:r.text,suggestions:r.suggestions}].slice(-50);});
  }catch(e){toast(e.message,'warn');}finally{busy=false;rerender();}
 };

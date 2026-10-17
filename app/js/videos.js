@@ -1,0 +1,7 @@
+import { CONFIG } from './config.js';
+import { actions } from './core.js';
+import { L, esc } from './ui.js';
+let videos={};
+export async function loadVideos(){if(!CONFIG.API_BASE)return;try{const r=await fetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/videos');if(r.ok)videos=Object.fromEntries((await r.json()).videos.map(v=>[v.id,v.url]));}catch{}}
+export function videoToggle(id){return videos[id]?`<div class="exercise-video"><button class="btn ghost" data-act="video-toggle" data-id="${esc(id)}">${L('ดูวิดีโอ','Watch video')}</button><div class="video-host"></div></div>`:'';}
+actions['video-toggle']=el=>{const host=el.parentElement.querySelector('.video-host');if(host.childNodes.length){host.replaceChildren();return;}if(navigator.onLine===false){host.textContent=L('ออฟไลน์ ใช้ภาพเคลื่อนไหวด้านบน','Offline: use the animation above');return;}let url;try{url=new URL(videos[el.dataset.id]);if(url.protocol!=='https:')return;}catch{return;}const embed=['www.youtube-nocookie.com','player.vimeo.com'].includes(url.hostname);host.innerHTML=embed?`<iframe title="${L('วิดีโอสาธิต','Exercise demonstration')}" src="${esc(url.href)}" loading="lazy" referrerpolicy="no-referrer" allow="fullscreen" style="width:100%;aspect-ratio:16/9;border:0"></iframe>`:`<video src="${esc(url.href)}" muted loop controls playsinline preload="none" style="width:100%"></video>`;host.querySelector('video')?.addEventListener('error',()=>{host.textContent=L('เปิดวิดีโอไม่ได้ ใช้ภาพเคลื่อนไหวด้านบน','Video unavailable: use the animation above');});};

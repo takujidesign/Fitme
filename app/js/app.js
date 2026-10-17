@@ -1,6 +1,11 @@
+import { loadVideos } from './videos.js';
+import { consentCurrent } from './legal.js';
+import { startTelemetry } from './telemetry.js';
+import './views/round5.js';
+import './views/admin-round5.js';
 import { startMetrics } from './metrics.js';
 import { blockDue } from './replan.js';
-import { startAccountSync } from './account.js';
+import { startAccountSync, refreshEntitlement } from './account.js';
 import './views/account.js';
 import './views/trainer.js';
 import './views/chat.js';
@@ -40,7 +45,8 @@ const tabEl = document.getElementById('tabbar');
 function render() {
   applyTheme();
   const r = route();
-  if (!getState().onboarded && !['onboarding', 'admin'].includes(r.name)) return go('#/onboarding');
+  if (!getState().onboarded && !['onboarding', 'admin', 'privacy', 'terms', 'account'].includes(r.name)) return go('#/onboarding');
+  if(getState().onboarded && !consentCurrent() && !['consent','privacy','terms','account','admin'].includes(r.name))return go('#/consent');
   const v = views[r.name] || views.today;
   const html = v(r);
   document.body.classList.toggle('full', !!v.full || r.name === 'onboarding');
@@ -96,9 +102,12 @@ if (!window.Capacitor?.isNativePlatform?.() && 'serviceWorker' in navigator && l
 }
 
 await loadConfig();
+await loadVideos();
 startPushSync();
 startMetrics();
 startAccountSync();
+refreshEntitlement();
+startTelemetry();
 handleStripeReturn().then((r) => r && toast(L('ชำระเงินสำเร็จ 🎉', 'Payment confirmed 🎉'))).catch((e) => toast(e.message, 'warn'));
 lastHash = location.hash;
 if ((!location.hash || location.hash === '#/today') && getState().onboarded && blockDue(getState())) location.hash = '#/replan';

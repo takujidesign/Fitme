@@ -16,7 +16,7 @@ export const diffDays = (a, b) => Math.round((new Date(b + 'T00:00:00') - new Da
 
 const defaults = () => ({
   lang: (navigator.language || 'th').startsWith('th') ? 'th' : 'en',
-  onboarded: false,
+  onboarded: false, consents: {terms:null,health:null,version:null}, telemetry: true,
   profile: {
     name: '', sex: 'male', age: 30, height: 170, weight: 70, goalWeight: null,
     bodyFat: null, muscle: null, bmrScan: null, visceral: null,
@@ -26,6 +26,8 @@ const defaults = () => ({
     avoidEx: [], preferEx: [], fasting: 'none', eatStart: '12:00',
     mealsPerDay: 4, diet: 'normal', exclude: [],
     planDays: 30, startDate: todayISO(),
+    program: null, trainerPlan: null,
+    womensHealth: {enabled:false,mode:'cycle',lastPeriod:'',cycleLength:28,adjustments:false,weeks:0,cleared:false,breastfeeding:false},
   },
   account: { token:null, user:null, version:0, lastSync:0, error:'' }, updatedAt:{}, chat:[], challenges:[], badges:[], blocks:[], suggestionDecisions:{},
   theme: 'auto', voiceCoach: false, measurements: [], customFoods: [],

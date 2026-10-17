@@ -1,5 +1,6 @@
+import { accountData, telemetry, referral, quote, checkout, confirmPayment, slipPayment, marketplace, adminRound5, media, business, claimOrder } from './round5.js';
 import { admin, input, getSecret, secretStatus, saveSecrets, testSecret } from './security.js';
-import { auth, sync, trainer } from './accounts.js';
+import { auth, sync, trainer, user, query } from './accounts.js';
 import { chat } from './chat.js';
 import { pushRequest, sendScheduled } from './push.js';
 // Fix me API — Cloudflare Worker
@@ -28,7 +29,23 @@ export default {
     const url = new URL(req.url);
     try {
       let out;
-      if (url.pathname.startsWith('/api/auth/')) out = await auth(req, env, url.pathname);
+      if (url.pathname === '/api/account') out = await accountData(req,env);
+      else if (url.pathname === '/api/telemetry' && req.method === 'POST') out = await telemetry(req,env);
+      else if (url.pathname === '/api/referral' && req.method === 'GET') out = await referral(req,env);
+      else if (url.pathname === '/api/entitlement' && req.method === 'GET') {
+        const u=await user(req,env),row=await query(env,'SELECT pro_until FROM users WHERE id=?',u.id).first();
+        out=row.pro_until>Date.now()?await issue(env,'pro30','account:'+u.id,{until:new Date(row.pro_until).toISOString()}):{};
+      }
+      else if (url.pathname === '/api/quote' && req.method === 'POST') out = await quote(req,env,readConfig);
+      else if (url.pathname === '/api/orders/claim' && req.method === 'POST') out = await claimOrder(req,env,issue);
+      else if (url.pathname === '/api/stripe/checkout' && req.method === 'POST') out = await checkout(req,env,stripe,safeReturn);
+      else if (url.pathname === '/api/stripe/confirm' && req.method === 'GET') out = await confirmPayment(req,env,stripe,issue);
+      else if (url.pathname === '/api/slip/verify' && req.method === 'POST') out = await slipPayment(req,env,verifyAmount,issue);
+      else if (url.pathname.startsWith('/api/plans') || ['/api/trainer/plans','/api/trainer/connect'].includes(url.pathname)) out = await marketplace(req,env,url.pathname,stripe,safeReturn);
+      else if (url.pathname.startsWith('/api/admin/media/') || url.pathname.startsWith('/api/media/')) out = await media(req,env,url.pathname);
+      else if (url.pathname === '/api/videos' && req.method === 'GET') out = {videos:(await env.DB.prepare('SELECT * FROM videos').all()).results};
+      else if (['business','promos','plans','payout','videos','dashboard'].some(p=>url.pathname==='/api/admin/'+p)) out = await adminRound5(req,env,url.pathname);
+      else if (url.pathname.startsWith('/api/auth/')) out = await auth(req, env, url.pathname);
       else if (url.pathname === '/api/sync') out = await sync(req, env, verifyToken);
       else if (url.pathname.startsWith('/api/trainer/')) out = await trainer(req, env, url.pathname);
       else if (req.method === 'PUT' && url.pathname === '/api/admin/secrets') out = await saveSecrets(req, env);
@@ -37,15 +54,13 @@ export default {
       else if (req.method === 'GET' && url.pathname === '/api/push/key') out = {publicKey: await getSecret(env, 'vapidPublicKey')};
       else if (req.method === 'GET' && url.pathname === '/api/config') out = await publicConfig(env);
       else if (req.method === 'PUT' && url.pathname === '/api/admin/config') out = await saveConfig(req, env);
-      else if (req.method === 'POST' && url.pathname === '/api/slip/verify') out = await verifySlip(await input(req, z.object({productId:z.enum(['export1','pro30','pro90']),image:z.string().min(1).max(8000000)}).strict(), 8100000), env);
-      else if (req.method === 'POST' && url.pathname === '/api/stripe/checkout') out = await stripeCheckout(await input(req, z.object({productId:z.enum(['export1','pro30','pro90']),currency:z.enum(['thb','usd']),returnUrl:z.string().url().max(2000)}).strict()), env);
-      else if (req.method === 'GET' && url.pathname === '/api/stripe/confirm') out = await stripeConfirm(z.string().regex(/^cs_[A-Za-z0-9_]+$/).max(300).parse(url.searchParams.get('session_id')), env);
       else if (req.method === 'POST' && ['/api/ai/plan-review', '/api/ai/body'].includes(url.pathname)) out = await coach(req, env, url.pathname.endsWith('/body'));
       else if (req.method === 'POST' && url.pathname === '/api/label/analyze') out = await analyzeLabel(req, env);
       else if (req.method === 'POST' && url.pathname === '/api/push/subscribe') out = await pushRequest(req, env);
       else if (req.method === 'POST' && url.pathname === '/api/push/unsubscribe') out = await pushRequest(req, env, true);
       else if (req.method === 'POST' && url.pathname === '/api/ai/meal-photo') out = await mealPhoto(req, env);
       else return json({ ok: false, error: 'not found' }, 404, cors);
+      if (out instanceof Response) { for (const [key,value] of Object.entries(cors)) out.headers.set(key,value); return out; }
       return json({ ok: true, ...out }, 200, cors);
     } catch (e) {
       return json({ ok: false, error: e.safe ? e.message : 'Request failed', ...(e.copy ? {server:e.copy} : {}) }, e.status || 400, cors);
@@ -59,7 +74,7 @@ function corsHeaders(req, env) {
   const allowed = (env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
   return {
     'Access-Control-Allow-Origin': allowed.length === 0 || allowed.includes(origin) ? origin || '*' : allowed[0],
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     Vary: 'Origin',
   };
@@ -73,9 +88,9 @@ async function hmacKey(env) {
   if (!env.TOKEN_SECRET) throw fail('server not configured: TOKEN_SECRET', 500);
   return crypto.subtle.importKey('raw', new TextEncoder().encode(env.TOKEN_SECRET), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
 }
-async function issue(env, pid, ref) {
+async function issue(env, pid, ref, override) {
   const prod = (await readConfig(env)).products[pid];
-  const until = prod.days ? new Date(Date.now() + prod.days * 86400000).toISOString() : null;
+  const until = override ? override.until : prod.days ? new Date(Date.now() + prod.days * 86400000).toISOString() : null;
   const payload = { pid, ref, until, iat: Date.now() };
   const body = b64url(new TextEncoder().encode(JSON.stringify(payload)));
   const sig = b64url(await crypto.subtle.sign('HMAC', await hmacKey(env), new TextEncoder().encode(body)));
@@ -91,9 +106,8 @@ async function verifyToken(env, token) {
 }
 
 // ---------- PromptPay slip via Thunder ----------
-async function verifySlip({ productId, image }, env) {
-  const prod = (await readConfig(env)).products[productId];
-  if (!prod) throw fail('unknown product');
+async function verifyAmount(amountExpected, image, env) {
+  const prod = {thb:amountExpected};
   if (!image || image.length > 8_000_000) throw fail('missing or oversized slip image');
   if (!(await getSecret(env, 'thunderApiKey'))) throw fail('server not configured: THUNDER_API_KEY', 500);
   const res = await fetch(env.THUNDER_API_URL || 'https://api.thunder.in.th/v2/verify/bank', {
@@ -106,50 +120,28 @@ async function verifySlip({ productId, image }, env) {
   const slip = data.data?.rawSlip || {};
   if (data.data?.isDuplicate) throw fail('this slip has already been used');
   const amount = Number(slip.amount?.amount ?? 0);
-  if (amount + 0.001 < prod.thb) throw fail(`amount ${amount} is less than ${prod.thb} THB`);
+  if (Math.abs(amount-prod.thb) >= 0.01) throw fail('Slip amount does not match the quoted THB price');
   const receiverName = (await readConfig(env)).receiverName;
   if (receiverName) {
     const names = [slip.receiver?.account?.name?.th, slip.receiver?.account?.name?.en].filter(Boolean).join(' ').toLowerCase();
     const wanted = receiverName.toLowerCase().split('|');
     if (!wanted.some((w) => names.includes(w.trim()))) throw fail('receiver does not match');
   }
-  // Optional extra replay guard when a KV namespace is bound.
-  if (env.SLIPS && slip.transRef) {
-    if (await env.SLIPS.get(slip.transRef)) throw fail('this slip has already been used');
-    await env.SLIPS.put(slip.transRef, productId, { expirationTtl: 60 * 60 * 24 * 400 });
-  }
-  return issue(env, productId, slip.transRef || null);
+  if (!slip.transRef) throw fail('Missing payment reference');
+  return slip.transRef;
 }
 
 // ---------- Stripe ----------
-async function stripe(env, path, params, method = 'POST') {
+async function stripe(env, path, params, method = 'POST', idempotency) {
   if (!(await getSecret(env, 'stripeSecretKey'))) throw fail('server not configured: STRIPE_SECRET_KEY', 500);
   const res = await fetch(`https://api.stripe.com/v1/${path}`, {
     method,
-    headers: { Authorization: `Bearer ${(await getSecret(env, 'stripeSecretKey'))}`, 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: { ...(idempotency ? {'Idempotency-Key':idempotency}:{}), Authorization: `Bearer ${(await getSecret(env, 'stripeSecretKey'))}`, 'Content-Type': 'application/x-www-form-urlencoded' },
     body: method === 'POST' ? new URLSearchParams(params) : undefined,
   });
   const data = await res.json();
   if (!res.ok) throw fail('stripe error');
   return data;
-}
-async function stripeCheckout({ productId, currency, returnUrl }, env) {
-  const prod = (await readConfig(env)).products[productId];
-  if (!prod) throw fail('unknown product');
-  const cur = currency === 'thb' ? 'thb' : 'usd';
-  const base = safeReturn(returnUrl, env);
-  const sep = base.includes('?') ? '&' : '?';
-  const session = await stripe(env, 'checkout/sessions', {
-    mode: 'payment',
-    'line_items[0][quantity]': '1',
-    'line_items[0][price_data][currency]': cur,
-    'line_items[0][price_data][unit_amount]': String(Math.round((cur === 'thb' ? prod.thb : prod.usd) * 100)),
-    'line_items[0][price_data][product_data][name]': prod.name || prod.en,
-    'metadata[pid]': productId,
-    success_url: `${base}${sep}paid={CHECKOUT_SESSION_ID}`,
-    cancel_url: base,
-  });
-  return { url: session.url };
 }
 function safeReturn(u, env) {
   const allowed = (env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
@@ -157,15 +149,6 @@ function safeReturn(u, env) {
   if (allowed.length && !allowed.includes(url.origin)) throw fail('return URL not allowed');
   return url.origin + url.pathname;
 }
-async function stripeConfirm(sessionId, env) {
-  if (!/^cs_[A-Za-z0-9_]+$/.test(sessionId || '')) throw fail('bad session id');
-  const s = await stripe(env, `checkout/sessions/${sessionId}`, null, 'GET');
-  if (s.payment_status !== 'paid') throw fail('payment not completed');
-  const pid = s.metadata?.pid;
-  if (!(await readConfig(env)).products[pid]) throw fail('unknown product');
-  return issue(env, pid, sessionId);
-}
-
 // ---------- Supplement label reading with Claude ----------
 const Doses = z.object({
   morning: z.number(), breakfast: z.number(), lunch: z.number(), afternoon: z.number(),
@@ -269,7 +252,7 @@ async function readConfig(env) {
   };
 }
 async function publicConfig(env) {
-  const config = await readConfig(env);
+  const config = {...await readConfig(env), ...await business(env)};
   config.products = Object.fromEntries(Object.entries(config.products).map(([id, { name, ...p }]) => [id, p]));
   return { config, secrets: { config: !!env.CONFIG, token: !!env.TOKEN_SECRET, ...(await secretStatus(env)) } };
 }

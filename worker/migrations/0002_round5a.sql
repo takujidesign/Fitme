@@ -1,0 +1,16 @@
+ALTER TABLE users ADD COLUMN referral_code TEXT;
+ALTER TABLE users ADD COLUMN pro_until INTEGER NOT NULL DEFAULT 0;
+CREATE UNIQUE INDEX users_referral ON users(referral_code);
+CREATE TABLE referrals (user_id TEXT PRIMARY KEY REFERENCES users(id), referrer_id TEXT NOT NULL REFERENCES users(id), rewarded INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE promos (code TEXT PRIMARY KEY, json TEXT NOT NULL, uses INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE plans (id TEXT PRIMARY KEY, trainer_id TEXT NOT NULL REFERENCES users(id), json TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending');
+CREATE TABLE trainer_accounts (user_id TEXT PRIMARY KEY REFERENCES users(id), stripe_id TEXT NOT NULL);
+CREATE TABLE orders (id TEXT PRIMARY KEY, user_id TEXT REFERENCES users(id), product TEXT NOT NULL, amount INTEGER NOT NULL, currency TEXT NOT NULL, promo TEXT, trainer_id TEXT, share INTEGER NOT NULL DEFAULT 70, days INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL, expires_at INTEGER NOT NULL, paid INTEGER NOT NULL DEFAULT 0, stripe_id TEXT);
+CREATE TABLE payments (id TEXT PRIMARY KEY, user_id TEXT, product TEXT NOT NULL, amount INTEGER NOT NULL, currency TEXT NOT NULL, method TEXT NOT NULL, ref TEXT NOT NULL UNIQUE, promo TEXT, created_at INTEGER NOT NULL);
+CREATE TABLE plan_purchases (user_id TEXT NOT NULL REFERENCES users(id), plan_id TEXT NOT NULL REFERENCES plans(id), PRIMARY KEY(user_id,plan_id));
+CREATE TABLE payables (payment_id TEXT PRIMARY KEY REFERENCES payments(id), trainer_id TEXT NOT NULL, amount INTEGER NOT NULL, currency TEXT NOT NULL, paid_at INTEGER);
+CREATE TABLE push_subscriptions (device_id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id));
+CREATE TABLE telemetry_daily (date TEXT NOT NULL, kind TEXT NOT NULL, name TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(date,kind,name));
+CREATE TABLE errors (hash TEXT PRIMARY KEY, message TEXT NOT NULL, route TEXT NOT NULL, version TEXT NOT NULL, count INTEGER NOT NULL, first_seen INTEGER NOT NULL, last_seen INTEGER NOT NULL);
+CREATE TABLE telemetry_limits (id TEXT PRIMARY KEY, bucket INTEGER NOT NULL, count INTEGER NOT NULL);
+CREATE TABLE videos (id TEXT PRIMARY KEY, url TEXT NOT NULL);

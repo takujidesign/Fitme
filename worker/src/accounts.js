@@ -2,7 +2,7 @@ import { z } from 'zod/v4';
 import { enc, hex, random, hash, equal, fail, input, limit } from './security.js';
 import { syncCopy } from '../../app/js/sync-data.js';
 import { CONFIG } from '../../app/js/config.js';
-const credentials = z.object({ email:z.string().email().max(254).transform(v=>v.trim().toLowerCase()), password:z.string().min(10).max(256) }).strict();
+const credentials = z.object({ email:z.string().email().max(254).transform(v=>v.trim().toLowerCase()), password:z.string().min(10).max(256), ref:z.string().regex(/^[A-Z0-9]{16}$/).optional() }).strict();
 export async function passwordHash(password, salt) {
   const key = await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveBits']);
   return hex(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:Uint8Array.from(salt.match(/../g),v=>parseInt(v,16)),iterations:100000},key,256));
@@ -26,6 +26,7 @@ export async function auth(req,env,path) {
       const salt=random(16),id=crypto.randomUUID();
       try { await query(env,'INSERT INTO users(id,email,pass_hash,pass_salt,created_at) VALUES(?,?,?,?,?)',id,b.email,await passwordHash(b.password,salt),salt,Date.now()).run(); } catch { throw fail('Unable to register this email',409); }
       u={id,email:b.email,role:'user'};
+      if(b.ref){const referrer=await query(env,'SELECT id FROM users WHERE referral_code=?',b.ref).first();if(referrer && referrer.id!==id)await query(env,'INSERT INTO referrals(user_id,referrer_id) VALUES(?,?)',id,referrer.id).run();}
     } else {
       const computed=await passwordHash(b.password,u?.pass_salt || '00000000000000000000000000000000');
       if (!await equal(computed,u?.pass_hash || '') || !u) throw fail('Invalid email or password',401);

@@ -37,6 +37,12 @@ RECEIVER_NAME = ""
 # database_id = "<your D1 database id>"
 # migrations_dir = "migrations"
 
+# Round 5a public exercise videos; admin-only MP4 uploads, max 25 MB:
+# npx wrangler r2 bucket create fitme-media
+# [[r2_buckets]]
+# binding = "MEDIA"
+# bucket_name = "fitme-media"
+
 # Web Push: create PUSH KV and uncomment the binding below before enabling clients.
 # npx wrangler kv namespace create PUSH
 # [[kv_namespaces]]

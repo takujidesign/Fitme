@@ -1,3 +1,4 @@
+import { healthCalories } from './womens-health.js';
 // Energy, macro, hydration and sleep calculations.
 import { toMin, toHHMM } from './ui.js';
 
@@ -38,7 +39,7 @@ export function activityFactor(p) {
 }
 
 // Daily targets; training days get a little more energy, mostly as carbs.
-export function targets(p, isTraining = true, supplementMacros = { kcal: 0, protein: 0 }) {
+export function targets(p, isTraining = true, supplementMacros = { kcal: 0, protein: 0 }, iso) {
   const b = bmr(p).value;
   const tdee = b * activityFactor(p);
   const g = GOALS[p.goal] || GOALS.maintain;
@@ -46,6 +47,7 @@ export function targets(p, isTraining = true, supplementMacros = { kcal: 0, prot
   kcal = Math.max(kcal, b * 1.05, p.sex === 'female' ? 1200 : 1500);
   kcal *= isTraining ? 1.05 : 0.93;
   if (p.calorieFactor) kcal = Math.max(kcal * p.calorieFactor, b * 1.05, p.sex === 'female' ? 1200 : 1500);
+  kcal = healthCalories(p,kcal,tdee,iso);
   const refW = p.bodyFat ? p.weight * (1 - p.bodyFat / 100) / 0.85 : Math.min(p.weight, 25 * (p.height / 100) ** 2);
   const protein = Math.round(g.protein * refW);
   let fat = Math.round(Math.max(0.7 * p.weight, (kcal * 0.27) / 9));

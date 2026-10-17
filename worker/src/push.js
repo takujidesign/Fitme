@@ -1,3 +1,4 @@
+import {user, query} from './accounts.js';
 import { z } from 'zod/v4';
 import { input as readInput } from './security.js';
 import { getSecret } from './security.js';
@@ -37,14 +38,17 @@ export async function pushRequest(req,env,unsubscribe=false){
   if(!env.PUSH||!(await getSecret(env, 'vapidPublicKey'))||!(await getSecret(env, 'vapidPrivateKey'))||!env.VAPID_SUBJECT)throw Object.assign(Error('Push server is not configured'),{status:503});
   const input=await readInput(req,unsubscribe?z.object({deviceId:z.string().uuid()}).strict():z.object({deviceId:z.string().uuid().optional(),subscription:z.object({endpoint:z.string().url().max(4096),expirationTime:z.number().nullable().optional(),keys:z.object({p256dh:z.string().max(200),auth:z.string().max(100)}).strict()}).strict(),tz:z.string().max(100),reminders:z.array(z.object({time:z.string().max(5),title:z.string().max(120),body:z.string().max(500),days:z.array(z.number().int().min(0).max(6)).max(7).optional(),date:z.string().max(10).optional(),route:z.string().max(30).optional()}).strict()).max(300)}).strict(),150000);
   const id=input.deviceId;
+  const account=/^Bearer\s+\S+/.test(req.headers.get('Authorization')||'')?await user(req,env):null;
+  if(id&&env.DB){const owner=await query(env,'SELECT user_id FROM push_subscriptions WHERE device_id=?',id).first();if(owner&&owner.user_id!==account?.id)throw Object.assign(fail('Subscription belongs to another account'),{status:403});}
   if(id&&!/^[a-f0-9-]{36}$/.test(id))throw fail('Invalid device id');
-  if(unsubscribe){if(!id)throw fail('Device id required');await env.PUSH.delete('device:'+id);return {};}
+  if(unsubscribe){if(!id)throw fail('Device id required');await env.PUSH.delete('device:'+id);if(env.DB)await query(env,'DELETE FROM push_subscriptions WHERE device_id=?',id).run();return {};}
   if(id&&!await env.PUSH.get('device:'+id))throw Object.assign(fail('Unknown device id'),{status:404});
   const {subscription,tz,reminders}=input;
   try{if(!validEndpoint(subscription.endpoint)||unb64(subscription.keys.p256dh).length!==65||unb64(subscription.keys.auth).length!==16)throw Error();await crypto.subtle.importKey('raw',unb64(subscription.keys.p256dh),{name:'ECDH',namedCurve:'P-256'},false,[]);new Intl.DateTimeFormat('en',{timeZone:tz}).format();}catch{throw fail('Invalid subscription or timezone');}
   if(!Array.isArray(reminders)||reminders.length>300||reminders.some(r=>!/^([01]\d|2[0-3]):[0-5]\d$/.test(r.time)||typeof r.title!=='string'||r.title.length>120||typeof r.body!=='string'||r.body.length>500||(r.days&&(!Array.isArray(r.days)||r.days.some(d=>!Number.isInteger(d)||d<0||d>6)))||(r.date&&!/^\d{4}-\d{2}-\d{2}$/.test(r.date))||(r.route&&!/^#\/(today|food|workout|supps|me)$/.test(r.route))))throw fail('Invalid reminders');
   const deviceId=id||crypto.randomUUID();const previous=id?await env.PUSH.get('device:'+id,'json'):null;
   await env.PUSH.put('device:'+deviceId,JSON.stringify({subscription,tz,reminders,lastSent:previous?.lastSent||{},expires:Date.now()+8*86400000}),{expirationTtl:8*86400});
+  if(account){await query(env,'INSERT INTO push_subscriptions(device_id,user_id) VALUES(?,?) ON CONFLICT(device_id) DO UPDATE SET user_id=excluded.user_id',deviceId,account.id).run();}
   return {deviceId};
 }
 export function dueReminders(record,now){

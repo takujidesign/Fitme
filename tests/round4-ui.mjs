@@ -13,6 +13,7 @@ const s=getState(),root=document.createElement('main');document.body.appendChild
 const render=()=>{root.innerHTML=views[current]();};setRenderer(render);
 for(const lang of ['th','en'])for(const theme of ['dark','light']){setState(s=>{s.lang=lang;s.theme=theme;});for(const name of ['account','trainer','coach','challenges','replan','admin']){current=name;render();assert(!root.textContent.includes('undefined'),name);assert(!root.textContent.includes('???'),name);}}
 CONFIG.API_BASE='https://fake';let puts=0;
+const {POLICY_VERSION}=await import('../app/js/legal.js');setState(s=>{s.consents={terms:'2026-10-17',health:'2026-10-17',version:POLICY_VERSION};});
 setState(s=>{s.account={token:'session',user:{email:'client@example.com',role:'user'}};s.profile.name='Newer';s.updatedAt.profile=20;},{remote:true});
 globalThis.fetch=async(url,opts)=>{
  if(opts.method==='GET')return Response.json({json:{profile:{...s.profile,name:'Server'},updatedAt:{profile:10}},version:1,updated_at:1});

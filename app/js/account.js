@@ -1,3 +1,4 @@
+import { consentCurrent } from './legal.js';
 import { getState, setState, subscribe } from './store.js';
 import { syncCopy, mergeState } from './sync-data.js';
 import { CONFIG } from './config.js';
@@ -11,7 +12,7 @@ export async function api(path, body, method = body === undefined ? 'GET' : 'POS
 }
 let running=false, timer, applying=false;
 export async function syncNow() {
-  if(running || !getState().account?.token || !CONFIG.API_BASE || globalThis.navigator?.onLine===false)return;
+  if(!consentCurrent() || running || !getState().account?.token || !CONFIG.API_BASE || globalThis.navigator?.onLine===false)return;
   running=true;
   const token=getState().account.token;
   try {
@@ -44,12 +45,22 @@ export function startAccountSync() {
   syncNow();
 }
 export async function signIn(mode,email,password) {
-  const result=await api('auth/'+mode,{email,password});
+  const ref=localStorage.getItem('fitme:ref');
+  const result=await api('auth/'+mode,{email,password,...(mode==='register' && ref?{ref}:{})});
+  if(mode==='register')localStorage.removeItem('fitme:ref');
   setState(s=>{s.account={token:result.token,user:result.user,version:0,lastSync:0,error:''};},{remote:true});
   await syncNow();
+  await refreshEntitlement();
+}
+export async function refreshEntitlement(){
+  if(!getState().account?.token||!CONFIG.API_BASE)return;
+  const token=getState().account.token;
+  try{const r=await api('entitlement');if(r.entitlement&&getState().account.token===token)setState(s=>{s.premium={...s.premium,until:r.entitlement.until,token:r.token};});}catch{}
 }
 export async function signOut() {
   // Clear the local bearer even when the device is offline.
   try{await api('auth/logout',{});}catch(e){toast(e.message,'warn');}
   setState(s=>{s.account={token:null,user:null,version:0,lastSync:0,error:''};},{remote:true});
 }
+
+if(typeof location!=='undefined'){const ref=new URLSearchParams(location.search).get('ref');if(/^[A-Z0-9]{16}$/.test(ref||''))localStorage.setItem('fitme:ref',ref);}

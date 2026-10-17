@@ -1,3 +1,5 @@
+import { videoToggle } from '../videos.js';
+import { track } from '../telemetry.js';
 import { speak, stopVoice, voiceButton } from '../voice.js';
 import { parseHeartRate, hrZone, hrCalories, exerciseHistory, historyHTML } from '../progress.js';
 import { actions, views, go, rerender } from '../core.js';
@@ -72,7 +74,7 @@ actions['wo-filter'] = (el) => { filter = el.dataset.v; rerender(); };
 actions['ex-open'] = (el) => {
   const ex = EX[el.dataset.id];
   sheet(`<div class="sheet-head"><div><small class="muted">${L(GROUPS[ex.group])} · ${L(EQUIP[ex.equip])}</small><h2>${L(ex.name)}</h2></div><button class="icon-btn" data-close>${icon('x')}</button></div>
-    <div class="fig xl" id="ex-anim"></div>
+    <div class="fig xl" id="ex-anim"></div>${videoToggle(ex.id)}
     <p class="muted">${L('กล้ามเนื้อหลัก', 'Target')}: <b>${L(ex.muscles)}</b></p>
     <ol class="cues">${L(ex.cues).map((c) => `<li>${esc(c)}</li>`).join('')}</ol>${historyHTML(ex.id)}`, { onMount: (r) => animateFigure(r.querySelector('#ex-anim'), ex) });
 };
@@ -140,7 +142,7 @@ function renderStep(host) {
   const timed = !!it.sec;
   P.left = timed ? it.sec : 0;
   host.innerHTML = `${top}${heartUI()}<div class="pl-work">
-    <div class="fig xl" id="pl-fig"></div>
+    <div class="fig xl" id="pl-fig"></div>${videoToggle(ex.id)}
     <small class="muted">${L(PHASE[it.phase || 'main'])} · ${L('เซ็ต', 'Set')} ${st.set}/${it.sets}</small>
     <h1>${L(ex.name)}</h1>
     ${timed ? `<div class="big-count" id="cnt">${P.left}</div>` : `<div class="reps">${it.reps}<small>${L('ครั้ง', 'reps')}</small></div>`}
@@ -170,6 +172,7 @@ function finish(host) {
   const maxHR = P.samples.length ? P.samples.reduce((max,s)=>Math.max(max,s.bpm),0) : null;
   const kcal = avgHR ? hrCalories(avgHR, mins, getState().profile) : sessionKcal(P.sess, getState().profile.weight);
   disconnectHR();
+  track('workout_done');
   updateLog(P.iso, (l) => { l.done.workout = true; l.sets = P.sets; l.workout = { minutes: mins, kcal, avgHR, maxHR, hrSamples: P.samples, at: new Date().toISOString() }; });
   host.innerHTML = `<div class="pl-done"><div class="burst">${icon('check', 46)}</div><h1>${L('เยี่ยมมาก!', 'Great work!')}</h1>
     <p>${L('จบการฝึกวันนี้แล้ว', 'Session complete')}</p>${avgHR ? `<p>${L('ชีพจรเฉลี่ย / สูงสุด','Average / max HR')}: ${avgHR} / ${maxHR} BPM</p>` : ''}<div class="sum-grid"><div class="stat"><small>${L('เวลา', 'Time')}</small><b>${mins}</b><span class="tag">${L('นาที', 'min')}</span></div><div class="stat"><small>${L('เผาผลาญ', 'Burned')}</small><b>~${kcal}</b><span class="tag">kcal</span></div></div>
