@@ -356,3 +356,35 @@ details summary::-webkit-details-marker { display: none; }
   .pd-day td:first-child { width: 48px; font-weight: 600; } .pd-day small { color: #555; }
   .pd-sum { color: #444; margin: 4px 0 0; } .pd-foot { margin-top: 16px; color: #777; font-size: 9px; border-top: 1px solid #ddd; padding-top: 6px; }
 }
+:root { --round2-error: #ff9c9c; }
+.calendar-grid { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:5px; margin:16px 0; text-align:center; }
+.calendar-grid .chip { min-width:0; padding:8px 2px; display:flex; flex-direction:column; border-radius:12px; }
+.calendar-grid small { font-size:10px; }
+.status-row { display:flex; justify-content:space-between; gap:8px; padding:10px 0; border-bottom:1px solid var(--line); font-size:12px; }
+.status-row .ok { color:var(--lime); }
+.field-error { color:var(--round2-error); font-size:11px; }
+.admin-save { position:sticky; bottom:80px; display:flex; align-items:center; gap:12px; justify-content:space-between; background:var(--card,#202522); padding:14px; border:1px solid var(--line); border-radius:16px; z-index:3; }
+.admin-save small { font-size:12px; }
+.product-preview { color:var(--lime); padding-bottom:14px; font-weight:700; overflow-wrap:anywhere; }
+.stepper { display:flex; gap:4px; align-items:center; min-width:0; }
+.stepper .field { flex:1; min-width:0; }
+.stepper .input-wrap { min-width:0; }
+.stepper input { width:100%; min-width:0; text-align:center; }
+.stepper .btn { padding:10px; }
+.grid2 > *, .input-wrap { min-width:0; }
+.input-wrap select { width:100%; background:transparent; color:inherit; border:0; padding:12px; font:inherit; }
+.input-wrap select option { background:#202522; color:#fff; }
+.setup-steps { padding-left:20px; }
+.setup-steps li { margin:14px 0; }
+.setup-steps code { display:block; overflow-wrap:anywhere; font-size:12px; margin-bottom:6px; user-select:all; }
+.shopping-row { display:flex; gap:10px; align-items:center; padding:10px 0; }
+.shopping-row b { margin-left:auto; white-space:nowrap; }
+.copy-text { width:100%; min-height:90px; margin-top:12px; background:transparent; color:inherit; border:1px solid var(--line); border-radius:10px; }
+.hr-card { margin:8px 16px; padding:12px; border:1px solid var(--line); border-radius:14px; }
+.hr-card small { display:block; font-size:11px; color:var(--muted); margin-top:6px; }
+.hr-card #live-hr { color:var(--lime); font-weight:700; }
+.progress-bars { display:flex; align-items:flex-end; gap:6px; min-height:130px; }
+.progress-bars > div { flex:1; min-width:0; display:flex; flex-direction:column; align-items:center; gap:5px; }
+.progress-bars i { display:block; width:70%; background:var(--lime); border-radius:5px 5px 0 0; }
+.progress-bars small { font-size:9px; white-space:nowrap; }
+.ex-list .icon-btn { flex-shrink:0; }

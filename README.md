@@ -1,4 +1,4 @@
-# FitMe
+# Fix me
 
 Mobile-first PWA (ติดตั้งเป็นแอปได้) สำหรับวางแผน **ออกกำลังกาย + อาหาร + อาหารเสริม + การพักผ่อน** เฉพาะบุคคล ภาษาไทย/อังกฤษ
 
@@ -75,3 +75,26 @@ Both `/api/ai/plan-review` and `/api/ai/body` require a valid, unexpired Pro tok
 Exercise figures retain the original skeleton, IK and keyframes. Shaded tapered limbs, shaped torsos, lime muscle highlights and ground shadows are shared by animation and PDF thumbnails; SVG gradient/filter definitions are created once per figure.
 
 Run `node worker/test.mjs` for mocked config, payment-config and AI endpoint checks (no live API calls).
+
+### Round 2: planning and progress
+
+- Display name is **Fix me**. Existing `fitme:v1` localStorage data and the `fitme` image database remain compatible; repo and deployment URLs are unchanged.
+- Admin has service readiness rows, a tab-only password with show/hide, PromptPay validation, bilingual package fields with live price/duration previews and best-value toggles, free-limit steppers, setup commands, and an unsaved-change bar. Keys remain Wrangler secrets. CONFIG KV readiness is returned as a boolean.
+- Train → **Exercise preferences / ตั้งค่าท่า**: toggle allowed exercises by muscle group, apply knee/back/shoulder/wrist avoid presets, and choose preferred exercises. Exclusions apply to warm-up, main work, finishers, cool-down and recovery. An empty allowed pool produces no exercises. Each exercise's swap button stores an allowed same-group replacement for that date, shared by the plan and player.
+- Open **Calendar / ปฏิทิน** from Train or the Food week strip. Tap a day to open its plan; reopen its calendar to edit that date as normal, extra training, or off. Vacation ranges mark all dates off. Split rotation counts actual training days, and food targets follow the same overrides.
+- Food onboarding and Food preferences offer 12:12, 14:10, 16:8, 18:6, 20:4 and OMAD with a configurable window start (default noon). Meals fit within the window, including windows crossing midnight; shorter windows reduce meal count. OMAD uses one meal. Food-dependent or caloric supplements move into the window; zero-calorie morning/night doses can stay outside it. IF is disabled under 18, and the UI includes the requested suitability warning. Today shows a timer updated each minute; eating/fasting boundaries are included in the timeline, PDF and ICS.
+- The player connects to standard BLE heart-rate devices through Web Bluetooth, displays BPM and age-based zones, and saves samples plus average/max HR. With samples, calorie estimates use the [Keytel equation](https://doi.org/10.1080/02640410470001730089); otherwise the existing MET estimate is used. This is an estimate, not a device-calibrated measurement. Use a chest strap or a compatible watch's broadcast-HR mode. iPhone/Safari lacks this API; Apple Watch and most Wear OS watches do not provide standard BLE HR broadcasting.
+- Dumbbell/gym rep exercises support per-set kg/reps with steppers and previous-session defaults. Exercise details show the last five logged sessions and suggest +2.5 kg when every recorded set in the last complete exercise reached the prescribed upper rep target. Me shows eight weeks of workout counts, a consecutive-day streak, total logged minutes and the existing weight trend.
+- Food → **7-day shopping list / รายการซื้อของ 7 วัน** aggregates planned food grams by category from the selected date. Free users receive only unlocked dates. Checkboxes persist locally; share/copy includes a selectable text fallback. Quantities use the food catalog's planned weights, which can be cooked weights.
+
+Validation:
+
+```bash
+node app/test.mjs
+node worker/test.mjs
+# Optional DOM/action integration tests (no live services or Bluetooth hardware):
+npm install --prefix /tmp/fixme-tests happy-dom
+HAPPY_DOM_PATH=file:///tmp/fixme-tests/node_modules/happy-dom/lib/index.js node app/ui-test.mjs
+```
+
+`app/test.mjs` covers old-state compatibility, avoidance, preferences/swaps, day rotation, IF windows, supplements and BLE parsing. `app/ui-test.mjs` covers both-language views and actions, simulated BLE session completion, set/HR persistence, shopping and mocked admin saving. Native Chrome route checks were also performed at 375px in Thai and English. Real BLE hardware, live payment/config services and deployment were not exercised.

@@ -4,7 +4,7 @@ const SHELL = [
   './', './index.html', './manifest.webmanifest', './css/app.css', './icons/icon.svg', './icons/icon-192.png',
   './js/app.js', './js/core.js', './js/config.js', './js/store.js', './js/ui.js', './js/calc.js', './js/figure.js',
   './js/exercises.js', './js/workout.js', './js/foods.js', './js/meals.js', './js/supplements.js', './js/day.js',
-  './js/pay.js', './js/export.js',
+  './js/fasting.js', './js/views/planning.js', './js/progress.js', './js/pay.js', './js/export.js',
   './js/views/onboard.js', './js/views/today.js', './js/views/workout.js', './js/views/food.js',
   './js/views/supps.js', './js/views/me.js', './js/views/pay.js', './js/views/admin.js', './js/views/coach.js',
 ];

@@ -1,42 +1,61 @@
 import { views, actions } from '../core.js';
 import { CONFIG, currentConfig, mergeConfig } from '../config.js';
 import { L, esc, toast } from '../ui.js';
-
-const labels = { promptpayId: ['พร้อมเพย์', 'PromptPay ID'], promptpayName: ['ชื่อพร้อมเพย์', 'PromptPay name'], receiverName: ['ชื่อผู้รับในสลิป (คั่นด้วย |)', 'Slip receiver name (separate alternatives with |)'], freePlanDays: ['จำนวนวันฟรี', 'Free plan days'], freeSupplements: ['อาหารเสริมฟรี', 'Free supplements'] };
-views.admin = () => {
-  const c = currentConfig();
-  return `<header class="top"><h1>${L('ผู้ดูแลระบบ', 'Admin')}</h1></header>
-    <section class="card"><label class="field">${L('รหัสผ่านผู้ดูแล', 'Admin password')}<input id="admin-password" type="password" autocomplete="off"></label>
-    <p class="muted sm">${L('รหัสผ่านเก็บเฉพาะในเซสชันแท็บนี้', 'Password is kept only in this tab session.')}</p>
-    <div id="admin-secrets" class="chips">${L('กำลังโหลดสถานะ', 'Loading status')}</div></section>
-    <form id="admin-form" class="card">
-    ${Object.entries(labels).map(([k, label]) => `<label class="field">${L(...label)}<input name="${k}" value="${esc(c[k])}" ${k.startsWith('free') ? 'type="number" min="0" step="1"' : ''}></label>`).join('')}
-    ${Object.entries(c.products).map(([id, p]) => `<fieldset><legend>${esc(id)}</legend>${['thb', 'usd', 'days', 'exports', 'th', 'en', 'descTh', 'descEn'].map((k) => `<label class="field">${esc(k)}<input name="${id}.${k}" value="${esc(p[k])}" ${['thb', 'usd', 'days', 'exports'].includes(k) ? 'type="number" min="0" step="' + (['thb', 'usd'].includes(k) ? '0.01' : '1') + '"' : ''} required></label>`).join('')}</fieldset>`).join('')}
-    <button class="btn primary block" data-act="admin-save" ${CONFIG.API_BASE ? '' : 'disabled'}>${L('บันทึก', 'Save')}</button></form>
-    <section class="card"><p>${L('API keys เก็บเป็น Wrangler secrets เท่านั้น ไม่เก็บในหน้านี้หรือ KV ตั้ง API_BASE และ CONFIG KV ก่อนใช้งาน', 'API keys remain Wrangler secrets, never stored here or in KV. Configure API_BASE and CONFIG KV first.')}</p><pre>${['ADMIN_PASSWORD', 'TOKEN_SECRET', 'THUNDER_API_KEY', 'STRIPE_SECRET_KEY', 'ANTHROPIC_API_KEY'].map((k) => 'npx wrangler secret put ' + k).join('\n')}</pre></section>`;
+let baseline = '';
+const snapshot = form => JSON.stringify([...new FormData(form)]);
+const labels = {promptpayId:['หมายเลขพร้อมเพย์', 'PromptPay number'],promptpayName:['ชื่อพร้อมเพย์', 'PromptPay display name'],receiverName:['ชื่อผู้รับเงิน', 'Receiver names'],freePlanDays:['จำนวนวันฟรี', 'Free plan days'],freeSupplements:['อาหารเสริมฟรี', 'Free supplements'],th:['ชื่อแพ็กเกจ (ไทย)', 'Package name (Thai)'],en:['ชื่อแพ็กเกจ (อังกฤษ)', 'Package name (English)'],thb:['ราคา (บาท)', 'Price (THB)'],usd:['ราคา (USD)', 'Price (USD)'],days:['จำนวนวัน (0 = ซื้อครั้งเดียว)', 'Days (0 = one-time purchase)'],exports:['จำนวนครั้งดาวน์โหลด', 'Downloads'],descTh:['คำอธิบาย (ไทย)', 'Description (Thai)'],descEn:['คำอธิบาย (อังกฤษ)', 'Description (English)']};
+const numeric = ['freePlanDays','freeSupplements','thb','usd','days','exports'];
+function field(name,value) {
+ const k=name.split('.').at(-1),price=['thb','usd'].includes(k);
+ const max={thb:1000000,usd:1000000,days:3650,exports:100000,freePlanDays:365,freeSupplements:100};
+ return `<label class="field"><span>${L(...labels[k])}</span><div class="input-wrap"><input name="${name}" value="${esc(value)}" ${numeric.includes(k)?`type="number" min="${price?'.01':'0'}" max="${max[k]}" step="${price?'.01':'1'}"`:`maxlength="${k.startsWith('desc')?1000:k==='receiverName'?300:200}"`} ${['receiverName','descTh','descEn'].includes(k)?'':'required'}></div><small class="field-error" data-error="${name}" aria-live="polite"></small></label>`;
+}
+const commands=['npx wrangler login','npx wrangler kv namespace create CONFIG',...['ADMIN_PASSWORD','TOKEN_SECRET','THUNDER_API_KEY','STRIPE_SECRET_KEY','ANTHROPIC_API_KEY'].map(k=>'npx wrangler secret put '+k),'npx wrangler deploy'];
+function statuses(flags={}) {return [['api',L('เซิร์ฟเวอร์ API', 'API server')],['token','Token secret'],['thunder','Thunder'],['stripe','Stripe'],['anthropic','Claude'],['config','CONFIG KV']].map(([k,label])=>`<div class="status-row"><span>${label}</span><span class="${flags[k]?'ok':'muted'}">${flags[k]?'✓':'—'} ${flags[k]?L('พร้อมใช้งาน', 'Ready'):L('ยังไม่ได้ตั้งค่า', 'Not configured')}</span></div>`).join('');}
+views.admin=()=>{const c=currentConfig();return `<header class="top"><h1>${L('ตั้งค่าระบบ', 'Admin settings')}</h1></header><p class="muted">${L('จัดการการรับเงิน แพ็กเกจ และสิทธิ์ฟรีของ Fix me', 'Manage payments, packages and free access for Fix me.')}</p><section class="card" id="admin-secrets">${statuses()}</section>
+<section class="card"><h2>${L('เข้าสู่ระบบ', 'Login')}</h2><label class="field">${L('รหัสผ่านผู้ดูแล', 'Admin password')}<div class="input-wrap"><input id="admin-password" type="password" autocomplete="current-password"><button type="button" class="btn ghost" data-act="admin-reveal">${L('แสดง/ซ่อน', 'Show/hide')}</button></div></label><p class="muted sm">${L('จำไว้ในแท็บนี้', 'Remembered in this tab only')}</p></section>
+<form id="admin-form"><section class="card"><h2>${L('การรับเงิน', 'Payments')}</h2>${field('promptpayId',c.promptpayId)}<p class="muted sm">${L('เบอร์โทร 10 หลักขึ้นต้น 0 หรือเลขประจำตัว 13 หลัก', '10-digit phone starting with 0, or 13-digit national/tax ID')}</p>${field('promptpayName',c.promptpayName)}${field('receiverName',c.receiverName)}<p class="muted sm">${L('ชื่อบัญชีตามสลิป คั่นชื่อทางเลือกด้วย | เพื่อให้ตรวจผู้รับเงินได้', 'Use account names shown on slips. Separate alternatives with | for receiver matching.')}</p></section>
+<h2>${L('แพ็กเกจ', 'Packages')}</h2>${Object.entries(c.products).map(([id,p])=>`<section class="card"><div class="product-preview" data-preview="${id}"></div><div class="grid2">${['th','en','thb','usd','days','exports','descTh','descEn'].map(k=>field(id+'.'+k,p[k])).join('')}</div><label class="shopping-row"><input type="checkbox" name="${id}.best" ${p.best?'checked':''}>${L('แสดงป้ายคุ้มสุด', 'Show best value badge')}</label></section>`).join('')}
+<section class="card"><h2>${L('แผนฟรี', 'Free plan')}</h2>${['freePlanDays','freeSupplements'].map(k=>`<div class="stepper"><button type="button" class="btn ghost" data-act="admin-step" data-key="${k}" data-n="-1">−</button>${field(k,c[k])}<button type="button" class="btn ghost" data-act="admin-step" data-key="${k}" data-n="1">+</button></div>`).join('')}</section>
+<div class="admin-save"><small id="admin-dirty" role="status"></small><button type="submit" class="btn primary" data-act="admin-save" ${CONFIG.API_BASE?'':'disabled'}>${L('บันทึก', 'Save')}</button></div></form>
+<section class="card"><h2>${L('ตั้งค่าเซิร์ฟเวอร์', 'Server setup')}</h2><p class="note">${L('เก็บ API keys เป็น Wrangler secrets เท่านั้น ตั้ง API_BASE ใน app/js/config.js และใส่ CONFIG namespace id ใน worker/wrangler.toml หลังสร้าง KV ก่อน deploy', 'Keep API keys as Wrangler secrets. Set API_BASE in app/js/config.js and add the created CONFIG namespace ID to worker/wrangler.toml before deploying.')}</p><ol class="setup-steps">${commands.map((c,i)=>`<li><code>${c}</code><button class="btn ghost xs" data-act="admin-copy" data-i="${i}">${L('คัดลอก', 'Copy')}</button></li>`).join('')}</ol></section>`;};
+function validate(form) {
+ let valid=true;
+ for(const el of form.querySelectorAll('input:not([type=checkbox])')) {
+  el.setCustomValidity('');
+  if(el.name==='promptpayId' && !/^(0\d{9}|\d{13})$/.test(el.value.replace(/[ -]/g,'')))el.setCustomValidity(L('กรอกหมายเลขพร้อมเพย์ 10 หรือ 13 หลัก', 'Enter a valid 10- or 13-digit PromptPay number'));
+  const error=form.querySelector(`[data-error="${el.name}"]`);if(error)error.textContent=el.validity.valid?'':el.validationMessage;
+  valid=el.validity.valid&&valid;
+ }
+ return valid;
+}
+function updateDirty(form) {
+ document.getElementById('admin-dirty').textContent=snapshot(form)!==baseline?L('มีการเปลี่ยนแปลงที่ยังไม่บันทึก', 'Unsaved changes'):L('บันทึกครบแล้ว', 'All changes saved');
+ for(const el of form.querySelectorAll('[data-preview]')){const id=el.dataset.preview,read=k=>form.elements[id+'.'+k].value;el.textContent=`${read(getStateLang())} · ฿${read('thb')} / $${read('usd')} · ${Number(read('days'))===0?L('ซื้อครั้งเดียว', 'One time'):read('days')+' '+L('วัน', 'days')}`;}
+}
+const getStateLang=()=>L('th','en');
+views.admin.mount=async root=>{
+ const form=root.querySelector('#admin-form'),password=root.querySelector('#admin-password');
+ try{password.value=sessionStorage.getItem('fitme:admin-password')||'';}catch{}
+ password.addEventListener('input',()=>{try{sessionStorage.setItem('fitme:admin-password',password.value);}catch{}});
+ baseline=snapshot(form);updateDirty(form);
+ form.addEventListener('input',()=>{validate(form);updateDirty(form);});form.addEventListener('submit',e=>e.preventDefault());
+ if(!CONFIG.API_BASE)return;
+ try{const res=await fetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/config');const data=await res.json();if(!res.ok)throw Error();root.querySelector('#admin-secrets').innerHTML=statuses({api:true,...data.secrets});}catch{root.querySelector('#admin-secrets').innerHTML=statuses();}
 };
-views.admin.mount = async (root) => {
-  const password = root.querySelector('#admin-password');
-  try { password.value = sessionStorage.getItem('fitme:admin-password') || ''; } catch {}
-  password.addEventListener('input', () => { try { sessionStorage.setItem('fitme:admin-password', password.value); } catch {} });
-  const status = root.querySelector('#admin-secrets');
-  if (!CONFIG.API_BASE) { status.textContent = L('โหมดทดลอง: ยังไม่ได้ตั้ง API_BASE', 'Demo: API_BASE is not configured'); return; }
-  try {
-    const res = await fetch(CONFIG.API_BASE.replace(/\/$/, '') + '/api/config');
-    const data = await res.json();
-    if (!res.ok || !data.secrets) throw new Error('Could not load status');
-    status.innerHTML = Object.entries(data.secrets).map(([k, v]) => `<span class="chip ${v ? 'on' : ''}">${esc(k)}: ${v ? L('พร้อม', 'set') : L('ยังไม่ตั้ง', 'missing')}</span>`).join('');
-  } catch (e) { status.textContent = e.message; }
-};
+actions['admin-reveal']=()=>{const el=document.getElementById('admin-password');el.type=el.type==='password'?'text':'password';};
+actions['admin-step']=el=>{const form=document.getElementById('admin-form'),input=form.elements[el.dataset.key];input.value=Math.max(0,Number(input.value)+Number(el.dataset.n));validate(form);updateDirty(form);};
+actions['admin-copy']=async el=>{try{await navigator.clipboard.writeText(commands[Number(el.dataset.i)]);toast(L('คัดลอกแล้ว', 'Copied'));}catch{toast(L('เลือกคำสั่งเพื่อคัดลอก', 'Select the command to copy'));}};
 actions['admin-save'] = async (el) => {
   const form = document.getElementById('admin-form');
-  if (!form.reportValidity()) return;
+  if (!validate(form) || !form.reportValidity()) return;
   const config = structuredClone(currentConfig());
   for (const [key, value] of new FormData(form)) {
     const [id, field] = key.split('.');
     if (field) config.products[id][field] = ['thb', 'usd', 'days', 'exports'].includes(field) ? Number(value) : value;
-    else config[id] = id.startsWith('free') ? Number(value) : value;
+    else config[id] = id.startsWith('free') ? Number(value) : id === 'promptpayId' ? value.replace(/[ -]/g, '') : value;
   }
+  for (const id of Object.keys(config.products)) config.products[id].best = form.elements[`${id}.best`].checked;
   el.disabled = true;
   try {
     const res = await fetch(CONFIG.API_BASE.replace(/\/$/, '') + '/api/admin/config', { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + document.getElementById('admin-password').value }, body: JSON.stringify(config) });
@@ -44,6 +63,6 @@ actions['admin-save'] = async (el) => {
     if (!res.ok) throw new Error(data.error || 'Save failed');
     mergeConfig(data.config);
     try { localStorage.setItem('fitme:config:' + CONFIG.API_BASE, JSON.stringify(data.config)); } catch {}
-    toast(L('บันทึกแล้ว', 'Saved'));
+    baseline = snapshot(form); updateDirty(form); toast(L('บันทึกแล้ว', 'Saved'));
   } catch (e) { toast(e.message, 'warn'); } finally { el.disabled = false; }
 };

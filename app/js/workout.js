@@ -1,6 +1,6 @@
 // Builds a periodised training plan for any number of days from the profile.
 import { EXERCISES, EX } from './exercises.js';
-import { addDays, diffDays } from './store.js';
+import { addDays, diffDays, getState } from './store.js';
 import { rng } from './ui.js';
 
 const SPLITS = {
@@ -32,10 +32,10 @@ const SCHEME = {
   strength: { sets: 5, reps: '4-6', rest: 150, time: 45, finisher: 0 },
 };
 
-function allowed(p) {
+export function allowed(p) {
   const eq = p.location === 'gym' ? ['none', 'db', 'gym'] : p.location === 'db' ? ['none', 'db'] : ['none'];
   const maxLvl = p.level === 'beginner' ? 1 : p.level === 'intermediate' ? 2 : 3;
-  return EXERCISES.filter((e) => eq.includes(e.equip) && e.level <= maxLvl + (e.group === 'core' ? 1 : 0));
+  return EXERCISES.filter((e) => !p.avoidEx?.includes(e.id) && eq.includes(e.equip) && e.level <= maxLvl + (e.group === 'core' ? 1 : 0));
 }
 
 // Week-based progression: weeks 1-3 build, week 4 deloads.
@@ -45,12 +45,14 @@ function weekMod(week) {
 }
 
 export function isTrainingDay(p, iso) {
+  const override = getState().dayOverrides?.[iso];
+  if (override) return override === 'train';
   return p.trainDays.includes(new Date(iso + 'T00:00:00').getDay());
 }
 
 export function sessionFor(p, iso) {
   const day = diffDays(p.startDate, iso);
-  if (day < 0) return null;
+  if (day < 0 || getState().dayOverrides?.[iso] === 'off') return null;
   if (!isTrainingDay(p, iso)) return recoverySession(p, iso, day);
   // count training days since start to rotate the split
   let idx = 0;
@@ -85,28 +87,30 @@ export function sessionFor(p, iso) {
   const warm = [{ id: 'jumping_jack', sets: 1, sec: 60, rest: 15, phase: 'warm' }, { id: pool.some((e) => e.id === 'high_knees') ? 'high_knees' : 'jog', sets: 1, sec: 45, rest: 20, phase: 'warm' }];
   const finisher = sc.finisher && !deload ? [{ id: pick2(pool, r, ['mountain_climber', 'jumping_jack', 'squat_jump', 'jump_rope']), sets: 3, sec: 30, rest: 20, phase: 'finisher' }] : [];
   const cool = [{ id: 'forward_fold', sets: 1, sec: 40, rest: 5, phase: 'cool' }, { id: 'child_pose', sets: 1, sec: 45, rest: 0, phase: 'cool' }];
-  const items = [...warm, ...main, ...finisher, ...cool];
+  const items = safeItems(p, iso, [...warm, ...main, ...finisher, ...cool]);
   return { type: 'train', split: splitKey, week, deload, items, minutes: estimateMin(items) };
 }
 
 function recoverySession(p, iso, day) {
   const week = Math.floor(day / 7) + 1;
-  const items = [
+  const baseItems = [
     { id: 'walk', sets: 1, sec: 20 * 60, rest: 0, phase: 'main' },
     { id: 'quad_stretch', sets: 2, sec: 30, rest: 5, phase: 'cool' },
     { id: 'forward_fold', sets: 1, sec: 45, rest: 5, phase: 'cool' },
     { id: 'child_pose', sets: 1, sec: 60, rest: 0, phase: 'cool' },
   ];
+  const items = safeItems(p, iso, baseItems);
   return { type: 'rest', split: 'recovery', week, items, minutes: estimateMin(items) };
 }
 
-const rank = (e, p) => (p.location === 'gym' ? { gym: 2, db: 1, none: 0 } : { gym: 0, db: 1, none: 0 })[e.equip];
+const rank = (e, p) => (p.preferEx?.includes(e.id) ? 10 : 0) + (p.location === 'gym' ? { gym: 2, db: 1, none: 0 } : { gym: 0, db: 1, none: 0 })[e.equip];
 const pick2 = (pool, r, ids) => { const ok = ids.filter((id) => pool.some((e) => e.id === id)); return ok[Math.floor(r() * ok.length)] || 'jumping_jack'; };
 function bumpReps(range, n) {
   const [a, b] = range.split('-').map(Number);
   return `${a + n}-${b + n}`;
 }
 export function estimateMin(items) {
+  if (!items.length) return 0;
   let s = 0;
   for (const it of items) {
     const work = (it.sec ?? repsMid(it.reps) * 4) + 10; // ~4 s per rep + set-up
@@ -130,5 +134,20 @@ export function weekPlan(p, startIso) {
   return Array.from({ length: 7 }, (_, i) => {
     const iso = addDays(startIso, i);
     return { iso, sess: sessionFor(p, iso) };
+  });
+}
+
+// Apply exclusions to every phase and ignore stale/unsafe saved swaps.
+function safeItems(p, iso, items) {
+  const pool = allowed(p);
+  return items.flatMap((it, index) => {
+    const original = EX[it.id];
+    const base = pool.find(e => e.id === it.id) || pool.filter(e => e.group === original?.group).sort((a,b) => rank(b,p)-rank(a,p))[0] || [...pool].sort((a,b) => rank(b,p)-rank(a,p))[0];
+    const swap = pool.find(e => e.id === getState().exSwaps?.[iso]?.[index] && e.group === base?.group);
+    const ex = swap || base;
+    if (!ex) return [];
+    if (ex.id === it.id) return [it];
+    const { reps, sec, ...rest } = it;
+    return [{ ...rest, id: ex.id, ...(ex.type === 'time' ? { sec: sec || 40 } : { reps: reps || '10-12' }) }];
   });
 }

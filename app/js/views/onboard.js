@@ -1,3 +1,4 @@
+import { fastingFields } from '../fasting.js';
 import { actions, views, go, rerender } from '../core.js';
 import { getState, setState, todayISO } from '../store.js';
 import { L, esc, icon, WEEKDAYS, fmt } from '../ui.js';
@@ -16,7 +17,7 @@ views.onboarding = ({ query }) => {
   const edit = query.get('edit') === '1';
   const steps = [
     () => `<div class="ob-hero"><div class="logo-big">${icon('flame', 40)}</div>
-      <h1>FitMe</h1><p>${L('แผนออกกำลังกาย อาหาร อาหารเสริม และการพักผ่อน ที่คำนวณเฉพาะคุณ', 'Training, nutrition, supplements and recovery — calculated for you')}</p></div>
+      <h1>Fix me</h1><p>${L('แผนออกกำลังกาย อาหาร อาหารเสริม และการพักผ่อน ที่คำนวณเฉพาะคุณ', 'Training, nutrition, supplements and recovery — calculated for you')}</p></div>
       <div class="seg">${chip('ob-lang', 'th', s.lang === 'th', 'ไทย')}${chip('ob-lang', 'en', s.lang === 'en', 'English')}</div>
       ${field('name', L('ชื่อเล่น', 'Your name'), esc(p.name), { type: 'text', ph: L('เช่น ต้น', 'e.g. Alex') })}`,
     () => `<h2>${L('ข้อมูลร่างกาย', 'Your body')}</h2>
@@ -44,7 +45,7 @@ views.onboarding = ({ query }) => {
       <div class="chips">${Object.entries(DIETS).map(([k, d]) => chip('ob-set', 'diet:' + k, p.diet === k, L(d))).join('')}</div>
       <h3>${L('ไม่ทาน / แพ้', 'Exclude / allergies')}</h3>
       <div class="chips">${Object.entries(EXCLUDES).map(([k, d]) => chip('ob-ex', k, p.exclude.includes(k), L(d))).join('')}</div>
-      <h3>${L('จำนวนมื้อต่อวัน', 'Meals per day')}</h3>
+      ${fastingFields(p)}<h3>${L('จำนวนมื้อต่อวัน', 'Meals per day')}</h3>
       <div class="seg">${[3, 4, 5, 6].map((n) => chip('ob-set', 'mealsPerDay:' + n, p.mealsPerDay === n, n + ' ' + L('มื้อ', 'meals'))).join('')}</div>
       <div class="grid2">${field('wake', L('ตื่นนอน', 'Wake up'), p.wake, { type: 'time' })}${field('bed', L('เข้านอน', 'Bedtime'), p.bed, { type: 'time' })}</div>`,
     () => {
@@ -111,6 +112,7 @@ actions['ob-cancel'] = () => { step = 0; go('#/me'); };
 actions['ob-next'] = () => {
   readInputs();
   const p = getState().profile;
+  if (p.age < 18) setState(s => s.profile.fasting = 'none');
   if (step === 1 && (!(p.age > 10 && p.age < 100) || !(p.height > 100 && p.height < 230) || !(p.weight > 25 && p.weight < 300))) {
     import('../ui.js').then((u) => u.toast(L('กรุณากรอก อายุ ส่วนสูง น้ำหนัก ให้ถูกต้อง', 'Please enter a valid age, height and weight'), 'warn'));
     return;

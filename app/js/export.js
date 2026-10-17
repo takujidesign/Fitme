@@ -33,7 +33,7 @@ export function printHTML(days) {
   const usedEx = [...new Set(plan.flatMap((d) => d.sess?.items.map((i) => i.id) || []))];
   const [sMin, sMax] = sleepNeed(p.age);
   return `<div class="print-doc">
-  <header class="pd-head"><div><h1>FitMe ${L('แผนสุขภาพส่วนตัว', 'Personal plan')}</h1>
+  <header class="pd-head"><div><h1>Fix me ${L('แผนสุขภาพส่วนตัว', 'Personal plan')}</h1>
   <p>${esc(p.name || '')} · ${p.age} ${L('ปี', 'y')} · ${p.height} cm · ${p.weight} kg · BMI ${bmi(p).toFixed(1)} · ${L(GOALS[p.goal])}</p>
   <p>${dateLabel(plan[0].iso, { day: 'numeric', month: 'long', year: 'numeric' })} – ${dateLabel(plan.at(-1).iso, { day: 'numeric', month: 'long', year: 'numeric' })} (${days} ${L('วัน', 'days')})</p></div></header>
   <section class="pd-grid">
@@ -57,6 +57,7 @@ export function printHTML(days) {
 }
 
 function eventText(e, lang) {
+  if (e.type === 'fasting') return e.eating ? L('เริ่มกินได้', 'Eating window starts') : L('เริ่ม IF', 'Fasting starts');
   if (e.type === 'meal') {
     const m = e.meal;
     return `<b>${L(mealKind(m.kind))}</b>: ${esc(L(m.name))}<br><small>${m.items.map((it) => `${L({ th: FOOD[it.id].th, en: FOOD[it.id].en })} ${it.g}g ${unitText(FOOD[it.id], it.g, lang)}`).join(', ')} — ${m.total.k} kcal, P${m.total.p} C${m.total.c} F${m.total.f}</small>`;
@@ -91,13 +92,13 @@ const icsEsc = (s) => String(s).replace(/<[^>]+>/g, ' ').replace(/[,;\\]/g, (c) 
 
 export function exportICS(days) {
   const plan = planRange(days);
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//FitMe//Plan//TH', 'CALSCALE:GREGORIAN', 'X-WR-CALNAME:FitMe'];
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Fix me//Plan//TH', 'CALSCALE:GREGORIAN', 'X-WR-CALNAME:Fix me'];
   let n = 0;
   for (const d of plan) {
     for (const e of d.events) {
-      if (!['meal', 'workout', 'supp', 'sleep'].includes(e.type)) continue;
+      if (!['meal', 'workout', 'supp', 'sleep', 'fasting'].includes(e.type)) continue;
       const dur = e.type === 'workout' ? e.sess.minutes : 15;
-      const title = e.type === 'meal' ? `🍽 ${L(mealKind(e.meal.kind))}` : e.type === 'workout' ? `💪 ${L('ออกกำลังกาย', 'Workout')}` : e.type === 'supp' ? `💊 ${L(e.slotInfo)}` : `🌙 ${L('เข้านอน', 'Bedtime')}`;
+      const title = e.type === 'fasting' ? eventText(e, getState().lang) : e.type === 'meal' ? `🍽 ${L(mealKind(e.meal.kind))}` : e.type === 'workout' ? `💪 ${L('ออกกำลังกาย', 'Workout')}` : e.type === 'supp' ? `💊 ${L(e.slotInfo)}` : `🌙 ${L('เข้านอน', 'Bedtime')}`;
       lines.push('BEGIN:VEVENT', `UID:fitme-${d.iso}-${n++}@fitme`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`, `DTSTART:${icsDate(d.iso, e.min)}`, `DTEND:${icsDate(d.iso, e.min + dur)}`,
         `SUMMARY:${icsEsc(title)}`, `DESCRIPTION:${icsEsc(eventText(e, getState().lang))}`, 'BEGIN:VALARM', 'ACTION:DISPLAY', 'TRIGGER:-PT5M', `DESCRIPTION:${icsEsc(title)}`, 'END:VALARM', 'END:VEVENT');
     }

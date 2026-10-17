@@ -1,3 +1,4 @@
+import { fastingCard } from '../fasting.js';
 import { actions, views, go, rerender } from '../core.js';
 import { getState, todayISO, dayLog, updateLog, addDays } from '../store.js';
 import { L, esc, icon, ring, fmt, dateLabel, sheet, closeSheet, toast, toMin, toHHMM } from '../ui.js';
@@ -24,6 +25,7 @@ function eventRow(e, log, iso) {
   const done = !!log.done[e.key];
   const check = ['meal', 'supp', 'workout', 'water'].includes(e.type);
   let ic = 'clock', title = '', sub = '', cls = e.type, act = '';
+  if (e.type === 'fasting') { title = e.eating ? L('เริ่มกินได้', 'Eating window starts') : L('เริ่ม IF', 'Fasting starts'); }
   if (e.type === 'wake') { ic = 'sun'; title = L('ตื่นนอน', 'Wake up'); sub = L('เปิดม่าน รับแสงแดด 5-10 นาที', 'Get 5-10 min of daylight'); }
   if (e.type === 'water') { ic = 'drop'; title = L(`ดื่มน้ำ ${e.ml} มล.`, `Drink ${e.ml} ml water`); sub = L('ช่วยกระตุ้นระบบเผาผลาญหลังตื่นนอน', 'Rehydrate after sleep'); }
   if (e.type === 'meal') { ic = mealKind(e.meal.kind).icon; title = L(mealKind(e.meal.kind)); sub = `${esc(L(e.meal.name))} · <b>${e.meal.total.k}</b> kcal · P${e.meal.total.p}g`; act = `data-act="meal-open" data-iso="${iso}" data-k="${e.meal.key}"`; }
@@ -55,7 +57,7 @@ views.today = ({ query }) => {
       <div><small class="muted">${dateLabel(iso, { weekday: 'long', day: 'numeric', month: 'long' })}</small><h1>${hello}${p.name ? ', ' + esc(p.name) : ''}</h1></div>
       <div class="day-nav"><button class="icon-btn" data-act="go" data-to="#/today?d=${addDays(iso, -1)}">${icon('back', 18)}</button><button class="icon-btn" data-act="go" data-to="#/today?d=${addDays(iso, 1)}">${icon('chev', 18)}</button></div>
     </header>
-    <section class="hero-card ${d.train ? 'train' : 'rest'}">
+    ${fastingCard(p)}<section class="hero-card ${d.train ? 'train' : 'rest'}">
       <div class="hero-top"><span class="pill">${d.train ? icon('dumbbell', 14) + L('วันออกกำลังกาย', 'Training day') : icon('moon', 14) + L('วันพักฟื้น', 'Recovery day')}</span>${sess ? `<span class="muted sm">${L('สัปดาห์ที่', 'Week')} ${sess.week}${sess.deload ? ' · Deload' : ''}</span>` : ''}</div>
       <div class="rings">
         ${ring(ate.k / d.t.kcal, { size: 92, stroke: 9, label: fmt(Math.max(0, d.t.kcal - ate.k)), sub: L('kcal เหลือ', 'kcal left') })}
@@ -65,7 +67,7 @@ views.today = ({ query }) => {
             <button class="btn xs ghost" data-act="water" data-iso="${iso}" data-ml="250">+250</button></div>
         </div>
       </div>
-      ${sess ? `<button class="session-cta" data-act="go" data-to="#/player/${iso}">
+      ${sess?.items.length ? `<button class="session-cta" data-act="go" data-to="#/player/${iso}">
         <div class="cta-fig">${figureSVG(EX[sess.items.find((i) => !i.phase || i.phase === 'main')?.id || sess.items[0].id])}</div>
         <div><small>${d.train ? L(splitName(sess.split)) : L('เดินเบาๆ + ยืดเหยียด', 'Walk + stretch')}</small><b>${log.done.workout ? L('ทำเสร็จแล้ว ✓', 'Completed ✓') : L('เริ่มออกกำลังกาย', 'Start workout')}</b><span>${sess.minutes} ${L('นาที', 'min')} · ${sess.items.length} ${L('ท่า', 'moves')}</span></div>
         <span class="play">${icon('play', 20)}</span></button>` : ''}
@@ -141,3 +143,5 @@ actions['sleep-log'] = (el) => {
 };
 actions.go = (el) => go(el.dataset.to);
 export { toHHMM };
+
+views.today.mount = (root) => { const timer = setInterval(() => { if (!root.querySelector('.v-today')) return clearInterval(timer); rerender(); clearInterval(timer); }, 60000); };

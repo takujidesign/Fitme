@@ -1,3 +1,4 @@
+import { progressCard } from '../progress.js';
 import { actions, views, go, rerender, pickFiles } from '../core.js';
 import { getState, setState, todayISO, addDays, putImage, imageURL, compressImage, uid, delImage, resetAll, importState } from '../store.js';
 import { L, esc, icon, sheet, closeSheet, toast, dateLabel, fmt } from '../ui.js';
@@ -29,7 +30,7 @@ views.me = () => {
   const done = Object.values(s.logs).filter((l) => l.done?.workout).length;
   return `<header class="top"><div><small class="muted">${L('โปรไฟล์', 'Profile')}</small><h1>${esc(p.name) || L('ฉัน', 'Me')}</h1></div>
     <button class="icon-btn" data-act="me-edit">${icon('settings')}</button></header>
-    <section class="card profile">
+    ${progressCard(sparkline(s.weights.slice(-20).map(w => ({v:w.kg}))))}<section class="card profile">
       <div class="sum-grid">
         <div class="stat"><small>${L('น้ำหนัก', 'Weight')}</small><b>${p.weight}</b><span class="tag">kg</span></div>
         <div class="stat"><small>BMI</small><b>${b.toFixed(1)}</b><span class="tag ${bc.c}">${L(bc)}</span></div>
@@ -38,11 +39,6 @@ views.me = () => {
       </div>
       ${wk ? `<p class="muted sm">${L(`ถึงน้ำหนักเป้าหมายในราว ${wk} สัปดาห์ (อัตรา ~${((Math.abs(avgKcal - t.tdee) * 7) / 7700).toFixed(2)} กก./สัปดาห์)`, `About ${wk} weeks to your goal weight (~${((Math.abs(avgKcal - t.tdee) * 7) / 7700).toFixed(2)} kg/week)`)}</p>` : ''}
       ${p.bodyFat ? `<p class="muted sm">${L('ไขมัน', 'Body fat')} ${p.bodyFat}% ${p.muscle ? `· ${L('กล้ามเนื้อ', 'Muscle')} ${p.muscle} kg` : ''} ${p.bmrScan ? `· BMR ${p.bmrScan}` : ''}</p>` : ''}
-    </section>
-
-    <section class="card">
-      <div class="row between"><h2>${icon('scale', 20)} ${L('น้ำหนัก', 'Weight')}</h2><button class="btn xs ghost" data-act="me-weight">${icon('plus', 16)} ${L('บันทึก', 'Log')}</button></div>
-      ${sparkline(s.weights.slice(-20).map((w) => ({ v: w.kg })))}
     </section>
 
     <section class="card">
@@ -63,7 +59,7 @@ views.me = () => {
     </section>
 
     <section class="card premium ${hasPro() ? 'on' : ''}">
-      <div class="row between"><h2>${icon('spark', 20)} FitMe Pro</h2>${hasPro() ? `<span class="tag teal">${L('ใช้งานถึง', 'Active until')} ${dateLabel(s.premium.until.slice(0, 10), { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : ''}</div>
+      <div class="row between"><h2>${icon('spark', 20)} Fix me Pro</h2>${hasPro() ? `<span class="tag teal">${L('ใช้งานถึง', 'Active until')} ${dateLabel(s.premium.until.slice(0, 10), { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : ''}</div>
       ${hasPro() ? '' : `<p class="muted sm">${L('แผนเต็มทุกวัน · อาหารเสริมไม่จำกัด · AI อ่านฉลาก · ดาวน์โหลด PDF/ปฏิทิน', 'Full plan · unlimited supplements · AI label reader · PDF & calendar downloads')}</p><button class="btn primary block" data-act="go" data-to="#/pay">${L('อัปเกรด', 'Upgrade')}</button>`}
       ${!hasPro() && s.premium.exportsLeft ? `<p class="muted sm">${L(`สิทธิ์ดาวน์โหลดคงเหลือ ${s.premium.exportsLeft} ครั้ง`, `${s.premium.exportsLeft} download(s) left`)}</p>` : ''}
     </section>
@@ -87,7 +83,7 @@ views.me = () => {
       </div>
     </section>
     <p class="muted sm center"><a href="#/admin">${L('ผู้ดูแลระบบ', 'Admin')}</a></p>
-    <p class="muted sm center">FitMe · ${L('คำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์', 'General guidance, not medical advice')}</p>`;
+    <p class="muted sm center">Fix me · ${L('คำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์', 'General guidance, not medical advice')}</p>`;
 };
 views.me.mount = async (root) => {
   for (const el of root.querySelectorAll('[data-img]')) {

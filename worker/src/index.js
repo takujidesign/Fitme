@@ -1,4 +1,4 @@
-// FitMe API — Cloudflare Worker
+// Fix me API — Cloudflare Worker
 //   POST /api/slip/verify      PromptPay slip check via Thunder API → entitlement token
 //   POST /api/stripe/checkout  create a Stripe Checkout session
 //   GET  /api/stripe/confirm   confirm a paid session → entitlement token
@@ -11,9 +11,9 @@ import { CONFIG as DEFAULTS } from '../../app/js/config.js';
 
 // Keep in sync with app/js/config.js
 const PRODUCTS = {
-  export1: { thb: 49, usd: 1.49, days: 0, name: 'FitMe – plan download' },
-  pro30: { thb: 99, usd: 2.99, days: 30, name: 'FitMe Pro – 30 days' },
-  pro90: { thb: 249, usd: 6.99, days: 90, name: 'FitMe Pro – 90 days' },
+  export1: { thb: 49, usd: 1.49, days: 0, name: 'Fix me – plan download' },
+  pro30: { thb: 99, usd: 2.99, days: 30, name: 'Fix me Pro – 30 days' },
+  pro90: { thb: 249, usd: 6.99, days: 90, name: 'Fix me Pro – 90 days' },
 };
 
 export default {
@@ -233,7 +233,7 @@ async function readConfig(env) {
 async function publicConfig(env) {
   const config = await readConfig(env);
   config.products = Object.fromEntries(Object.entries(config.products).map(([id, { name, ...p }]) => [id, p]));
-  return { config, secrets: { thunder: !!env.THUNDER_API_KEY, stripe: !!env.STRIPE_SECRET_KEY, anthropic: !!env.ANTHROPIC_API_KEY, token: !!env.TOKEN_SECRET } };
+  return { config, secrets: { config: !!env.CONFIG, thunder: !!env.THUNDER_API_KEY, stripe: !!env.STRIPE_SECRET_KEY, anthropic: !!env.ANTHROPIC_API_KEY, token: !!env.TOKEN_SECRET } };
 }
 async function saveConfig(req, env) {
   if (!env.ADMIN_PASSWORD || req.headers.get('Authorization') !== `Bearer ${env.ADMIN_PASSWORD}`) throw fail('Unauthorized', 401);

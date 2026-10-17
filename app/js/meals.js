@@ -1,3 +1,4 @@
+import { eatingWindow, windowMinute } from './fasting.js';
 // Meal timing and portion solver.
 import { allowedFoods, FOOD } from './foods.js';
 import { toMin, toHHMM, rng, pick } from './ui.js';
@@ -20,6 +21,18 @@ const SHARES = {
 };
 
 export function mealSlots(p, isTraining) {
+  const w = eatingWindow(p);
+  if (w) {
+    const cap = { '16:8': 3, '18:6': 3, '20:4': 2, omad: 1 }[p.fasting] || 6;
+    const n = Math.max(1, Math.min(cap, p.mealsPerDay));
+    const list = Array.from({length:n}, (_,i) => ({kind: n === 1 ? 'lunch' : i === 0 ? 'breakfast' : i === n-1 ? 'dinner' : 'lunch', share:1/n, min:Math.round(w.start + (n === 1 ? 0 : i*(w.length-30)/(n-1)))}));
+    const end = windowMinute(toMin(p.workoutTime),w) + Number(p.sessionMin);
+    if (isTraining && end < w.end) {
+      const post = list.reduce((a,b) => Math.abs(a.min-end) < Math.abs(b.min-end) ? a : b);
+      post.min = end; post.post = true; post.carbBoost = 1.25;
+    }
+    return list.sort((a,b)=>a.min-b.min).map((m,i)=>({...m,key:`m${i}`,time:toHHMM(m.min)}));
+  }
   const n = Math.max(3, Math.min(6, p.mealsPerDay));
   const wake = toMin(p.wake);
   let bed = toMin(p.bed);

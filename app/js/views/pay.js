@@ -11,7 +11,7 @@ views.pay = () => {
   const th = getState().lang === 'th';
   const prods = Object.entries(CONFIG.PRODUCTS);
   const pr = CONFIG.PRODUCTS[sel];
-  return `<header class="top"><button class="icon-btn" data-act="pay-back">${icon('back')}</button><div class="grow"><small class="muted">FitMe Pro</small><h1>${L('เลือกแพ็กเกจ', 'Choose a plan')}</h1></div></header>
+  return `<header class="top"><button class="icon-btn" data-act="pay-back">${icon('back')}</button><div class="grow"><small class="muted">Fix me Pro</small><h1>${L('เลือกแพ็กเกจ', 'Choose a plan')}</h1></div></header>
     ${isDemo() ? `<p class="note warn">${icon('info', 16)} ${L('โหมดทดลอง: ยังไม่ได้เชื่อมต่อเซิร์ฟเวอร์ชำระเงิน การจ่ายจะเป็นการจำลอง', 'Demo mode: no payment server configured, payments are simulated')}</p>` : ''}
     ${hasPro() ? `<p class="note">${icon('check', 16)} ${L('คุณเป็นสมาชิก Pro อยู่แล้ว ซื้อเพิ่มเพื่อต่ออายุ', 'You are already Pro; buying again extends it')}</p>` : ''}
     <ul class="perks">${[

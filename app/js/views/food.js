@@ -1,3 +1,4 @@
+import { fastingFields, eatingWindow, inWindow } from '../fasting.js';
 import { actions, views, rerender } from '../core.js';
 import { getState, setState, todayISO, dayLog } from '../store.js';
 import { L, esc, icon, dateLabel, sheet, closeSheet } from '../ui.js';
@@ -21,7 +22,7 @@ views.food = ({ params }) => {
   const tot = { p: d.foodTotal.p + d.sm.protein, c: d.foodTotal.c + d.sm.carbs, f: d.foodTotal.f + d.sm.fat, k: d.foodTotal.k + d.sm.kcal };
   const head = `<header class="top"><div><small class="muted">${L('โภชนาการ', 'Nutrition')}</small><h1>${L('แผนอาหาร', 'Meal plan')}</h1></div>
     <button class="icon-btn" data-act="food-prefs" aria-label="prefs">${icon('settings')}</button></header>`;
-  return head + weekStrip(iso, '#/food/') + `
+  return head + `<button class="btn ghost block" data-act="shopping" data-iso="${iso}">${L('รายการซื้อของ 7 วัน', '7-day shopping list')}</button>${eatingWindow(p) && d.train && !inWindow(Number(p.workoutTime.slice(0,2))*60+Number(p.workoutTime.slice(3)), eatingWindow(p)) ? `<p class="note">${L('เวลาออกกำลังกายอยู่ในช่วงอด ลองเลื่อนมาใกล้เวลาเริ่มกิน', 'Your workout falls in the fast. Consider moving it near the eating window start.')}</p>` : ""}` + weekStrip(iso, '#/food/') + `
     <section class="card">
       <div class="row between"><div><small class="muted">${dateLabel(iso, { weekday: 'long', day: 'numeric', month: 'short' })} · ${d.train ? L('วันออกกำลังกาย', 'Training day') : L('วันพัก', 'Rest day')}</small>
         <h2>${tot.k.toLocaleString()} <small class="muted">/ ${d.t.kcal.toLocaleString()} kcal</small></h2></div>
@@ -55,8 +56,8 @@ actions['food-prefs'] = () => {
     <div class="chips">${Object.entries(DIETS).map(([k, d]) => `<button class="chip ${p.diet === k ? 'on' : ''}" data-act="fp-diet" data-v="${k}">${L(d)}</button>`).join('')}</div>
     <h3>${L('ไม่ทาน / แพ้', 'Exclude')}</h3>
     <div class="chips">${Object.entries(EXCLUDES).map(([k, d]) => `<button class="chip ${p.exclude.includes(k) ? 'on' : ''}" data-act="fp-ex" data-v="${k}">${L(d)}</button>`).join('')}</div>
-    <h3>${L('มื้อต่อวัน', 'Meals per day')}</h3>
-    <div class="seg">${[3, 4, 5, 6].map((n) => `<button class="chip ${p.mealsPerDay === n ? 'on' : ''}" data-act="fp-meals" data-v="${n}">${n}</button>`).join('')}</div>`);
+    ${fastingFields(p)}<h3>${L('มื้อต่อวัน', 'Meals per day')}</h3>
+    <div class="seg">${[3, 4, 5, 6].map((n) => `<button class="chip ${p.mealsPerDay === n ? 'on' : ''}" data-act="fp-meals" data-v="${n}">${n}</button>`).join('')}</div>`, { onMount(root) { root.querySelectorAll('[data-bind]').forEach(el => el.addEventListener('change', () => { setState(s => { s.profile[el.dataset.bind] = el.value; if (s.profile.age < 18) s.profile.fasting = 'none'; }); rerender(); })); } });
 };
 // Toggle chips in place so the sheet stays open while the plan underneath re-renders.
 const single = (el) => el.parentElement.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c === el));
