@@ -66,9 +66,12 @@ export function sessionFor(p, iso) {
   const mainCount = Math.max(3, Math.min(6, Math.round((p.sessionMin - 15) / 8)));
   const used = new Set();
   const main = [];
-  for (const g of SPLITS[splitKey].groups.slice(0, mainCount)) {
+  const focus = [...new Set(Array.isArray(p.focus) ? p.focus : [])].filter((g) => ['legs', 'push', 'pull', 'core', 'cardio', 'mobility'].includes(g));
+  const groups = [...SPLITS[splitKey].groups.slice(0, mainCount), ...focus];
+  for (const [index, g] of groups.entries()) {
     let opts = pool.filter((e) => e.group === g && !used.has(e.id));
-    if (!opts.length) opts = pool.filter((e) => ['legs', 'push', 'pull', 'core'].includes(e.group) && !used.has(e.id));
+    if (!opts.length && index >= mainCount) opts = pool.filter((e) => e.group === g);
+    if (!opts.length && index < mainCount) opts = pool.filter((e) => ['legs', 'push', 'pull', 'core'].includes(e.group) && !used.has(e.id));
     if (!opts.length) continue;
     // prefer heavier equipment if available
     opts.sort((a, b) => rank(b, p) - rank(a, p) + (r() - 0.5) * 1.5);

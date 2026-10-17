@@ -67,7 +67,6 @@ export function solve(pose, view) {
   };
 }
 
-const seg = (a, b, cls, w) => `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" class="${cls}" stroke-width="${w}"/>`;
 
 function propSVG(prop, j) {
   if (!prop) return '';
@@ -86,31 +85,56 @@ function propSVG(prop, j) {
   return out.join('');
 }
 
-export function renderPose(pose, ex) {
-  const j = solve(pose, ex.view);
-  const hl = new Set(ex.hl || []);
-  const c = (part, far) => `limb ${far ? 'far' : ''} ${hl.has(part) ? 'hl' : ''}`;
-  const W = { torso: 13, ua: 9, fa: 8, th: 11, sh: 9.5, foot: 6 };
-  const legs = (leg, foot, far) => seg(leg[0], leg[1], c('th', far), W.th) + seg(leg[1], leg[2], c('sh', far), W.sh) + (foot ? seg(leg[2], foot, c('foot', far), W.foot) : '');
-  const arms = (arm, far) => seg(arm[0], arm[1], c('ua', far), W.ua) + seg(arm[1], arm[2], c('fa', far), W.fa);
+let figureId = 0;
+function figureDefs(id) {
+  const gradients = [];
+  for (const part of ['th', 'sh', 'ua', 'fa', 'torso', 'skin', 'shoe']) {
+    for (const far of [false, true]) for (const highlight of [false, true]) {
+      const colors = highlight ? (far ? ['#B8D85A', '#637B1F'] : ['#E9FF9A', '#97BC31'])
+        : far ? ['#8796AA', '#435165'] : part === 'shoe' ? ['#9AA9BA', '#455264'] : ['#EFF3F8', '#9DADC1'];
+      gradients.push(`<linearGradient id="${id}-${part}-${+far}-${+highlight}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${colors[0]}"/><stop offset="1" stop-color="${colors[1]}"/></linearGradient>`);
+    }
+  }
+  return `<defs>${gradients.join('')}<filter id="${id}-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.1"/><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="${id}-shadow" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="2"/></filter></defs>`;
+}
+
+export function renderPose(pose, ex, id = 'figure') {
+  const j = solve(pose, ex.view), hl = new Set(ex.hl || []);
+  const paint = (part, far = false) => `fill="url(#${id}-${part}-${+far}-${+hl.has(part)})" stroke="#536174" stroke-opacity=".22" stroke-width=".5" ${hl.has(part) ? `filter="url(#${id}-glow)"` : ''}`;
+  // Tapered capsule: straight sides and rounded joint caps, widths in SVG units.
+  const capsule = (a, b, w1, w2, part, far = false) => {
+    const dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1;
+    const nx = -dy / len, ny = dx / len;
+    const pt = (p, w) => `${(p[0] + nx * w).toFixed(2)},${(p[1] + ny * w).toFixed(2)}`;
+    const r1 = w1 / 2, r2 = w2 / 2;
+    return `<path d="M${pt(a, r1)} L${pt(b, r2)} A${r2},${r2} 0 0 0 ${pt(b, -r2)} L${pt(a, -r1)} A${r1},${r1} 0 0 0 ${pt(a, r1)}Z" ${paint(part, far)}/>`;
+  };
+  const legs = (leg, foot, far) => capsule(leg[0], leg[1], 15, 10, 'th', far) + capsule(leg[1], leg[2], 10, 7, 'sh', far)
+    + capsule(leg[2], foot || [leg[2][0] + (leg === j.leg1 ? 4 : -4), leg[2][1] + 1], 7, 6, 'shoe', far);
+  const arms = (arm, far) => capsule(arm[0], arm[1], 10, 8, 'ua', far) + capsule(arm[1], arm[2], 8, 6, 'fa', far)
+    + capsule(arm[2], along(arm[2], angTo(arm[1], arm[2]), 3), 6, 5, 'skin', far);
   const far = ex.view !== 'front';
   const behindProps = ['bench', 'box', 'mat', 'cable'].filter((p) => String(ex.prop || '').includes(p)).join(' ');
   const handProps = String(ex.prop || '').split(' ').filter((p) => !behindProps.includes(p)).join(' ');
-  return `${propSVG(behindProps, j)}
-    ${arms(j.arm2, far)}${legs(j.leg2, j.foot2, far)}
-    ${seg(j.hip, j.neckBase, c('torso'), W.torso)}
-    ${ex.view === 'front' ? seg(j.sh1, j.sh2, c('torso'), 9) + seg(j.leg1[0], j.leg2[0], c('torso'), 9) : ''}
-    ${legs(j.leg1, j.foot1, false)}
-    <circle cx="${j.head[0].toFixed(1)}" cy="${j.head[1].toFixed(1)}" r="${LEN.head}" class="head"/>
+  const t = pose.t ?? 180, front = ex.view === 'front';
+  const torsoPoint = (length, width) => along(along(j.hip, t, length), t - 90, width).map((v) => v.toFixed(2)).join(',');
+  const torso = [[0, 9], [13, 7], [34, front ? 15 : 10], [44, front ? 14 : 8], [46, 0], [44, front ? -14 : -8], [34, front ? -15 : -10], [13, -7], [0, -9], [-4, 0]];
+  const [hx, hy] = j.head;
+  return `<ellipse cx="${j.hip[0]}" cy="${Math.max(j.leg1[2][1], j.leg2[2][1]) + 4}" rx="31" ry="4" fill="#17202D" opacity=".2" filter="url(#${id}-shadow)"/>
+    ${propSVG(behindProps, j)}${arms(j.arm2, far)}${legs(j.leg2, j.foot2, far)}
+    <polygon points="${torso.map(([l, w]) => torsoPoint(l, w)).join(' ')}" ${paint('torso')}/>
+    ${legs(j.leg1, j.foot1, false)}${capsule(j.neckBase, j.head, 8, 7, 'skin')}
+    <path d="M${hx - 9},${hy - 3} Q${hx - 9},${hy - 11} ${hx},${hy - 11} Q${hx + 10},${hy - 11} ${hx + 9},${hy} L${hx + 6},${hy + 8} Q${hx},${hy + 12} ${hx - 6},${hy + 7}Z" ${paint('skin')} transform="rotate(${180 - t} ${hx} ${hy})"/>
     ${arms(j.arm1, false)}${propSVG(handProps, j)}`;
 }
 
 // Mounts a looping animation into a container; returns a stop() function.
 const running = new Set();
 export function animateFigure(el, ex, { speed = 1, paused = false } = {}) {
+  const id = 'fig-' + ++figureId;
   const frames = ex.frames;
   const durs = ex.dur || frames.map(() => 900);
-  el.innerHTML = `<svg viewBox="0 0 200 200" class="figure" role="img" aria-label="${ex.id}"><line x1="6" y1="182" x2="194" y2="182" class="ground"/><g class="body"></g></svg>`;
+  el.innerHTML = `<svg viewBox="0 0 200 200" class="figure" role="img" aria-label="${ex.id}">${figureDefs(id)}<line x1="6" y1="182" x2="194" y2="182" class="ground"/><g class="body"></g></svg>`;
   const g = el.querySelector('.body');
   const state = { el, stopped: false, paused, t0: performance.now(), offset: 0 };
   const total = durs.reduce((a, b) => a + b, 0);
@@ -123,10 +147,10 @@ export function animateFigure(el, ex, { speed = 1, paused = false } = {}) {
     while (t > durs[i]) { t -= durs[i]; i++; }
     const a = frames[i], b = frames[(i + 1) % frames.length];
     const hold = ex.hold ? Math.min(1, t / (durs[i] * 0.75)) : t / durs[i];
-    g.innerHTML = renderPose(lerpVal(a, b, ease(hold)), ex);
+    g.innerHTML = renderPose(lerpVal(a, b, ease(hold)), ex, id);
     requestAnimationFrame(draw);
   };
-  if (frames.length === 1) g.innerHTML = renderPose(frames[0], ex);
+  if (frames.length === 1) g.innerHTML = renderPose(frames[0], ex, id);
   else requestAnimationFrame(draw);
   running.add(state);
   return {
@@ -137,6 +161,7 @@ export function animateFigure(el, ex, { speed = 1, paused = false } = {}) {
 }
 // Static thumbnail (first or mid frame).
 export function figureSVG(ex, frameIdx = 1) {
+  const id = 'fig-' + ++figureId;
   const f = ex.frames[Math.min(frameIdx, ex.frames.length - 1)];
-  return `<svg viewBox="0 0 200 200" class="figure"><line x1="6" y1="182" x2="194" y2="182" class="ground"/><g class="body">${renderPose(f, ex)}</g></svg>`;
+  return `<svg viewBox="0 0 200 200" class="figure">${figureDefs(id)}<line x1="6" y1="182" x2="194" y2="182" class="ground"/><g class="body">${renderPose(f, ex, id)}</g></svg>`;
 }

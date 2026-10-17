@@ -1,0 +1,56 @@
+import { actions, go, pickFiles, rerender } from '../core.js';
+import { getState, setState, todayISO, compressImage, blobToBase64 } from '../store.js';
+import { L, esc, sheet, closeSheet, toast } from '../ui.js';
+import { hasPro, askCoach } from '../pay.js';
+import { CONFIG } from '../config.js';
+import { planDay } from '../day.js';
+import { FOOD } from '../foods.js';
+import { GOALS } from '../calc.js';
+import { GROUPS } from '../exercises.js';
+
+const list = (items) => `<ul>${items.map((v) => `<li>${esc(L(v))}</li>`).join('')}</ul>`;
+const gate = () => {
+  if (!CONFIG.API_BASE) { toast(L('ตั้ง API ก่อนใช้ AI', 'Configure the API to use AI'), 'warn'); return false; }
+  if (!hasPro()) { go('#/pay'); return false; }
+  return true;
+};
+actions['ai-plan'] = async (el) => {
+  if (!gate()) return;
+  el.disabled = true;
+  try {
+    const d = planDay(todayISO());
+    const { name, ...profile } = getState().profile;
+    const r = await askCoach('plan-review', { profile, targets: d.t, meals: d.meals, supplements: d.events.filter((e) => e.type === 'supp') });
+    sheet(`<h2>${L('AI โค้ช', 'AI coach')}</h2>${list(r.advice)}<h3>${L('ลองเปลี่ยน', 'Suggested swaps')}</h3><ul>${r.swaps.map((s) => `<li>${esc(L(FOOD[s.from] || { th: s.from, en: s.from }))} → ${esc(L(FOOD[s.to] || { th: s.to, en: s.to }))}: ${esc(L(s.reason))}</li>`).join('')}</ul>${list(r.warnings)}<p class="muted sm">${L('คำแนะนำทั่วไป ไม่ใช่คำวินิจฉัย', 'General guidance, not a diagnosis')}</p><button class="btn ghost" data-close>${L('ปิด', 'Close')}</button>`);
+  } catch (e) { toast(e.message, 'warn'); } finally { el.disabled = false; }
+};
+actions['ai-body'] = () => {
+  if (!gate()) return;
+  if (getState().profile.age < 18) return toast(L('การประเมินนี้สำหรับผู้ใหญ่เท่านั้น', 'This assessment is for adults only'), 'warn');
+  sheet(`<h2>${L('ยินยอมส่งรูปให้ AI', 'Consent to AI photo analysis')}</h2>
+    <p>${L('เลือก 1-3 รูป ด้านหน้า/ข้าง/หลัง แนะนำกางเกงขาสั้นหรือสปอร์ตบรา รูปจะถูกส่งไปยังเซิร์ฟเวอร์และ Claude เพื่อวิเคราะห์ Worker ไม่บันทึกรูป และไม่บันทึกรูปใหม่ลงคลังในเครื่อง ผู้ให้บริการ AI อาจเก็บข้อมูลตามนโยบายของตน', 'Choose 1-3 front/side/back photos. Shorts or a sports bra are recommended. Photos are sent to the server and Claude for analysis. The Worker does not store them and this selection is not added to your local gallery. The AI provider may retain data under its policies.')}</p>
+    <p>${L('เป็นการประเมินคร่าว ๆ จากภาพ ไม่ใช่การวัดไขมันหรือการวินิจฉัย', 'This is a rough visual estimate, not a body-fat measurement or diagnosis.')}</p>
+    <button class="btn primary block" data-act="ai-body-consent">${L('ยินยอมและเลือกรูป', 'I consent — choose photos')}</button><button class="btn ghost block" data-close>${L('ยกเลิก', 'Cancel')}</button>`);
+};
+actions['ai-body-consent'] = async (el) => {
+  el.disabled = true;
+  try {
+    const files = await pickFiles({ accept: 'image/jpeg,image/png,image/webp', multiple: true });
+    if (!files.length) return;
+    if (files.length > 3) throw new Error(L('เลือกได้ไม่เกิน 3 รูป', 'Choose at most 3 photos'));
+    el.textContent = L('กำลังวิเคราะห์…', 'Analyzing…');
+    const images = await Promise.all(files.map(async (file) => { const blob = await compressImage(file, 1280, 0.8); return { media_type: blob.type, data: await blobToBase64(blob) }; }));
+    const { height, weight, age, sex } = getState().profile;
+    const r = await askCoach('body', { consent: true, profile: { height, weight, age, sex }, images });
+    sheet(`<h2>${L('ประเมินรูปร่าง', 'Body assessment')}</h2><p>${L('การประเมินคร่าว ๆ จากภาพเท่านั้น ไม่ใช่การวัดหรือวินิจฉัย', 'Rough visual estimate only, not a measurement or diagnosis')}</p>
+      <h3>${L('ช่วงไขมันโดยประมาณ', 'Estimated body-fat range')}: ${r.bodyFatRange ? esc(r.bodyFatRange.min) + '–' + esc(r.bodyFatRange.max) + '%' : L('ประเมินไม่ได้', 'Unable to estimate')}</h3>
+      <h3>${L('ท่าทาง', 'Posture')}</h3>${list(r.posture)}<h3>${L('กล้ามเนื้อที่อาจพัฒนาเพิ่ม', 'Potential muscle development')}</h3>${list(r.underDeveloped)}${list(r.warnings)}
+      <p>${esc(L(GOALS[r.goal]))} · ${r.focus.map((g) => esc(L(GROUPS[g]))).join(', ')}</p>
+      <button class="btn primary block" id="ai-apply">${L('ใช้คำแนะนำนี้', 'Apply these suggestions')}</button><button class="btn ghost block" data-close>${L('ปิด', 'Close')}</button>`, { onMount(root) {
+        root.querySelector('#ai-apply').addEventListener('click', () => {
+          setState((s) => { s.profile.goal = r.goal; s.profile.focus = [...new Set(r.focus)]; });
+          closeSheet(); rerender(); toast(L('อัปเดตเป้าหมายและกลุ่มฝึกแล้ว', 'Goal and focus updated'));
+        }, { once: true });
+      } });
+  } catch (e) { toast(e.message, 'warn'); } finally { el.disabled = false; }
+};

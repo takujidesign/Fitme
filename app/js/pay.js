@@ -112,3 +112,9 @@ export async function qrSVG(text) {
   q.make();
   return q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
 }
+
+export async function askCoach(kind, input) {
+  if (isDemo()) throw new Error('AI requires a configured API');
+  const data = await api('/api/ai/' + kind, { method: 'POST', body: JSON.stringify(input) });
+  return data.review;
+}

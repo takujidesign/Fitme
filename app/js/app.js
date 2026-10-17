@@ -9,6 +9,9 @@ import './views/food.js';
 import './views/supps.js';
 import './views/me.js';
 import './views/pay.js';
+import './views/admin.js';
+import './views/coach.js';
+import { loadConfig } from './config.js';
 
 const TABS = [
   ['today', 'home', { th: 'วันนี้', en: 'Today' }],
@@ -23,7 +26,7 @@ const tabEl = document.getElementById('tabbar');
 
 function render() {
   const r = route();
-  if (!getState().onboarded && r.name !== 'onboarding') return go('#/onboarding');
+  if (!getState().onboarded && !['onboarding', 'admin'].includes(r.name)) return go('#/onboarding');
   const v = views[r.name] || views.today;
   const html = v(r);
   document.body.classList.toggle('full', !!v.full || r.name === 'onboarding');
@@ -78,6 +81,7 @@ if ('serviceWorker' in navigator && location.protocol !== 'file:') {
   navigator.serviceWorker.register('./sw.js').catch(() => {});
 }
 
+await loadConfig();
 handleStripeReturn().then((r) => r && toast(L('ชำระเงินสำเร็จ 🎉', 'Payment confirmed 🎉'))).catch((e) => toast(e.message, 'warn'));
 lastHash = location.hash;
 render();

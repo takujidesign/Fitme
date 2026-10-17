@@ -47,7 +47,8 @@ views.me = () => {
 
     <section class="card">
       <div class="row between"><h2>${icon('camera', 20)} ${L('รูปร่าง', 'Body photos')}</h2><button class="btn xs ghost" data-act="me-photo">${icon('plus', 16)} ${L('เพิ่มรูป', 'Add')}</button></div>
-      <p class="muted sm">${L('รูปเก็บในเครื่องของคุณเท่านั้น ไม่ถูกอัปโหลด · ถ่ายมุมเดิม แสงเดิม ทุก 2 สัปดาห์', 'Photos stay on this device only · same angle and light every 2 weeks')}</p>
+      <p class="muted sm">${L('รูปที่บันทึกเก็บในเครื่อง ส่งให้ AI เฉพาะเมื่อยินยอม · ถ่ายมุมเดิม แสงเดิม ทุก 2 สัปดาห์', 'Saved photos stay on this device; AI uploads only with consent · same angle and light every 2 weeks')}</p>
+      <button class="btn ghost block" data-act="ai-body">${L('วิเคราะห์รูปร่างด้วย AI', 'Analyze body with AI')}</button>
       <div class="photo-grid">${s.photos.slice().reverse().map((ph) => `<button class="ph" data-act="me-photo-open" data-id="${ph.id}" data-img="${ph.id}"><small>${dateLabel(ph.date, { day: 'numeric', month: 'short' })}</small></button>`).join('') || `<div class="muted sm">${L('ยังไม่มีรูป', 'No photos yet')}</div>`}</div>
       ${s.photos.length >= 2 ? `<button class="btn ghost block" data-act="me-compare">${icon('swap', 18)} ${L('เปรียบเทียบก่อน/หลัง', 'Compare before/after')}</button>` : ''}
     </section>
@@ -85,6 +86,7 @@ views.me = () => {
         <button data-act="me-reset" class="danger">${icon('trash', 18)} ${L('ลบข้อมูลทั้งหมด', 'Delete all data')}${icon('chev', 16)}</button>
       </div>
     </section>
+    <p class="muted sm center"><a href="#/admin">${L('ผู้ดูแลระบบ', 'Admin')}</a></p>
     <p class="muted sm center">FitMe · ${L('คำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์', 'General guidance, not medical advice')}</p>`;
 };
 views.me.mount = async (root) => {

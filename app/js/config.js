@@ -19,3 +19,23 @@ export const CONFIG = {
 };
 
 export const isDemo = () => !CONFIG.API_BASE;
+
+const fields = { promptpayId: 'PROMPTPAY_ID', promptpayName: 'PROMPTPAY_NAME', receiverName: 'RECEIVER_NAME', products: 'PRODUCTS', freePlanDays: 'FREE_PLAN_DAYS', freeSupplements: 'FREE_SUPPLEMENTS' };
+export function mergeConfig(config) {
+  for (const [key, target] of Object.entries(fields)) if (config[key] !== undefined) CONFIG[target] = config[key];
+}
+export function currentConfig() {
+  return Object.fromEntries(Object.entries(fields).map(([key, target]) => [key, CONFIG[target] ?? '']));
+}
+export async function loadConfig() {
+  if (!CONFIG.API_BASE) return;
+  const key = 'fitme:config:' + CONFIG.API_BASE;
+  try { const cached = JSON.parse(localStorage.getItem(key)); if (cached) mergeConfig(cached); } catch {}
+  try {
+    const res = await fetch(CONFIG.API_BASE.replace(/\/$/, '') + '/api/config', { signal: AbortSignal.timeout(5000) });
+    const data = await res.json();
+    if (!res.ok || !data.config) return;
+    mergeConfig(data.config);
+    try { localStorage.setItem(key, JSON.stringify(data.config)); } catch {}
+  } catch { /* Offline: keep cached settings or defaults. */ }
+}

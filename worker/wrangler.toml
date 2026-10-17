@@ -20,3 +20,9 @@ RECEIVER_NAME = ""
 # [[kv_namespaces]]
 # binding = "SLIPS"
 # id = "<your KV namespace id>"
+
+# Admin settings (create a namespace, then uncomment all three lines):
+# [[kv_namespaces]]
+# binding = "CONFIG"
+# id = "<your CONFIG KV namespace id>"
+# Secret: ADMIN_PASSWORD (npx wrangler secret put ADMIN_PASSWORD)
