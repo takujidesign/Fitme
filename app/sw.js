@@ -28,7 +28,7 @@ self.addEventListener('fetch', (e) => {
     if (isFont && hit) return hit; // fonts/libs: cache-first
     // app files: network-first so releases show up immediately, cache when offline
     try {
-      const res = await fetch(req);
+      const res = await fetch(req, { cache: 'no-cache' }); // revalidate, skip stale HTTP cache
       if (res.ok || res.type === 'opaque') cache.put(req, res.clone());
       return res;
     } catch {
