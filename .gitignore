@@ -9,3 +9,4 @@ worker/.dev.vars
 worker/.wrangler/
 worker/dist/
 .DS_Store
+.claude/settings.local.json
