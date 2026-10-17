@@ -151,9 +151,13 @@ export function dayMeals(p, dateISO, isTraining, t, seeds = {}) {
   // keep at least ~55% of protein from real food even when shakes cover most of the target
   const foodP = (hasCondition(p,'kidney')?Math.max(0,t.food.protein):Math.max(t.food.protein, Math.round(t.protein * 0.55))), foodK = t.food.kcal;
   const foodF = t.fat, foodC = Math.max(40, (foodK - foodP * 4 - foodF * 9) / 4);
+  const outside = new Map();
+  for(const slot of slots){if(!(p.eatingOut||[]).includes(slot.kind))continue;const options=allowedFoods(p).filter(f=>f.cat==='eatingout');if(options.length){const f=options[Math.abs([...dateISO+slot.key].reduce((n,c)=>n+c.charCodeAt(0),0))%options.length],g=f.unitG;outside.set(slot.key,{items:[{id:f.id,g,role:'protein'}],total:Object.fromEntries(['k','p','c','f'].map(k=>[k,Math.round(f[k]*g/100)])),name:{th:f.th,en:f.en},tip:f.tip,estimate:true});}}
+  const used=key=>[...outside.values()].reduce((n,m)=>n+m.total[key],0),remainingShare=slots.filter(s=>!outside.has(s.key)).reduce((n,s)=>n+s.share,0)||1;
   const meals = slots.map((s) => {
+    if(outside.has(s.key))return {...s,...outside.get(s.key)};
     const cs = (s.share * (s.carbBoost || 1)) / totalShare;
-    const tgt = { p: foodP * s.share, c: foodC * cs, f: foodF * s.share * (s.post ? 0.6 : 1) };
+    const tgt = outside.size ? {p:Math.max(0,foodP-used('p'))*s.share/remainingShare,c:Math.max(0,foodC-used('c'))*s.share/remainingShare,f:Math.max(0,foodF-used('f'))*s.share/remainingShare} : { p: foodP * s.share, c: foodC * cs, f: foodF * s.share * (s.post ? 0.6 : 1) };
     const seed = `${dateISO}-${s.key}-${seeds[`${dateISO}|${s.key}`] || 0}`;
     return { ...s, tgt, ...buildMeal(p, s, tgt, seed) };
   });

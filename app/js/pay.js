@@ -1,3 +1,4 @@
+import { installId } from './install-id.js';
 import { api as accountAPI } from './account.js';
 import { track } from './telemetry.js';
 // Payments (PromptPay slip via Thunder API, Stripe Checkout) and entitlements.
@@ -128,5 +129,5 @@ export async function askCoach(kind, input) {
   return data.review;
 }
 
-export async function createQuote(productId,currency,promo=''){const r=await accountAPI('quote',{productId,currency,...(promo?{promo}: {})});track('purchase_started');return r;}
+export async function createQuote(productId,currency,promo=''){const r=await accountAPI('quote',{productId,currency,installId:installId(),...(promo?{promo}: {})});track('purchase_started');return r;}
 export async function claimQuote(quote){const r=await accountAPI('orders/claim',{orderId:quote.orderId});if(r.entitlement)applyEntitlement(r.entitlement,r.token,'promo');track('purchase_completed');return r;}

@@ -33,6 +33,8 @@ import './views/coach.js';
 import './views/planning.js';
 import { startLineReminders } from './views/round5b.js';
 import './views/admin-round5b.js';
+import './views/round5c.js';
+import './views/admin-round5c.js';
 import { loadConfig } from './config.js';
 
 const TABS = [
@@ -50,7 +52,7 @@ function render() {
   applyTheme();
   languageFont(getState().lang);
   const r = route();
-  if (!getState().onboarded && !['onboarding', 'admin', 'privacy', 'terms', 'account', 'line-return'].includes(r.name)) return go('#/onboarding');
+  if (!getState().onboarded && !['onboarding', 'admin', 'privacy', 'terms', 'account', 'line-return', 'pay'].includes(r.name)) return go('#/onboarding');
   if(getState().onboarded && !consentCurrent() && !['consent','privacy','terms','account','admin','line-return'].includes(r.name))return go('#/consent');
   const v = views[r.name] || views.today;
   const html = v(r);

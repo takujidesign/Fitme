@@ -1,3 +1,4 @@
+import { EATING_OUT } from './eating-out.js';
 import { localizedNames } from './i18n/index.js';
 import { medicalFoodAllowed } from './conditions.js';
 // Food database, values per 100 g (cooked weight unless noted). k=kcal p=protein c=carbs f=fat.
@@ -15,6 +16,7 @@ const U = {
 };
 
 export const FOODS = [
+  ...EATING_OUT,
   // ---- protein ----
   { id: 'chicken_breast', cat: 'protein', k: 165, p: 31, c: 0, f: 3.6, tags: ['meat', 'chicken'], unit: U.palm, th: 'อกไก่', en: 'Chicken breast', cook: { th: ['ย่าง', 'อบ', 'ต้ม', 'ผัดกะเพรา (น้ำมันน้อย)'], en: ['grilled', 'baked', 'poached', 'basil stir-fry (light oil)'] } },
   { id: 'chicken_thigh', cat: 'protein', k: 177, p: 24, c: 0, f: 8.5, tags: ['meat', 'chicken'], unit: U.palm, th: 'สะโพกไก่ไม่ติดหนัง', en: 'Skinless chicken thigh', cook: { th: ['ย่าง', 'ต้มยำ', 'อบซีอิ๊ว'], en: ['grilled', 'tom yum', 'soy-baked'] } },

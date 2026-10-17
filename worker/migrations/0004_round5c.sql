@@ -1,0 +1,13 @@
+CREATE TABLE trial_devices (device_hash TEXT PRIMARY KEY);
+CREATE TABLE trials (user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE, device_hash TEXT UNIQUE NOT NULL, until INTEGER NOT NULL);
+CREATE TABLE subscriptions (id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, customer TEXT NOT NULL, status TEXT NOT NULL, until INTEGER NOT NULL DEFAULT 0, cancel_at_end INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE stripe_events (id TEXT PRIMARY KEY, created_at INTEGER NOT NULL);
+CREATE TABLE organisations (id TEXT PRIMARY KEY, name TEXT NOT NULL, seats INTEGER NOT NULL, expiry INTEGER NOT NULL, price_note TEXT NOT NULL, code TEXT UNIQUE NOT NULL, group_id TEXT REFERENCES groups(id) ON DELETE SET NULL);
+CREATE TABLE org_members (org_id TEXT NOT NULL REFERENCES organisations(id) ON DELETE CASCADE, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, role TEXT NOT NULL DEFAULT 'member', PRIMARY KEY(org_id,user_id));
+CREATE TRIGGER org_capacity BEFORE INSERT ON org_members WHEN (SELECT count(*) FROM org_members WHERE org_id=NEW.org_id)>=(SELECT seats FROM organisations WHERE id=NEW.org_id) AND NOT EXISTS(SELECT 1 FROM org_members WHERE org_id=NEW.org_id AND user_id=NEW.user_id) BEGIN SELECT RAISE(ABORT,'Organisation is full'); END;
+CREATE TABLE engagement (user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE, opted_in INTEGER NOT NULL DEFAULT 0, last_sent INTEGER NOT NULL DEFAULT 0, sent INTEGER NOT NULL DEFAULT 0, returned INTEGER NOT NULL DEFAULT 0, returned_at INTEGER NOT NULL DEFAULT 0);
+CREATE TABLE experiments (id TEXT PRIMARY KEY, json TEXT NOT NULL, active INTEGER NOT NULL DEFAULT 1, winner TEXT);
+CREATE UNIQUE INDEX one_active_experiment ON experiments(active) WHERE active=1;
+CREATE TABLE experiment_events (experiment TEXT NOT NULL REFERENCES experiments(id), variant TEXT NOT NULL, install_hash TEXT NOT NULL, kind TEXT NOT NULL, PRIMARY KEY(experiment,variant,install_hash,kind));
+ALTER TABLE orders ADD COLUMN experiment TEXT;
+ALTER TABLE orders ADD COLUMN variant TEXT;

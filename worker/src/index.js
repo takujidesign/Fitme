@@ -1,3 +1,7 @@
+import { growth, domainEnv, entitlementUntil } from './growth.js';
+import { billing } from './billing.js';
+import { backup, backupRoute } from './backups.js';
+import { winback } from './winback.js';
 import { lineAuth, lineReminders, sendLine } from './line.js';
 import { groups, shop } from './community.js';
 import { accountData, telemetry, referral, quote, checkout, confirmPayment, slipPayment, marketplace, adminRound5, media, business, claimOrder } from './round5.js';
@@ -24,14 +28,18 @@ const PRODUCTS = {
 };
 
 export default {
-  async scheduled(event, env) { await sendScheduled(env, event.scheduledTime); await sendLine(env, event.scheduledTime); },
+  async scheduled(event, env) { await sendScheduled(env, event.scheduledTime); await sendLine(env, event.scheduledTime); if(event.cron==='0 20 * * *'){await winback(env,event.scheduledTime);await backup(env,event.scheduledTime);} },
   async fetch(req, env) {
+    env = await domainEnv(env);
     const cors = corsHeaders(req, env);
     if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
     const url = new URL(req.url);
     try {
       let out;
-      if (url.pathname.startsWith('/api/auth/line/') || url.pathname === '/api/admin/line') out = await lineAuth(req,env,url.pathname);
+      if (['/api/stripe/webhook','/api/stripe/subscribe','/api/stripe/portal','/api/subscription'].includes(url.pathname)) out = await billing(req,env,url.pathname,stripe);
+      else if (['/api/admin/backups','/api/backups/download'].includes(url.pathname)) out = await backupRoute(req,env);
+      else if (['/api/admin/growth','/api/admin/organisations','/api/admin/experiments','/api/experiment','/api/trial','/api/engagement','/api/org','/api/org/join','/api/org/challenge','/api/org/scores'].includes(url.pathname)) out = await growth(req,env,url.pathname,issue);
+      else if (url.pathname.startsWith('/api/auth/line/') || url.pathname === '/api/admin/line') out = await lineAuth(req,env,url.pathname);
       else if (url.pathname === '/api/line/reminders') out = await lineReminders(req,env);
       else if (url.pathname === '/api/groups' || url.pathname.startsWith('/api/groups/')) out = await groups(req,env,url.pathname);
       else if (url.pathname === '/api/shop' || url.pathname.startsWith('/api/shop/') || url.pathname === '/api/admin/shop') out = await shop(req,env,url.pathname);
@@ -39,7 +47,7 @@ export default {
       else if (url.pathname === '/api/telemetry' && req.method === 'POST') out = await telemetry(req,env);
       else if (url.pathname === '/api/referral' && req.method === 'GET') out = await referral(req,env);
       else if (url.pathname === '/api/entitlement' && req.method === 'GET') {
-        const u=await user(req,env),row=await query(env,'SELECT pro_until FROM users WHERE id=?',u.id).first();
+        const u=await user(req,env),row={pro_until:await entitlementUntil(env,u.id)};
         out=row.pro_until>Date.now()?await issue(env,'pro30','account:'+u.id,{until:new Date(row.pro_until).toISOString()}):{};
       }
       else if (url.pathname === '/api/quote' && req.method === 'POST') out = await quote(req,env,readConfig);
@@ -108,7 +116,7 @@ async function verifyToken(env, token) {
   const [body, sig] = parts;
   if (!body || !sig) return null;
   const ok = await crypto.subtle.verify('HMAC', await hmacKey(env), fromB64url(sig), new TextEncoder().encode(body));
-  return ok ? JSON.parse(new TextDecoder().decode(fromB64url(body))) : null;
+  if(!ok)return null;const payload=JSON.parse(new TextDecoder().decode(fromB64url(body)));if(payload.ref?.startsWith('account:')&&env.DB&&await entitlementUntil(env,payload.ref.slice(8))<=Date.now())return null;return payload;
 }
 
 // ---------- PromptPay slip via Thunder ----------
@@ -151,7 +159,7 @@ async function stripe(env, path, params, method = 'POST', idempotency) {
 }
 function safeReturn(u, env) {
   const allowed = (env.ALLOWED_ORIGINS || '').split(',').map((s) => s.trim()).filter(Boolean);
-  const url = new URL(u);
+  const url = new URL(env.APP_URL || u);
   if (allowed.length && !allowed.includes(url.origin)) throw fail('return URL not allowed');
   return url.origin + url.pathname;
 }

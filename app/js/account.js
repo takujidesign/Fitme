@@ -55,7 +55,7 @@ export async function signIn(mode,email,password) {
 export async function refreshEntitlement(){
   if(!getState().account?.token||!CONFIG.API_BASE)return;
   const token=getState().account.token;
-  try{const r=await api('entitlement');if(r.entitlement&&getState().account.token===token)setState(s=>{s.premium={...s.premium,until:r.entitlement.until,token:r.token};});}catch{}
+  try{const r=await api('entitlement');if(r.entitlement&&getState().account.token===token)setState(s=>{s.premium={...s.premium,until:r.entitlement.until,token:r.token,ref:r.entitlement.ref};});else if(!r.entitlement&&getState().account.token===token&&getState().premium.ref?.startsWith('account:'))setState(s=>{s.premium={...s.premium,until:null,token:null,ref:null};});}catch{}
 }
 export async function signOut() {
   // Clear the local bearer even when the device is offline.

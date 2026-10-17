@@ -48,7 +48,7 @@ export async function lineAuth(req,env,path) {
     let link=null;
     if(b.ticket){const row=await q(env,'DELETE FROM line_flows WHERE state=? AND expires_at>? RETURNING json',b.ticket,now).first();if(!row)throw fail('Expired link');link=JSON.parse(row.json);}
     const clientChallenge=link?.challenge||b.challenge;if(!clientChallenge)throw fail('PKCE challenge required');
-    const state=random(),verifier=random(),nonce=random(),callback=url.origin+'/api/auth/line/callback';
+    const state=random(),verifier=random(),nonce=random(),callback=(env.API_URL||url.origin).replace(/\/$/,'')+'/api/auth/line/callback';
     await q(env,'INSERT INTO line_flows VALUES(?,?,?)',state,JSON.stringify({verifier,nonce,callback,challenge:clientChallenge,userId:link?.userId||null}),now+600000).run();
     const target=new URL('https://access.line.me/oauth2/v2.1/authorize');target.search=new URLSearchParams({response_type:'code',client_id:settings.lineChannelId,redirect_uri:callback,state,scope:'openid profile',nonce,code_challenge:await pkce(verifier),code_challenge_method:'S256',bot_prompt:'aggressive'}).toString();return redirect(target.href);
   }
@@ -62,7 +62,7 @@ export async function lineAuth(req,env,path) {
     if(flow.userId){if(u&&u.id!==flow.userId)throw fail('LINE is already linked to another account',409);u=await q(env,'SELECT id FROM users WHERE id=? AND (line_user_id IS NULL OR line_user_id=?)',flow.userId,identity.sub).first();if(!u)throw fail('Account already linked',409);}
     if(!u){u={id:crypto.randomUUID()};await q(env,'INSERT INTO users(id,email,pass_hash,pass_salt,created_at,line_user_id) VALUES(?,?,?,?,?,?)',u.id,identity.sub+'@line.invalid',random(),random(16),now,identity.sub).run();}
     const code=random();await q(env,'INSERT INTO line_codes VALUES(?,?,?,?,?)',await hash(code),u.id,flow.challenge,flow.userId?identity.sub:null,now+60000).run();
-    return redirect(appURL(settings.appUrl,env)+'#/line-return?code='+code);
+    return redirect(appURL(env.APP_URL||settings.appUrl,env)+'#/line-return?code='+code);
   }
   throw fail('Not found',404);
 }

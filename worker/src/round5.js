@@ -1,3 +1,4 @@
+import { variantFor } from './growth.js';
 import { z } from 'zod/v4';
 import { admin, input, fail, hash } from './security.js';
 import { user, query as q, serverState } from './accounts.js';
@@ -71,17 +72,20 @@ export async function referral(req,env) {
 }
 
 export async function quote(req,env,readConfig) {
-  const b=await input(req,z.object({productId:pid,currency:z.enum(['thb','usd']),promo:code.optional()}).strict());
+  const b=await input(req,z.object({productId:pid,currency:z.enum(['thb','usd']),promo:code.optional(),installId:z.string().uuid().optional()}).strict());
   const u=await optionalUser(req,env),settings=await readConfig(env),config=await business(env);
   let product=settings.products[b.productId],trainer=null;
   if(b.productId.startsWith('plan_')) {if(!u)throw fail('Please log in to buy a plan',401);const p=await q(env,"SELECT * FROM plans WHERE id=? AND status='approved'",b.productId).first();if(!p)throw fail('Plan unavailable');product=JSON.parse(p.json);trainer=p.trainer_id;if(trainer===u.id)throw fail('Cannot buy your own plan');}
   if(!product)throw fail('Unknown product');
+  if(!b.installId&&await variantFor(env,'missing',b.productId))throw fail('Device install ID required for this price');
+  const variant=b.installId?await variantFor(env,b.installId,b.productId):null;if(variant)product={...product,thb:variant.thb,usd:variant.usd};
   let promo=null;
   if(b.promo){const row=await q(env,'SELECT * FROM promos WHERE code=?',b.promo).first();if(!row)throw fail('Unknown promo');promo=JSON.parse(row.json);}
   const amount=discounted(Math.round(product[b.currency]*100),promo,b.productId,b.currency),id=crypto.randomUUID(),now=Date.now();
   // Atomic reservation prevents two buyers from taking the final promo use.
   const result=await q(env,`INSERT INTO orders(id,user_id,product,amount,currency,promo,trainer_id,share,days,created_at,expires_at) SELECT ?,?,?,?,?,?,?,?,?,?,? WHERE ? IS NULL OR (SELECT uses+(SELECT count(*) FROM orders WHERE promo=? AND paid=0 AND expires_at>?) FROM promos WHERE code=?) < ?`,id,u?.id||null,b.productId,amount,b.currency,b.promo||null,trainer,config.trainerShare,product.days||0,now,now+60*60000,b.promo||null,b.promo||null,now,b.promo||null,promo?.maxUses||0).run();
   if(!result.meta.changes)throw fail('Promo usage limit reached');
+  if(variant){await q(env,'UPDATE orders SET experiment=?,variant=? WHERE id=?',variant.experiment,variant.variant,id).run();if(variant.active)await q(env,"INSERT OR IGNORE INTO experiment_events VALUES(?,?,?,'checkout')",variant.experiment,variant.variant,await hash(b.installId)).run();}
   return {orderId:id,amount:amount/100,currency:b.currency,expiresAt:now+60*60000};
 }
 async function orderFor(req,env,id) {
@@ -97,7 +101,8 @@ export async function checkout(req,env,stripe,safeReturn) {
   const base=safeReturn(b.returnUrl,env),params={mode:'payment','line_items[0][quantity]':'1','line_items[0][price_data][currency]':o.currency,'line_items[0][price_data][unit_amount]':String(o.amount),'line_items[0][price_data][product_data][name]':o.product,'metadata[order]':o.id,success_url:base+'?paid={CHECKOUT_SESSION_ID}',cancel_url:base,expires_at:String(Math.floor(o.expires_at/1000))};
   if(o.trainer_id){const a=await q(env,'SELECT stripe_id FROM trainer_accounts WHERE user_id=?',o.trainer_id).first();if(!a)throw fail('Trainer must complete Stripe onboarding');const status=await stripe(env,'accounts/'+a.stripe_id,null,'GET');if(!status.charges_enabled||!status.payouts_enabled)throw fail('Trainer Stripe account is not ready');params['payment_intent_data[transfer_data][destination]']=a.stripe_id;params['payment_intent_data[application_fee_amount]']=String(connectFee(o.amount,o.share));}
   const s=await stripe(env,'checkout/sessions',params,'POST','order-'+o.id);
-  await q(env,'UPDATE orders SET stripe_id=? WHERE id=?',s.id,o.id).run();return {url:s.url};
+  await q(env,'UPDATE orders SET stripe_id=? WHERE id=?',s.id,o.id).run();
+return {url:s.url};
 }
 export async function claimOrder(req,env,issue){
   const {orderId}=await input(req,z.object({orderId:uuid}).strict());

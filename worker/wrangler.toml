@@ -51,4 +51,9 @@ RECEIVER_NAME = ""
 # Secrets: VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY (generate once; keep stable).
 # Cron is a no-op until PUSH and VAPID secrets are configured.
 [triggers]
-crons = ["*/5 * * * *"]
+crons = ["*/5 * * * *", "0 20 * * *"]
+
+# Daily 03:00 Asia/Bangkok (20:00 UTC), private backup bucket:
+# [[r2_buckets]]
+# binding = "BACKUPS"
+# bucket_name = "fitme-backups"

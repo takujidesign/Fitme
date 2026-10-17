@@ -21,7 +21,9 @@ export function reminderPlan(start=todayISO(),preferences) {
     let bed=toMin(p.bed),wake=toMin(p.wake);if(bed<=wake)bed+=1440;
     if(prefs.water)for(let min=wake;min<bed;min+=120)add(iso,min,L('ดื่มน้ำ','Drink water'),'Fix me','#/today');
     if(prefs.sleep)add(iso,bed-30,L('เตรียมนอน','Prepare for sleep'),'Fix me','#/me');
-  }return out;
+  }
+  if(s.premium?.until){const expires=new Date(s.premium.until);if(Number.isFinite(expires.getTime())){const day=addDays(expires.toISOString().slice(0,10),-1);if(day>=start&&day<=addDays(start,6))add(day,9*60,L('สมาชิกใกล้หมดอายุ','Membership expires soon'),L('ตรวจสอบสถานะสมาชิกและการต่ออายุ','Check your membership and renewal status'),'#/me');}}
+  return out;
 }
 async function post(path,body){const r=await fetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/push/'+path,{method:'POST',headers:{'Content-Type':'application/json',...(getState().account?.token?{Authorization:'Bearer '+getState().account.token}:{})},body:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw Object.assign(Error(data.error||L('บันทึกไม่ได้','Could not save')),{status:r.status});return data;}
 let syncing=false,again=false;

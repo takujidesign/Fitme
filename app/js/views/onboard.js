@@ -72,7 +72,7 @@ views.onboarding = ({ query }) => {
     <div class="ob-top">${step > 0 ? `<button class="icon-btn" data-act="ob-back">${icon('back')}</button>` : edit ? `<button class="icon-btn" data-act="ob-cancel">${icon('x')}</button>` : '<span></span>'}
       <div class="dots">${Array.from({ length: STEPS }, (_, i) => `<i class="${i <= step ? 'on' : ''}"></i>`).join('')}</div><span></span></div>
     <div class="ob-body">${content}</div>
-    <div class="ob-foot"><button class="btn primary block" data-act="ob-next">${step === STEPS - 1 ? (edit ? L('บันทึก', 'Save') : L('เริ่มเลย', "Let's go")) : L('ถัดไป', 'Next')} ${icon('chev', 18)}</button></div>
+    ${step===STEPS-1?`<p><a class="btn ghost" href="#/pay">${L('ทดลอง Pro ฟรี 7 วัน (ต้องมีบัญชี)','Free 7-day Pro trial (account required)')}</a></p>`:''}<div class="ob-foot"><button class="btn primary block" data-act="ob-next">${step === STEPS - 1 ? (edit ? L('บันทึก', 'Save') : L('เริ่มเลย', "Let's go")) : L('ถัดไป', 'Next')} ${icon('chev', 18)}</button></div>
   </div>`;
 };
 

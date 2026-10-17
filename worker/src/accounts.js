@@ -49,7 +49,7 @@ export async function sync(req,env,verifyToken) {
   const data=syncCopy(b.json);
   if(data.premium?.token) {
     let ent;try{ent=await verifyToken(env,data.premium.token);}catch{}
-    if(!ent || !['export1','pro30','pro90'].includes(ent.pid) || (ent.pid!=='export1' && !(Date.parse(ent.until)>Date.now()))) throw fail('Invalid premium entitlement',403);
+    if(!ent || !['export1','pro30','pro90','trial7'].includes(ent.pid) || (ent.pid!=='export1' && !(Date.parse(ent.until)>Date.now()))) throw fail('Invalid premium entitlement',403);
     const settings=await env.CONFIG?.get('settings','json');
     const maxExports=(settings?.products||CONFIG.PRODUCTS)[ent.pid]?.exports||0;
     data.premium={token:data.premium.token,until:ent.until||null,ref:ent.ref||null,exportsLeft:Math.max(0,Math.min(maxExports,Number(data.premium.exportsLeft)||0))};

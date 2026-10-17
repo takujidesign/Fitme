@@ -259,3 +259,52 @@ npx wrangler deploy --dry-run
 Worker tests include encrypted secret round-trip/redaction/precedence/deletion, password hashing, registration/login/logout/throttling, sync compare-and-swap and concurrent conflict, premium rejection, linked/unlinked trainer permissions, invitations and notes, and bounded chat requests with mocked structured responses. UI tests cover the conflict merge/retry path and explicit approval of trainer/chat/replan changes. No paid provider requests are made by tests.
 
 Round 4 workspace verification: all six Node/DOM suites above passed. Connected Chrome exercised 12 routes (including coach, trainer, account, challenges and replan) in Thai/English and dark/light at 375px without observed console errors. A visual check caught and fixed chat prompt wrapping; cached coach reload worked after stopping the local HTTP server. The standalone Playwright runner and `npx wrangler deploy --dry-run` were blocked by sandbox `spawn EPERM`; bundling and remote D1/Cloudflare deployment are not verified. Real provider authentication, paid Claude chat, push delivery and real cross-device accounts still require the configured server.
+# Round 5c: sections 19–28
+
+Apply `worker/migrations/0004_round5c.sql` after migrations 0001–0003 using your usual D1 migration workflow. This adds subscriptions, trial claims, organisations, engagement and price experiments. No migration or deployment is performed by the test suite.
+
+Admin → **Domain / billing / trial** configures the public app URL, public API URL, monthly THB/USD prices, trial enablement/duration and optional email sender. Admin → **API keys** accepts encrypted `stripeWebhookSecret` and optional `resendApiKey`; existing `MASTER_KEY` encryption and environment-secret precedence apply. Organisation admins must already have accounts; their email is entered when the organisation is created. Seats include the admin (maximum 50, matching group capacity). Employee invitations grant membership, never admin privileges. Organisation challenges reuse group challenge/score tables but expose only aggregate results, suppressed below five contributors.
+
+Stripe Billing setup:
+
+- Enable recurring payments and the hosted Customer Portal in the Stripe dashboard.
+- Register `https://api.<domain>/api/stripe/webhook` for `checkout.session.completed`, `invoice.paid`, `customer.subscription.updated`, and `customer.subscription.deleted`; save its signing secret as `stripeWebhookSecret` (or `STRIPE_WEBHOOK_SECRET`). The worker verifies the raw body and timestamp and retrieves current subscription state to handle delayed events. Invoice IDs deduplicate revenue.
+- Monthly Checkout requires an account and uses server-configured prices. Me → subscription status shows renewal/cancellation and opens the hosted portal. PromptPay remains one-time. Expiry reminders are included in the existing notification schedule.
+- Trials use a separate device installation ID and unique account/device claims. Clearing browser storage can reset a device identity; this is a best-effort device restriction, not hardware attestation. Minimal hashed device claims survive account deletion to prevent reuse.
+- Price experiments accept 2–3 variants with splits totalling 100. Prices are recomputed on the server and frozen in the existing order quote. Stopping selects the winning price for subsequent quotes. Existing quotes remain valid until their expiry. The significance label is exploratory, requires at least 30 views per compared arm, and does not adjust for repeated looks.
+
+Win-back reminders require explicit opt-in in Me. The daily job selects accounts inactive for three days, reserves at most one delivery per seven days, prefers linked LINE (respecting its daily cap), then Web Push, then optional Resend with a configured sender. Unconfigured email is skipped. Admin displays successful sends and returns detected from later syncs. A failed or ambiguous delivery still consumes the reservation to avoid duplicate messages.
+
+## ใช้โดเมนของตัวเอง
+
+For GitHub Pages, add `app/CNAME` containing your actual domain, set its DNS CNAME to your GitHub account's Pages host (`<github-user>.github.io`), and enable **Enforce HTTPS**. For an apex domain use the GitHub Pages DNS instructions. Configure a Worker custom domain or route at `api.<domain>`. No placeholder CNAME is committed because it would affect deployment before you choose a real domain.
+
+Set the app and API HTTPS URLs in Admin → Domain. The app origin is merged with the Wrangler `ALLOWED_ORIGINS` variable; Stripe return URLs use the configured app URL and LINE uses the configured API callback URL. Register the exact `https://api.<domain>/api/auth/line/callback` with LINE Login. Keep `CONFIG.API_BASE` in `app/js/config.js` pointed at the Worker: an admin page cannot write `app/config.json` on a static host. Rebuild/redeploy the static app when changing API_BASE.
+
+## Daily backups and restore
+
+Create a **private** R2 bucket and enable the `BACKUPS` binding shown in `worker/wrangler.toml`. The additional `0 20 * * *` cron runs at 03:00 Asia/Bangkok. It streams D1 tables in 250-row pages through gzip to `backups/YYYY-MM-DD.json.gz`, plus CONFIG KV (service secrets remain ciphertext), retains the last 30 daily copies and the first successful copy of each of the last 12 months under `monthly/YYYY-MM.json.gz`. Admin → Backups lists sizes and generates one-minute signed worker download links. Anyone possessing a link can use it until expiry; the R2 bucket itself is never public.
+
+Backups are a paged logical export, not a transactionally consistent snapshot while writes are occurring. D1 also provides **Time Travel** for point-in-time recovery. Preserve `MASTER_KEY` and Wrangler secrets separately: KV ciphertext cannot be decrypted without the original key, and environment secrets are not exported.
+
+Restore into a new, empty D1 database, first applying the same migrations, then generate import files locally:
+
+```sh
+node worker/scripts/restore.mjs downloaded.json.gz restore.sql
+npx wrangler d1 execute <new-database> --remote --file restore.sql
+npx wrangler kv bulk put restore.sql.kv.json --namespace-id <new-config-namespace>
+```
+
+Run Wrangler from `worker/` with the corresponding file paths. The restore script only writes files (refuses to overwrite); it does not connect to or mutate a database. It skips D1 migration bookkeeping already created by migration application. Validate counts and application behaviour before switching bindings. Restore contains sensitive account/health data; use private storage.
+
+Form checking uses pinned MediaPipe Tasks Vision 0.10.21 and the lite model, loaded only after the camera button is selected. Camera frames stay on device; model files require an initial network connection. Two-dimensional angle heuristics are approximate, sensitive to camera angle/occlusion, and have synthetic-fixture coverage, not real-person accuracy validation. Eating-out macros are typical portion estimates, not brand-label measurements. New screens fall back to English where translations are unavailable.
+
+Validation commands (test dependencies live in `tests/package.json`):
+
+```sh
+node worker/round5c.test.mjs
+node tests/round5c.mjs
+node tests/round5c-browser.mjs
+```
+
+The optional browser test requires Playwright (`PLAYWRIGHT_PATH` can point to its `index.mjs`, and `CHROME_PATH` can select Chromium). It covers five languages and both themes at 375px. Unit tests mock external billing/messaging services; they do not prove live Stripe, LINE, Resend, R2, camera or production operation.

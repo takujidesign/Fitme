@@ -1,3 +1,4 @@
+import { supportedForm, startFormCheck, stopFormCheck } from '../form-check.js';
 import { videoToggle } from '../videos.js';
 import { track } from '../telemetry.js';
 import { speak, stopVoice, voiceButton } from '../voice.js';
@@ -119,6 +120,7 @@ async function requestWake() { try { wakeLock = await navigator.wakeLock?.reques
 
 let timer, anim;
 function renderStep(host) {
+  stopFormCheck();
   clearInterval(timer);
   anim?.stop();
   if (!host?.isConnected) return;
@@ -146,7 +148,7 @@ function renderStep(host) {
     <small class="muted">${L(PHASE[it.phase || 'main'])} · ${L('เซ็ต', 'Set')} ${st.set}/${it.sets}</small>
     <h1>${L(ex.name)}</h1>
     ${timed ? `<div class="big-count" id="cnt">${P.left}</div>` : `<div class="reps">${it.reps}<small>${L('ครั้ง', 'reps')}</small></div>`}
-    ${setInputs(st)}<p class="cue">${esc(L(ex.cues)[st.set % 3])}</p>
+    ${supportedForm.has(it.id)?`<button class="btn ghost" data-act="form-check">${L('ตรวจฟอร์มด้วยกล้อง','Camera form check')}</button><div id="form-check"></div>`:''}${setInputs(st)}<p class="cue">${esc(L(ex.cues)[st.set % 3])}</p>
     <div class="pl-ctrl"><button class="icon-btn lg" data-act="pl-prev">${icon('back')}</button>
       ${timed ? `<button class="btn primary round" data-act="pl-pause" id="pp">${icon(P.paused ? 'play' : 'pause', 28)}</button>` : `<button class="btn primary round" data-act="pl-next">${icon('check', 30)}</button>`}
       <button class="icon-btn lg" data-act="pl-next">${icon('skip')}</button></div></div>`;
@@ -182,11 +184,11 @@ function finish(host) {
   wakeLock?.release?.();
 }
 const host = () => document.getElementById('player');
-actions['pl-next'] = () => { if (saveSet() === false) return; P.i++; renderStep(host()); };
+actions['pl-next'] = () => { stopFormCheck(); if (saveSet() === false) return; P.i++; renderStep(host()); };
 actions['pl-prev'] = () => { P.i = Math.max(0, P.i - 1); while (P.i > 0 && P.steps[P.i].kind === 'rest') P.i--; renderStep(host()); };
 actions['pl-add'] = () => { P.left += 15; const c = document.getElementById('cnt'); if (c) c.textContent = P.left; };
 actions['pl-pause'] = (el) => { P.paused = !P.paused; el.innerHTML = icon(P.paused ? 'play' : 'pause', 28); P.paused ? anim?.pause() : anim?.play(); if (P.paused) stopVoice(); };
-actions['pl-exit'] = () => { if (confirm(L('ออกจากการฝึก? ความคืบหน้าจะไม่ถูกบันทึก', 'Quit the workout? Progress will not be saved'))) { stopVoice(); clearInterval(timer); anim?.stop(); disconnectHR(); P = null; wakeLock?.release?.(); history.back(); } };
+actions['pl-exit'] = () => { if (confirm(L('ออกจากการฝึก? ความคืบหน้าจะไม่ถูกบันทึก', 'Quit the workout? Progress will not be saved'))) { stopFormCheck(); stopVoice(); clearInterval(timer); anim?.stop(); disconnectHR(); P = null; wakeLock?.release?.(); history.back(); } };
 actions['pl-close'] = () => { P = null; go('#/today'); toast(L('บันทึกการฝึกแล้ว 💪', 'Workout saved 💪')); };
 
 let hrDevice, hrCharacteristic, hrConnecting = false;
@@ -216,9 +218,9 @@ actions['hr-connect']=async()=>{
   hrCharacteristic=characteristic;characteristic.addEventListener('characteristicvaluechanged',hrChanged);await characteristic.startNotifications();
  }catch(e){disconnectHR();if(e.name!=='NotFoundError')toast(L('เชื่อมต่อไม่ได้ ตรวจโหมด broadcast HR แล้วลองอีกครั้ง', 'Could not connect. Check broadcast HR mode and try again.'),'warn');}finally{hrConnecting=false;}
 };
-window.addEventListener('hashchange',()=>{if(!location.hash.startsWith('#/player/')){stopVoice();clearInterval(timer);anim?.stop();disconnectHR();wakeLock?.release?.();P=null;}});
+window.addEventListener('hashchange',()=>{if(!location.hash.startsWith('#/player/')){stopFormCheck();stopVoice();clearInterval(timer);anim?.stop();disconnectHR();wakeLock?.release?.();P=null;}});
 function setInputs(st) {
- if(st.kind!=='work'||!st.it.reps||!['db','gym'].includes(EX[st.it.id].equip))return '';
+ if(st.kind!=='work'||!st.it.reps)return '';
  const prev=P.sets.find(s=>s.index===st.idx && s.set===st.set) || exerciseHistory(st.it.id,P.iso)[0]?.sets.find(s=>s.set===st.set);
  return `<div class="grid2">${[['kg',prev?.kg||0,'kg',2.5],['reps',prev?.reps ?? Number(st.it.reps.split('-')[0]),L('ครั้ง', 'Reps'),1]].map(([key,value,label,step])=>`<label class="field">${label}<div class="stepper"><button class="btn ghost" data-act="set-step" data-key="${key}" data-n="${-step}">−</button><div class="input-wrap"><input type="number" id="set-${key}" min="0" max="${key==='kg'?1000:1000}" step="${key==='kg'?'.5':'1'}" value="${value}"></div><button class="btn ghost" data-act="set-step" data-key="${key}" data-n="${step}">+</button></div></label>`).join('')}</div>`;
 }
@@ -229,3 +231,5 @@ function saveSet(){
  const record={id:st.it.id,index:st.idx,set:st.set,kg:Number(kg.value),reps:Number(reps.value),totalSets:st.it.sets,target:Number(st.it.reps.split('-').at(-1))};
  P.sets=P.sets.filter(s=>!(s.index===st.idx&&s.set===st.set));P.sets.push(record);
 }
+
+actions["form-check"]=()=>{const st=P?.steps[P.i];if(!st||st.kind!=="work")return;startFormCheck(document.getElementById("form-check"),st.it.id,summary=>{const input=document.getElementById("set-reps");if(input&&summary.reps)input.value=summary.reps;if(summary.reps||summary.seconds)toast(`${summary.reps} reps · ${summary.seconds}s · ${summary.cues.join(" / ")}`);updateLog(P.iso,l=>{(l.formChecks||=[]).push({id:st.it.id,set:st.set,...summary});});});};
