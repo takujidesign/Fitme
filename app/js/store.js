@@ -15,7 +15,7 @@ export const addDays = (iso, n) => {
 export const diffDays = (a, b) => Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / 86400000);
 
 const defaults = () => ({
-  lang: (navigator.language || 'th').startsWith('th') ? 'th' : 'en',
+  lang: (['th','en','zh','ja','vi'].includes((navigator.language||'en').split('-')[0])?(navigator.language||'en').split('-')[0]:'en'),
   onboarded: false, consents: {terms:null,health:null,version:null}, telemetry: true,
   profile: {
     name: '', sex: 'male', age: 30, height: 170, weight: 70, goalWeight: null,
@@ -31,7 +31,7 @@ const defaults = () => ({
   },
   account: { token:null, user:null, version:0, lastSync:0, error:'' }, updatedAt:{}, chat:[], challenges:[], badges:[], blocks:[], suggestionDecisions:{},
   theme: 'auto', voiceCoach: false, measurements: [], customFoods: [],
-  notifications: { enabled: false, deviceId: null, meals: true, supplements: true, workout: true, water: false, sleep: true, fasting: true },
+  notifications: { enabled: false, deviceId: null, meals: true, supplements: true, workout: true, water: false, medications: true, sleep: true, fasting: true },
   weights: [],
   photos: [], // {id, date, pose}
   supplements: [], // {uid, productId, startDate, photoId, custom?}

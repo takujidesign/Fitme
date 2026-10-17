@@ -1,25 +1,21 @@
+import { translate, LOCALES } from './i18n/index.js';
 import { getState } from './store.js';
 
-// Bilingual string: L('ไทย', 'English') or L({th, en}).
-export const L = (th, en) => {
-  const lang = getState().lang;
-  if (th && typeof th === 'object') return th[lang] ?? th.th ?? th.en;
-  return lang === 'en' ? (en ?? th) : th;
-};
-export const isTH = () => getState().lang !== 'en';
-
+export const L = (th,en) => translate(th,en,getState().lang);
+export const isTH = () => getState().lang === 'th';
+export const locale = () => LOCALES[getState().lang] || 'en-US';
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-export const fmt = (n, d = 0) => Number(n || 0).toLocaleString(isTH() ? 'th-TH' : 'en-US', { maximumFractionDigits: d, minimumFractionDigits: 0 });
+export const fmt = (n, d = 0) => Number(n || 0).toLocaleString(locale(), { maximumFractionDigits: d, minimumFractionDigits: 0 });
 
 // ---- time helpers (HH:MM <-> minutes) ----
 export const toMin = (hhmm) => { const [h, m] = String(hhmm || '0:0').split(':').map(Number); return h * 60 + (m || 0); };
 export const toHHMM = (min) => { min = ((Math.round(min) % 1440) + 1440) % 1440; return String(Math.floor(min / 60)).padStart(2, '0') + ':' + String(min % 60).padStart(2, '0'); };
 
-export const WEEKDAYS = () => (isTH() ? ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']);
-export const WEEKDAYS_LONG = () => (isTH() ? ['อาทิตย์', 'จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์'] : ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']);
+export const WEEKDAYS = () => Array.from({length:7},(_,i)=>new Intl.DateTimeFormat(locale(),{weekday:'short'}).format(new Date(2024,0,7+i)));
+export const WEEKDAYS_LONG = () => Array.from({length:7},(_,i)=>new Intl.DateTimeFormat(locale(),{weekday:'long'}).format(new Date(2024,0,7+i)));
 export function dateLabel(iso, opts = { weekday: 'short', day: 'numeric', month: 'short' }) {
-  return new Date(iso + 'T00:00:00').toLocaleDateString(isTH() ? 'th-TH' : 'en-US', opts);
+  return new Date(iso + 'T00:00:00').toLocaleDateString(locale(), opts);
 }
 
 // ---- toast ----

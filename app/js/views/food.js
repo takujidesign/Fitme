@@ -1,3 +1,4 @@
+import { foodWarnings } from '../conditions.js';
 import { fastingFields, eatingWindow, inWindow } from '../fasting.js';
 import { actions, views, rerender } from '../core.js';
 import { getState, setState, todayISO, dayLog } from '../store.js';
@@ -37,7 +38,7 @@ views.food = ({ params }) => {
     ${isLockedDay(iso) ? lockCard() : d.meals.map((m) => `<article class="meal ${log.done['meal-' + m.key] ? 'done' : ''}" data-act="meal-open2" data-iso="${iso}" data-k="${m.key}">
       <div class="meal-head"><span class="meal-ic">${icon(mealKind(m.kind).icon, 18)}</span><div><small>${m.time} · ${L(mealKind(m.kind))}</small><b>${esc(L(m.name))}</b></div><em>${m.total.k}<small>kcal</small></em></div>
       <ul class="food-chips">${m.items.map((it) => { const f = FOOD[it.id]; return `<li><span class="fcat ${f.cat}"></span>${esc(L({ th: f.th, en: f.en }))} <b>${it.g}g</b> <small>${esc(unitText(f, it.g, lang))}</small></li>`; }).join('')}</ul>
-      <div class="meal-mac"><span>P ${m.total.p}g</span><span>C ${m.total.c}g</span><span>F ${m.total.f}g</span>${log.done['meal-' + m.key] ? `<span class="ok">${icon('check', 14)} ${L('ทานแล้ว', 'Eaten')}</span>` : ''}</div>
+      <p class="note">${[...new Set(m.items.flatMap(it=>foodWarnings(p,FOOD[it.id]).map(L)))].map(esc).join(' · ')}</p><div class="meal-mac"><span>P ${m.total.p}g</span><span>C ${m.total.c}g</span><span>F ${m.total.f}g</span>${log.done['meal-' + m.key] ? `<span class="ok">${icon('check', 14)} ${L('ทานแล้ว', 'Eaten')}</span>` : ''}</div>
     </article>`).join('')}
     <section class="card"><h2>${L('AI โค้ช', 'AI coach')}</h2><p class="muted sm">${L('ทบทวนอาหารและอาหารเสริมวันนี้ (Pro)', "Review today's meals and supplements (Pro)")}</p><button class="btn primary" data-act="ai-plan">${L('ทบทวนแผนวันนี้', "Review today's plan")}</button></section>
     <div class="tips card soft"><b>${icon('info', 16)} ${L('เคล็ดลับ', 'Tips')}</b><ul>

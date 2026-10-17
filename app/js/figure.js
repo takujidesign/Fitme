@@ -78,6 +78,8 @@ function propSVG(prop, j) {
     if (p === 'plate') out.push(`<circle cx="${hands[0][0]}" cy="${hands[0][1]}" r="15" class="prop-o"/><circle cx="${hands[0][0]}" cy="${hands[0][1]}" r="3" class="prop"/>`);
     if (p === 'bar') { const y = (hands[0][1] + hands[1][1]) / 2; out.push(`<line x1="${Math.min(hands[0][0], hands[1][0]) - 26}" y1="${y}" x2="${Math.max(hands[0][0], hands[1][0]) + 26}" y2="${y}" class="prop-l"/>`); }
     if (p === 'bench') out.push('<rect x="36" y="146" width="110" height="9" rx="3" class="prop-o"/><line x1="50" y1="155" x2="50" y2="181" class="prop-l"/><line x1="132" y1="155" x2="132" y2="181" class="prop-l"/>');
+    if (p === 'wall') out.push('<rect x="170" y="24" width="9" height="158" rx="2" class="prop-o"/>');
+    if (p === 'chair') out.push('<rect x="48" y="150" width="48" height="7" rx="3" class="prop-o"/><path d="M52 181V107H59V150M91 157V181" class="prop-l"/>');
     if (p === 'box') out.push('<rect x="20" y="146" width="62" height="36" rx="4" class="prop-o"/>');
     if (p === 'mat') out.push('<rect x="14" y="179" width="172" height="5" rx="2.5" class="mat"/>');
     if (p === 'cable') out.push(`<line x1="100" y1="10" x2="${(hands[0][0] + hands[1][0]) / 2}" y2="${(hands[0][1] + hands[1][1]) / 2}" class="prop-t"/>`);
@@ -114,7 +116,7 @@ export function renderPose(pose, ex, id = 'figure') {
   const arms = (arm, far) => capsule(arm[0], arm[1], 10, 8, 'ua', far) + capsule(arm[1], arm[2], 8, 6, 'fa', far)
     + capsule(arm[2], along(arm[2], angTo(arm[1], arm[2]), 3), 6, 5, 'skin', far);
   const far = ex.view !== 'front';
-  const behindProps = ['bench', 'box', 'mat', 'cable'].filter((p) => String(ex.prop || '').includes(p)).join(' ');
+  const behindProps = ['bench', 'box', 'wall', 'chair', 'mat', 'cable'].filter((p) => String(ex.prop || '').includes(p)).join(' ');
   const handProps = String(ex.prop || '').split(' ').filter((p) => !behindProps.includes(p)).join(' ');
   const t = pose.t ?? 180, front = ex.view === 'front';
   const torsoPoint = (length, width) => along(along(j.hip, t, length), t - 90, width).map((v) => v.toFixed(2)).join(',');

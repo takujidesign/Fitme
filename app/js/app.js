@@ -1,3 +1,5 @@
+import { cacheOfflineAssets } from './offline.js';
+import { languageFont } from './i18n/index.js';
 import { loadVideos } from './videos.js';
 import { consentCurrent } from './legal.js';
 import { startTelemetry } from './telemetry.js';
@@ -29,6 +31,8 @@ import './views/pay.js';
 import './views/admin.js';
 import './views/coach.js';
 import './views/planning.js';
+import { startLineReminders } from './views/round5b.js';
+import './views/admin-round5b.js';
 import { loadConfig } from './config.js';
 
 const TABS = [
@@ -44,9 +48,10 @@ const tabEl = document.getElementById('tabbar');
 
 function render() {
   applyTheme();
+  languageFont(getState().lang);
   const r = route();
-  if (!getState().onboarded && !['onboarding', 'admin', 'privacy', 'terms', 'account'].includes(r.name)) return go('#/onboarding');
-  if(getState().onboarded && !consentCurrent() && !['consent','privacy','terms','account','admin'].includes(r.name))return go('#/consent');
+  if (!getState().onboarded && !['onboarding', 'admin', 'privacy', 'terms', 'account', 'line-return'].includes(r.name)) return go('#/onboarding');
+  if(getState().onboarded && !consentCurrent() && !['consent','privacy','terms','account','admin','line-return'].includes(r.name))return go('#/consent');
   const v = views[r.name] || views.today;
   const html = v(r);
   document.body.classList.toggle('full', !!v.full || r.name === 'onboarding');
@@ -104,6 +109,7 @@ if (!window.Capacitor?.isNativePlatform?.() && 'serviceWorker' in navigator && l
 await loadConfig();
 await loadVideos();
 startPushSync();
+startLineReminders();
 startMetrics();
 startAccountSync();
 refreshEntitlement();
@@ -112,4 +118,6 @@ handleStripeReturn().then((r) => r && toast(L('ชำระเงินสำเ
 lastHash = location.hash;
 if ((!location.hash || location.hash === '#/today') && getState().onboarded && blockDue(getState())) location.hash = '#/replan';
 render();
+cacheOfflineAssets().catch(()=>{});
+window.addEventListener('online',()=>cacheOfflineAssets().catch(()=>{}));
 export { rerender };

@@ -1,3 +1,4 @@
+import { LANGUAGES } from '../i18n/index.js';
 import { consentFields, consentCurrent, acceptConsent } from '../legal.js';
 import { track } from '../telemetry.js';
 import { fastingFields } from '../fasting.js';
@@ -20,7 +21,7 @@ views.onboarding = ({ query }) => {
   const steps = [
     () => `<div class="ob-hero"><div class="logo-big">${icon('flame', 40)}</div>
       <h1>Fix me</h1><p>${L('แผนออกกำลังกาย อาหาร อาหารเสริม และการพักผ่อน ที่คำนวณเฉพาะคุณ', 'Training, nutrition, supplements and recovery — calculated for you')}</p></div>
-      <div class="seg">${chip('ob-lang', 'th', s.lang === 'th', 'ไทย')}${chip('ob-lang', 'en', s.lang === 'en', 'English')}</div>
+      <div class="seg">${Object.entries(LANGUAGES).map(([lang,name])=>chip('ob-lang',lang,s.lang===lang,name)).join('')}</div>
       ${field('name', L('ชื่อเล่น', 'Your name'), esc(p.name), { type: 'text', ph: L('เช่น ต้น', 'e.g. Alex') })}`,
     () => `<h2>${L('ข้อมูลร่างกาย', 'Your body')}</h2>
       <div class="seg">${chip('ob-set', 'sex:male', p.sex === 'male', L('ชาย', 'Male'))}${chip('ob-set', 'sex:female', p.sex === 'female', L('หญิง', 'Female'))}</div>

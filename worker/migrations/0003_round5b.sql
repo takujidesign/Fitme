@@ -1,0 +1,13 @@
+ALTER TABLE users ADD COLUMN line_user_id TEXT;
+CREATE UNIQUE INDEX users_line ON users(line_user_id);
+CREATE TABLE line_flows (state TEXT PRIMARY KEY, json TEXT NOT NULL, expires_at INTEGER NOT NULL);
+CREATE TABLE line_codes (code_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, challenge TEXT NOT NULL, line_user_id TEXT, expires_at INTEGER NOT NULL);
+CREATE TABLE line_reminders (user_id TEXT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE, json TEXT NOT NULL, expires_at INTEGER NOT NULL);
+CREATE TABLE line_deliveries (user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, day TEXT NOT NULL, event TEXT NOT NULL, PRIMARY KEY(user_id,day,event));
+CREATE TABLE groups (id TEXT PRIMARY KEY, owner_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, name TEXT NOT NULL, code TEXT NOT NULL UNIQUE);
+CREATE TABLE group_members (group_id TEXT NOT NULL REFERENCES groups(id) ON DELETE CASCADE, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, nickname TEXT NOT NULL, PRIMARY KEY(group_id,user_id));
+CREATE TRIGGER group_capacity BEFORE INSERT ON group_members WHEN (SELECT count(*) FROM group_members WHERE group_id=NEW.group_id)>=50 AND NOT EXISTS(SELECT 1 FROM group_members WHERE group_id=NEW.group_id AND user_id=NEW.user_id) BEGIN SELECT RAISE(ABORT,'Group is full'); END;
+CREATE TABLE group_challenges (id TEXT PRIMARY KEY, group_id TEXT NOT NULL REFERENCES groups(id) ON DELETE CASCADE, metric TEXT NOT NULL, start TEXT NOT NULL, end TEXT NOT NULL);
+CREATE TABLE group_scores (day TEXT NOT NULL, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, metric TEXT NOT NULL, value REAL NOT NULL, PRIMARY KEY(day,user_id,metric));
+CREATE TABLE shop_products (id TEXT PRIMARY KEY, json TEXT NOT NULL);
+CREATE TABLE shop_clicks (day TEXT NOT NULL, product_id TEXT NOT NULL, count INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(day,product_id));

@@ -1,3 +1,5 @@
+import { localizedNames } from './i18n/index.js';
+import { medicalFoodAllowed } from './conditions.js';
 // Food database, values per 100 g (cooked weight unless noted). k=kcal p=protein c=carbs f=fat.
 // tags: dietary flags used for filtering. unit: household measure for display.
 const U = {
@@ -66,6 +68,7 @@ export const FOODS = [
   { id: 'peanut_butter', cat: 'fat', k: 588, p: 25, c: 20, f: 50, tags: ['nuts', 'vegan'], unit: U.tbsp, th: 'เนยถั่วไม่หวาน', en: 'Peanut butter (no sugar)' },
   { id: 'avocado', cat: 'fat', k: 160, p: 2, c: 9, f: 15, tags: ['fruit', 'vegan'], unit: U.piece, th: 'อะโวคาโด', en: 'Avocado', unitG: 70 },
 ];
+for(const entry of FOODS)localizedNames(entry.name||entry);
 export const FOOD = Object.fromEntries(FOODS.map((f) => [f.id, f]));
 const BUILTIN = FOODS.slice();
 export function mergeCustomFoods(custom = []) {
@@ -100,5 +103,5 @@ export const EXCLUDES = {
 export function allowedFoods(p) {
   const banned = new Set([...(DIETS[p.diet]?.no || []), ...(p.exclude || [])]);
   if (banned.has('seafood')) banned.add('fish');
-  return FOODS.filter((f) => (!f.id.startsWith('my-') || f.useInPlan) && !f.tags.some((t) => banned.has(t)));
+  return FOODS.filter((f) => medicalFoodAllowed(p,f) && (!f.id.startsWith('my-') || f.useInPlan) && !f.tags.some((t) => banned.has(t)));
 }

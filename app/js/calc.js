@@ -1,3 +1,5 @@
+import { localizedNames } from './i18n/index.js';
+import { hasCondition } from './conditions.js';
 import { healthCalories } from './womens-health.js';
 // Energy, macro, hydration and sleep calculations.
 import { toMin, toHHMM } from './ui.js';
@@ -49,12 +51,12 @@ export function targets(p, isTraining = true, supplementMacros = { kcal: 0, prot
   if (p.calorieFactor) kcal = Math.max(kcal * p.calorieFactor, b * 1.05, p.sex === 'female' ? 1200 : 1500);
   kcal = healthCalories(p,kcal,tdee,iso);
   const refW = p.bodyFat ? p.weight * (1 - p.bodyFat / 100) / 0.85 : Math.min(p.weight, 25 * (p.height / 100) ** 2);
-  const protein = Math.round(g.protein * refW);
+  const protein = hasCondition(p,'kidney') ? Math.min(Math.round(g.protein * refW), Math.floor(0.8*p.weight)) : Math.round(g.protein * refW);
   let fat = Math.round(Math.max(0.7 * p.weight, (kcal * 0.27) / 9));
   let carbs = Math.round((kcal - protein * 4 - fat * 9) / 4);
   if (p.diet === 'lowcarb') { carbs = Math.min(carbs, 90); fat = Math.round((kcal - protein * 4 - carbs * 4) / 9); }
   if (carbs < 50) { carbs = 50; fat = Math.round((kcal - protein * 4 - carbs * 4) / 9); }
-  const water = Math.round((p.weight * 35 + (isTraining ? 600 : 0)) / 50) * 50;
+  const water = Math.round((p.weight * 35 + (isTraining ? 600 : 0) + (hasCondition(p,'gout') && !hasCondition(p,'kidney') && !hasCondition(p,'heart') ? 500 : 0)) / 50) * 50;
   return {
     bmr: Math.round(b), tdee: Math.round(tdee), kcal: Math.round(kcal), protein, fat, carbs, water,
     fromSupps: supplementMacros,
@@ -80,3 +82,5 @@ export function weeksToGoal(p, kcalDeficitPerDay) {
   if (Math.sign(kg) !== Math.sign(-kcalDeficitPerDay)) return null; // losing weight needs a deficit, gaining needs a surplus
   return Math.ceil((Math.abs(kg) * 7700) / Math.abs(kcalDeficitPerDay) / 7);
 }
+
+Object.values(GOALS).forEach(localizedNames);

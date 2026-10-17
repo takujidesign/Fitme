@@ -428,3 +428,7 @@ details summary::-webkit-details-marker { display: none; }
 .badge-confetti{position:fixed;z-index:10000;top:25%;left:10%;width:80%;text-align:center;pointer-events:none;font-size:42px;color:var(--lime);animation:badge-burst 1.8s ease-out forwards}
 @keyframes badge-burst{from{transform:translateY(40px) scale(.3);opacity:1}to{transform:translateY(-120px) scale(1.5);opacity:0}}
 @media(prefers-reduced-motion:reduce){.badge-confetti{animation:none;display:none}}
+
+html[lang="zh"] body,html[lang="ja"] body{font-family:var(--language-font),sans-serif}
+
+.v-onboarding .seg:has([data-act="ob-lang"]){flex-wrap:wrap}

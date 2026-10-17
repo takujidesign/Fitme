@@ -5,7 +5,7 @@ import { FOODS } from '../foods.js';
 import { hasPro, askCoach } from '../pay.js';
 import { CONFIG } from '../config.js';
 
-export const mealLogButtons = iso => `<div class="row gap"><button class="btn ghost" data-act="meal-photo" data-iso="${iso}">${L('ถ่ายรูปอาหาร', 'Meal photo')}</button><button class="btn ghost" data-act="food-quick" data-iso="${iso}">${L('กินนอกแผน', 'Log extra food')}</button></div>`;
+export const mealLogButtons = iso => `<div class="row gap"><button class="btn ghost" data-act="barcode-scan" data-iso="${iso}">${L('สแกนบาร์โค้ด','Scan barcode')}</button><button class="btn ghost" data-act="meal-photo" data-iso="${iso}">${L('ถ่ายรูปอาหาร', 'Meal photo')}</button><button class="btn ghost" data-act="food-quick" data-iso="${iso}">${L('กินนอกแผน', 'Log extra food')}</button></div>`;
 export const foodLogHTML = iso => (getState().logs[iso]?.foodLog || []).map(e => `<section class="card"><b>${esc(e.time)} · ${Math.round(e.totals.kcal)} kcal</b><p>${e.items.map(it => `${esc(L(it.name))} ${it.grams} g`).join(' · ')}</p></section>`).join('');
 export const sumItems = items => Object.fromEntries(['kcal','p','c','f'].map(k => [k, items.reduce((n,it) => n + it[k], 0)]));
 export const scaleItem = (item, grams) => ({ ...item, grams, ...Object.fromEntries(['kcal','p','c','f'].map(k => [k, item[k] * grams / item.grams])) });

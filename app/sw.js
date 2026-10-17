@@ -1,6 +1,8 @@
 // Offline-first service worker. Bump VERSION on every release.
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const SHELL = [
+  './js/i18n/index.js','./js/i18n/zh.js','./js/i18n/ja.js','./js/i18n/vi.js',
+  './js/conditions.js','./js/readiness.js','./js/interactions.js','./js/barcode.js','./js/offline.js','./js/views/round5b.js','./js/views/admin-round5b.js',
   './js/legal.js', './js/telemetry.js', './js/womens-health.js', './js/programs.js', './js/videos.js', './js/views/round5.js', './js/views/admin-round5.js',
   './js/sync-data.js', './js/account.js', './js/challenges.js', './js/replan.js', './js/metrics.js',
   './js/views/account.js', './js/views/trainer.js', './js/views/chat.js', './js/views/challenges.js', './js/views/replan.js', './js/views/admin-keys.js',
@@ -19,7 +21,7 @@ self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
-  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== VERSION).map((k) => caches.delete(k)))).then(() => self.clients.claim()));
+  e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== 'fitme-videos-v1' && k !== 'fitme-assets-v1').map((k) => caches.delete(k)))).then(() => self.clients.claim()));
 });
 self.addEventListener('fetch', (e) => {
   const req = e.request;
@@ -27,9 +29,9 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.pathname.includes('/api/')) return; // never cache API calls
   const isShell = url.origin === location.origin;
-  const isFont = /fonts\.(googleapis|gstatic)\.com|cdnjs\.cloudflare\.com/.test(url.host);
+  const isFont = ['fonts.googleapis.com','fonts.gstatic.com','cdnjs.cloudflare.com','cdn.jsdelivr.net'].includes(url.hostname);
   if (!isShell && !isFont) return;
-  e.respondWith(caches.open(VERSION).then(async (cache) => {
+  e.respondWith(caches.open(isFont ? 'fitme-assets-v1' : VERSION).then(async (cache) => {
     const hit = await cache.match(req, { ignoreSearch: isShell });
     if (isFont && hit) return hit; // fonts/libs: cache-first
     // app files: network-first so releases show up immediately, cache when offline

@@ -1,3 +1,4 @@
+import { localizedNames } from './i18n/index.js';
 // Exercise library: metadata + keyframed poses for the animated figure (see figure.js).
 // Ground is y=182; a standing hip sits at y≈114.
 const STAND_LEGS = { l1: { to: [102, 180] }, l2: { to: [98, 180] } };
@@ -262,13 +263,14 @@ const programExercises = [
  ['dead_bug','เดดบั๊ก','Dead bug','core','reps',[{x:100,y:170,t:-90,a1:[180,180],a2:[180,180],l1:[180,90],l2:[180,90]},{x:100,y:170,t:-90,a1:[-90,-90],a2:[180,180],l1:[85,85],l2:[180,90]}]],
  ['cat_cow','แมวและวัว','Cat-cow','mobility','time',[{x:100,y:135,t:80,a1:{to:[145,180]},a2:{to:[140,180]},l1:{to:[70,180]},l2:{to:[65,180]}},{x:100,y:130,t:100,a1:{to:[145,180]},a2:{to:[140,180]},l1:{to:[70,180]},l2:{to:[65,180]}}]],
  ['chair_squat','นั่งลุกจากเก้าอี้','Chair squat','legs','reps',[stand(),{x:78,y:148,t:160,a1:[80,80],a2:[85,85],...STAND_LEGS}]],
- ['wall_pushup','ดันกำแพง','Wall push-up','push','reps',[stand({t:165,a1:[90,90],a2:[85,85]}),stand({x:110,t:150,a1:[40,110],a2:[35,105]})]],
+ ['wall_pushup','ดันกำแพง','Wall push-up','push','reps',[stand({x:112,t:165,a1:{to:[170,70],bend:-1},a2:{to:[170,74],bend:-1}}),stand({x:120,t:150,a1:{to:[170,70],bend:-1},a2:{to:[170,74],bend:-1}})]],
  ['step_up','ก้าวขึ้นขั้นเตี้ย','Low step-up','legs','reps',[stand({l1:{to:[130,160]}}),stand({y:94,l1:{to:[130,160]},l2:{to:[120,160]}})]],
  ['run_interval','เดินสลับวิ่ง','Run interval','cardio','time',[stand({a1:[50,150],a2:[-30,60],l1:{to:[130,180]},l2:{to:[70,170]}}),stand({a2:[50,150],a1:[-30,60],l2:{to:[130,180]},l1:{to:[70,170]}})]],
  ['side_plank','แพลงก์ด้านข้าง','Side plank','core','time',[{x:100,y:145,t:75,a1:{to:[145,180]},a2:[180,180],l1:{to:[40,180]},l2:{to:[40,176]}},{x:100,y:142,t:75,a1:{to:[145,180]},a2:[180,180],l1:{to:[40,180]},l2:{to:[40,176]}}]],
  ['kegel','หายใจ / อุ้งเชิงกราน','Breathing / pelvic floor','mobility','time',[frontStand({a1:[15,10]}),frontStand({a1:[20,15],y:112})]],
  ['breathing','หายใจ','Breathing','mobility','time',[frontStand(),frontStand({y:112,a1:[20,12]})]]
 ];
-for(const [id,th,en,group,type,frames] of programExercises) EXERCISES.push({id,name:{th,en},group,type,frames,equip:'none',level:1,met:group==='cardio'?6:2.5,hl:[],dur:[1800,1800],muscles:{th:'การเคลื่อนไหวและการทรงตัว',en:'Movement and stability'},cues:{th:['เคลื่อนไหวช้า ๆ ในช่วงที่สบาย','หายใจตามปกติ ไม่กลั้นหายใจ','หยุดเมื่อปวด เวียนหัว หรือไม่สบาย'],en:['Move slowly through a comfortable range','Breathe normally without holding your breath','Stop with pain, dizziness or discomfort']}});
+for(const [id,th,en,group,type,frames] of programExercises) EXERCISES.push({id,name:{th,en},group,type,frames,prop:({wall_pushup:'wall',chair_squat:'chair'})[id],equip:'none',level:1,met:group==='cardio'?6:2.5,hl:[],dur:[1800,1800],muscles:{th:'การเคลื่อนไหวและการทรงตัว',en:'Movement and stability'},cues:{th:['เคลื่อนไหวช้า ๆ ในช่วงที่สบาย','หายใจตามปกติ ไม่กลั้นหายใจ','หยุดเมื่อปวด เวียนหัว หรือไม่สบาย'],en:['Move slowly through a comfortable range','Breathe normally without holding your breath','Stop with pain, dizziness or discomfort']}});
 
+for(const entry of EXERCISES)localizedNames(entry.name||entry);
 export const EX = Object.fromEntries(EXERCISES.map((e) => [e.id, e]));

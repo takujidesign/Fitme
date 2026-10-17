@@ -66,6 +66,7 @@ function eventText(e, lang) {
   if (e.type === 'workout') return `<b>${L('ออกกำลังกาย', 'Workout')} (${e.sess.minutes} ${L('นาที', 'min')}, ~${e.kcal} kcal)</b><br><small>${e.sess.items.map(exLine).join('<br>')}</small>`;
   if (e.type === 'supp') return `<b>${L(e.slotInfo)}</b>: ${e.list.map((x) => `${L(x.prod.name)} ${x.amount} ${L(x.prod.unit)}`).join(', ')}`;
   if (e.type === 'water') return L(`ดื่มน้ำ ${e.ml} มล.`, `Drink ${e.ml} ml water`);
+  if(e.type === 'medication') return esc(e.medication.name)+' · '+esc(e.medication.dose)+' · '+esc(L({th:{with:'พร้อมอาหาร',without:'ท้องว่าง',any:'ตามคำสั่งแพทย์'}[e.medication.food],en:{with:'With food',without:'Without food',any:'As prescribed'}[e.medication.food]}));
   if (e.type === 'wake') return L('ตื่นนอน', 'Wake up');
   if (e.type === 'sleep') return L('เข้านอน', 'Lights out');
   if (e.note === 'caffeine') return L('งดกาแฟ/ชา/เครื่องดื่มชูกำลังหลังเวลานี้', 'No caffeine after this time');
@@ -97,9 +98,9 @@ export function exportICS(days) {
   let n = 0;
   for (const d of plan) {
     for (const e of d.events) {
-      if (!['meal', 'workout', 'supp', 'sleep', 'fasting'].includes(e.type)) continue;
+      if (!['meal', 'workout', 'supp', 'sleep', 'fasting', 'medication'].includes(e.type)) continue;
       const dur = e.type === 'workout' ? e.sess.minutes : 15;
-      const title = e.type === 'fasting' ? eventText(e, getState().lang) : e.type === 'meal' ? `🍽 ${L(mealKind(e.meal.kind))}` : e.type === 'workout' ? `💪 ${L('ออกกำลังกาย', 'Workout')}` : e.type === 'supp' ? `💊 ${L(e.slotInfo)}` : `🌙 ${L('เข้านอน', 'Bedtime')}`;
+      const title = e.type === 'medication' ? e.medication.name : e.type === 'fasting' ? eventText(e, getState().lang) : e.type === 'meal' ? `🍽 ${L(mealKind(e.meal.kind))}` : e.type === 'workout' ? `💪 ${L('ออกกำลังกาย', 'Workout')}` : e.type === 'supp' ? `💊 ${L(e.slotInfo)}` : `🌙 ${L('เข้านอน', 'Bedtime')}`;
       lines.push('BEGIN:VEVENT', `UID:fitme-${d.iso}-${n++}@fitme`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`, `DTSTART:${icsDate(d.iso, e.min)}`, `DTEND:${icsDate(d.iso, e.min + dur)}`,
         `SUMMARY:${icsEsc(title)}`, `DESCRIPTION:${icsEsc(eventText(e, getState().lang))}`, 'BEGIN:VALARM', 'ACTION:DISPLAY', 'TRIGGER:-PT5M', `DESCRIPTION:${icsEsc(title)}`, 'END:VALARM', 'END:VEVENT');
     }

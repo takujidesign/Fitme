@@ -1,3 +1,5 @@
+import { medicalSession } from './conditions.js';
+import { readinessSession } from './readiness.js';
 import { healthAllowed, healthSession } from './womens-health.js';
 import { programSession, PROGRAMS } from './programs.js';
 import { blockProfile } from './replan.js';
@@ -55,7 +57,7 @@ export function isTrainingDay(p, iso) {
 }
 
 export function sessionFor(p, iso) {
-  const result = rawSession(p,iso); if(!result)return result; const adjusted=healthSession(p,result,iso);return {...adjusted,minutes:estimateMin(adjusted.items)};
+  const result = rawSession(p,iso) || (getState().logs[iso]?.checkin?.override==='recovery'?recoverySession(p,iso,0):null); if(!result)return result; const ready=readinessSession(result,getState().logs[iso]?.checkin);const adjusted=medicalSession(p,healthSession(p,ready,iso));const items=adjusted.items.filter(i=>!p.avoidEx?.includes(i.id)&&healthAllowed(p,i.id));return {...adjusted,items,minutes:estimateMin(items)};
 }
 function rawSession(p, iso) {
   if (p === getState().profile) p = blockProfile(getState(), iso);

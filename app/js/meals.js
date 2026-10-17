@@ -1,7 +1,9 @@
+import { translate } from './i18n/index.js';
+import { hasCondition } from './conditions.js';
 import { eatingWindow, windowMinute } from './fasting.js';
 // Meal timing and portion solver.
 import { allowedFoods, FOOD } from './foods.js';
-import { toMin, toHHMM, rng, pick } from './ui.js';
+import { toMin, toHHMM, rng, pick, L } from './ui.js';
 
 const KIND = {
   breakfast: { th: 'มื้อเช้า', en: 'Breakfast', icon: 'sun' },
@@ -135,24 +137,28 @@ function mealName(items, r) {
     const cook = f.cook ? pick(f.cook.th, r) : '';
     const idx = f.cook ? f.cook.th.indexOf(cook) : -1;
     parts.push({ th: (f.th + (cook ? cook : '')).trim(), en: (f.cook && idx >= 0 && f.cook.en[idx] ? f.cook.en[idx] + ' ' : '') + f.en.toLowerCase() });
+    for(const lang of ['zh','ja','vi'])parts.at(-1)[lang]=[f.cook&&idx>=0?translate(f.cook.th[idx],f.cook.en[idx],lang):'',translate(f,undefined,lang)].filter(Boolean).join(' ');
   }
-  for (const it of items) if (it.role === 'carb' || it.role === 'veg' || it.role === 'fruit') parts.push({ th: FOOD[it.id].th, en: FOOD[it.id].en.toLowerCase() });
-  return { th: parts.map((x) => x.th).join(' · '), en: parts.map((x) => x.en).join(' · ').replace(/^./, (c) => c.toUpperCase()) };
+  for (const it of items) if (it.role === 'carb' || it.role === 'veg' || it.role === 'fruit') parts.push({ th: FOOD[it.id].th, en: FOOD[it.id].en.toLowerCase(),...Object.fromEntries(['zh','ja','vi'].map(lang=>[lang,translate(FOOD[it.id],undefined,lang)])) });
+  return { ...Object.fromEntries(['zh','ja','vi'].map(lang=>[lang,parts.map(x=>x[lang]).join(' / ')])), th: parts.map((x) => x.th).join(' · '), en: parts.map((x) => x.en).join(' · ').replace(/^./, (c) => c.toUpperCase()) };
 }
 
 // Full day of meals for given daily targets (food part, i.e. after supplement macros).
 export function dayMeals(p, dateISO, isTraining, t, seeds = {}) {
   const slots = mealSlots(p, isTraining);
+  if(hasCondition(p,'diabetes'))slots.forEach(s=>{s.share=1/slots.length;s.carbBoost=1;});
   const totalShare = slots.reduce((a, s) => a + s.share * (s.carbBoost || 1), 0);
   // keep at least ~55% of protein from real food even when shakes cover most of the target
-  const foodP = Math.max(t.food.protein, Math.round(t.protein * 0.55)), foodK = t.food.kcal;
+  const foodP = (hasCondition(p,'kidney')?Math.max(0,t.food.protein):Math.max(t.food.protein, Math.round(t.protein * 0.55))), foodK = t.food.kcal;
   const foodF = t.fat, foodC = Math.max(40, (foodK - foodP * 4 - foodF * 9) / 4);
-  return slots.map((s) => {
+  const meals = slots.map((s) => {
     const cs = (s.share * (s.carbBoost || 1)) / totalShare;
     const tgt = { p: foodP * s.share, c: foodC * cs, f: foodF * s.share * (s.post ? 0.6 : 1) };
     const seed = `${dateISO}-${s.key}-${seeds[`${dateISO}|${s.key}`] || 0}`;
     return { ...s, tgt, ...buildMeal(p, s, tgt, seed) };
   });
+  if(hasCondition(p,'kidney')){const total=meals.reduce((sum,m)=>sum+m.items.reduce((n,it)=>n+FOOD[it.id].p*it.g/100,0),0);const factor=Math.min(1,Math.max(0,t.food.protein)/Math.max(total,1));if(factor<1)for(const meal of meals){meal.items=meal.items.map(it=>({...it,g:Math.floor(it.g*factor)}));meal.total=Object.fromEntries(['k','p','c','f'].map(k=>[k,meal.items.reduce((n,it)=>n+FOOD[it.id][k]*it.g/100,0)]));}}
+  return meals;
 }
 
 export function unitText(food, g, lang) {
@@ -160,5 +166,5 @@ export function unitText(food, g, lang) {
   const n = g / ug;
   const rounded = n >= 3 ? Math.round(n) : Math.round(n * 2) / 2;
   if (!rounded) return '';
-  return `≈ ${rounded} ${lang === 'en' ? food.unit.en : food.unit.th}`;
+  return `≈ ${rounded} ${L(food.unit)}`;
 }

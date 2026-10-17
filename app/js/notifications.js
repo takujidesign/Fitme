@@ -4,14 +4,15 @@ import { L, toMin, toHHMM, sheet, toast } from './ui.js';
 import { CONFIG } from './config.js';
 import { actions } from './core.js';
 
-export function reminderPlan(start=todayISO()) {
-  const s=getState(),prefs=s.notifications,p=s.profile,out=[];
+export function reminderPlan(start=todayISO(),preferences) {
+  const s=getState(),prefs=preferences||s.notifications,p=s.profile,out=[];
   const add=(iso,min,title,body,route)=>out.push({date:addDays(iso,Math.floor(min/1440)),time:toHHMM(min),title:title.slice(0,120),body:body.slice(0,500),route});
   for(let i=0;i<7;i++){
     const iso=addDays(start,i),d=planDay(iso);
     for(const e of d.events){
-      const kind={meal:'meals',supp:'supplements',workout:'workout',fasting:'fasting'}[e.type];
+      const kind={meal:'meals',supp:'supplements',workout:'workout',fasting:'fasting',medication:'medications'}[e.type];
       if(!kind||!prefs[kind])continue;
+      if(e.type==='medication')add(iso,e.min,L('เวลาทานยา','Medication reminder'),e.medication.name+' · '+e.medication.dose+' · '+L({th:{with:'พร้อมอาหาร',without:'ท้องว่าง',any:'ตามคำสั่งแพทย์'}[e.medication.food],en:{with:'With food',without:'Without food',any:'As prescribed'}[e.medication.food]}),'#/me');
       if(e.type==='meal')add(iso,e.min,L('ถึงเวลาทานอาหาร','Meal time'),L(e.meal.name),'#/food');
       if(e.type==='supp')add(iso,e.min,L('อาหารเสริม','Supplements'),e.list.map(x=>L(x.prod.name)).join(', ').slice(0,500),'#/supps');
       if(e.type==='workout')add(iso,e.min,L('เวลาออกกำลังกาย','Workout time'),'Fix me','#/workout');
@@ -41,7 +42,7 @@ export function startPushSync(){
 }
 actions.notifications=()=>{
   const prefs=getState().notifications;
-  sheet(`<h2>${L('การแจ้งเตือน','Notifications')}</h2><p class="note">${L('iPhone: เพิ่มไปยังหน้าจอโฮมก่อน ต้องใช้ iOS 16.4 ขึ้นไป เปิดแอปอย่างน้อยสัปดาห์ละครั้งเพื่ออัปเดตตาราง','iPhone: Add to Home Screen first; iOS 16.4+ required. Open the app weekly to refresh reminders.')}</p>${!CONFIG.API_BASE?`<p>${L('โหมดทดลอง: ต้องมีเซิร์ฟเวอร์','Demo mode: a server is required')}</p>`:''}${[['meals','มื้ออาหาร','Meals'],['supplements','อาหารเสริม','Supplements'],['workout','ออกกำลังกาย','Workout'],['water','น้ำทุก 2 ชั่วโมง','Water every 2 hours'],['sleep','ก่อนนอน 30 นาที','30 minutes before bedtime'],['fasting','เริ่ม/จบช่วงกิน IF','IF eating window boundaries']].map(([k,th,en])=>`<label class="field"><span><input type="checkbox" data-reminder="${k}" ${prefs[k]?'checked':''}> ${L(th,en)}</span></label>`).join('')}<button class="btn primary block" id="push-enable">${L('เปิดการแจ้งเตือน','Enable notifications')}</button><button class="btn ghost block" id="push-disable">${L('ปิดการแจ้งเตือน','Disable notifications')}</button><p id="push-status" role="status"></p>`,{onMount(root){
+  sheet(`<h2>${L('การแจ้งเตือน','Notifications')}</h2><p class="note">${L('iPhone: เพิ่มไปยังหน้าจอโฮมก่อน ต้องใช้ iOS 16.4 ขึ้นไป เปิดแอปอย่างน้อยสัปดาห์ละครั้งเพื่ออัปเดตตาราง','iPhone: Add to Home Screen first; iOS 16.4+ required. Open the app weekly to refresh reminders.')}</p>${!CONFIG.API_BASE?`<p>${L('โหมดทดลอง: ต้องมีเซิร์ฟเวอร์','Demo mode: a server is required')}</p>`:''}${[['medications','ยา','Medications'],['meals','มื้ออาหาร','Meals'],['supplements','อาหารเสริม','Supplements'],['workout','ออกกำลังกาย','Workout'],['water','น้ำทุก 2 ชั่วโมง','Water every 2 hours'],['sleep','ก่อนนอน 30 นาที','30 minutes before bedtime'],['fasting','เริ่ม/จบช่วงกิน IF','IF eating window boundaries']].map(([k,th,en])=>`<label class="field"><span><input type="checkbox" data-reminder="${k}" ${prefs[k]?'checked':''}> ${L(th,en)}</span></label>`).join('')}<button class="btn primary block" id="push-enable">${L('เปิดการแจ้งเตือน','Enable notifications')}</button><button class="btn ghost block" id="push-disable">${L('ปิดการแจ้งเตือน','Disable notifications')}</button><p id="push-status" role="status"></p>`,{onMount(root){
     root.querySelectorAll('[data-reminder]').forEach(el=>el.onchange=()=>setState(s=>s.notifications[el.dataset.reminder]=el.checked));
     const status=msg=>root.querySelector('#push-status').textContent=msg;
     root.querySelector('#push-enable').onclick=async()=>{try{

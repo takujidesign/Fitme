@@ -123,7 +123,7 @@ export async function qrSVG(text) {
 
 export async function askCoach(kind, input) {
   if (isDemo()) throw new Error('AI requires a configured API');
-  const data = await api('/api/ai/' + kind, { method: 'POST', body: JSON.stringify(input) });
+  const data = await api('/api/ai/' + kind, { method: 'POST', body: JSON.stringify({...input,lang:getState().lang}) });
   track('ai_used');
   return data.review;
 }

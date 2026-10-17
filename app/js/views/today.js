@@ -1,3 +1,4 @@
+import { foodWarnings } from '../conditions.js';
 import { replanCard } from './replan.js';
 import { mealLogButtons } from './food-log.js';
 import { fastingCard } from '../fasting.js';
@@ -29,6 +30,7 @@ function eventRow(e, log, iso) {
   const check = ['meal', 'supp', 'workout', 'water'].includes(e.type);
   let ic = 'clock', title = '', sub = '', cls = e.type, act = '';
   if (e.type === 'fasting') { title = e.eating ? L('เริ่มกินได้', 'Eating window starts') : L('เริ่ม IF', 'Fasting starts'); }
+  if (e.type === 'medication') { ic='pill';title=e.medication.name;sub=esc(e.medication.dose)+' · '+esc(L({th:{with:'พร้อมอาหาร',without:'ท้องว่าง',any:'ตามคำสั่งแพทย์'}[e.medication.food],en:{with:'With food',without:'Without food',any:'As prescribed'}[e.medication.food]})); }
   if (e.type === 'wake') { ic = 'sun'; title = L('ตื่นนอน', 'Wake up'); sub = L('เปิดม่าน รับแสงแดด 5-10 นาที', 'Get 5-10 min of daylight'); }
   if (e.type === 'water') { ic = 'drop'; title = L(`ดื่มน้ำ ${e.ml} มล.`, `Drink ${e.ml} ml water`); sub = L('ช่วยกระตุ้นระบบเผาผลาญหลังตื่นนอน', 'Rehydrate after sleep'); }
   if (e.type === 'meal') { ic = mealKind(e.meal.kind).icon; title = L(mealKind(e.meal.kind)); sub = `${esc(L(e.meal.name))} · <b>${e.meal.total.k}</b> kcal · P${e.meal.total.p}g`; act = `data-act="meal-open" data-iso="${iso}" data-k="${e.meal.key}"`; }
@@ -103,7 +105,7 @@ export function mealSheet(m, iso) {
   const lang = getState().lang;
   sheet(`<div class="sheet-head"><div><small class="muted">${m.time} · ${L(mealKind(m.kind))}</small><h2>${esc(L(m.name))}</h2></div><button class="icon-btn" data-close>${icon('x')}</button></div>
     ${mealLogButtons(iso)}<div class="macro-row"><div><b>${m.total.k}</b><small>kcal</small></div><div><b>${m.total.p}g</b><small>${L('โปรตีน', 'Protein')}</small></div><div><b>${m.total.c}g</b><small>${L('คาร์บ', 'Carbs')}</small></div><div><b>${m.total.f}g</b><small>${L('ไขมัน', 'Fat')}</small></div></div>
-    <ul class="food-list">${m.items.map((it) => { const f = FOOD[it.id]; return `<li><span class="fcat ${f.cat}"></span><div><b>${esc(L({ th: f.th, en: f.en }))}</b><small>${esc(unitText(f, it.g, lang))}</small></div><em>${it.g} g</em></li>`; }).join('')}</ul>
+    <ul class="food-list">${m.items.map((it) => { const f = FOOD[it.id]; return `<li><span class="fcat ${f.cat}"></span><div><b>${esc(L({ th: f.th, en: f.en }))}</b><small>${esc(unitText(f, it.g, lang))} ${foodWarnings(getState().profile,f).map(w=>esc(L(w))).join(' · ')}</small></div><em>${it.g} g</em></li>`; }).join('')}</ul>
     ${m.post ? `<p class="note">${icon('info', 16)} ${L('มื้อหลังออกกำลังกาย: เน้นคาร์บ + โปรตีน ภายใน 1-2 ชม. เพื่อฟื้นฟูกล้ามเนื้อ', 'Post-workout: carbs + protein within 1-2 h to recover')}</p>` : ''}
     ${m.pre ? `<p class="note">${icon('info', 16)} ${L('มื้อก่อนออกกำลังกาย: ทานก่อน 60-90 นาที ไขมันต่ำ ย่อยง่าย', 'Pre-workout: 60-90 min before, low fat, easy to digest')}</p>` : ''}
     <div class="row gap"><button class="btn ghost block" data-act="meal-swap" data-iso="${iso}" data-k="${m.key}">${icon('refresh', 18)} ${L('สุ่มเมนูใหม่', 'Swap meal')}</button>

@@ -1,3 +1,5 @@
+import { hasCondition } from './conditions.js';
+import { supplementTime } from './interactions.js';
 import { blockProfile } from './replan.js';
 import { eatingWindow, inWindow, windowMinute } from './fasting.js';
 // Combines workout, meals, supplements, hydration and sleep into one daily timeline.
@@ -15,7 +17,7 @@ export function planDay(iso) {
   const supps = s.supplements;
   const sm = suppMacros(supps, p, iso, train);
   const t = targets(p, train, sm, iso);
-  if (supps.some((x) => !x.paused && productOf(x)?.category === 'creatine')) t.water += 500;
+  if (!hasCondition(p,'kidney') && !hasCondition(p,'heart') && supps.some((x) => !x.paused && productOf(x)?.category === 'creatine')) t.water += 500;
   const sess = sessionFor(p, iso);
   const meals = dayMeals(p, iso, train, t, s.mealSeed);
   const wake = toMin(p.wake);
@@ -33,6 +35,7 @@ export function planDay(iso) {
     night: bed - 30,
   };
   const events = [];
+  for(const med of p.medications||[])for(const time of med.times||[])events.push({key:'med-'+med.id+'-'+time,min:toMin(time),type:'medication',medication:med});
   const window = eatingWindow(p);
   if (window) {
     events.push({key:'eat-start',min:window.start,type:'fasting',eating:true});
@@ -50,7 +53,10 @@ export function planDay(iso) {
       const needsFood = ['breakfast','lunch','dinner'].includes(d.slot) || prod?.nutrition?.k > 0 || prod?.nutrition?.p > 0;
       const time = slotTime[d.slot];
       const moved = window && needsFood;
-      const min = moved ? (inWindow(time,window) ? windowMinute(time,window) : meals[0].min) : time;
+      const initialMin = moved ? (inWindow(time,window) ? windowMinute(time,window) : meals[0].min) : time;
+      const timed=supplementTime(initialMin,p.medications||[],prod,p,at=>at<bed&&at>=wake&&(!window||!needsFood||inWindow(at,window)));
+      if(timed.min===null)continue;
+      const min=timed.min;
       const key = `${d.slot}:${min}`;
       (bySlot[key] ||= {slot:d.slot,min,list:[]}).list.push({ uid: sp.uid, prod, amount: d.amount });
     }

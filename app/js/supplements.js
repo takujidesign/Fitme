@@ -1,3 +1,5 @@
+import { hasCondition } from './conditions.js';
+import { localizedNames } from './i18n/index.js';
 // Supplement catalog + dosing engine. Catalog entries mirror the dosing charts printed on each label;
 // custom and AI-read supplements use the same schema, so one engine schedules everything.
 import { diffDays, addDays } from './store.js';
@@ -87,6 +89,7 @@ export const CATALOG = [
     rules: [{ doses: { breakfast: 1 } }],
   },
 ];
+for(const entry of CATALOG)localizedNames(entry.name||entry);
 export const CAT = Object.fromEntries(CATALOG.map((c) => [c.id, c]));
 
 export const CATEGORY = {
@@ -113,6 +116,7 @@ function ruleFor(prod, weight, dayType, phase) {
 export function dosesFor(s, profile, iso, isTraining, allSupps = []) {
   const prod = productOf(s);
   if (!prod || s.paused) return [];
+  if(hasCondition(profile,'kidney') && (prod.category==='creatine'||prod.nutrition?.p>0))return [];
   if (diffDays(s.startDate, iso) < 0) return [];
   // two multivitamins: alternate days instead of doubling fat-soluble vitamins
   const sameCat = allSupps.filter((x) => !x.paused && productOf(x)?.category === prod.category && prod.category === 'multi');
@@ -170,7 +174,7 @@ export function warnings(supps, profile) {
   const count = (c) => active.filter((p) => p.category === c).length;
   if (count('multi') > 1) out.push({ th: 'มีวิตามินรวมมากกว่า 1 ชนิด ระบบจะสลับวันทาน เพื่อไม่ให้ได้รับวิตามิน A/D/E เกิน', en: 'More than one multivitamin: the plan alternates days so you don\'t double up on vitamins A/D/E' });
   if (count('multi') && count('bcomplex')) out.push({ th: 'วิตามินรวมมีวิตามินบีอยู่แล้ว การทาน B-Complex เพิ่มปลอดภัย (ละลายในน้ำ) แต่อาจไม่จำเป็น', en: 'Your multivitamin already contains B vitamins; extra B-complex is water-soluble but may be unnecessary' });
-  if (count('creatine')) out.push({ th: 'ครีเอทีน: ดื่มน้ำเพิ่มวันละ 500-750 มล. ระบบเพิ่มเป้าหมายน้ำให้แล้ว', en: 'Creatine: drink an extra 500-750 ml of water per day. Your water goal already includes it' });
+  if (count('creatine') && !hasCondition(profile,'kidney') && !hasCondition(profile,'heart')) out.push({ th: 'ครีเอทีน: ดื่มน้ำเพิ่มวันละ 500-750 มล. ระบบเพิ่มเป้าหมายน้ำให้แล้ว', en: 'Creatine: drink an extra 500-750 ml of water per day. Your water goal already includes it' });
   if (count('carnitine') && profile.sex === 'female') out.push({ th: 'แอล-คาร์นิทีน: ไม่ควรใช้ระหว่างตั้งครรภ์หรือให้นมบุตร', en: 'L-carnitine: avoid during pregnancy or breastfeeding' });
   return out;
 }
