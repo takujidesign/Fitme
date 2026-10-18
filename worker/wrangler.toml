@@ -4,6 +4,7 @@ compatibility_date = "2026-09-01"
 compatibility_flags = ["nodejs_compat"]
 
 [vars]
+# Contact for Web Push services; change to your own address before enabling push.
 VAPID_SUBJECT = "mailto:replace-with-your-email@example.com"
 # Comma-separated origins allowed to call the API (your GitHub Pages URL).
 ALLOWED_ORIGINS = "https://takujidesign.github.io"
@@ -11,49 +12,38 @@ ALLOWED_ORIGINS = "https://takujidesign.github.io"
 RECEIVER_NAME = ""
 # THUNDER_API_URL = "https://api.thunder.in.th/v2/verify/bank"
 
-# Secrets (set with `npx wrangler secret put NAME`):
-#   TOKEN_SECRET       random 32+ character string used to sign entitlement tokens
-#   THUNDER_API_KEY    Thunder Solution API key (slip verification)
-#   STRIPE_SECRET_KEY  Stripe secret key (sk_live_... or sk_test_...)
-#   ANTHROPIC_API_KEY  Claude API key (supplement label reading)
+# Bootstrap secrets (set once with `npx wrangler secret put NAME`):
+#   ADMIN_PASSWORD, TOKEN_SECRET, MASTER_KEY
+# Service keys (Thunder, Stripe, Claude, VAPID, LINE, Resend) can be entered
+# encrypted from the admin page instead of as Wrangler secrets.
 
-# Optional extra replay protection for slips:
-# [[kv_namespaces]]
-# binding = "SLIPS"
-# id = "<your KV namespace id>"
+[[kv_namespaces]]
+binding = "CONFIG"
+id = "48dafc31967c42a096b2e04dd1a29a8b"
 
-# Admin settings (create a namespace, then uncomment all three lines):
-# [[kv_namespaces]]
-# binding = "CONFIG"
-# id = "<your CONFIG KV namespace id>"
-# Secret: ADMIN_PASSWORD (npx wrangler secret put ADMIN_PASSWORD)
-# Secret: MASTER_KEY (32+ random characters; encrypts service keys in CONFIG)
+[[kv_namespaces]]
+binding = "PUSH"
+id = "a3634425dcd84272bdcc6ab927f53715"
 
-# Accounts and trainer mode: create D1, insert its ID, then uncomment.
-# npx wrangler d1 create fitme
-# [[d1_databases]]
-# binding = "DB"
-# database_name = "fitme"
-# database_id = "<your D1 database id>"
-# migrations_dir = "migrations"
+[[kv_namespaces]]
+binding = "SLIPS"
+id = "4826cc4973fa422f89e0899a6e7c364f"
 
-# Round 5a public exercise videos; admin-only MP4 uploads, max 25 MB:
-# npx wrangler r2 bucket create fitme-media
-# [[r2_buckets]]
-# binding = "MEDIA"
-# bucket_name = "fitme-media"
+[[d1_databases]]
+binding = "DB"
+database_name = "fixme"
+database_id = "95ad7dff-0e0c-490f-b25a-976868548548"
+migrations_dir = "migrations"
 
-# Web Push: create PUSH KV and uncomment the binding below before enabling clients.
-# npx wrangler kv namespace create PUSH
-# [[kv_namespaces]]
-# binding = "PUSH"
-# id = "<your PUSH KV namespace id>"
-# Secrets: VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY (generate once; keep stable).
-# Cron is a no-op until PUSH and VAPID secrets are configured.
 [triggers]
+# */5: reminders and win-back; 20:00 UTC = 03:00 Asia/Bangkok nightly backup.
 crons = ["*/5 * * * *", "0 20 * * *"]
 
-# Daily 03:00 Asia/Bangkok (20:00 UTC), private backup bucket:
+# R2 (exercise videos + nightly backups): enable R2 in the Cloudflare dashboard,
+# then `npx wrangler r2 bucket create fixme-media` / `fixme-backups` and uncomment.
+# [[r2_buckets]]
+# binding = "MEDIA"
+# bucket_name = "fixme-media"
 # [[r2_buckets]]
 # binding = "BACKUPS"
-# bucket_name = "fitme-backups"
+# bucket_name = "fixme-backups"

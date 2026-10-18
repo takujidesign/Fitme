@@ -3,7 +3,7 @@
 // payments are simulated and AI label reading is disabled.
 export const CONFIG = {
   CONTACT_EMAIL: '', REFERRAL_DAYS: 7, TRAINER_SHARE: 70,
-  API_BASE: '',
+  API_BASE: 'https://fitme-api.fitme-api.workers.dev',
   // PromptPay receiver (mobile number 0812345678 or 13-digit tax ID). Used to build the payment QR.
   PROMPTPAY_ID: '0812345678',
   PROMPTPAY_NAME: 'Fix me',
