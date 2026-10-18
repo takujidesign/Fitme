@@ -1,0 +1,16 @@
+# Fixmee web app on Cloudflare (static files from ../app, stamped by deploy.mjs).
+name = "fixmee-web"
+compatibility_date = "2026-09-01"
+workers_dev = false
+
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
+
+[[routes]]
+pattern = "fixmee.app"
+custom_domain = true
+
+[[routes]]
+pattern = "www.fixmee.app"
+custom_domain = true

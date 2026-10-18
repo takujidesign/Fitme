@@ -2,12 +2,14 @@ name = "fitme-api"
 main = "src/index.js"
 compatibility_date = "2026-09-01"
 compatibility_flags = ["nodejs_compat"]
+# Keep the old workers.dev URL working while clients move to api.fixmee.app.
+workers_dev = true
 
 [vars]
 # Contact for Web Push services; change to your own address before enabling push.
 VAPID_SUBJECT = "mailto:replace-with-your-email@example.com"
 # Comma-separated origins allowed to call the API (your GitHub Pages URL).
-ALLOWED_ORIGINS = "https://takujidesign.github.io"
+ALLOWED_ORIGINS = "https://fixmee.app,https://www.fixmee.app,https://takujidesign.github.io"
 # Optional: only accept slips paid to this receiver name (match any of "|"-separated parts).
 RECEIVER_NAME = ""
 # THUNDER_API_URL = "https://api.thunder.in.th/v2/verify/bank"
@@ -47,3 +49,8 @@ bucket_name = "fixme-media"
 [[r2_buckets]]
 binding = "BACKUPS"
 bucket_name = "fixme-backups"
+
+# Public API hostname (Cloudflare creates the DNS record and certificate).
+[[routes]]
+pattern = "api.fixmee.app"
+custom_domain = true

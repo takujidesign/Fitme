@@ -122,4 +122,13 @@ if ((!location.hash || location.hash === '#/today') && getState().onboarded && b
 render();
 cacheOfflineAssets().catch(()=>{});
 window.addEventListener('online',()=>cacheOfflineAssets().catch(()=>{}));
+
+// Old address: Fixmee moved to fixmee.app. Browser data is per-domain, so explain how to bring it along.
+if (location.hostname === 'takujidesign.github.io') {
+  const b = document.createElement('div');
+  b.className = 'install';
+  b.style.top = 'calc(var(--safe-t) + 10px)'; b.style.bottom = 'auto';
+  b.innerHTML = `<div><b>${L('Fixmee ย้ายไปที่ fixmee.app แล้ว', 'Fixmee has moved to fixmee.app')}</b><small>${L('ข้อมูลในเครื่องไม่ย้ายตามอัตโนมัติ: กด "สำรองข้อมูล" ในหน้า ฉัน แล้วกู้คืนที่ fixmee.app หรือเข้าสู่ระบบเพื่อซิงก์', 'Data on this device does not move automatically: use "Back up data" on the Me page and restore it on fixmee.app, or sign in to sync')}</small></div><a class="btn primary xs" href="https://fixmee.app/">${L('ไปเลย', 'Open')}</a>`;
+  document.body.appendChild(b);
+}
 export { rerender };
