@@ -39,11 +39,11 @@ migrations_dir = "migrations"
 # */5: reminders and win-back; 20:00 UTC = 03:00 Asia/Bangkok nightly backup.
 crons = ["*/5 * * * *", "0 20 * * *"]
 
-# R2 (exercise videos + nightly backups): enable R2 in the Cloudflare dashboard,
-# then `npx wrangler r2 bucket create fixme-media` / `fixme-backups` and uncomment.
-# [[r2_buckets]]
-# binding = "MEDIA"
-# bucket_name = "fixme-media"
-# [[r2_buckets]]
-# binding = "BACKUPS"
-# bucket_name = "fixme-backups"
+# R2: exercise videos (admin uploads) and private nightly backups.
+[[r2_buckets]]
+binding = "MEDIA"
+bucket_name = "fixme-media"
+
+[[r2_buckets]]
+binding = "BACKUPS"
+bucket_name = "fixme-backups"
