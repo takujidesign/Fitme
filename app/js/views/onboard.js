@@ -20,7 +20,7 @@ views.onboarding = ({ query }) => {
   const edit = query.get('edit') === '1';
   const steps = [
     () => `<div class="ob-hero"><div class="logo-big">${icon('flame', 40)}</div>
-      <h1>Fix me</h1><p>${L('แผนออกกำลังกาย อาหาร อาหารเสริม และการพักผ่อน ที่คำนวณเฉพาะคุณ', 'Training, nutrition, supplements and recovery — calculated for you')}</p></div>
+      <h1>Fixmee</h1><p>${L('แผนออกกำลังกาย อาหาร อาหารเสริม และการพักผ่อน ที่คำนวณเฉพาะคุณ', 'Training, nutrition, supplements and recovery — calculated for you')}</p></div>
       <div class="seg">${Object.entries(LANGUAGES).map(([lang,name])=>chip('ob-lang',lang,s.lang===lang,name)).join('')}</div>
       ${field('name', L('ชื่อเล่น', 'Your name'), esc(p.name), { type: 'text', ph: L('เช่น ต้น', 'e.g. Alex') })}`,
     () => `<h2>${L('ข้อมูลร่างกาย', 'Your body')}</h2>

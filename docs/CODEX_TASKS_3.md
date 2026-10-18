@@ -24,7 +24,7 @@ Same rules as docs/CODEX_TASKS.md and CODEX_TASKS_2.md (static ES modules, `L()`
 - Also allow a simple recipe: list of existing foods + grams → saved as one custom food with computed macros.
 
 ## 6. Native app shell (Capacitor) for Health data
-- Add `mobile/` with a Capacitor 6+ project (package.json, capacitor.config.ts with `webDir: '../app'`, appId `design.takuji.fixme`, appName `Fix me`). Do not commit `node_modules`, `android/` or `ios/` build folders; document `npx cap add android` / `npx cap add ios`.
+- Add `mobile/` with a Capacitor 6+ project (package.json, capacitor.config.ts with `webDir: '../app'`, appId `design.takuji.fixme`, appName `Fixmee`). Do not commit `node_modules`, `android/` or `ios/` build folders; document `npx cap add android` / `npx cap add ios`.
 - Health bridge `app/js/health.js`: when running inside Capacitor (`window.Capacitor?.isNativePlatform()`), use a community health plugin (e.g. `@capgo/capacitor-health` or `capacitor-health`; pick one that supports both HealthKit and Health Connect and document it) to read steps, sleep sessions, resting heart rate, active energy, and weight for the last 7 days; otherwise the module reports "unsupported" and the UI hides itself. Me page "ข้อมูลสุขภาพ" card shows the data and lets the user import weight/sleep into the app logs.
 - Document in README the steps to build Android (Android Studio) and iOS (Xcode on a Mac), required permissions/Info.plist keys, and that this cannot be tested from the web build.
 

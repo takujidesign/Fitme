@@ -1,7 +1,7 @@
 {
-  "name": "Fix me — ออกกำลังกาย อาหาร อาหารเสริม",
-  "short_name": "Fix me",
-  "description": "แผนออกกำลังกาย อาหาร อาหารเสริม และการพักผ่อน ที่คำนวณเฉพาะคุณ",
+  "name": "Fixmee — ออกกำลังกาย อาหาร อาหารเสริม",
+  "short_name": "Fixmee",
+  "description": "Fixmee — แผนออกกำลังกาย อาหาร อาหารเสริม และการพักผ่อน ที่คำนวณเฉพาะคุณ",
   "start_url": "./#/today",
   "scope": "./",
   "display": "standalone",

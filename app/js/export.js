@@ -34,7 +34,7 @@ export function printHTML(days) {
   const usedEx = [...new Set(plan.flatMap((d) => d.sess?.items.map((i) => i.id) || []))];
   const [sMin, sMax] = sleepNeed(p.age);
   return `<div class="print-doc">
-  <header class="pd-head"><div><h1>Fix me ${L('แผนสุขภาพส่วนตัว', 'Personal plan')}</h1>
+  <header class="pd-head"><div><h1>Fixmee ${L('แผนสุขภาพส่วนตัว', 'Personal plan')}</h1>
   <p>${esc(p.name || '')} · ${p.age} ${L('ปี', 'y')} · ${p.height} cm · ${p.weight} kg · BMI ${bmi(p).toFixed(1)} · ${L(GOALS[p.goal])}</p>
   <p>${dateLabel(plan[0].iso, { day: 'numeric', month: 'long', year: 'numeric' })} – ${dateLabel(plan.at(-1).iso, { day: 'numeric', month: 'long', year: 'numeric' })} (${days} ${L('วัน', 'days')})</p></div></header>
   ${measurementsPrint()}<section class="pd-grid">
@@ -53,7 +53,7 @@ export function printHTML(days) {
     </tbody></table>
     <p class="pd-sum">${L('รวมจากอาหาร', 'Food total')}: ${fmt(d.foodTotal.k)} kcal · P ${d.foodTotal.p} · C ${d.foodTotal.c} · F ${d.foodTotal.f} g${d.sm.kcal ? ` + ${L('อาหารเสริม', 'supplements')} ${d.sm.kcal} kcal / P ${d.sm.protein} g` : ''}</p>
   </section>`).join('')}
-  <footer class="pd-foot">${L('ข้อมูลนี้เป็นคำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์ ปรึกษาแพทย์ก่อนเริ่มโปรแกรมหากมีโรคประจำตัว ปฏิบัติตามฉลากอาหารเสริมเสมอ', 'General guidance only, not medical advice. Consult a doctor before starting if you have a medical condition. Always follow supplement labels.')}</footer>
+  <footer class="pd-foot">Fixmee · ${L('ข้อมูลนี้เป็นคำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์ ปรึกษาแพทย์ก่อนเริ่มโปรแกรมหากมีโรคประจำตัว ปฏิบัติตามฉลากอาหารเสริมเสมอ', 'General guidance only, not medical advice. Consult a doctor before starting if you have a medical condition. Always follow supplement labels.')}</footer>
   </div>`;
 }
 
@@ -94,24 +94,24 @@ const icsEsc = (s) => String(s).replace(/<[^>]+>/g, ' ').replace(/[,;\\]/g, (c) 
 
 export function exportICS(days) {
   const plan = planRange(days);
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Fix me//Plan//TH', 'CALSCALE:GREGORIAN', 'X-WR-CALNAME:Fix me'];
+  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Fixmee//Plan//TH', 'CALSCALE:GREGORIAN', 'X-WR-CALNAME:Fixmee'];
   let n = 0;
   for (const d of plan) {
     for (const e of d.events) {
       if (!['meal', 'workout', 'supp', 'sleep', 'fasting', 'medication'].includes(e.type)) continue;
       const dur = e.type === 'workout' ? e.sess.minutes : 15;
       const title = e.type === 'medication' ? e.medication.name : e.type === 'fasting' ? eventText(e, getState().lang) : e.type === 'meal' ? `🍽 ${L(mealKind(e.meal.kind))}` : e.type === 'workout' ? `💪 ${L('ออกกำลังกาย', 'Workout')}` : e.type === 'supp' ? `💊 ${L(e.slotInfo)}` : `🌙 ${L('เข้านอน', 'Bedtime')}`;
-      lines.push('BEGIN:VEVENT', `UID:fitme-${d.iso}-${n++}@fitme`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`, `DTSTART:${icsDate(d.iso, e.min)}`, `DTEND:${icsDate(d.iso, e.min + dur)}`,
+      lines.push('BEGIN:VEVENT', `UID:fixmee-${d.iso}-${n++}@fixmee.app`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`, `DTSTART:${icsDate(d.iso, e.min)}`, `DTEND:${icsDate(d.iso, e.min + dur)}`,
         `SUMMARY:${icsEsc(title)}`, `DESCRIPTION:${icsEsc(eventText(e, getState().lang))}`, 'BEGIN:VALARM', 'ACTION:DISPLAY', 'TRIGGER:-PT5M', `DESCRIPTION:${icsEsc(title)}`, 'END:VALARM', 'END:VEVENT');
     }
   }
   lines.push('END:VCALENDAR');
-  download(`fitme-plan-${plan[0].iso}.ics`, lines.join('\r\n'), 'text/calendar');
+  download(`fixmee-plan-${plan[0].iso}.ics`, lines.join('\r\n'), 'text/calendar');
 }
 
 export function exportJSON() {
   const s = { ...getState() };
   delete s.premium;
-  download(`fitme-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(s, null, 2), 'application/json');
+  download(`fixmee-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(s, null, 2), 'application/json');
 }
 export { toHHMM, toMin };

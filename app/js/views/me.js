@@ -65,7 +65,7 @@ views.me = () => {
     </section>
 
     <section class="card premium ${hasPro() ? 'on' : ''}">
-      <div class="row between"><h2>${icon('spark', 20)} Fix me Pro</h2>${hasPro() ? `<span class="tag teal">${L('ใช้งานถึง', 'Active until')} ${dateLabel(s.premium.until.slice(0, 10), { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : ''}</div>
+      <div class="row between"><h2>${icon('spark', 20)} Fixmee Pro</h2>${hasPro() ? `<span class="tag teal">${L('ใช้งานถึง', 'Active until')} ${dateLabel(s.premium.until.slice(0, 10), { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : ''}</div>
       ${hasPro() ? '' : `<p class="muted sm">${L('แผนเต็มทุกวัน · อาหารเสริมไม่จำกัด · AI อ่านฉลาก · ดาวน์โหลด PDF/ปฏิทิน', 'Full plan · unlimited supplements · AI label reader · PDF & calendar downloads')}</p><button class="btn primary block" data-act="go" data-to="#/pay">${L('อัปเกรด', 'Upgrade')}</button>`}
       ${!hasPro() && s.premium.exportsLeft ? `<p class="muted sm">${L(`สิทธิ์ดาวน์โหลดคงเหลือ ${s.premium.exportsLeft} ครั้ง`, `${s.premium.exportsLeft} download(s) left`)}</p>` : ''}
     </section>
@@ -90,7 +90,7 @@ views.me = () => {
       </div>
     </section>
     <p class="muted sm center"><a href="#/admin">${L('ผู้ดูแลระบบ', 'Admin')}</a></p>
-    <p class="muted sm center">Fix me · ${L('คำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์', 'General guidance, not medical advice')}</p>`;
+    <p class="muted sm center">Fixmee · ${L('คำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์', 'General guidance, not medical advice')}</p>`;
 };
 views.me.mount = async (root) => {
   mountTrainerNotes(root);

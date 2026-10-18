@@ -1,4 +1,6 @@
-# Fix me
+# Fixmee
+
+Product domain: `fixmee.app`.
 
 ## Round 5a (sections 1–9 only)
 
@@ -118,7 +120,7 @@ Run `node worker/test.mjs` for mocked config, payment-config and AI endpoint che
 
 ### Round 2: planning and progress
 
-- Display name is **Fix me**. Existing `fitme:v1` localStorage data and the `fitme` image database remain compatible; repo and deployment URLs are unchanged.
+- Display name is **Fixmee**. Existing `fitme:v1` localStorage data and the `fitme` image database remain compatible; repo and deployment URLs are unchanged.
 - Admin has service readiness rows, a tab-only password with show/hide, PromptPay validation, bilingual package fields with live price/duration previews and best-value toggles, free-limit steppers, setup commands, and an unsaved-change bar. Keys can be entered in the encrypted API keys section (see Round 4 setup below). CONFIG KV readiness is returned as a boolean.
 - Train → **Exercise preferences / ตั้งค่าท่า**: toggle allowed exercises by muscle group, apply knee/back/shoulder/wrist avoid presets, and choose preferred exercises. Exclusions apply to warm-up, main work, finishers, cool-down and recovery. An empty allowed pool produces no exercises. Each exercise's swap button stores an allowed same-group replacement for that date, shared by the plan and player.
 - Open **Calendar / ปฏิทิน** from Train or the Food week strip. Tap a day to open its plan; reopen its calendar to edit that date as normal, extra training, or off. Vacation ranges mark all dates off. Split rotation counts actual training days, and food targets follow the same overrides.

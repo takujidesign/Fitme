@@ -46,7 +46,7 @@ assert(printHTML(1).includes('Eating window starts'));assert(printHTML(1).includ
 let exportBlob;const create=URL.createObjectURL;URL.createObjectURL=blob=>(exportBlob=blob,'blob:test');
 globalThis.document={createElement:()=>({click(){},remove(){}}),body:{appendChild(){}}};
 exportICS(1);const calendar=await exportBlob.text();URL.createObjectURL=create;
-assert(calendar.includes('X-WR-CALNAME:Fix me'));assert(calendar.includes('SUMMARY:Eating window starts'));assert(calendar.includes('SUMMARY:Fasting starts'));
+assert(calendar.includes('X-WR-CALNAME:Fixmee'));assert(calendar.includes('SUMMARY:Eating window starts'));assert(calendar.includes('SUMMARY:Fasting starts'));
 const {readFileSync,existsSync}=await import('node:fs');const shell=readFileSync(new URL('../app/sw.js',import.meta.url),'utf8');
 assert(shell.includes("const VERSION = 'fitme-v1';"));
 for(const file of ['js/fasting.js','js/progress.js','js/views/planning.js']){assert(shell.includes(`'./${file}'`));assert(existsSync(new URL('../app/'+file,import.meta.url)));}

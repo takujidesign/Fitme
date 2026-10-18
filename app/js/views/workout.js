@@ -32,7 +32,7 @@ export function weekStrip(selected, route) {
   }).join('')}</div><button class="btn ghost" data-act="calendar" data-iso="${selected}">${icon('cal',16)} ${L('ปฏิทิน', 'Calendar')}</button>`;
 }
 
-export const lockCard = (what) => `<div class="lock-card">${icon('lock', 28)}<b>${L('ปลดล็อกแผนเต็มด้วย Fix me Pro', 'Unlock the full plan with Fix me Pro')}</b>
+export const lockCard = (what) => `<div class="lock-card">${icon('lock', 28)}<b>${L('ปลดล็อกแผนเต็มด้วย Fixmee Pro', 'Unlock the full plan with Fixmee Pro')}</b>
   <small>${what || L(`ฟรีดูได้ ${CONFIG.FREE_PLAN_DAYS} วันแรก`, `Free covers the first ${CONFIG.FREE_PLAN_DAYS} days`)}</small><button class="btn primary" data-act="go" data-to="#/pay">${icon('spark', 18)} ${L('ดูแพ็กเกจ', 'See plans')}</button></div>`;
 
 views.workout = ({ params }) => {

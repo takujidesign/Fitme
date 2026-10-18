@@ -2,7 +2,7 @@
 
 Same rules as docs/CODEX_TASKS.md: read README.md, static ES modules in `app/` (no build), bilingual strings via `L('ไทย','English')`, views register `views.x` / `actions['x']`, state via `getState/setState`, add any new JS file to `SHELL` in `app/sw.js` but do NOT change the `const VERSION = 'fitme-v1'` line (the deploy workflow rewrites it). Reuse existing CSS classes (`card`, `field`, `input-wrap`, `chip`, `seg`, `sheet`, `btn`, `tag`, `note`) and add new CSS to `app/css/app.css` in the same style (dark theme tokens in `:root`). Keep everything working offline and on a 375px-wide phone. Existing saved user state must keep working (add new fields with defaults in `defaults()` and the merge in `load()` in `store.js`).
 
-## 1. Rename the app to "Fix me"
+## 1. Rename the app to "Fixmee"
 Display name everywhere: `<title>`, `apple-mobile-web-app-title`, `manifest.webmanifest` (name/short_name), onboarding hero, PDF header, ICS calendar name/PRODID, install banner, README, Stripe product names in the worker. Keep storage keys (`fitme:v1`, IndexedDB `fitme`) unchanged so users don't lose data. Repo/URL stay the same.
 
 ## 2. Redesign the admin page (`app/js/views/admin.js`)

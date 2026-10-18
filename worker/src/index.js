@@ -9,7 +9,7 @@ import { admin, input, getSecret, secretStatus, saveSecrets, testSecret } from '
 import { auth, sync, trainer, user, query } from './accounts.js';
 import { chat } from './chat.js';
 import { pushRequest, sendScheduled } from './push.js';
-// Fix me API — Cloudflare Worker
+// Fixmee API — Cloudflare Worker
 //   POST /api/slip/verify      PromptPay slip check via Thunder API → entitlement token
 //   POST /api/stripe/checkout  create a Stripe Checkout session
 //   GET  /api/stripe/confirm   confirm a paid session → entitlement token
@@ -22,9 +22,9 @@ import { CONFIG as DEFAULTS } from '../../app/js/config.js';
 
 // Keep in sync with app/js/config.js
 const PRODUCTS = {
-  export1: { thb: 49, usd: 1.49, days: 0, name: 'Fix me – plan download' },
-  pro30: { thb: 99, usd: 2.99, days: 30, name: 'Fix me Pro – 30 days' },
-  pro90: { thb: 249, usd: 6.99, days: 90, name: 'Fix me Pro – 90 days' },
+  export1: { thb: 49, usd: 1.49, days: 0, name: 'Fixmee – plan download' },
+  pro30: { thb: 99, usd: 2.99, days: 30, name: 'Fixmee Pro – 30 days' },
+  pro90: { thb: 249, usd: 6.99, days: 90, name: 'Fixmee Pro – 90 days' },
 };
 
 export default {

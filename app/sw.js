@@ -49,7 +49,7 @@ self.addEventListener('fetch', (e) => {
 self.addEventListener('push', e => {
   let data; try { data = e.data?.json(); } catch {}
   const route = /^#\/(today|food|workout|supps|me)$/.test(data?.route) ? data.route : '#/today';
-  e.waitUntil(self.registration.showNotification(data?.title || 'Fix me', {body:data?.body || '',icon:'./icons/icon-192.png',tag:data?.tag,data:{route}}));
+  e.waitUntil(self.registration.showNotification(data?.title || 'Fixmee', {body:data?.body || '',icon:'./icons/icon-192.png',tag:data?.tag,data:{route}}));
 });
 self.addEventListener('notificationclick', e => {
   e.notification.close();

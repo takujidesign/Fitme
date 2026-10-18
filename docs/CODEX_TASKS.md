@@ -1,4 +1,4 @@
-# Tasks for Codex (FitMe)
+# Tasks for Codex (Fixmee)
 
 Read README.md first. The app is static ES modules in `app/` (no build step), backend in `worker/src/index.js` (Cloudflare Worker).
 Match the existing code style: bilingual strings via `L('ไทย','English')`, views register `views.x` and `actions['x']` in `app/js/views/*.js`, state via `getState/setState` in `app/js/store.js`. Add new JS files to the `SHELL` list in `app/sw.js`. Do not commit secrets. Work on branch `codex/admin-ai-figure`, one commit per task.

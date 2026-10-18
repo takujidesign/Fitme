@@ -96,7 +96,7 @@ function showInstall() {
   const b = document.createElement('div');
   b.id = 'install';
   b.className = 'install';
-  b.innerHTML = `${icon('download', 20)}<div><b>${L('ติดตั้ง Fix me เป็นแอป', 'Install Fix me')}</b><small>${installEvt ? L('ใช้งานแบบออฟไลน์ เปิดจากหน้าจอโฮม', 'Works offline, opens from your home screen') : L('แตะ แชร์ ⬆ แล้วเลือก "เพิ่มไปยังหน้าจอโฮม"', 'Tap Share ⬆ then "Add to Home Screen"')}</small></div>
+  b.innerHTML = `${icon('download', 20)}<div><b>${L('ติดตั้ง Fixmee เป็นแอป', 'Install Fixmee')}</b><small>${installEvt ? L('ใช้งานแบบออฟไลน์ เปิดจากหน้าจอโฮม', 'Works offline, opens from your home screen') : L('แตะ แชร์ ⬆ แล้วเลือก "เพิ่มไปยังหน้าจอโฮม"', 'Tap Share ⬆ then "Add to Home Screen"')}</small></div>
     ${installEvt ? `<button class="btn primary xs" id="inst-go">${L('ติดตั้ง', 'Install')}</button>` : ''}<button class="icon-btn" id="inst-x">${icon('x', 18)}</button>`;
   document.body.appendChild(b);
   b.querySelector('#inst-go')?.addEventListener('click', async () => { installEvt.prompt(); await installEvt.userChoice; installEvt = null; b.remove(); });
