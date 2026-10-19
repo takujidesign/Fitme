@@ -1,3 +1,4 @@
+import { photoHTML } from './exercise-library.js';
 // Animated exercise figure: a 2D skeleton driven by keyframed poses.
 // Angle convention (degrees): 0 = pointing down, 90 = forward (right), 180 = up, -90 = back (left).
 // Limbs are either absolute angles [upper, lower] or an IK target {to:[x,y], bend:±1}
@@ -133,6 +134,7 @@ export function renderPose(pose, ex, id = 'figure') {
 // Mounts a looping animation into a container; returns a stop() function.
 const running = new Set();
 export function animateFigure(el, ex, { speed = 1, paused = false } = {}) {
+  if(ex?.images){el.innerHTML=photoHTML(ex);return {stop(){el.innerHTML='';},pause(){el.classList.add('photos-paused');},play(){el.classList.remove('photos-paused');}};}
   const id = 'fig-' + ++figureId;
   const frames = ex.frames;
   const durs = ex.dur || frames.map(() => 900);
@@ -163,6 +165,7 @@ export function animateFigure(el, ex, { speed = 1, paused = false } = {}) {
 }
 // Static thumbnail (first or mid frame).
 export function figureSVG(ex, frameIdx = 1) {
+  if(ex?.images)return photoHTML(ex);
   const id = 'fig-' + ++figureId;
   const f = ex.frames[Math.min(frameIdx, ex.frames.length - 1)];
   return `<svg viewBox="0 0 200 200" class="figure">${figureDefs(id)}<line x1="6" y1="182" x2="194" y2="182" class="ground"/><g class="body">${renderPose(f, ex, id)}</g></svg>`;

@@ -1,7 +1,7 @@
 import { translate, LOCALES } from './i18n/index.js';
 import { getState } from './store.js';
 
-export const L = (th,en) => translate(th,en,getState().lang);
+export const L = (th,en) => th?.source==='off' ? translate(th,en,getState().lang)+' · ข้อมูลจาก Open Food Facts (ODbL)' : translate(th,en,getState().lang);
 export const isTH = () => getState().lang === 'th';
 export const locale = () => LOCALES[getState().lang] || 'en-US';
 export const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));

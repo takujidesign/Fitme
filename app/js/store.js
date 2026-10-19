@@ -36,6 +36,8 @@ const defaults = () => ({
   photos: [], // {id, date, pose}
   supplements: [], // {uid, productId, startDate, photoId, custom?}
   logs: {}, // date -> {done:{eventKey:true}, water, sleep:{bed,wake,quality}, workout:{completed}}
+  libraryExercises: {}, extraExercises: {}, freeWorkout: null, restDefault: 60, mealOverrides: {}, mealPrep: [],
+  libraryExercises: {}, extraExercises: {}, freeWorkout: null, restDefault: 60, mealOverrides: {}, mealPrep: [],
   dayOverrides: {}, exSwaps: {}, shoppingChecks: {},
   mealSeed: {}, // date|slot -> seed offset for regenerated meals
   premium: { token: null, until: null, exportsLeft: 0, ref: null },

@@ -28,7 +28,7 @@ function editor(iso, initial, photos = []) {
 }
 actions['food-quick']=el=>{
   const iso=el.dataset.iso;
-  sheet(`<h2>${L('กินนอกแผน','Log extra food')}</h2><label class="field">${L('อาหาร','Food')}<div class="input-wrap"><select id="quick-food">${FOODS.map(f=>`<option value="${esc(f.id)}">${esc(L(f))}</option>`).join('')}</select></div></label><button class="btn primary" id="quick-next">${L('ต่อไป','Next')}</button>`,{onMount(root){root.querySelector('#quick-next').onclick=()=>{const f=FOODS.find(f=>f.id===root.querySelector('#quick-food').value);editor(iso,[{name:{th:f.th,en:f.en},grams:100,kcal:f.k,p:f.p,c:f.c,f:f.f,confidence:'high'}]);};}});
+  sheet(`<h2>${L('กินนอกแผน','Log extra food')}</h2><label class="field">${L('อาหาร','Food')}<div class="input-wrap"><select id="quick-food">${FOODS.map(f=>`<option value="${esc(f.id)}">${esc(L(f))}</option>`).join('')}</select></div></label><button class="btn primary" id="quick-next">${L('ต่อไป','Next')}</button>`,{onMount(root){root.querySelector('#quick-next').onclick=()=>{const f=FOODS.find(f=>f.id===root.querySelector('#quick-food').value);editor(iso,[{name:{th:f.th,en:f.en,source:f.source},grams:100,kcal:f.k,p:f.p,c:f.c,f:f.f,confidence:'high'}]);};}});
 };
 actions['meal-photo']=el=>{
   if(!CONFIG.API_BASE)return toast(L('ต้องตั้งค่าเซิร์ฟเวอร์ก่อนใช้ AI','AI requires a server'),'warn');

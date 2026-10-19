@@ -37,10 +37,10 @@ const SCHEME = {
   strength: { sets: 5, reps: '4-6', rest: 150, time: 45, finisher: 0 },
 };
 
-export function allowed(p) {
+export function allowed(p, includeLibrary = false) {
   const eq = p.location === 'gym' ? ['none', 'db', 'gym'] : p.location === 'db' ? ['none', 'db'] : ['none'];
   const maxLvl = p.level === 'beginner' ? 1 : p.level === 'intermediate' ? 2 : 3;
-  return EXERCISES.filter((e) => healthAllowed(p,e.id) && !p.avoidEx?.includes(e.id) && eq.includes(e.equip) && e.level <= maxLvl + (e.group === 'core' ? 1 : 0));
+  return (includeLibrary ? Object.values(EX) : EXERCISES).filter((e) => healthAllowed(p,e.id) && !p.avoidEx?.includes(e.id) && eq.includes(e.equip) && e.level <= maxLvl + (e.group === 'core' ? 1 : 0));
 }
 
 // Week-based progression: weeks 1-3 build, week 4 deloads.
@@ -57,7 +57,14 @@ export function isTrainingDay(p, iso) {
 }
 
 export function sessionFor(p, iso) {
-  const result = rawSession(p,iso) || (getState().logs[iso]?.checkin?.override==='recovery'?recoverySession(p,iso,0):null); if(!result)return result; const ready=readinessSession(result,getState().logs[iso]?.checkin);const adjusted=medicalSession(p,healthSession(p,ready,iso));const items=adjusted.items.filter(i=>!p.avoidEx?.includes(i.id)&&healthAllowed(p,i.id));return {...adjusted,items,minutes:estimateMin(items)};
+  const result = rawSession(p,iso) || (getState().logs[iso]?.checkin?.override==='recovery'?recoverySession(p,iso,0):null);
+  if(!result)return result;
+  const extras=(getState().extraExercises?.[iso]||[]).filter(i=>allowed(p,true).some(e=>e.id===i.id));
+  const combined={...result,items:[...result.items,...safeItems(p,iso,extras,result.items.length)]};
+  const ready=readinessSession(combined,getState().logs[iso]?.checkin);
+  const adjusted=medicalSession(p,healthSession(p,ready,iso));
+  const items=adjusted.items.filter(i=>!p.avoidEx?.includes(i.id)&&healthAllowed(p,i.id));
+  return {...adjusted,items,minutes:estimateMin(items)};
 }
 function rawSession(p, iso) {
   if (p === getState().profile) p = blockProfile(getState(), iso);
@@ -149,12 +156,12 @@ export function weekPlan(p, startIso) {
 }
 
 // Apply exclusions to every phase and ignore stale/unsafe saved swaps.
-function safeItems(p, iso, items) {
-  const pool = allowed(p);
+function safeItems(p, iso, items, offset = 0) {
+  const pool = allowed(p, true), defaults = allowed(p);
   return items.flatMap((it, index) => {
     const original = EX[it.id];
-    const base = pool.find(e => e.id === it.id) || pool.filter(e => e.group === original?.group).sort((a,b) => rank(b,p)-rank(a,p))[0] || [...pool].sort((a,b) => rank(b,p)-rank(a,p))[0];
-    const swap = pool.find(e => e.id === getState().exSwaps?.[iso]?.[index] && e.group === base?.group);
+    const base = pool.find(e => e.id === it.id) || defaults.filter(e => e.group === original?.group).sort((a,b) => rank(b,p)-rank(a,p))[0] || [...defaults].sort((a,b) => rank(b,p)-rank(a,p))[0];
+    const swap = pool.find(e => e.id === getState().exSwaps?.[iso]?.[index+offset] && e.group === base?.group);
     const ex = swap || base;
     if (!ex) return [];
     if (ex.id === it.id) return [it];

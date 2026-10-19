@@ -432,3 +432,19 @@ details summary::-webkit-details-marker { display: none; }
 html[lang="zh"] body,html[lang="ja"] body{font-family:var(--language-font),sans-serif}
 
 .v-onboarding .seg:has([data-act="ob-lang"]){flex-wrap:wrap}
+
+/* Round 6: responsive original anatomy and paired exercise photos. */
+.muscle-map{display:block;width:100%;max-width:400px;margin:12px auto;color:var(--text,currentColor)}
+.muscle-map a:focus rect{stroke-width:3;stroke:currentColor}
+.muscle-fresh{fill:#9ca3af}.muscle-target,.muscle-recovering{fill:#d99b20}.muscle-fatigued{fill:#e0526c}
+.exercise-photos{position:relative;aspect-ratio:1;overflow:hidden;width:100%;background:#fff;border-radius:12px}
+.exercise-photos img{width:100%;height:100%;object-fit:contain;display:block}
+.exercise-photos .photo-1{position:absolute;inset:0;animation:exercise-photo 1.6s steps(1,end) infinite}
+@keyframes exercise-photo{0%,49.99%{opacity:0}50%,100%{opacity:1}}
+.photos-paused .photo-1{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){.exercise-photos .photo-1{animation:none;opacity:0}}
+.v-library .ex-card,.v-recipes .card{min-width:0;overflow-wrap:anywhere}
+.v-tools input,.v-tools select,.v-recipes input,.v-library select{min-width:0;max-width:100%}
+.v-tools table{width:100%}.v-credits{overflow-wrap:anywhere}
+.v-food .row.gap{flex-wrap:wrap}
+.muscle-volume-low{fill:#48aa93}.muscle-volume-mid{fill:#d99b20}.muscle-volume-high{fill:#e0526c}

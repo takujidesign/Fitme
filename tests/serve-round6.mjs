@@ -1,0 +1,7 @@
+﻿// Local-only UI test server: API_BASE is blank in served config; never contacts the live API.
+import {createServer} from 'node:http';
+import {readFile} from 'node:fs/promises';
+import {resolve,extname} from 'node:path';
+const base=resolve(import.meta.dirname,'..');
+createServer(async(req,res)=>{try{const url=new URL(req.url,'http://localhost'),rel=decodeURIComponent(url.pathname),file=resolve(base,'.'+(rel.startsWith('/tests/')?rel:'/app'+(rel==='/'?'/index.html':rel)));if(!file.startsWith(base+'\\')&&!file.startsWith(base+'/'))throw Error('Forbidden');let data=await readFile(file);if(file.endsWith('config.js'))data=Buffer.from(data.toString().replace("API_BASE: 'https://api.fixmee.app'","API_BASE: ''"));if(file.endsWith('index.html')&&url.searchParams.has('qa'))data=Buffer.from(data.toString().replace('<script type="module" src="js/app.js"></script>','<script type="module" src="/tests/browser-round6-driver.js"></script>'));res.writeHead(200,{'Content-Type':({'.js':'text/javascript','.mjs':'text/javascript','.json':'application/json','.html':'text/html','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webmanifest':'application/manifest+json'})[extname(file)]||'text/plain','Cache-Control':'no-store'});res.end(data);}catch{res.writeHead(404);res.end('Not found');}}).listen(5176,'127.0.0.1',()=>console.log('Local QA: http://127.0.0.1:5176/tests/browser-round6.html'));
+

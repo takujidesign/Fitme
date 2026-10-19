@@ -6,12 +6,13 @@ const env={TOKEN_SECRET:'test-token-secret',ADMIN_PASSWORD:'test-admin',ANTHROPI
 env.DB=testDB().DB;
 const configKV=new Map();env.CONFIG={get:async(k,type)=>configKV.has(k)?(type==='json'?JSON.parse(configKV.get(k)):configKV.get(k)):null,put:async(k,v)=>configKV.set(k,v)};
 const request=(path,body,auth='',method='POST')=>worker.fetch(new Request('https://test'+path,{method,headers:{'Content-Type':'application/json',Authorization:'Bearer '+auth},body:body===undefined?undefined:JSON.stringify(body)}),env);
+const adminSession=(await (await request('/api/admin/login',{password:env.ADMIN_PASSWORD})).json()).token;
 const config={promptpayId:CONFIG.PROMPTPAY_ID,promptpayName:'Test',receiverName:'Expected Receiver',products:structuredClone(CONFIG.PRODUCTS),freePlanDays:7,freeSupplements:3};
 config.products.pro30.thb=123;config.products.pro30.days=15;
 assert.equal((await request('/api/admin/config',config,'','PUT')).status,401);
-assert.equal((await request('/api/admin/config',config,'test-admin','PUT')).status,200);
-assert.equal((await request('/api/admin/config',{...config,freePlanDays:-1},'test-admin','PUT')).status,400);
-const pub=await (await request('/api/config',undefined,'','GET')).json();assert.equal(pub.config.products.pro30.thb,123);assert(!JSON.stringify(pub).includes('test-admin'));assert.equal(pub.secrets.anthropicApiKey.set,true);
+assert.equal((await request('/api/admin/config',config,adminSession,'PUT')).status,200);
+assert.equal((await request('/api/admin/config',{...config,freePlanDays:-1},adminSession,'PUT')).status,400);
+const pub=await (await request('/api/config',undefined,'','GET')).json();assert.equal(pub.config.products.pro30.thb,123);assert(!JSON.stringify(pub).includes('test-admin'));assert.equal(pub.secrets,undefined);
 let calls=[]; let aiResult={advice:[{th:'ok',en:'ok'}],swaps:[],warnings:[]};
 globalThis.fetch=async(url,opts)=>{
  calls.push({url:String(url),body:opts.body});

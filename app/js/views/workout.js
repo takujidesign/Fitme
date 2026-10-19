@@ -1,3 +1,5 @@
+import { detectPRs } from '../records.js';
+import { muscleMap, exerciseMuscles } from '../muscle-map.js';
 import { supportedForm, startFormCheck, stopFormCheck } from '../form-check.js';
 import { videoToggle } from '../videos.js';
 import { track } from '../telemetry.js';
@@ -38,7 +40,7 @@ export const lockCard = (what) => `<div class="lock-card">${icon('lock', 28)}<b>
 views.workout = ({ params }) => {
   const iso = params[0] || todayISO();
   const p = getState().profile;
-  const head = `<header class="top"><div><small class="muted">${L('การออกกำลังกาย', 'Training')}</small><h1>${tab === 'plan' ? L('แผนของฉัน', 'My plan') : L('คลังท่า', 'Exercise library')}</h1></div><button class="icon-btn" data-act="calendar" data-iso="${iso}" aria-label="${L('ปฏิทิน', 'Calendar')}">${icon('cal')}</button></header><button class="btn ghost" data-act="exercise-prefs">${L('ตั้งค่าท่า', 'Exercise preferences')}</button>
+  const head = `<header class="top"><div><small class="muted">${L('การออกกำลังกาย', 'Training')}</small><h1>${tab === 'plan' ? L('แผนของฉัน', 'My plan') : L('คลังท่า', 'Exercise library')}</h1></div><button class="icon-btn" data-act="calendar" data-iso="${iso}" aria-label="${L('ปฏิทิน', 'Calendar')}">${icon('cal')}</button></header><nav class="chips"><a class="chip" href="#/tools">${L('เครื่องคำนวณ','Calculators')}</a><a class="chip" href="#/free-workout">${L('บันทึกการฝึกเอง','Free workout logging')}</a><a class="chip" href="#/library?day=${iso}">${L('เพิ่มท่า','Add exercise')}</a></nav><button class="btn ghost" data-act="exercise-prefs">${L('ตั้งค่าท่า', 'Exercise preferences')}</button>
     <div class="seg tabs">${['plan', 'lib'].map((t) => `<button class="chip ${tab === t ? 'on' : ''}" data-act="wo-tab" data-v="${t}">${t === 'plan' ? L('แผน', 'Plan') : L('ท่าทั้งหมด', 'All exercises')}</button>`).join('')}</div>`;
   if (tab === 'lib') {
     const list = EXERCISES.filter((e) => filter === 'all' || e.group === filter);
@@ -51,6 +53,7 @@ views.workout = ({ params }) => {
   const groups = {};
   sess.items.forEach((it, i) => (groups[it.phase || 'main'] ||= []).push({ ...it, i }));
   return head + weekStrip(iso, '#/workout/') + `
+    ${muscleMap(Object.fromEntries(sess.items.flatMap(i=>exerciseMuscles(EX[i.id])).map(id=>[id,1])))}
     <section class="card session">
       <div class="row between"><div><small class="muted">${dateLabel(iso, { weekday: 'long', day: 'numeric', month: 'short' })} · ${L('สัปดาห์', 'Week')} ${sess.week}</small>
       <h2>${sess.type === 'train' ? L(splitName(sess.split)) : L('ฟื้นฟูร่างกาย (Active recovery)', 'Active recovery')}</h2></div>
@@ -70,14 +73,14 @@ views.workout.mount = (root) => {
   root.querySelectorAll('[data-anim]').forEach((el) => io.observe(el));
 };
 
-actions['wo-tab'] = (el) => { tab = el.dataset.v; rerender(); };
+actions['wo-tab'] = (el) => { if(el.dataset.v==='lib')return go('#/library');tab = el.dataset.v; rerender(); };
 actions['wo-filter'] = (el) => { filter = el.dataset.v; rerender(); };
 actions['ex-open'] = (el) => {
   const ex = EX[el.dataset.id];
   sheet(`<div class="sheet-head"><div><small class="muted">${L(GROUPS[ex.group])} · ${L(EQUIP[ex.equip])}</small><h2>${L(ex.name)}</h2></div><button class="icon-btn" data-close>${icon('x')}</button></div>
     <div class="fig xl" id="ex-anim"></div>${videoToggle(ex.id)}
     <p class="muted">${L('กล้ามเนื้อหลัก', 'Target')}: <b>${L(ex.muscles)}</b></p>
-    <ol class="cues">${L(ex.cues).map((c) => `<li>${esc(c)}</li>`).join('')}</ol>${historyHTML(ex.id)}`, { onMount: (r) => animateFigure(r.querySelector('#ex-anim'), ex) });
+    ${muscleMap(Object.fromEntries(exerciseMuscles(ex).map(id=>[id,1])))}<ol class="cues">${L(ex.cues).map((c) => `<li>${esc(c)}</li>`).join('')}</ol>${historyHTML(ex.id)}`, { onMount: (r) => animateFigure(r.querySelector('#ex-anim'), ex) });
 };
 
 // ---------------- Player ----------------
@@ -175,7 +178,8 @@ function finish(host) {
   const kcal = avgHR ? hrCalories(avgHR, mins, getState().profile) : sessionKcal(P.sess, getState().profile.weight);
   disconnectHR();
   track('workout_done');
-  updateLog(P.iso, (l) => { l.done.workout = true; l.sets = P.sets; l.workout = { minutes: mins, kcal, avgHR, maxHR, hrSamples: P.samples, at: new Date().toISOString() }; });
+  const prs=detectPRs(getState().logs,P.sets);if(prs.length)toast(L('สถิติใหม่','New personal record')+' 🏆');
+  updateLog(P.iso, (l) => { l.done.workout = true; l.sets = [...(l.freeSessions||[]).flatMap(s=>s.sets),...P.sets]; l.workout = { minutes: mins, kcal, avgHR, maxHR, hrSamples: P.samples, items: P.sess.items, at: new Date().toISOString() }; });
   host.innerHTML = `<div class="pl-done"><div class="burst">${icon('check', 46)}</div><h1>${L('เยี่ยมมาก!', 'Great work!')}</h1>
     <p>${L('จบการฝึกวันนี้แล้ว', 'Session complete')}</p>${avgHR ? `<p>${L('ชีพจรเฉลี่ย / สูงสุด','Average / max HR')}: ${avgHR} / ${maxHR} BPM</p>` : ''}<div class="sum-grid"><div class="stat"><small>${L('เวลา', 'Time')}</small><b>${mins}</b><span class="tag">${L('นาที', 'min')}</span></div><div class="stat"><small>${L('เผาผลาญ', 'Burned')}</small><b>~${kcal}</b><span class="tag">kcal</span></div></div>
     <p class="muted">${L('อย่าลืมมื้อหลังออกกำลังกาย และดื่มน้ำ 500 มล.', 'Have your post-workout meal and 500 ml of water')}</p>

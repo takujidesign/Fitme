@@ -30,12 +30,26 @@ limit.fail = async (req, env, email = 'admin') => {
   const n = Number(await env.CONFIG.get(key)) || 0;
   await env.CONFIG.put(key, String(n + 1), { expirationTtl: 900 });
 };
-export async function admin(req, env) {
+export async function adminLogin(req, env) {
   await limit(req, env, 'admin', false);
-  if (!env.ADMIN_PASSWORD || !await equal(req.headers.get('Authorization') || '', 'Bearer ' + env.ADMIN_PASSWORD)) {
+  const {password} = await input(req, z.object({password:z.string().max(4096)}).strict());
+  if (!env.ADMIN_PASSWORD || !await equal(password, env.ADMIN_PASSWORD)) {
     await limit.fail(req, env);
     throw fail('Unauthorized', 401);
   }
+  const token = random(), expires = Date.now() + 7200000;
+  await env.CONFIG.put('admin-session:' + await hash(token), JSON.stringify({expires}), {expirationTtl:7200});
+  return {token, expires};
+}
+export async function admin(req, env) {
+  const token = (req.headers.get('Authorization') || '').match(/^Bearer ([a-f0-9]{64})$/)?.[1];
+  const session = token && await env.CONFIG?.get('admin-session:' + await hash(token), 'json');
+  if (!session || !Number.isFinite(session.expires) || session.expires <= Date.now()) throw fail('Unauthorized', 401);
+}
+export async function adminLogout(req, env) {
+  await admin(req, env);
+  await env.CONFIG.delete('admin-session:' + await hash(req.headers.get('Authorization').slice(7)));
+  return {ok:true};
 }
 export const secretNames = { stripeWebhookSecret:'STRIPE_WEBHOOK_SECRET',resendApiKey:'RESEND_API_KEY', lineChannelSecret: 'LINE_CHANNEL_SECRET', lineMessagingToken: 'LINE_MESSAGING_TOKEN', thunderApiKey: 'THUNDER_API_KEY', stripeSecretKey: 'STRIPE_SECRET_KEY', anthropicApiKey: 'ANTHROPIC_API_KEY', vapidPublicKey: 'VAPID_PUBLIC_KEY', vapidPrivateKey: 'VAPID_PRIVATE_KEY' };
 async function key(env) {

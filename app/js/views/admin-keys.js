@@ -1,3 +1,4 @@
+import { adminToken, adminFetch } from '../admin-session.js';
 import { actions } from '../core.js';
 import { L, esc, toast } from '../ui.js';
 import { api } from '../account.js';
@@ -8,7 +9,7 @@ export function keySettings(status={}) {
 for(const action of ['save','delete','test'])actions['key-'+action]=async el=>{
  el.disabled=true;
  try {
-  const token=document.getElementById('admin-password').value;
+  const token=adminToken();
   if(action==='test'){const r=await api('admin/test',{service:el.dataset.service},'POST',token);document.getElementById('key-status').textContent=(r.connected?'✓ ':'✕ ')+(r.message||'OK');}
   else{const value=action==='delete'?'':document.getElementById('key-'+el.dataset.key).value;if(action==='save'&&!value)return;const r=await api('admin/secrets',{[el.dataset.key]:value},'PUT',token);document.getElementById('admin-key-settings').innerHTML=keySettings(r.secrets);toast(L('บันทึกแล้ว','Saved'));}
  }catch(e){toast(e.message,'warn');}finally{el.disabled=false;}

@@ -1,3 +1,4 @@
+import { adminToken, adminFetch } from '../admin-session.js';
 import './admin.js';
 import { views, actions } from '../core.js';
 import { api } from '../account.js';
@@ -8,7 +9,7 @@ const original=views.admin,mount=original.mount;
 const tabs=[['overview','ภาพรวม','Overview'],['settings','การตั้งค่า','Settings'],['keys','คีย์ API','API keys'],['promos','โค้ดส่วนลด','Promos'],['trainers','เทรนเนอร์','Trainers'],['errors','ข้อผิดพลาด','Errors'],['videos','วิดีโอท่า','Exercise videos']];
 views.admin=r=>`<nav class="chips scroll" aria-label="Admin">${tabs.map(([id,th,en])=>`<button class="chip" data-act="admin-tab" data-id="${id}">${L(th,en)}</button>`).join('')}</nav>${original(r)}<section class="card" id="round5-admin"><p>${L('เลือกแท็บเพื่อโหลดข้อมูล','Select a tab to load data')}</p></section>`;
 views.admin.mount=root=>{mount(root);root.querySelector('#admin-form').hidden=true;root.querySelector('#admin-key-settings').hidden=true;};
-const adminAPI=(path,body,method)=>api('admin/'+path,body,method,document.getElementById('admin-password').value);
+const adminAPI=(path,body,method)=>api('admin/'+path,body,method,adminToken());
 const guard=fn=>async el=>{el.disabled=true;try{await fn(el);}catch(e){toast(e.message,'warn');}finally{el.disabled=false;}};
 const field=(id,label,type='text',value='')=>`<label class="field">${label}<input id="a5-${id}" type="${type}" value="${esc(value)}"></label>`;
 const btn=(act,th,en)=>`<button class="btn primary" data-act="${act}">${L(th,en)}</button>`;
@@ -28,4 +29,4 @@ actions['promo-save']=guard(async()=>{await adminAPI('promos',{code:value('code'
 actions['plan-review']=guard(async el=>{await adminAPI('plans',{id:el.dataset.id,status:el.dataset.status},'PUT');el.closest('article').remove();});
 actions['payout-paid']=guard(async el=>{await adminAPI('payout',{id:el.dataset.id});el.closest('p').remove();});
 actions['video-save']=guard(async()=>{await adminAPI('videos',{id:value('ex'),url:value('video')},'PUT');toast(L('บันทึกแล้ว','Saved'));});
-actions['video-upload']=guard(async()=>{const file=document.getElementById('a5-file').files[0];if(!file||file.size>25*1024*1024)throw Error('Select MP4 up to 25 MB');const r=await fetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/admin/media/'+value('ex'),{method:'PUT',headers:{Authorization:'Bearer '+document.getElementById('admin-password').value,'Content-Type':'video/mp4'},body:file});const d=await r.json();if(!r.ok)throw Error(d.error);toast(L('อัปโหลดแล้ว','Uploaded'));});
+actions['video-upload']=guard(async()=>{const file=document.getElementById('a5-file').files[0];if(!file||file.size>25*1024*1024)throw Error('Select MP4 up to 25 MB');const r=await adminFetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/admin/media/'+value('ex'),{method:'PUT',headers:{Authorization:'Bearer '+adminToken(),'Content-Type':'video/mp4'},body:file});const d=await r.json();if(!r.ok)throw Error(d.error);toast(L('อัปโหลดแล้ว','Uploaded'));});

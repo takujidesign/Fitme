@@ -1,3 +1,5 @@
+import { EX } from './exercises.js';
+import { personalRecords } from './records.js';
 import { earnedBadges } from './challenges.js';
 import { getState, todayISO, addDays, diffDays } from './store.js';
 import { actions, pickFiles } from './core.js';
@@ -15,8 +17,10 @@ export async function drawShare(canvas,photos=[]){
   const metrics=[[stats.days,L('วันในแผน','days on plan')],[stats.workouts,L('ครั้งที่ฝึก','workouts done')],[stats.streak,L('วันต่อเนื่อง','day streak')],[stats.change===null?'—':`${stats.change>0?'+':''}${stats.change.toFixed(1)} kg`,L('น้ำหนักเปลี่ยนแปลง','weight change')]];
   metrics.forEach(([value,label],i)=>{const x=72+(i%2)*480,y=345+Math.floor(i/2)*180;c.fillStyle='#19E3C4';c.font='bold 64px Kanit, sans-serif';c.fillText(String(value),x,y,440);c.fillStyle='#EEF3F9';c.font='32px Kanit, sans-serif';c.fillText(label,x,y+55,440);});
   for(let i=0;i<photos.length;i++){const bmp=await createImageBitmap(photos[i]);const x=72+i*480,y=670,w=456,h=520,scale=Math.min(w/bmp.width,h/bmp.height);c.drawImage(bmp,x+(w-bmp.width*scale)/2,y+(h-bmp.height*scale)/2,bmp.width*scale,bmp.height*scale);bmp.close();c.fillStyle='#EEF3F9';c.font='28px Kanit, sans-serif';c.fillText(i?L('หลัง','After'):L('ก่อน','Before'),x,y+h+40);}
+  const latest=Object.entries(personalRecords(s.logs)).sort((a,b)=>b[1].date.localeCompare(a[1].date))[0];
+  if(latest){c.fillStyle='#EEF3F9';c.font='24px Kanit, sans-serif';c.fillText('PR · '+L(EX[latest[0]]?.name||latest[0])+' · '+latest[1].weight+' kg · 1RM '+latest[1].estimatedRM.toFixed(1)+' kg',72,1220,936);}
   c.fillStyle='#C8F31D';c.font='28px Kanit, sans-serif';c.fillText(L('เหรียญรางวัล','Badges')+': '+earnedBadges(s).length,72,1260);
-  c.fillStyle='#8C9AAE';c.font='26px Kanit, sans-serif';c.fillText(todayISO()+' · Fixmee',72,1300);
+  c.fillStyle='#8C9AAE';c.font='26px Kanit, sans-serif';c.fillText(todayISO()+' · Fixmee · PR: '+Object.keys(personalRecords(s.logs)).length,72,1300);
 }
 actions['share-card']=()=>{
   sheet(`<h2>${L('แชร์ผลลัพธ์','Share results')}</h2><p>${L('รูปก่อน/หลังจะใส่เฉพาะรูปที่คุณเลือกในครั้งนี้','Before/after photos are included only when you select them here.')}</p><div class="row gap"><button class="btn ghost" id="share-photos">${L('เลือกรูปก่อน/หลัง','Choose before/after')}</button><button class="btn ghost" id="share-clear">${L('ไม่ใส่รูป','Remove photos')}</button></div><canvas id="share-canvas" style="width:100%;height:auto"></canvas><button class="btn primary block" id="share-send" disabled>${L('แชร์ / ดาวน์โหลด PNG','Share / download PNG')}</button>`,{async onMount(root){

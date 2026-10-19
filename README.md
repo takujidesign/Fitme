@@ -310,3 +310,19 @@ node tests/round5c-browser.mjs
 ```
 
 The optional browser test requires Playwright (`PLAYWRIGHT_PATH` can point to its `index.mjs`, and `CHROME_PATH` can select Chromium). It covers five languages and both themes at 375px. Unit tests mock external billing/messaging services; they do not prove live Stripe, LINE, Resend, R2, camera or production operation.
+
+### Automatic web deployment
+
+Pushes to `main` that change `app/**` or `web/**` run `.github/workflows/deploy-web.yml` and `node web/deploy.mjs`. The workflow skips with a notice when either secret is missing. The existing Pages workflow remains for the old URL and its move notice.
+
+1. Cloudflare → My Profile → API Tokens → Create Token → **Edit Cloudflare Workers**.
+2. Scope the account to the Fixmee account and the zone to **fixmee.app**. Create and copy the token securely.
+3. GitHub repository → Settings → Secrets and variables → Actions: add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` (the Fixmee account ID from Cloudflare).
+
+Do not commit token values. Local API bundle verification: `cd worker` then `npx wrangler deploy --dry-run`. Running `node web/deploy.mjs` performs a real web deployment.
+
+### Exercise data and Round 6
+
+Run `node scripts/import-exercises.mjs` manually to regenerate the committed exercise catalogue. The source commit is pinned in that script; Thai names are in `scripts/exercise-names-th.json`. Default generated plans still use the animated exercises. The full library loads on demand and viewed images are cached by the service worker. Credits and licence texts are listed in `THIRD_PARTY_NOTICES.md` and `#/credits`.
+
+Admin access is at `#/admin` without a public navigation link. Login creates a two-hour session; the password is never stored in the browser. `GET /api/config` is public; key status is available only at authenticated `GET /api/admin/status`. Log out revokes the current session.

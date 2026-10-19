@@ -1,6 +1,10 @@
 // Offline-first service worker. Bump VERSION on every release.
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const SHELL = [
+  './js/i18n/round6.js',
+  './data/exercise-db.json',
+  './js/exercise-library.js','./js/muscle-map.js','./js/tools.js','./js/records.js','./js/recipes.js','./js/views/library.js','./js/views/tools.js','./js/views/free-workout.js','./js/views/recipes.js','./js/views/credits.js','./data/recipes-th.json',
+  './js/admin-session.js','./js/views/admin-login.js',
   './js/form-check.js','./js/eating-out.js','./js/install-id.js','./js/views/wellbeing.js','./js/views/round5c.js','./js/views/admin-round5c.js',
   './js/i18n/index.js','./js/i18n/zh.js','./js/i18n/ja.js','./js/i18n/vi.js',
   './js/conditions.js','./js/readiness.js','./js/interactions.js','./js/barcode.js','./js/offline.js','./js/views/round5b.js','./js/views/admin-round5b.js',
@@ -19,7 +23,7 @@ const SHELL = [
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL.filter(path=>path!=='./data/exercise-db.json'))).then(() => self.skipWaiting()));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== 'fitme-videos-v1' && k !== 'fitme-assets-v1').map((k) => caches.delete(k)))).then(() => self.clients.claim()));
@@ -30,6 +34,7 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.pathname.includes('/api/')) return; // never cache API calls
   const isShell = url.origin === location.origin;
+  // exercise-db.json deliberately stays out of precache: fetch/cache only on library open.
   const isFont = ['fonts.googleapis.com','fonts.gstatic.com','cdnjs.cloudflare.com','cdn.jsdelivr.net'].includes(url.hostname);
   if (!isShell && !isFont) return;
   e.respondWith(caches.open(isFont ? 'fitme-assets-v1' : VERSION).then(async (cache) => {

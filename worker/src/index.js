@@ -5,7 +5,7 @@ import { winback } from './winback.js';
 import { lineAuth, lineReminders, sendLine } from './line.js';
 import { groups, shop } from './community.js';
 import { accountData, telemetry, referral, quote, checkout, confirmPayment, slipPayment, marketplace, adminRound5, media, business, claimOrder } from './round5.js';
-import { admin, input, getSecret, secretStatus, saveSecrets, testSecret } from './security.js';
+import { adminLogin, adminLogout, admin, input, getSecret, secretStatus, saveSecrets, testSecret } from './security.js';
 import { auth, sync, trainer, user, query } from './accounts.js';
 import { chat } from './chat.js';
 import { pushRequest, sendScheduled } from './push.js';
@@ -32,6 +32,7 @@ export default {
   async fetch(req, env) {
     env = await domainEnv(env);
     const cors = corsHeaders(req, env);
+    if(new URL(req.url).pathname.startsWith('/api/admin/'))cors['Cache-Control']='no-store';
     if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
     const url = new URL(req.url);
     try {
@@ -62,6 +63,9 @@ export default {
       else if (url.pathname.startsWith('/api/auth/')) out = await auth(req, env, url.pathname);
       else if (url.pathname === '/api/sync') out = await sync(req, env, verifyToken);
       else if (url.pathname.startsWith('/api/trainer/')) out = await trainer(req, env, url.pathname);
+      else if (req.method === 'POST' && url.pathname === '/api/admin/login') out = await adminLogin(req, env);
+      else if (req.method === 'POST' && url.pathname === '/api/admin/logout') out = await adminLogout(req, env);
+      else if (req.method === 'GET' && url.pathname === '/api/admin/status') { await admin(req, env); out = {secrets:{config:!!env.CONFIG,token:!!env.TOKEN_SECRET,...await secretStatus(env)}}; }
       else if (req.method === 'PUT' && url.pathname === '/api/admin/secrets') out = await saveSecrets(req, env);
       else if (req.method === 'POST' && url.pathname === '/api/admin/test') out = await testSecret(req, env);
       else if (req.method === 'POST' && url.pathname === '/api/ai/chat') out = await chat(req, env, verifyToken);
@@ -268,9 +272,12 @@ async function readConfig(env) {
   };
 }
 async function publicConfig(env) {
-  const config = {...await readConfig(env), ...await business(env)};
-  config.products = Object.fromEntries(Object.entries(config.products).map(([id, { name, ...p }]) => [id, p]));
-  return { config, secrets: { config: !!env.CONFIG, token: !!env.TOKEN_SECRET, ...(await secretStatus(env)) } };
+  const settings=await readConfig(env),biz=await business(env);
+  const config=Object.fromEntries(['promptpayId','promptpayName','receiverName','freePlanDays','freeSupplements','products'].map(k=>[k,settings[k]]));
+  for(const k of ['contactEmail','referralDays','trainerShare'])config[k]=biz[k];
+  config.products = Object.fromEntries(Object.entries(config.products).map(([id,p]) => [id,Object.fromEntries(['thb','usd','days','exports','th','en','descTh','descEn','best'].filter(k=>p[k]!==undefined).map(k=>[k,p[k]]))]));
+  config.vapidPublicKey = await getSecret(env, 'vapidPublicKey') || '';
+  return { config };
 }
 async function saveConfig(req, env) {
   await admin(req, env);

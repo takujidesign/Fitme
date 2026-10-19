@@ -1,3 +1,4 @@
+import { adminToken, adminFetch } from '../admin-session.js';
 import { keySettings } from './admin-keys.js';
 import { views, actions } from '../core.js';
 import { CONFIG, currentConfig, mergeConfig } from '../config.js';
@@ -14,7 +15,6 @@ function field(name,value) {
 const commands=['npx wrangler login','npx wrangler kv namespace create CONFIG',...['ADMIN_PASSWORD','TOKEN_SECRET','MASTER_KEY'].map(k=>'npx wrangler secret put '+k),'npx wrangler deploy'];
 function statuses(flags={}) {return [['api',L('เซิร์ฟเวอร์ API', 'API server')],['token','Token secret'],['thunder','Thunder'],['stripe','Stripe'],['anthropic','Claude'],['config','CONFIG KV']].map(([k,label])=>`<div class="status-row"><span>${label}</span><span class="${flags[k]?'ok':'muted'}">${flags[k]?'✓':'—'} ${flags[k]?L('พร้อมใช้งาน', 'Ready'):L('ยังไม่ได้ตั้งค่า', 'Not configured')}</span></div>`).join('');}
 views.admin=()=>{const c=currentConfig();return `<header class="top"><h1>${L('ตั้งค่าระบบ', 'Admin settings')}</h1></header><p class="muted">${L('จัดการการรับเงิน แพ็กเกจ และสิทธิ์ฟรีของ Fixmee', 'Manage payments, packages and free access for Fixmee.')}</p><section class="card" id="admin-secrets">${statuses()}</section>
-<section class="card"><h2>${L('เข้าสู่ระบบ', 'Login')}</h2><label class="field">${L('รหัสผ่านผู้ดูแล', 'Admin password')}<div class="input-wrap"><input id="admin-password" type="password" autocomplete="current-password"><button type="button" class="btn ghost" data-act="admin-reveal">${L('แสดง/ซ่อน', 'Show/hide')}</button></div></label><p class="muted sm">${L('จำไว้ในแท็บนี้', 'Remembered in this tab only')}</p></section>
 <section class="card" id="admin-key-settings">${keySettings()}</section><form id="admin-form"><section class="card"><h2>${L('การรับเงิน', 'Payments')}</h2>${field('promptpayId',c.promptpayId)}<p class="muted sm">${L('เบอร์โทร 10 หลักขึ้นต้น 0 หรือเลขประจำตัว 13 หลัก', '10-digit phone starting with 0, or 13-digit national/tax ID')}</p>${field('promptpayName',c.promptpayName)}${field('receiverName',c.receiverName)}<p class="muted sm">${L('ชื่อบัญชีตามสลิป คั่นชื่อทางเลือกด้วย | เพื่อให้ตรวจผู้รับเงินได้', 'Use account names shown on slips. Separate alternatives with | for receiver matching.')}</p></section>
 <h2>${L('แพ็กเกจ', 'Packages')}</h2>${Object.entries(c.products).map(([id,p])=>`<section class="card"><div class="product-preview" data-preview="${id}"></div><div class="grid2">${['th','en','thb','usd','days','exports','descTh','descEn'].map(k=>field(id+'.'+k,p[k])).join('')}</div><label class="shopping-row"><input type="checkbox" name="${id}.best" ${p.best?'checked':''}>${L('แสดงป้ายคุ้มสุด', 'Show best value badge')}</label></section>`).join('')}
 <section class="card"><h2>${L('แผนฟรี', 'Free plan')}</h2>${['freePlanDays','freeSupplements'].map(k=>`<div class="stepper"><button type="button" class="btn ghost" data-act="admin-step" data-key="${k}" data-n="-1">−</button>${field(k,c[k])}<button type="button" class="btn ghost" data-act="admin-step" data-key="${k}" data-n="1">+</button></div>`).join('')}</section>
@@ -36,15 +36,12 @@ function updateDirty(form) {
 }
 const getStateLang=()=>L('th','en');
 views.admin.mount=async root=>{
- const form=root.querySelector('#admin-form'),password=root.querySelector('#admin-password');
- try{password.value=sessionStorage.getItem('fitme:admin-password')||'';}catch{}
- password.addEventListener('input',()=>{try{sessionStorage.setItem('fitme:admin-password',password.value);}catch{}});
+ const form=root.querySelector('#admin-form');
  baseline=snapshot(form);updateDirty(form);
  form.addEventListener('input',()=>{validate(form);updateDirty(form);});form.addEventListener('submit',e=>e.preventDefault());
  if(!CONFIG.API_BASE)return;
- try{const res=await fetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/config');const data=await res.json();if(!res.ok)throw Error();root.querySelector('#admin-secrets').innerHTML=statuses({api:true,...data.secrets,thunder:data.secrets.thunderApiKey?.set,stripe:data.secrets.stripeSecretKey?.set,anthropic:data.secrets.anthropicApiKey?.set});root.querySelector('#admin-key-settings').innerHTML=keySettings(data.secrets);}catch{root.querySelector('#admin-secrets').innerHTML=statuses();}
+ try{const res=await adminFetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/admin/status');const data=await res.json();if(!res.ok)throw Error();root.querySelector('#admin-secrets').innerHTML=statuses({api:true,...data.secrets,thunder:data.secrets.thunderApiKey?.set,stripe:data.secrets.stripeSecretKey?.set,anthropic:data.secrets.anthropicApiKey?.set});root.querySelector('#admin-key-settings').innerHTML=keySettings(data.secrets);}catch{const host=root.querySelector('#admin-secrets');if(host)host.innerHTML=statuses();}
 };
-actions['admin-reveal']=()=>{const el=document.getElementById('admin-password');el.type=el.type==='password'?'text':'password';};
 actions['admin-step']=el=>{const form=document.getElementById('admin-form'),input=form.elements[el.dataset.key];input.value=Math.max(0,Number(input.value)+Number(el.dataset.n));validate(form);updateDirty(form);};
 actions['admin-copy']=async el=>{try{await navigator.clipboard.writeText(commands[Number(el.dataset.i)]);toast(L('คัดลอกแล้ว', 'Copied'));}catch{toast(L('เลือกคำสั่งเพื่อคัดลอก', 'Select the command to copy'));}};
 actions['admin-save'] = async (el) => {
@@ -59,7 +56,7 @@ actions['admin-save'] = async (el) => {
   for (const id of Object.keys(config.products)) config.products[id].best = form.elements[`${id}.best`].checked;
   el.disabled = true;
   try {
-    const res = await fetch(CONFIG.API_BASE.replace(/\/$/, '') + '/api/admin/config', { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + document.getElementById('admin-password').value }, body: JSON.stringify(config) });
+    const res = await adminFetch(CONFIG.API_BASE.replace(/\/$/, '') + '/api/admin/config', { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + adminToken() }, body: JSON.stringify(config) });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Save failed');
     mergeConfig(data.config);

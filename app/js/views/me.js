@@ -35,7 +35,7 @@ views.me = () => {
   const wk = weeksToGoal(p, avgKcal - t.tdee);
   const done = Object.values(s.logs).filter((l) => l.done?.workout).length;
   return `<header class="top"><div><small class="muted">${L('โปรไฟล์', 'Profile')}</small><h1>${esc(p.name) || L('ฉัน', 'Me')}</h1></div>
-    <button class="icon-btn" data-act="me-edit">${icon('settings')}</button></header>
+    <button class="icon-btn" data-act="me-edit">${icon('settings')}</button></header><nav class="chips"><a class="chip" href="#/muscles">${L('กล้ามเนื้อ','Muscles')}</a><a class="chip" href="#/tools">${L('เครื่องคำนวณ','Calculators')}</a><a class="chip" href="#/records">${L('สถิติส่วนตัว','Personal records')}</a><a class="chip" href="#/credits">${L('เครดิต','Credits')}</a></nav>
     ${accountCard()}${badgeGrid()}${replanCard()}${progressCard(sparkline(s.weights.slice(-20).map(w => ({v:w.kg}))))}<section class="card profile">
       <div class="sum-grid">
         <div class="stat"><small>${L('น้ำหนัก', 'Weight')}</small><b>${p.weight}</b><span class="tag">kg</span></div>
@@ -89,7 +89,6 @@ views.me = () => {
         <button data-act="me-reset" class="danger">${icon('trash', 18)} ${L('ลบข้อมูลทั้งหมด', 'Delete all data')}${icon('chev', 16)}</button>
       </div>
     </section>
-    <p class="muted sm center"><a href="#/admin">${L('ผู้ดูแลระบบ', 'Admin')}</a></p>
     <p class="muted sm center">Fixmee · ${L('คำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์', 'General guidance, not medical advice')}</p>`;
 };
 views.me.mount = async (root) => {

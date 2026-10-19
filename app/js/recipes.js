@@ -1,0 +1,4 @@
+import { FOOD } from './foods.js';
+export function scaleRecipe(recipe,servings=recipe.servings){if(!(Number.isFinite(servings)&&servings>0&&servings<=100&&recipe.servings>0))throw Error('Invalid servings');return recipe.ingredients.map(it=>{if(!FOOD[it.id]||!(it.grams>0))throw Error('Invalid ingredient');return {...it,grams:it.grams*servings/recipe.servings};});}
+export function recipeTotals(recipe,servings=recipe.servings){const items=scaleRecipe(recipe,servings);return Object.fromEntries(['k','p','c','f'].map(k=>[k,items.reduce((n,it)=>n+FOOD[it.id][k]*it.grams/100,0)]));}
+export function recipeMeal(recipe,servings=1){return {name:{...recipe.name,source:recipe.ingredients.some(it=>FOOD[it.id].source==='off')?'off':undefined},items:scaleRecipe(recipe,servings).map(it=>({id:it.id,g:it.grams,role:FOOD[it.id].cat})),total:recipeTotals(recipe,servings),recipeId:recipe.id};}

@@ -21,7 +21,7 @@ actions['avoid-preset'] = el => {setState(s=>s.profile.avoidEx=[...new Set([...s
 actions['exercise-swap'] = el => {
   const {iso,index}=el.dataset; if(isLockedDay(iso)) return;
   const item=sessionFor(getState().profile,iso)?.items[Number(index)];if(!item)return;
-  sheet(`<h2>${L('เปลี่ยนท่า', 'Swap exercise')}</h2><div class="chips">${allowed(getState().profile).filter(e=>e.group===EX[item.id].group && e.id!==item.id).map(e=>`<button class="chip" data-act="swap-select" data-iso="${iso}" data-index="${index}" data-id="${e.id}">${L(e.name)}</button>`).join('') || L('ไม่มีท่าอื่นที่อนุญาต', 'No other allowed alternatives')}</div><button class="btn ghost" data-close>${L('ปิด', 'Close')}</button>`);
+  sheet(`<h2>${L('เปลี่ยนท่า', 'Swap exercise')}</h2><a href="#/library?day=${iso}&swap=${index}" data-close>${L('คลังท่า','Exercise library')}</a><div class="chips">${allowed(getState().profile,true).filter(e=>e.group===EX[item.id].group && e.id!==item.id).map(e=>`<button class="chip" data-act="swap-select" data-iso="${iso}" data-index="${index}" data-id="${e.id}">${L(e.name)}</button>`).join('') || L('ไม่มีท่าอื่นที่อนุญาต', 'No other allowed alternatives')}</div><button class="btn ghost" data-close>${L('ปิด', 'Close')}</button>`);
 };
 actions['swap-select'] = el => {setState(s=>{(s.exSwaps[el.dataset.iso] ||= {})[el.dataset.index]=el.dataset.id;});closeSheet();rerender();};
 let month, selected;
@@ -42,6 +42,7 @@ actions.vacation=()=>{const start=document.getElementById('off-start').value,end
 export function shoppingItems(start) {
   const totals={};let days=0;
   for(let i=0;i<7;i++){const iso=addDays(start,i);if(isLockedDay(iso)||diffDays(getState().profile.startDate,iso)<0)continue;days++;for(const m of planDay(iso).meals)for(const item of m.items)totals[item.id]=(totals[item.id]||0)+item.g;}
+  for(const prep of getState().mealPrep||[])for(const it of prep.ingredients)if(FOOD[it.id])totals[it.id]=(totals[it.id]||0)+it.grams;
   return {days,items:Object.entries(totals).map(([id,g])=>({id,g,food:FOOD[id]})).sort((a,b)=>a.food.cat.localeCompare(b.food.cat))};
 }
 let shoppingText='';

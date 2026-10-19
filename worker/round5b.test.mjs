@@ -6,6 +6,7 @@ import { affiliateURL, standings } from './src/community.js';
 const {db,DB}=testDB(),kv=new Map();
 const env={DB,CONFIG:{get:async(k,t)=>kv.has(k)?t==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v)},ADMIN_PASSWORD:'test-admin',ALLOWED_ORIGINS:'https://app.test',LINE_CHANNEL_SECRET:'test-line-secret',LINE_MESSAGING_TOKEN:'test-token'};
 const request=(path,body,token='',method=body===undefined?'GET':'POST')=>worker.fetch(new Request('https://api.test/api/'+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:body===undefined?undefined:JSON.stringify(body)}),env);
+const adminSession=(await (await request('admin/login',{password:env.ADMIN_PASSWORD})).json()).token;
 const ok=async r=>{const b=await r.json();assert.equal(r.status,200,JSON.stringify(b));return b;};
 const register=async email=>ok(await request('auth/register',{email,password:'test-password-123'}));
 const owner=await register('owner@example.com'),other=await register('other@example.com'),outsider=await register('outside@example.com');
@@ -32,15 +33,15 @@ assert.equal(standings([{user_id:'a',nickname:'A'},{user_id:'b',nickname:'B'}],[
 const product={id:'mat',name:'Mat',image:'https://images.test/mat.png',price:'THB 500',category:'equipment',tags:['yoga mat'],links:{shopee:'https://shopee.co.th/product/1'},active:true,order:1};
 for(const url of ['http://shopee.co.th/a','https://shopee.co.th.evil.test/a','https://shopee.co.th@evil.test/a','https://shopee.co.th:444/a','javascript:alert(1)'])assert.throws(()=>affiliateURL(url,['shopee.co.th']));
 assert.equal((await request('admin/shop',{domains:['shopee.co.th'],products:[product]},other.token,'PUT')).status,401);
-await ok(await request('admin/shop',{domains:['shopee.co.th'],products:[product]},env.ADMIN_PASSWORD,'PUT'));
+await ok(await request('admin/shop',{domains:['shopee.co.th'],products:[product]},adminSession,'PUT'));
 assert.equal((await ok(await request('shop'))).products.length,1);
 let redirect=await request('shop/go/mat?via=shopee');assert.equal(redirect.status,302);assert.equal(redirect.headers.get('Location'),product.links.shopee);assert.equal(db.prepare('SELECT count FROM shop_clicks').get().count,1);
 assert.equal((await request('shop/go/mat?via=evil')).status,400);
-await ok(await request('admin/shop',{domains:['shopee.co.th'],products:[{...product,active:false}]},env.ADMIN_PASSWORD,'PUT'));assert.equal((await request('shop/go/mat')).status,404);
+await ok(await request('admin/shop',{domains:['shopee.co.th'],products:[{...product,active:false}]},adminSession,'PUT'));assert.equal((await request('shop/go/mat')).status,404);
 
 const settings={lineChannelId:'12345',appUrl:'https://app.test/app/',dailyCap:1};
-assert.equal((await request('admin/line',{...settings,appUrl:'https://evil.test'},env.ADMIN_PASSWORD,'PUT')).status,400);
-await ok(await request('admin/line',settings,env.ADMIN_PASSWORD,'PUT'));
+assert.equal((await request('admin/line',{...settings,appUrl:'https://evil.test'},adminSession,'PUT')).status,400);
+await ok(await request('admin/line',settings,adminSession,'PUT'));
 const verifier='a'.repeat(64),challenge=await pkce(verifier);
 const link=await ok(await request('auth/line/link',{challenge},owner.token));
 const start=await worker.fetch(new Request(link.url),env);assert.equal(start.status,302);

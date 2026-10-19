@@ -1,3 +1,4 @@
+import { adminFetch } from './admin-session.js';
 import { consentCurrent } from './legal.js';
 import { getState, setState, subscribe } from './store.js';
 import { syncCopy, mergeState } from './sync-data.js';
@@ -5,7 +6,7 @@ import { CONFIG } from './config.js';
 import { L, toast } from './ui.js';
 export async function api(path, body, method = body === undefined ? 'GET' : 'POST', token = getState().account?.token) {
   if (!CONFIG.API_BASE) throw Error(L('ต้องตั้งค่าเซิร์ฟเวอร์ก่อน ใช้งานในเครื่องได้ตามปกติ','Configure a server first. Local use remains available.'));
-  const res = await fetch(CONFIG.API_BASE.replace(/\/$/,'') + '/api/' + path, { method, headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})}, body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(30000) });
+  const res = await (path.startsWith('admin/') ? adminFetch : fetch)(CONFIG.API_BASE.replace(/\/$/,'') + '/api/' + path, { method, headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})}, body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(30000) });
   const data = await res.json();
   if(!res.ok) throw Object.assign(Error(data.error || 'Request failed'),{status:res.status,server:data.server});
   return data;

@@ -1,7 +1,9 @@
+import round6 from './round6.js';
 import zh from './zh.js';
 import ja from './ja.js';
 import vi from './vi.js';
 export const dictionaries={zh,ja,vi};
+for(const [lang,dict] of Object.entries(round6))Object.assign(dictionaries[lang],dict);
 export const LANGUAGES={th:'ไทย',en:'English',zh:'中文',ja:'日本語',vi:'Tiếng Việt'};
 export const LOCALES={th:'th-TH',en:'en-US',zh:'zh-CN',ja:'ja-JP',vi:'vi-VN'};
 const templates=Object.fromEntries(Object.entries(dictionaries).map(([lang,dict])=>[lang,Object.keys(dict).filter(key=>/\{\d+\}/.test(key)).sort((a,b)=>b.length-a.length).map(key=>{

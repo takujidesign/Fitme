@@ -1,0 +1,11 @@
+﻿import assert from 'node:assert/strict';
+import vm from 'node:vm';
+import {readFile,access} from 'node:fs/promises';
+const code=await readFile(new URL('../app/sw.js',import.meta.url),'utf8'),handlers={},buckets=new Map();let online=true,installed=[];
+const cache=name=>{if(!buckets.has(name))buckets.set(name,new Map());const values=buckets.get(name);return {addAll:async paths=>{installed=paths;for(const p of paths)values.set(new URL(p,'https://local/').href,new Response('shell'));},match:async req=>values.get(typeof req==='string'?new URL(req,'https://local/').href:req.url)?.clone(),put:async(req,r)=>values.set(typeof req==='string'?req:req.url,r.clone())};};
+const context={self:{addEventListener:(event,fn)=>handlers[event]=fn,skipWaiting:()=>{},clients:{claim:()=>{}}},caches:{open:async name=>cache(name),keys:async()=>[...buckets.keys()],delete:async name=>buckets.delete(name)},location:{origin:'https://local'},URL,Response,fetch:async()=>{if(!online)throw Error('offline');return new Response('network');}};
+vm.runInNewContext(code,context);await new Promise((resolve,reject)=>handlers.install({waitUntil:p=>p.then(resolve,reject)}));assert(!installed.includes('./data/exercise-db.json'));for(const p of installed)await access(new URL('../app/'+p.replace(/^\.\//,''),import.meta.url));assert(installed.includes('./data/recipes-th.json'));assert(installed.includes('./js/views/admin-login.js'));
+async function request(url){let response;handlers.fetch({request:new Request(url),respondWith:p=>response=p});return response?await response:null;}
+for(const url of ['https://local/data/exercise-db.json','https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@f00c92c7dcf1216a928a52c3706c7ce8e2f71ed5/exercises/Pushups/0.jpg']){online=true;assert.equal(await (await request(url)).text(),'network');online=false;assert.equal(await (await request(url)).text(),'network');}
+assert.equal(await request('https://local/api/admin/status'),null);assert.equal(await (await request('https://local/js/views/tools.js')).text(),'shell');assert.equal((await request('https://local/not-viewed.json')).type,'error');
+console.log('PASS offline: shell files exist, lazy catalogue excluded from install, viewed catalogue/photos cached, shell available offline, API never cached, unseen data fails explicitly.');

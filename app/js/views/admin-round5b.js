@@ -1,10 +1,11 @@
+import { adminToken, adminFetch } from '../admin-session.js';
 import './admin-round5.js';
 import { views, actions } from '../core.js';
 import { api } from '../account.js';
 import { L, esc, toast } from '../ui.js';
 const original=views.admin;
 views.admin=r=>`<nav class="chips"><button class="chip" data-act="admin-line">LINE</button><button class="chip" data-act="admin-shop">${L('ร้านค้า','Shop')}</button></nav>${original(r)}`;Object.assign(views.admin,original);
-const call=(path,body,method)=>api('admin/'+path,body,method,document.getElementById('admin-password').value);
+const call=(path,body,method)=>api('admin/'+path,body,method,adminToken());
 const guard=fn=>async el=>{el.disabled=true;try{await fn(el);}catch(e){toast(e.message,'warn');}finally{el.disabled=false;}};
 actions['admin-line']=guard(async()=>{const {settings:s,usage}=await call('line');document.getElementById('round5-admin').innerHTML=`<h2>LINE Login / OA</h2><p class="note">${L('ข้อความ push เกินโควตาฟรีมีค่าใช้จ่าย จำกัดต่อผู้ใช้ต่อวัน ใช้ LINE Login และ Messaging API ภายใต้ provider เดียวกัน','Push messages beyond the free quota cost money. Cap per user per day. Use Login and Messaging API channels under the same provider.')}</p><label class="field">Channel ID<input id="line-channel" value="${esc(s.lineChannelId||'')}"></label><label class="field">App URL (HTTPS)<input type="url" id="line-app" value="${esc(s.appUrl||'')}"></label><label class="field">${L('สูงสุดต่อผู้ใช้ต่อวัน','Daily cap per user')}<input id="line-cap" type="number" min="0" max="100" value="${s.dailyCap}"></label><button class="btn primary" data-act="admin-line-save">${L('บันทึก','Save')}</button><p>${L('ตั้ง lineChannelSecret และ lineMessagingToken ในแท็บคีย์ API','Set lineChannelSecret and lineMessagingToken in API keys.')}</p><h3>${L('จำนวนข้อความที่จองส่ง','Reserved deliveries')}</h3>${usage.map(r=>`<p>${r.day}: ${r.count}</p>`).join('')}`;});
 actions['admin-line-save']=guard(async()=>{await call('line',{lineChannelId:document.getElementById('line-channel').value,appUrl:document.getElementById('line-app').value,dailyCap:Number(document.getElementById('line-cap').value)},'PUT');toast(L('บันทึกแล้ว','Saved'));});

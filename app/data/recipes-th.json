@@ -1,0 +1,1226 @@
+[
+  {
+    "id": "thai-01",
+    "name": {
+      "th": "ข้าวไก่ย่างผักลวก",
+      "en": "Grilled chicken rice"
+    },
+    "ingredients": [
+      {
+        "id": "chicken_breast",
+        "grams": 150
+      },
+      {
+        "id": "mixed_veg",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "brown_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ย่างโปรตีนให้สุกทั่ว โดยใช้น้ำมันตามสูตร",
+        "ลวกผักหรือจัดผักสลัดสด เสิร์ฟคู่โปรตีน",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Grill the protein until fully cooked using the listed oil.",
+        "Blanch vegetables or arrange fresh salad; serve with the protein.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-02",
+    "name": {
+      "th": "ข้าวปลานึ่งผักรวม",
+      "en": "Steamed fish rice"
+    },
+    "ingredients": [
+      {
+        "id": "white_fish",
+        "grams": 150
+      },
+      {
+        "id": "mixed_veg",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "jasmine_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "นึ่งปลาให้สุกทั่ว",
+        "ลวกผัก เสิร์ฟคู่ปลาและน้ำมันตามสูตร",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Steam the fish until fully cooked.",
+        "Blanch vegetables; serve with fish and the listed oil.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-03",
+    "name": {
+      "th": "ข้าวแซลมอนย่างบรอกโคลี",
+      "en": "Grilled salmon rice"
+    },
+    "ingredients": [
+      {
+        "id": "salmon",
+        "grams": 150
+      },
+      {
+        "id": "broccoli",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "brown_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ย่างโปรตีนให้สุกทั่ว โดยใช้น้ำมันตามสูตร",
+        "ลวกผักหรือจัดผักสลัดสด เสิร์ฟคู่โปรตีน",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Grill the protein until fully cooked using the listed oil.",
+        "Blanch vegetables or arrange fresh salad; serve with the protein.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-04",
+    "name": {
+      "th": "ข้าวหมูย่างคะน้าลวก",
+      "en": "Grilled pork rice"
+    },
+    "ingredients": [
+      {
+        "id": "pork_loin",
+        "grams": 150
+      },
+      {
+        "id": "kale",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "brown_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ย่างโปรตีนให้สุกทั่ว โดยใช้น้ำมันตามสูตร",
+        "ลวกผักหรือจัดผักสลัดสด เสิร์ฟคู่โปรตีน",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Grill the protein until fully cooked using the listed oil.",
+        "Blanch vegetables or arrange fresh salad; serve with the protein.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-05",
+    "name": {
+      "th": "ข้าวเนื้อย่างผักลวก",
+      "en": "Grilled beef rice"
+    },
+    "ingredients": [
+      {
+        "id": "beef_lean",
+        "grams": 150
+      },
+      {
+        "id": "mixed_veg",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "jasmine_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ย่างโปรตีนให้สุกทั่ว โดยใช้น้ำมันตามสูตร",
+        "ลวกผักหรือจัดผักสลัดสด เสิร์ฟคู่โปรตีน",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Grill the protein until fully cooked using the listed oil.",
+        "Blanch vegetables or arrange fresh salad; serve with the protein.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-06",
+    "name": {
+      "th": "ข้าวกุ้งผัดผักรวม",
+      "en": "Shrimp vegetable rice"
+    },
+    "ingredients": [
+      {
+        "id": "shrimp",
+        "grams": 150
+      },
+      {
+        "id": "mixed_veg",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "brown_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ตั้งกระทะใส่น้ำมันตามสูตร",
+        "ผัดโปรตีนให้สุกทั่ว เติมผักและน้ำเล็กน้อย ผัดจนผักสุก",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Heat the listed oil in a pan.",
+        "Cook the protein thoroughly; add vegetables and a splash of water, then cook until tender.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-07",
+    "name": {
+      "th": "ข้าวเต้าหู้ผัดผักบุ้ง",
+      "en": "Tofu morning glory rice"
+    },
+    "ingredients": [
+      {
+        "id": "tofu",
+        "grams": 150
+      },
+      {
+        "id": "morning_glory",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "jasmine_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ตั้งกระทะใส่น้ำมันตามสูตร",
+        "ผัดโปรตีนให้สุกทั่ว เติมผักและน้ำเล็กน้อย ผัดจนผักสุก",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Heat the listed oil in a pan.",
+        "Cook the protein thoroughly; add vegetables and a splash of water, then cook until tender.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "vegetarian",
+      "budget",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-08",
+    "name": {
+      "th": "ข้าวไข่ผัดคะน้า",
+      "en": "Egg kale rice"
+    },
+    "ingredients": [
+      {
+        "id": "egg",
+        "grams": 100
+      },
+      {
+        "id": "kale",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "brown_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ตั้งกระทะใส่น้ำมันตามสูตร",
+        "ผัดโปรตีนให้สุกทั่ว เติมผักและน้ำเล็กน้อย ผัดจนผักสุก",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Heat the listed oil in a pan.",
+        "Cook the protein thoroughly; add vegetables and a splash of water, then cook until tender.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "vegetarian",
+      "budget",
+      "halal"
+    ]
+  },
+  {
+    "id": "thai-09",
+    "name": {
+      "th": "ข้าวเทมเป้ผัดถั่วฝักยาว",
+      "en": "Tempeh long bean rice"
+    },
+    "ingredients": [
+      {
+        "id": "tempeh",
+        "grams": 150
+      },
+      {
+        "id": "long_bean",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "brown_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ตั้งกระทะใส่น้ำมันตามสูตร",
+        "ผัดโปรตีนให้สุกทั่ว เติมผักและน้ำเล็กน้อย ผัดจนผักสุก",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Heat the listed oil in a pan.",
+        "Cook the protein thoroughly; add vegetables and a splash of water, then cook until tender.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "vegetarian",
+      "budget",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-10",
+    "name": {
+      "th": "ข้าวทูน่าผักสด",
+      "en": "Tuna salad rice"
+    },
+    "ingredients": [
+      {
+        "id": "tuna",
+        "grams": 150
+      },
+      {
+        "id": "salad",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "brown_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ทำโปรตีนให้สุกทั่วก่อน หรือใช้ทูน่ากระป๋องสะเด็ดน้ำ",
+        "ล้างผักสลัดและจัดใส่จาน ใส่โปรตีนและน้ำมันตามสูตร",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Cook the protein thoroughly first, or use drained canned tuna.",
+        "Wash and arrange salad, then add the protein and listed oil.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-11",
+    "name": {
+      "th": "ต้มจืดไก่กะหล่ำปลี",
+      "en": "Chicken cabbage soup"
+    },
+    "ingredients": [
+      {
+        "id": "chicken_breast",
+        "grams": 150
+      },
+      {
+        "id": "cabbage",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ต้มน้ำ ใส่โปรตีนและผัก ต้มให้สุกทั่ว",
+        "เติมน้ำมันตามสูตร คนให้เข้ากัน"
+      ],
+      "en": [
+        "Bring water to a boil; add protein and vegetables and cook thoroughly.",
+        "Stir in the listed oil."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 25,
+    "tags": [
+      "low-carb",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-12",
+    "name": {
+      "th": "ต้มจืดเต้าหู้ผักรวม",
+      "en": "Tofu vegetable soup"
+    },
+    "ingredients": [
+      {
+        "id": "tofu",
+        "grams": 150
+      },
+      {
+        "id": "mixed_veg",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ต้มน้ำ ใส่โปรตีนและผัก ต้มให้สุกทั่ว",
+        "เติมน้ำมันตามสูตร คนให้เข้ากัน"
+      ],
+      "en": [
+        "Bring water to a boil; add protein and vegetables and cook thoroughly.",
+        "Stir in the listed oil."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 25,
+    "tags": [
+      "low-carb",
+      "vegetarian",
+      "budget",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-13",
+    "name": {
+      "th": "ต้มจืดกุ้งผักรวม",
+      "en": "Shrimp vegetable soup"
+    },
+    "ingredients": [
+      {
+        "id": "shrimp",
+        "grams": 150
+      },
+      {
+        "id": "mixed_veg",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ต้มน้ำ ใส่โปรตีนและผัก ต้มให้สุกทั่ว",
+        "เติมน้ำมันตามสูตร คนให้เข้ากัน"
+      ],
+      "en": [
+        "Bring water to a boil; add protein and vegetables and cook thoroughly.",
+        "Stir in the listed oil."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 25,
+    "tags": [
+      "low-carb",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-14",
+    "name": {
+      "th": "ต้มจืดปลาเนื้อขาว",
+      "en": "White fish soup"
+    },
+    "ingredients": [
+      {
+        "id": "white_fish",
+        "grams": 150
+      },
+      {
+        "id": "cabbage",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ต้มน้ำ ใส่โปรตีนและผัก ต้มให้สุกทั่ว",
+        "เติมน้ำมันตามสูตร คนให้เข้ากัน"
+      ],
+      "en": [
+        "Bring water to a boil; add protein and vegetables and cook thoroughly.",
+        "Stir in the listed oil."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 25,
+    "tags": [
+      "low-carb",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-15",
+    "name": {
+      "th": "ต้มจืดไข่ขาวกะหล่ำปลี",
+      "en": "Egg white cabbage soup"
+    },
+    "ingredients": [
+      {
+        "id": "egg_white",
+        "grams": 150
+      },
+      {
+        "id": "cabbage",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ต้มน้ำ ใส่โปรตีนและผัก ต้มให้สุกทั่ว",
+        "เติมน้ำมันตามสูตร คนให้เข้ากัน"
+      ],
+      "en": [
+        "Bring water to a boil; add protein and vegetables and cook thoroughly.",
+        "Stir in the listed oil."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 25,
+    "tags": [
+      "low-carb",
+      "vegetarian",
+      "budget",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-16",
+    "name": {
+      "th": "ไก่ผัดคะน้าน้ำมันน้อย",
+      "en": "Light chicken kale stir-fry"
+    },
+    "ingredients": [
+      {
+        "id": "chicken_breast",
+        "grams": 150
+      },
+      {
+        "id": "kale",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ตั้งกระทะใส่น้ำมันตามสูตร",
+        "ผัดโปรตีนให้สุกทั่ว เติมผักและน้ำเล็กน้อย ผัดจนผักสุก"
+      ],
+      "en": [
+        "Heat the listed oil in a pan.",
+        "Cook the protein thoroughly; add vegetables and a splash of water, then cook until tender."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "low-carb",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-17",
+    "name": {
+      "th": "หมูผัดถั่วฝักยาว",
+      "en": "Pork long bean stir-fry"
+    },
+    "ingredients": [
+      {
+        "id": "pork_loin",
+        "grams": 150
+      },
+      {
+        "id": "long_bean",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ตั้งกระทะใส่น้ำมันตามสูตร",
+        "ผัดโปรตีนให้สุกทั่ว เติมผักและน้ำเล็กน้อย ผัดจนผักสุก"
+      ],
+      "en": [
+        "Heat the listed oil in a pan.",
+        "Cook the protein thoroughly; add vegetables and a splash of water, then cook until tender."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "low-carb",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-18",
+    "name": {
+      "th": "กุ้งผัดบรอกโคลี",
+      "en": "Shrimp broccoli stir-fry"
+    },
+    "ingredients": [
+      {
+        "id": "shrimp",
+        "grams": 150
+      },
+      {
+        "id": "broccoli",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ตั้งกระทะใส่น้ำมันตามสูตร",
+        "ผัดโปรตีนให้สุกทั่ว เติมผักและน้ำเล็กน้อย ผัดจนผักสุก"
+      ],
+      "en": [
+        "Heat the listed oil in a pan.",
+        "Cook the protein thoroughly; add vegetables and a splash of water, then cook until tender."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "low-carb",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-19",
+    "name": {
+      "th": "เต้าหู้ผัดกะหล่ำปลี",
+      "en": "Tofu cabbage stir-fry"
+    },
+    "ingredients": [
+      {
+        "id": "tofu",
+        "grams": 150
+      },
+      {
+        "id": "cabbage",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ตั้งกระทะใส่น้ำมันตามสูตร",
+        "ผัดโปรตีนให้สุกทั่ว เติมผักและน้ำเล็กน้อย ผัดจนผักสุก"
+      ],
+      "en": [
+        "Heat the listed oil in a pan.",
+        "Cook the protein thoroughly; add vegetables and a splash of water, then cook until tender."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "low-carb",
+      "vegetarian",
+      "budget",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-20",
+    "name": {
+      "th": "เนื้อผัดผักรวม",
+      "en": "Beef vegetable stir-fry"
+    },
+    "ingredients": [
+      {
+        "id": "beef_lean",
+        "grams": 150
+      },
+      {
+        "id": "mixed_veg",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ตั้งกระทะใส่น้ำมันตามสูตร",
+        "ผัดโปรตีนให้สุกทั่ว เติมผักและน้ำเล็กน้อย ผัดจนผักสุก"
+      ],
+      "en": [
+        "Heat the listed oil in a pan.",
+        "Cook the protein thoroughly; add vegetables and a splash of water, then cook until tender."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "low-carb",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-21",
+    "name": {
+      "th": "สลัดไก่ฉีก",
+      "en": "Shredded chicken salad"
+    },
+    "ingredients": [
+      {
+        "id": "chicken_breast",
+        "grams": 150
+      },
+      {
+        "id": "salad",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ทำโปรตีนให้สุกทั่วก่อน หรือใช้ทูน่ากระป๋องสะเด็ดน้ำ",
+        "ล้างผักสลัดและจัดใส่จาน ใส่โปรตีนและน้ำมันตามสูตร"
+      ],
+      "en": [
+        "Cook the protein thoroughly first, or use drained canned tuna.",
+        "Wash and arrange salad, then add the protein and listed oil."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "low-carb",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-22",
+    "name": {
+      "th": "สลัดทูน่า",
+      "en": "Tuna green salad"
+    },
+    "ingredients": [
+      {
+        "id": "tuna",
+        "grams": 150
+      },
+      {
+        "id": "salad",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ทำโปรตีนให้สุกทั่วก่อน หรือใช้ทูน่ากระป๋องสะเด็ดน้ำ",
+        "ล้างผักสลัดและจัดใส่จาน ใส่โปรตีนและน้ำมันตามสูตร"
+      ],
+      "en": [
+        "Cook the protein thoroughly first, or use drained canned tuna.",
+        "Wash and arrange salad, then add the protein and listed oil."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "low-carb",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-23",
+    "name": {
+      "th": "สลัดไข่ต้ม",
+      "en": "Boiled egg salad"
+    },
+    "ingredients": [
+      {
+        "id": "egg",
+        "grams": 100
+      },
+      {
+        "id": "salad",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ทำโปรตีนให้สุกทั่วก่อน หรือใช้ทูน่ากระป๋องสะเด็ดน้ำ",
+        "ล้างผักสลัดและจัดใส่จาน ใส่โปรตีนและน้ำมันตามสูตร"
+      ],
+      "en": [
+        "Cook the protein thoroughly first, or use drained canned tuna.",
+        "Wash and arrange salad, then add the protein and listed oil."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "low-carb",
+      "vegetarian",
+      "budget",
+      "halal"
+    ]
+  },
+  {
+    "id": "thai-24",
+    "name": {
+      "th": "สลัดเต้าหู้ย่าง",
+      "en": "Grilled tofu salad"
+    },
+    "ingredients": [
+      {
+        "id": "tofu",
+        "grams": 150
+      },
+      {
+        "id": "salad",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ย่างโปรตีนให้สุกทั่ว โดยใช้น้ำมันตามสูตร",
+        "ลวกผักหรือจัดผักสลัดสด เสิร์ฟคู่โปรตีน"
+      ],
+      "en": [
+        "Grill the protein until fully cooked using the listed oil.",
+        "Blanch vegetables or arrange fresh salad; serve with the protein."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "low-carb",
+      "vegetarian",
+      "budget",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-25",
+    "name": {
+      "th": "สลัดกุ้งลวก",
+      "en": "Poached shrimp salad"
+    },
+    "ingredients": [
+      {
+        "id": "shrimp",
+        "grams": 150
+      },
+      {
+        "id": "salad",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      }
+    ],
+    "steps": {
+      "th": [
+        "ทำโปรตีนให้สุกทั่วก่อน หรือใช้ทูน่ากระป๋องสะเด็ดน้ำ",
+        "ล้างผักสลัดและจัดใส่จาน ใส่โปรตีนและน้ำมันตามสูตร"
+      ],
+      "en": [
+        "Cook the protein thoroughly first, or use drained canned tuna.",
+        "Wash and arrange salad, then add the protein and listed oil."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "low-carb",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-26",
+    "name": {
+      "th": "ข้าวต้มไก่ผักรวม",
+      "en": "Chicken rice soup"
+    },
+    "ingredients": [
+      {
+        "id": "chicken_breast",
+        "grams": 150
+      },
+      {
+        "id": "mixed_veg",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "jasmine_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ต้มน้ำ ใส่โปรตีนและผัก ต้มให้สุกทั่ว",
+        "เติมน้ำมันตามสูตร คนให้เข้ากัน",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Bring water to a boil; add protein and vegetables and cook thoroughly.",
+        "Stir in the listed oil.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 25,
+    "tags": [
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-27",
+    "name": {
+      "th": "ข้าวต้มปลา",
+      "en": "Fish rice soup"
+    },
+    "ingredients": [
+      {
+        "id": "white_fish",
+        "grams": 150
+      },
+      {
+        "id": "cabbage",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "jasmine_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ต้มน้ำ ใส่โปรตีนและผัก ต้มให้สุกทั่ว",
+        "เติมน้ำมันตามสูตร คนให้เข้ากัน",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Bring water to a boil; add protein and vegetables and cook thoroughly.",
+        "Stir in the listed oil.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 25,
+    "tags": [
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-28",
+    "name": {
+      "th": "ข้าวต้มกุ้ง",
+      "en": "Shrimp rice soup"
+    },
+    "ingredients": [
+      {
+        "id": "shrimp",
+        "grams": 150
+      },
+      {
+        "id": "mixed_veg",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "jasmine_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ต้มน้ำ ใส่โปรตีนและผัก ต้มให้สุกทั่ว",
+        "เติมน้ำมันตามสูตร คนให้เข้ากัน",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Bring water to a boil; add protein and vegetables and cook thoroughly.",
+        "Stir in the listed oil.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 25,
+    "tags": [
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-29",
+    "name": {
+      "th": "ข้าวต้มเต้าหู้",
+      "en": "Tofu rice soup"
+    },
+    "ingredients": [
+      {
+        "id": "tofu",
+        "grams": 150
+      },
+      {
+        "id": "mixed_veg",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "brown_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ต้มน้ำ ใส่โปรตีนและผัก ต้มให้สุกทั่ว",
+        "เติมน้ำมันตามสูตร คนให้เข้ากัน",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Bring water to a boil; add protein and vegetables and cook thoroughly.",
+        "Stir in the listed oil.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 25,
+    "tags": [
+      "vegetarian",
+      "budget",
+      "halal",
+      "high-protein"
+    ]
+  },
+  {
+    "id": "thai-30",
+    "name": {
+      "th": "ข้าวไข่ขาวผัดผักรวม",
+      "en": "Egg white vegetable rice"
+    },
+    "ingredients": [
+      {
+        "id": "egg_white",
+        "grams": 150
+      },
+      {
+        "id": "mixed_veg",
+        "grams": 150
+      },
+      {
+        "id": "olive_oil",
+        "grams": 5
+      },
+      {
+        "id": "brown_rice",
+        "grams": 150
+      }
+    ],
+    "steps": {
+      "th": [
+        "ตั้งกระทะใส่น้ำมันตามสูตร",
+        "ผัดโปรตีนให้สุกทั่ว เติมผักและน้ำเล็กน้อย ผัดจนผักสุก",
+        "เสิร์ฟพร้อมข้าวสุกตามปริมาณในสูตร"
+      ],
+      "en": [
+        "Heat the listed oil in a pan.",
+        "Cook the protein thoroughly; add vegetables and a splash of water, then cook until tender.",
+        "Serve with the listed cooked rice portion."
+      ]
+    },
+    "servings": 1,
+    "prepMinutes": 20,
+    "tags": [
+      "vegetarian",
+      "budget",
+      "halal",
+      "high-protein"
+    ]
+  }
+]

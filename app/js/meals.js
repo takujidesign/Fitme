@@ -1,3 +1,4 @@
+import { getState } from './store.js';
 import { translate } from './i18n/index.js';
 import { hasCondition } from './conditions.js';
 import { eatingWindow, windowMinute } from './fasting.js';
@@ -140,7 +141,7 @@ function mealName(items, r) {
     for(const lang of ['zh','ja','vi'])parts.at(-1)[lang]=[f.cook&&idx>=0?translate(f.cook.th[idx],f.cook.en[idx],lang):'',translate(f,undefined,lang)].filter(Boolean).join(' ');
   }
   for (const it of items) if (it.role === 'carb' || it.role === 'veg' || it.role === 'fruit') parts.push({ th: FOOD[it.id].th, en: FOOD[it.id].en.toLowerCase(),...Object.fromEntries(['zh','ja','vi'].map(lang=>[lang,translate(FOOD[it.id],undefined,lang)])) });
-  return { ...Object.fromEntries(['zh','ja','vi'].map(lang=>[lang,parts.map(x=>x[lang]).join(' / ')])), th: parts.map((x) => x.th).join(' · '), en: parts.map((x) => x.en).join(' · ').replace(/^./, (c) => c.toUpperCase()) };
+  return { source:items.some(it=>FOOD[it.id]?.source==='off')?'off':undefined, ...Object.fromEntries(['zh','ja','vi'].map(lang=>[lang,parts.map(x=>x[lang]).join(' / ')])), th: parts.map((x) => x.th).join(' · '), en: parts.map((x) => x.en).join(' · ').replace(/^./, (c) => c.toUpperCase()) };
 }
 
 // Full day of meals for given daily targets (food part, i.e. after supplement macros).
@@ -155,6 +156,8 @@ export function dayMeals(p, dateISO, isTraining, t, seeds = {}) {
   for(const slot of slots){if(!(p.eatingOut||[]).includes(slot.kind))continue;const options=allowedFoods(p).filter(f=>f.cat==='eatingout');if(options.length){const f=options[Math.abs([...dateISO+slot.key].reduce((n,c)=>n+c.charCodeAt(0),0))%options.length],g=f.unitG;outside.set(slot.key,{items:[{id:f.id,g,role:'protein'}],total:Object.fromEntries(['k','p','c','f'].map(k=>[k,Math.round(f[k]*g/100)])),name:{th:f.th,en:f.en},tip:f.tip,estimate:true});}}
   const used=key=>[...outside.values()].reduce((n,m)=>n+m.total[key],0),remainingShare=slots.filter(s=>!outside.has(s.key)).reduce((n,s)=>n+s.share,0)||1;
   const meals = slots.map((s) => {
+    const replacement=getState().mealOverrides?.[dateISO]?.[s.key];
+    if(replacement&&replacement.items.every(it=>allowedFoods(p).some(f=>f.id===it.id)))return {...s,...replacement};
     if(outside.has(s.key))return {...s,...outside.get(s.key)};
     const cs = (s.share * (s.carbBoost || 1)) / totalShare;
     const tgt = outside.size ? {p:Math.max(0,foodP-used('p'))*s.share/remainingShare,c:Math.max(0,foodC-used('c'))*s.share/remainingShare,f:Math.max(0,foodF-used('f'))*s.share/remainingShare} : { p: foodP * s.share, c: foodC * cs, f: foodF * s.share * (s.post ? 0.6 : 1) };

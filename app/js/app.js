@@ -35,6 +35,12 @@ import { startLineReminders } from './views/round5b.js';
 import './views/admin-round5b.js';
 import './views/round5c.js';
 import './views/admin-round5c.js';
+import './views/admin-login.js';
+import './views/library.js';
+import './views/tools.js';
+import './views/free-workout.js';
+import './views/recipes.js';
+import './views/credits.js';
 import { loadConfig } from './config.js';
 
 const TABS = [
@@ -52,8 +58,10 @@ function render() {
   applyTheme();
   languageFont(getState().lang);
   const r = route();
-  if (!getState().onboarded && !['onboarding', 'admin', 'privacy', 'terms', 'account', 'line-return', 'pay'].includes(r.name)) return go('#/onboarding');
-  if(getState().onboarded && !consentCurrent() && !['consent','privacy','terms','account','admin','line-return'].includes(r.name))return go('#/consent');
+  let robots=document.querySelector('meta[data-admin-robots]');
+  if(r.name==='admin'){if(!robots){robots=document.createElement('meta');robots.name='robots';robots.dataset.adminRobots='';document.head.append(robots);}robots.content='noindex';}else robots?.remove();
+  if (!getState().onboarded && !['onboarding', 'admin', 'credits', 'privacy', 'terms', 'account', 'line-return', 'pay'].includes(r.name)) return go('#/onboarding');
+  if(getState().onboarded && !consentCurrent() && !['credits','consent','privacy','terms','account','admin','line-return'].includes(r.name))return go('#/consent');
   const v = views[r.name] || views.today;
   const html = v(r);
   document.body.classList.toggle('full', !!v.full || r.name === 'onboarding');
