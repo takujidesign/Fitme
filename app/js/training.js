@@ -1,0 +1,9 @@
+// Pure settings mapping: inferred styles do not opt legacy plans into new generation.
+export const STYLE_IDS = ['gym','dumbbell','bodyweight','cardio','hiit','mobility'];
+export function inferredStyles(p) { return [p.location==='gym'?'gym':p.location==='db'?'dumbbell':'bodyweight',...(p.focus||[]).filter(g=>['cardio','mobility'].includes(g))]; }
+export function equipmentFor(p) { return p.trainingConfigured && p.equipment?.length ? p.equipment : p.location==='gym'?['none','db','gym']:p.location==='db'?['none','db']:['none']; }
+export function styleGroups(p) { if(!p.trainingConfigured)return null; const styles=p.styles||inferredStyles(p);return [...new Set(styles.flatMap(s=>['gym','dumbbell','bodyweight'].includes(s)?['legs','push','pull','core']:s==='hiit'?['cardio','core']:s==='cardio'?['cardio']:['mobility']))]; }
+export function styleAllows(p,e) { const groups=styleGroups(p);return !groups||groups.includes(e.group)||e.group==='mobility'; }
+export const REGION_GROUP = {chest:'push',front_delts:'push',rear_delts:'push',triceps:'push',biceps:'pull',forearms:'pull',traps:'pull',lats:'pull',lower_back:'pull',abs:'core',obliques:'core',pelvic_floor:'core',neck:'mobility',glutes:'legs',quads:'legs',hamstrings:'legs',adductors:'legs',calves:'legs'};
+export function mapSettings(p) { const equipment=p.equipment?.length?p.equipment:equipmentFor(p); return {...p,styles:p.styles?.length?p.styles:inferredStyles(p),equipment,location:equipment.includes('gym')?'gym':equipment.includes('db')?'db':'home',trainingConfigured:true,focus:[...new Set((p.focusMuscles||[]).map(id=>REGION_GROUP[id]).filter(Boolean))],program:null,trainerPlan:null}; }
+export function setPreference(p,id,value) { p.preferEx=(p.preferEx||[]).filter(x=>x!==id);p.avoidEx=(p.avoidEx||[]).filter(x=>x!==id);if(value==='prefer')p.preferEx.push(id);if(value==='avoid')p.avoidEx.push(id);return p; }

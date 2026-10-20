@@ -1,3 +1,4 @@
+import { registerSlot } from '../slots.js';
 import './wellbeing.js';
 import { views, actions, rerender } from '../core.js';
 import { getState, setState, todayISO } from '../store.js';
@@ -8,7 +9,7 @@ import { installId } from '../install-id.js';
 import { EATING_OUT } from '../eating-out.js';
 const guard=fn=>async el=>{el.disabled=true;try{await fn(el);}catch(e){toast(e.message,'warn');}finally{el.disabled=false;}};
 const link=(path,th,en)=>`<a class="btn ghost" href="#/${path}">${L(th,en)}</a>`;
-function extend(name,html,mount){const old=views[name];views[name]=r=>old(r)+html();Object.assign(views[name],old);views[name].mount=async root=>{await old.mount?.(root);await mount?.(root);};}
+function extend(name,html,mount){registerSlot(name+'.secondary',html);if(mount){const previous=views[name].mount;views[name].mount=async root=>{await previous?.(root);await mount(root);};}}
 const trialButton=()=>`<button class="btn primary" data-act="trial">${L('เริ่มทดลอง Pro ฟรี 7 วัน','Start a free 7-day Pro trial')}</button><p class="muted">${L('หนึ่งครั้งต่อบัญชีและอุปกรณ์ ระยะเวลาตามที่ผู้ดูแลกำหนด','Once per account and device. Duration follows administrator settings.')}</p>`;
 extend('pay',()=>`<section class="card">${trialButton()}<h2>${L('Pro รายเดือน','Monthly Pro')}</h2><p>${L('ต่ออายุอัตโนมัติ ยกเลิกผ่านพอร์ทัลได้ PromptPay เป็นการซื้อครั้งเดียว','Auto-renews; cancel in the portal. PromptPay purchases remain one-time.')}</p><p id="monthly-price"></p><button class="btn primary" data-act="subscribe">${L('สมัครรายเดือนผ่าน Stripe','Subscribe monthly with Stripe')}</button></section>`,async root=>{if(!getState().account?.token)return;try{const r=await api('subscription');root.querySelector('#monthly-price').textContent=`THB ${r.settings.monthlyTHB} / USD ${r.settings.monthlyUSD} ${L('ต่อเดือน','per month')}`;}catch{} });
 extend('onboarding',()=>getState().onboarded?trialButton():'');

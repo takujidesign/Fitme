@@ -4,7 +4,8 @@ export function readiness(checkin){
  if(checkin.override==='recovery')return {score:30,mode:'recovery'};
  const energy=Math.max(1,Math.min(5,Number(checkin.energy)||3)),stress=Math.max(1,Math.min(5,Number(checkin.stress)||3));
  const sleep=Number.isFinite(checkin.sleep)?Math.max(0,Math.min(12,checkin.sleep)):7;
- const sore=Object.values(checkin.soreness||{}).filter(Boolean).length;
+ const areas={quads:'legs',hamstrings:'legs',glutes:'legs',calves:'legs',adductors:'legs',front_delts:'shoulders',rear_delts:'shoulders',biceps:'arms',triceps:'arms',forearms:'arms',lats:'back',lower_back:'back',traps:'back'};
+ const sore=new Set(Object.entries(checkin.soreness||{}).filter(([,v])=>v).map(([k])=>areas[k]||k)).size;
  const score=Math.max(0,Math.min(100,Math.round(energy*12+(6-stress)*6+Math.min(sleep,8)*4-20-sore*8)));
  return {score,mode:score<20?'rest':score<40?'recovery':score<70?'lighter':'normal'};
 }

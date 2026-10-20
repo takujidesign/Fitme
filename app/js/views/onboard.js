@@ -1,3 +1,5 @@
+import { trainingControls, toggleStyle, toggleEquipment } from '../training-controls.js';
+import { slot } from '../slots.js';
 import { LANGUAGES } from '../i18n/index.js';
 import { consentFields, consentCurrent, acceptConsent } from '../legal.js';
 import { track } from '../telemetry.js';
@@ -36,12 +38,11 @@ views.onboarding = ({ query }) => {
       <h3>${L('ประสบการณ์', 'Experience')}</h3>
       <div class="seg">${['beginner', 'intermediate', 'advanced'].map((k, i) => chip('ob-set', 'level:' + k, p.level === k, [L('มือใหม่', 'Beginner'), L('ปานกลาง', 'Intermediate'), L('ชำนาญ', 'Advanced')][i])).join('')}</div>`,
     () => `<h2>${L('การออกกำลังกาย', 'Training')}</h2>
-      <h3>${L('ออกกำลังกายที่ไหน', 'Where do you train?')}</h3>
-      <div class="seg">${chip('ob-set', 'location:home', p.location === 'home', L('บ้าน (ไม่มีอุปกรณ์)', 'Home, no equipment'))}${chip('ob-set', 'location:db', p.location === 'db', L('บ้าน + ดัมเบล', 'Home + dumbbells'))}${chip('ob-set', 'location:gym', p.location === 'gym', L('ฟิตเนส', 'Gym'))}</div>
+      ${trainingControls(p,'ob')}
       <h3>${L('วันที่ออกกำลังกาย', 'Training days')} <small class="muted">${p.trainDays.length} ${L('วัน/สัปดาห์', 'days/week')}</small></h3>
       <div class="days">${WEEKDAYS().map((d, i) => chip('ob-day', i, p.trainDays.includes(i), d)).join('')}</div>
       <h3>${L('เวลาต่อครั้ง', 'Session length')}</h3>
-      <div class="seg">${[30, 45, 60, 75].map((m) => chip('ob-set', 'sessionMin:' + m, p.sessionMin === m, m + ' ' + L('นาที', 'min'))).join('')}</div>
+      <div class="seg">${[20, 30, 45, 60].map((m) => chip('ob-set', 'sessionMin:' + m, p.sessionMin === m, m + ' ' + L('นาที', 'min'))).join('')}</div>
       ${field('workoutTime', L('เวลาที่สะดวกออกกำลังกาย', 'Usual workout time'), p.workoutTime, { type: 'time' })}`,
     () => `<h2>${L('อาหารและเวลาพักผ่อน', 'Food & rest')}</h2>
       <h3>${L('รูปแบบการกิน', 'Eating style')}</h3>
@@ -73,7 +74,7 @@ views.onboarding = ({ query }) => {
       <div class="dots">${Array.from({ length: STEPS }, (_, i) => `<i class="${i <= step ? 'on' : ''}"></i>`).join('')}</div><span></span></div>
     <div class="ob-body">${content}</div>
     ${step===STEPS-1?`<p><a class="btn ghost" href="#/pay">${L('ทดลอง Pro ฟรี 7 วัน (ต้องมีบัญชี)','Free 7-day Pro trial (account required)')}</a></p>`:''}<div class="ob-foot"><button class="btn primary block" data-act="ob-next">${step === STEPS - 1 ? (edit ? L('บันทึก', 'Save') : L('เริ่มเลย', "Let's go")) : L('ถัดไป', 'Next')} ${icon('chev', 18)}</button></div>
-  </div>`;
+  </div>${slot('onboarding.secondary')}${slot('onboarding.footer')}`;
 };
 
 function readInputs() {
@@ -137,3 +138,6 @@ actions['ob-next'] = () => {
   go(wasOnboarded ? '#/me' : '#/today');
 };
 export const resetOnboardStep = () => (step = 0);
+
+actions['ob-style']=el=>{readInputs();setState(s=>toggleStyle(s.profile,el.dataset.id));rerender();};
+actions['ob-equipment']=el=>{readInputs();setState(s=>toggleEquipment(s.profile,el.dataset.id));rerender();};

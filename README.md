@@ -326,3 +326,7 @@ Do not commit token values. Local API bundle verification: `cd worker` then `npx
 Run `node scripts/import-exercises.mjs` manually to regenerate the committed exercise catalogue. The source commit is pinned in that script; Thai names are in `scripts/exercise-names-th.json`. Default generated plans still use the animated exercises. The full library loads on demand and viewed images are cached by the service worker. Credits and licence texts are listed in `THIRD_PARTY_NOTICES.md` and `#/credits`.
 
 Admin access is at `#/admin` without a public navigation link. Login creates a two-hour session; the password is never stored in the browser. `GET /api/config` is public; key status is available only at authenticated `GET /api/admin/status`. Log out revokes the current session.
+
+### Round 7 training settings
+
+Use Training settings from Train or Me to choose training styles, equipment, weekdays, session length, muscle focus and preferred/avoided exercises, including library exercises. Changes apply on Save; existing profiles keep their previous plan until settings are saved. See [Round 7 validation](docs/ROUND7_VALIDATION.md) for tests, screenshots and local visual-review instructions.

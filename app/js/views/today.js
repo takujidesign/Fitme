@@ -1,3 +1,4 @@
+import { slot } from '../slots.js';
 import { foodWarnings } from '../conditions.js';
 import { replanCard } from './replan.js';
 import { mealLogButtons } from './food-log.js';
@@ -58,11 +59,11 @@ views.today = ({ query }) => {
   const hello = hr < 12 ? L('อรุณสวัสดิ์', 'Good morning') : hr < 17 ? L('สวัสดีตอนบ่าย', 'Good afternoon') : L('สวัสดีตอนเย็น', 'Good evening');
   const lastNight = s.logs[iso]?.sleep;
   const sess = d.sess;
-  return `${replanCard()}<header class="top"><a class="btn ghost xs" href="#/coach">${L('AI โค้ช','AI coach')}</a>
+  return `<header class="top">
       <div><small class="muted">${dateLabel(iso, { weekday: 'long', day: 'numeric', month: 'long' })}</small><h1>${hello}${p.name ? ', ' + esc(p.name) : ''}</h1></div>
-      <div class="day-nav"><button class="icon-btn" data-act="go" data-to="#/today?d=${addDays(iso, -1)}">${icon('back', 18)}</button><button class="icon-btn" data-act="go" data-to="#/today?d=${addDays(iso, 1)}">${icon('chev', 18)}</button></div>
+      <div class="day-nav"><a class="icon-btn" href="#/coach" aria-label="${L('AI โค้ช','AI coach')}">${icon('spark')}</a><button class="icon-btn" data-act="go" data-to="#/today?d=${addDays(iso, -1)}">${icon('back', 18)}</button><button class="icon-btn" data-act="go" data-to="#/today?d=${addDays(iso, 1)}">${icon('chev', 18)}</button></div>
     </header>
-    ${fastingCard(p)}<section class="hero-card ${d.train ? 'train' : 'rest'}">
+    <section class="hero-card ${d.train ? 'train' : 'rest'}">
       <div class="hero-top"><span class="pill">${d.train ? icon('dumbbell', 14) + L('วันออกกำลังกาย', 'Training day') : icon('moon', 14) + L('วันพักฟื้น', 'Recovery day')}</span>${sess ? `<span class="muted sm">${L('สัปดาห์ที่', 'Week')} ${sess.week}${sess.deload ? ' · Deload' : ''}</span>` : ''}</div>
       <div class="rings">
         ${ring(ate.k / d.t.kcal, { size: 92, stroke: 9, label: fmt(Math.max(0, d.t.kcal - ate.k)), sub: L('kcal เหลือ', 'kcal left') })}
@@ -77,10 +78,11 @@ views.today = ({ query }) => {
         <div><small>${d.train ? L(splitName(sess.split)) : L('เดินเบาๆ + ยืดเหยียด', 'Walk + stretch')}</small><b>${log.done.workout ? L('ทำเสร็จแล้ว ✓', 'Completed ✓') : L('เริ่มออกกำลังกาย', 'Start workout')}</b><span>${sess.minutes} ${L('นาที', 'min')} · ${sess.items.length} ${L('ท่า', 'moves')}</span></div>
         <span class="play">${icon('play', 20)}</span></button>` : ''}
     </section>
+    ${slot('today.readiness',{query})}
     ${!lastNight && iso === todayISO() ? `<button class="card soft row-card" data-act="sleep-log" data-iso="${iso}">${icon('bed', 22)}<div><b>${L('เมื่อคืนนอนหลับเป็นอย่างไร?', 'How did you sleep?')}</b><small>${L('บันทึกการนอนเพื่อปรับแผนการพักผ่อน', 'Log sleep to tune your recovery')}</small></div>${icon('chev', 18)}</button>` : ''}
-    <h2 class="sec">${L('ไทม์ไลน์วันนี้', 'Today\'s timeline')}</h2>
+    ${fastingCard(p)}${replanCard()}<h2 class="sec">${L('ไทม์ไลน์วันนี้', 'Today\'s timeline')}</h2>
     ${isLockedDay(iso) ? lockCard() : `<ol class="timeline">${d.events.map((e, i) => eventRow(e, log, iso).replace('<li class="tl', `<li class="tl ${i === nextIdx ? 'next' : ''}`)).join('')}</ol>`}
-    ${d.sm.protein ? `<p class="muted sm center">${L(`อาหารเสริมวันนี้ให้โปรตีน ${d.sm.protein} g / ${d.sm.kcal} kcal (หักออกจากมื้ออาหารแล้ว)`, `Supplements today add ${d.sm.protein} g protein / ${d.sm.kcal} kcal (already deducted from meals)`)}</p>` : ''}`;
+    ${d.sm.protein ? `<p class="muted sm center">${L(`อาหารเสริมวันนี้ให้โปรตีน ${d.sm.protein} g / ${d.sm.kcal} kcal (หักออกจากมื้ออาหารแล้ว)`, `Supplements today add ${d.sm.protein} g protein / ${d.sm.kcal} kcal (already deducted from meals)`)}</p>` : ''}${slot('today.secondary')}${slot('today.footer')}`;
 };
 
 actions.tick = (el) => {

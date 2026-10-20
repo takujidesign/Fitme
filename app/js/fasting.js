@@ -21,5 +21,5 @@ export function fastingCard(p) {
   const now = new Date(), min = now.getHours()*60 + now.getMinutes();
   const at = windowMinute(min,w), eating = at < w.end;
   const left = (eating ? w.end : w.start+1440) - at;
-  return `<section class="card row gap">${ring(1-left/(eating ? w.length : 1440-w.length), {label: toHHMM(left), sub: L('ชม. เหลือ', 'h left')})}<div><b>${eating ? L('ช่วงกิน', 'Eating window') : L('กำลัง IF', 'Fasting')}</b><p>${toHHMM(w.start)}–${toHHMM(w.end)} · ${p.fasting}</p><small>${eating ? L('ก่อนเริ่ม IF', 'Until fasting starts') : L('ถึงเวลากิน', 'Until eating starts')}</small></div></section>`;
+  return `<section class="card row gap">${ring(1-left/(eating ? w.length : 1440-w.length), {label: toHHMM(left), sub: L('ชม. เหลือ', 'h left')})}<div><b>${L('ช่วงกิน','Eating window')} ${toHHMM(w.start)}–${toHHMM(w.end)}</b><p>${eating ? L('ช่วงกิน', 'Eating window') : L('กำลัง IF', 'Fasting')} · ${p.fasting}</p><small>${eating ? L('ก่อนเริ่ม IF', 'Until fasting starts') : L('ถึงเวลากิน', 'Until eating starts')}</small></div></section>`;
 }

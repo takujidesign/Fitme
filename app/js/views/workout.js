@@ -1,3 +1,4 @@
+import { slot } from '../slots.js';
 import { detectPRs } from '../records.js';
 import { muscleMap, exerciseMuscles } from '../muscle-map.js';
 import { supportedForm, startFormCheck, stopFormCheck } from '../form-check.js';
@@ -40,7 +41,7 @@ export const lockCard = (what) => `<div class="lock-card">${icon('lock', 28)}<b>
 views.workout = ({ params }) => {
   const iso = params[0] || todayISO();
   const p = getState().profile;
-  const head = `<header class="top"><div><small class="muted">${L('การออกกำลังกาย', 'Training')}</small><h1>${tab === 'plan' ? L('แผนของฉัน', 'My plan') : L('คลังท่า', 'Exercise library')}</h1></div><button class="icon-btn" data-act="calendar" data-iso="${iso}" aria-label="${L('ปฏิทิน', 'Calendar')}">${icon('cal')}</button></header><nav class="chips"><a class="chip" href="#/tools">${L('เครื่องคำนวณ','Calculators')}</a><a class="chip" href="#/free-workout">${L('บันทึกการฝึกเอง','Free workout logging')}</a><a class="chip" href="#/library?day=${iso}">${L('เพิ่มท่า','Add exercise')}</a></nav><button class="btn ghost" data-act="exercise-prefs">${L('ตั้งค่าท่า', 'Exercise preferences')}</button>
+  const head = `<header class="top"><div><small class="muted">${L('การออกกำลังกาย', 'Training')}</small><h1>${tab === 'plan' ? L('แผนของฉัน', 'My plan') : L('คลังท่า', 'Exercise library')}</h1></div><button class="icon-btn" data-act="calendar" data-iso="${iso}" aria-label="${L('ปฏิทิน', 'Calendar')}">${icon('cal')}</button></header><nav class="quick-actions">${[['tools','chart','เครื่องคำนวณ','Calculators'],['free-workout','plus','บันทึกการฝึกเอง','Free workout logging'],['library?day='+iso,'dumbbell','เพิ่มท่า','Add exercise'],['training-settings','settings','ตั้งค่าการฝึก','Training settings'],['programs','cal','โปรแกรม','Programs']].map(([path,ic,th,en])=>`<a class="btn ghost" href="#/${path}">${icon(ic,18)}<span>${L(th,en)}</span></a>`).join('')}</nav>
     <div class="seg tabs">${['plan', 'lib'].map((t) => `<button class="chip ${tab === t ? 'on' : ''}" data-act="wo-tab" data-v="${t}">${t === 'plan' ? L('แผน', 'Plan') : L('ท่าทั้งหมด', 'All exercises')}</button>`).join('')}</div>`;
   if (tab === 'lib') {
     const list = EXERCISES.filter((e) => filter === 'all' || e.group === filter);
@@ -53,7 +54,7 @@ views.workout = ({ params }) => {
   const groups = {};
   sess.items.forEach((it, i) => (groups[it.phase || 'main'] ||= []).push({ ...it, i }));
   return head + weekStrip(iso, '#/workout/') + `
-    ${muscleMap(Object.fromEntries(sess.items.flatMap(i=>exerciseMuscles(EX[i.id])).map(id=>[id,1])))}
+
     <section class="card session">
       <div class="row between"><div><small class="muted">${dateLabel(iso, { weekday: 'long', day: 'numeric', month: 'short' })} · ${L('สัปดาห์', 'Week')} ${sess.week}</small>
       <h2>${sess.type === 'train' ? L(splitName(sess.split)) : L('ฟื้นฟูร่างกาย (Active recovery)', 'Active recovery')}</h2></div>
@@ -61,9 +62,11 @@ views.workout = ({ params }) => {
       <div class="meta">${icon('clock', 16)} ${sess.minutes} ${L('นาที', 'min')} ${icon('flame', 16)} ~${sessionKcal(sess, p.weight)} kcal ${icon('dumbbell', 16)} ${sess.items.length} ${L('ท่า', 'moves')}</div>
       ${sess.deload ? `<p class="note">${icon('info', 16)} ${L('สัปดาห์ Deload: ลดปริมาณเพื่อให้ร่างกายฟื้นตัวและแข็งแรงขึ้น', 'Deload week: lower volume so your body can adapt')}</p>` : ''}
       ${sess.type === 'rest' ? `<p class="note">${icon('moon', 16)} ${L('วันพัก: เดินเบาๆ ยืดเหยียด ดื่มน้ำให้พอ และนอนให้ครบ — กล้ามเนื้อเติบโตตอนพัก', 'Rest day: easy walk, stretch, hydrate and sleep — muscles grow while you recover')}</p>` : ''}
+    <details class="session-muscles"><summary>${L('กล้ามเนื้อหลัก','Target')}</summary>${muscleMap(Object.fromEntries(sess.items.flatMap(i=>exerciseMuscles(EX[i.id])).map(id=>[id,1])))}</details>
     </section>
     ${locked ? lockCard() : `${Object.entries(groups).map(([ph, items]) => `<h3 class="sec">${L(PHASE[ph])}</h3>
       <ul class="ex-list">${items.map((it) => `<li data-act="ex-open" data-id="${it.id}"><div class="fig sm" data-anim="${it.id}"></div><div><b>${L(EX[it.id].name)}</b><small>${target(it)}${it.rest ? ` · ${L('พัก', 'rest')} ${it.rest}s` : ''}</small></div><button class="icon-btn" data-act="exercise-swap" data-iso="${iso}" data-index="${it.i}" aria-label="${L('เปลี่ยนท่า', 'Swap exercise')}">${icon('swap',18)}</button></li>`).join('')}</ul>`).join('')}
+    ${slot('workout.readiness',{params})}${slot('workout.secondary')}
     ${sess.items.length ? `<div class="sticky-cta"><button class="btn primary block lg" data-act="go" data-to="#/player/${iso}">${icon('play', 20)} ${L('เริ่มเลย', 'Start workout')}</button></div>` : `<p class="note">${L('ไม่มีท่าที่อนุญาต กรุณาปรับตั้งค่าท่า', 'No allowed exercises. Adjust exercise preferences.')}</p>`}`}`;
 };
 views.workout.mount = (root) => {

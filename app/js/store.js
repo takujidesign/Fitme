@@ -1,3 +1,4 @@
+import { inferredStyles } from './training.js';
 import { syncKeys } from './sync-data.js';
 // App state in localStorage, images in IndexedDB.
 const KEY = 'fitme:v1';
@@ -21,7 +22,7 @@ const defaults = () => ({
     name: '', sex: 'male', age: 30, height: 170, weight: 70, goalWeight: null,
     bodyFat: null, muscle: null, bmrScan: null, visceral: null,
     goal: 'recomp', level: 'beginner', location: 'home',
-    trainDays: [1, 3, 5], sessionMin: 45,
+    trainDays: [1, 3, 5], sessionMin: 45, styles: ['bodyweight'], trainingConfigured: false, equipment: null, focusMuscles: [], trainingHistory: [],
     wake: '06:30', bed: '22:30', workoutTime: '18:00',
     avoidEx: [], preferEx: [], fasting: 'none', eatStart: '12:00',
     mealsPerDay: 4, diet: 'normal', exclude: [],
@@ -52,7 +53,7 @@ function load() {
     if (!raw) return defaults();
     const s = JSON.parse(raw);
     const d = defaults();
-    return { ...d, ...s, notifications: { ...d.notifications, ...s.notifications }, measurements: s.measurements || [], customFoods: s.customFoods || [], profile: { ...d.profile, ...(s.profile || {}) }, premium: { ...d.premium, ...(s.premium || {}) }, dayOverrides: s.dayOverrides || {}, exSwaps: s.exSwaps || {}, shoppingChecks: s.shoppingChecks || {} };
+    return { ...d, ...s, notifications: { ...d.notifications, ...s.notifications }, measurements: s.measurements || [], customFoods: s.customFoods || [], profile: { ...d.profile, ...(s.profile || {}), styles: s.profile?.styles || inferredStyles(s.profile || d.profile) }, premium: { ...d.premium, ...(s.premium || {}) }, dayOverrides: s.dayOverrides || {}, exSwaps: s.exSwaps || {}, shoppingChecks: s.shoppingChecks || {} };
   } catch {
     return defaults();
   }
@@ -97,7 +98,7 @@ export function resetAll() {
 }
 export function importState(obj) {
   const d = defaults();
-  setState((s) => Object.assign(s, d, obj, { notifications: { ...d.notifications, ...obj.notifications }, measurements: obj.measurements || [], customFoods: obj.customFoods || [], profile: { ...d.profile, ...obj.profile }, premium: { ...d.premium, ...s.premium, ...obj.premium }, dayOverrides: obj.dayOverrides || {}, exSwaps: obj.exSwaps || {}, shoppingChecks: obj.shoppingChecks || {} }));
+  setState((s) => Object.assign(s, d, obj, { notifications: { ...d.notifications, ...obj.notifications }, measurements: obj.measurements || [], customFoods: obj.customFoods || [], profile: { ...d.profile, ...obj.profile, styles: obj.profile?.styles || inferredStyles(obj.profile || d.profile) }, premium: { ...d.premium, ...s.premium, ...obj.premium }, dayOverrides: obj.dayOverrides || {}, exSwaps: obj.exSwaps || {}, shoppingChecks: obj.shoppingChecks || {} }));
 }
 
 // ---------- IndexedDB for images ----------

@@ -1,3 +1,4 @@
+import { slot } from '../slots.js';
 import { LANGUAGES, languageFont } from '../i18n/index.js';
 import { accountCard, mountTrainerNotes } from './account.js';
 import { badgeGrid } from './challenges.js';
@@ -35,8 +36,7 @@ views.me = () => {
   const wk = weeksToGoal(p, avgKcal - t.tdee);
   const done = Object.values(s.logs).filter((l) => l.done?.workout).length;
   return `<header class="top"><div><small class="muted">${L('โปรไฟล์', 'Profile')}</small><h1>${esc(p.name) || L('ฉัน', 'Me')}</h1></div>
-    <button class="icon-btn" data-act="me-edit">${icon('settings')}</button></header><nav class="chips"><a class="chip" href="#/muscles">${L('กล้ามเนื้อ','Muscles')}</a><a class="chip" href="#/tools">${L('เครื่องคำนวณ','Calculators')}</a><a class="chip" href="#/records">${L('สถิติส่วนตัว','Personal records')}</a><a class="chip" href="#/credits">${L('เครดิต','Credits')}</a></nav>
-    ${accountCard()}${badgeGrid()}${replanCard()}${progressCard(sparkline(s.weights.slice(-20).map(w => ({v:w.kg}))))}<section class="card profile">
+    <button class="icon-btn" data-act="me-edit">${icon('settings')}</button></header><section class="card profile">
       <div class="sum-grid">
         <div class="stat"><small>${L('น้ำหนัก', 'Weight')}</small><b>${p.weight}</b><span class="tag">kg</span></div>
         <div class="stat"><small>BMI</small><b>${b.toFixed(1)}</b><span class="tag ${bc.c}">${L(bc)}</span></div>
@@ -47,6 +47,7 @@ views.me = () => {
       ${p.bodyFat ? `<p class="muted sm">${L('ไขมัน', 'Body fat')} ${p.bodyFat}% ${p.muscle ? `· ${L('กล้ามเนื้อ', 'Muscle')} ${p.muscle} kg` : ''} ${p.bmrScan ? `· BMR ${p.bmrScan}` : ''}</p>` : ''}
     </section>
 
+    ${progressCard(sparkline(s.weights.slice(-20).map(w => ({v:w.kg}))))}
     <section class="card">
       <div class="row between"><h2>${icon('camera', 20)} ${L('รูปร่าง', 'Body photos')}</h2><button class="btn xs ghost" data-act="me-photo">${icon('plus', 16)} ${L('เพิ่มรูป', 'Add')}</button></div>
       <p class="muted sm">${L('รูปที่บันทึกเก็บในเครื่อง ส่งให้ AI เฉพาะเมื่อยินยอม · ถ่ายมุมเดิม แสงเดิม ทุก 2 สัปดาห์', 'Saved photos stay on this device; AI uploads only with consent · same angle and light every 2 weeks')}</p>
@@ -64,7 +65,15 @@ views.me = () => {
       <button class="btn ghost block" data-act="sleep-log" data-iso="${todayISO()}">${icon('bed', 18)} ${L('บันทึกการนอนเมื่อคืน', 'Log last night')}</button>
     </section>
 
-    <section class="card premium ${hasPro() ? 'on' : ''}">
+    <section class="card settings-list"><h2>${L('ตั้งค่า','Settings')}</h2><div class="list">
+    ${[['training-settings','settings','ตั้งค่าการฝึก','Training settings'],['food','food','ตั้งค่าอาหาร','Food preferences'],['supps','pill','อาหารเสริม','Supplements']].map(([path,ic,th,en])=>`<a class="list-row" href="#/${path}" ${path==='food'?'data-act="food-prefs"':''}>${icon(ic,18)}<span>${L(th,en)}</span>${icon('chev',16)}</a>`).join('')}
+    <button class="list-row" data-act="me-lang">${icon('globe',18)}<span>${L('ภาษา','Language')}</span>${icon('chev',16)}</button><button class="list-row" data-act="theme">${icon('moon',18)}<span>${L('ธีม','Theme')}</span>${icon('chev',16)}</button>
+    ${[['account','user','บัญชี','Account'],['groups','user','กลุ่มและชาเลนจ์','Groups and challenges'],['shop','card','ร้านค้า','Shop']].map(([path,ic,th,en])=>`<a class="list-row" href="#/${path}">${icon(ic,18)}<span>${L(th,en)}</span>${icon('chev',16)}</a>`).join('')}
+    <button class="list-row" data-act="me-data">${icon('download',18)}<span>${L('ข้อมูลและสำรอง','Data & backup')}</span>${icon('chev',16)}</button>
+    <a class="list-row" href="#/privacy">${icon('lock',18)}<span>${L('ความเป็นส่วนตัวและเงื่อนไข','Privacy & terms')}</span>${icon('chev',16)}</a>
+    <a class="list-row" href="#/credits">${icon('info',18)}<span>${L('เครดิต','Credits')}</span>${icon('chev',16)}</a></div></section>
+    <details class="card"><summary>${L('สุขภาพและความก้าวหน้า','Health and progress')}</summary><div class="list">${[['muscles','กล้ามเนื้อ','Muscles'],['records','สถิติส่วนตัว','Personal records'],['tools','เครื่องคำนวณ','Calculators']].map(([path,th,en])=>`<a class="list-row" href="#/${path}">${L(th,en)}${icon('chev',16)}</a>`).join('')}</div>${accountCard()}${badgeGrid()}${replanCard()}${healthCard()}${slot('me.secondary')}</details>
+    <details class="card" id="me-data"><summary>${L('ข้อมูลและสำรอง','Data & backup')}</summary>    <section class="card premium ${hasPro() ? 'on' : ''}">
       <div class="row between"><h2>${icon('spark', 20)} Fixmee Pro</h2>${hasPro() ? `<span class="tag teal">${L('ใช้งานถึง', 'Active until')} ${dateLabel(s.premium.until.slice(0, 10), { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : ''}</div>
       ${hasPro() ? '' : `<p class="muted sm">${L('แผนเต็มทุกวัน · อาหารเสริมไม่จำกัด · AI อ่านฉลาก · ดาวน์โหลด PDF/ปฏิทิน', 'Full plan · unlimited supplements · AI label reader · PDF & calendar downloads')}</p><button class="btn primary block" data-act="go" data-to="#/pay">${L('อัปเกรด', 'Upgrade')}</button>`}
       ${!hasPro() && s.premium.exportsLeft ? `<p class="muted sm">${L(`สิทธิ์ดาวน์โหลดคงเหลือ ${s.premium.exportsLeft} ครั้ง`, `${s.premium.exportsLeft} download(s) left`)}</p>` : ''}
@@ -77,19 +86,19 @@ views.me = () => {
       <p class="muted sm">${L('PDF: กด "บันทึกเป็น PDF" ในหน้าพิมพ์ · ปฏิทิน: นำเข้า Google/Apple Calendar เพื่อแจ้งเตือนมื้ออาหาร อาหารเสริม และเวลาออกกำลังกาย', 'PDF: choose "Save as PDF" in the print dialog · Calendar: import into Google/Apple Calendar for meal, supplement and workout reminders')}</p>
     </section>
 
-    ${healthCard()}<section class="card"><div class="list"><button data-act="measurements">${L('สัดส่วนร่างกาย', 'Body measurements')}</button><button data-act="share-card">${L('แชร์ผลลัพธ์', 'Share results')}</button><button data-act="notifications">${L('การแจ้งเตือน', 'Notifications')}</button><button data-act="theme">${L('ธีม', 'Theme')}</button></div></section>
+    <section class="card"><div class="list"><button class="btn ghost" data-act="measurements">${L('สัดส่วนร่างกาย', 'Body measurements')}</button><button class="btn ghost" data-act="share-card">${L('แชร์ผลลัพธ์', 'Share results')}</button><button class="btn ghost" data-act="notifications">${L('การแจ้งเตือน', 'Notifications')}</button></div></section>
     <section class="card">
       <h2>${icon('settings', 20)} ${L('ตั้งค่า', 'Settings')}</h2>
       <div class="list">
-        <button data-act="me-edit">${icon('user', 18)} ${L('แก้ไขข้อมูลและเป้าหมาย', 'Edit profile & goals')}${icon('chev', 16)}</button>
-        <button data-act="me-lang">${icon('globe', 18)} ${L('ภาษา: ไทย', 'Language: English')}${icon('chev', 16)}</button>
-        <button data-act="me-restart">${icon('refresh', 18)} ${L('เริ่มแผนใหม่วันนี้', 'Restart plan today')}${icon('chev', 16)}</button>
-        <button data-act="me-backup">${icon('download', 18)} ${L('สำรองข้อมูล (JSON)', 'Back up data (JSON)')}${icon('chev', 16)}</button>
-        <button data-act="me-restore">${icon('refresh', 18)} ${L('กู้คืนข้อมูล', 'Restore backup')}${icon('chev', 16)}</button>
+        <button class="btn ghost" data-act="me-edit">${icon('user', 18)} ${L('แก้ไขข้อมูลและเป้าหมาย', 'Edit profile & goals')}${icon('chev', 16)}</button>
+        <button class="btn ghost" data-act="me-restart">${icon('refresh', 18)} ${L('เริ่มแผนใหม่วันนี้', 'Restart plan today')}${icon('chev', 16)}</button>
+        <button class="btn ghost" data-act="me-backup">${icon('download', 18)} ${L('สำรองข้อมูล (JSON)', 'Back up data (JSON)')}${icon('chev', 16)}</button>
+        <button class="btn ghost" data-act="me-restore">${icon('refresh', 18)} ${L('กู้คืนข้อมูล', 'Restore backup')}${icon('chev', 16)}</button>
         <button data-act="me-reset" class="danger">${icon('trash', 18)} ${L('ลบข้อมูลทั้งหมด', 'Delete all data')}${icon('chev', 16)}</button>
       </div>
     </section>
-    <p class="muted sm center">Fixmee · ${L('คำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์', 'General guidance, not medical advice')}</p>`;
+</details>
+    <p class="muted sm center">Fixmee · ${L('คำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์', 'General guidance, not medical advice')}</p>${slot('me.footer')}`;
 };
 views.me.mount = async (root) => {
   mountTrainerNotes(root);
@@ -190,3 +199,5 @@ actions['me-compare'] = async () => {
   });
 };
 export { fmt, CONFIG };
+
+actions['me-data']=()=>{const el=document.getElementById('me-data');el.open=true;el.scrollIntoView({behavior:'smooth'});};

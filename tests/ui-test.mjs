@@ -14,9 +14,9 @@ const {getState,setState,todayISO,addDays}=await import('../app/js/store.js');
 const {views,actions,setRenderer}=await import('../app/js/core.js');
 const {CONFIG,currentConfig}=await import('../app/js/config.js');
 const {sessionFor}=await import('../app/js/workout.js');
-for(const name of ['today','workout','food','supps','me','pay','admin','coach','planning'])await import(`../app/js/views/${name}.js`);
+for(const name of ['today','workout','food','supps','me','pay','admin','coach','planning','training-settings'])await import(`../app/js/views/${name}.js`);
 const iso=todayISO(),s=getState();
-setState(s=>{s.onboarded=true;Object.assign(s.profile,{startDate:iso,trainDays:[0,1,2,3,4,5,6],location:'gym',level:'advanced',fasting:'16:8'});});
+setState(s=>{s.onboarded=true;Object.assign(s.profile,{startDate:iso,trainDays:[0,1,2,3,4,5,6],location:'gym',styles:['gym'],level:'advanced',fasting:'16:8'});});
 const root=document.createElement('main');root.id='view';document.body.append(root);
 let current='today';
 const render=()=>{root.innerHTML=views[current]({params:[],query:new URLSearchParams()});};setRenderer(render);
@@ -24,7 +24,7 @@ const el=data=>({dataset:data});
 const sheet=()=>document.querySelector('.sheet-wrap:last-child .sheet');
 for(const lang of ['th','en']){s.lang=lang;for(const name of ['today','workout','food','supps','me','pay','admin','onboarding']){current=name;render();assert(root.textContent.length>30,name);assert(!root.textContent.includes('undefined'),name);}}
 current='workout';render();
-actions['avoid-preset'](el({v:'knees'}));assert(s.profile.avoidEx.includes('lunge'));assert(sessionFor(s.profile,iso).items.every(i=>!s.profile.avoidEx.includes(i.id)));
+current='training-settings';render();for(const id of ['lunge','squat_jump','jump_rope','high_knees'])actions['ts-preference'](el({id,value:'avoid'}));actions['ts-save']();current='workout';render();assert(s.profile.avoidEx.includes('lunge'));assert(sessionFor(s.profile,iso).items.every(i=>!s.profile.avoidEx.includes(i.id)));
 actions['exercise-swap'](el({iso,index:'0'}));const alternative=sheet().querySelector('[data-act="swap-select"]');assert(alternative);actions['swap-select'](alternative);assert.equal(sessionFor(s.profile,iso).items[0].id,alternative.dataset.id);
 actions.calendar(el({iso}));actions['day-override'](el({v:'off'}));assert.equal(sessionFor(s.profile,iso),null);actions['day-override'](el({v:'train'}));assert.equal(sessionFor(s.profile,iso).type,'train');
 // Vacation and normal reset use the same persisted override engine.

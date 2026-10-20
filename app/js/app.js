@@ -41,6 +41,7 @@ import './views/tools.js';
 import './views/free-workout.js';
 import './views/recipes.js';
 import './views/credits.js';
+import './views/training-settings.js';
 import { loadConfig } from './config.js';
 
 const TABS = [

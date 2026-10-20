@@ -1,3 +1,4 @@
+import { figureSVG } from '../figure.js';
 import { actions, go, rerender } from '../core.js';
 import { getState, setState, todayISO, addDays, diffDays } from '../store.js';
 import { L, esc, icon, sheet, closeSheet, dateLabel, WEEKDAYS, toast } from '../ui.js';
@@ -7,21 +8,11 @@ import { planDay } from '../day.js';
 import { FOOD } from '../foods.js';
 import { isLockedDay } from './workout.js';
 
-const presets = { knees:['lunge','squat_jump','jump_rope','high_knees'], back:['deadlift','rdl','superman'], shoulders:['shoulder_press','lateral_raise','bench_press'], wrists:['pushup','mountain_climber','plank'] };
-actions['exercise-prefs'] = () => {
-  const p = getState().profile;
-  sheet(`<div class="sheet-head"><h2>${L('ตั้งค่าท่า', 'Exercise preferences')}</h2><button class="icon-btn" data-close>${icon('x')}</button></div>
-    <p class="note">${L('แตะท่าเพื่ออนุญาตหรือหลีกเลี่ยง เลือกท่าที่ชอบเพื่อให้แผนเลือกก่อน', 'Tap exercises to allow or avoid them. Preferred exercises are selected first.')}</p>
-    <h3>${L('ท่าที่ไม่อยากทำ / มีอาการบาดเจ็บ', 'Avoid / injury exclusions')}</h3><div class="chips">${Object.keys(presets).map((k,i)=>`<button class="chip" data-act="avoid-preset" data-v="${k}">${[L('เข่า', 'Knees'),L('หลังล่าง', 'Lower back'),L('ไหล่', 'Shoulders'),L('ข้อมือ', 'Wrists')][i]}</button>`).join('')}</div>
-    ${Object.entries(GROUPS).map(([g,label])=>`<h3>${L(label)}</h3><div class="chips">${EXERCISES.filter(e=>e.group===g).map(e=>`<button class="chip ${p.avoidEx.includes(e.id)?'':'on'}" data-act="avoid-ex" data-id="${e.id}" aria-pressed="${!p.avoidEx.includes(e.id)}">${p.avoidEx.includes(e.id)?'×':'✓'} ${L(e.name)}</button>`).join('')}</div>`).join('')}
-    <h3>${L('ท่าที่ชอบ', 'Preferred exercises')}</h3><div class="chips">${EXERCISES.filter(e=>!p.avoidEx.includes(e.id)).map(e=>`<button class="chip ${p.preferEx.includes(e.id)?'on':''}" data-act="prefer-ex" data-id="${e.id}">${L(e.name)}</button>`).join('')}</div>`);
-};
-for (const [act,key] of [['avoid-ex','avoidEx'],['prefer-ex','preferEx']]) actions[act] = el => { setState(s=>{const a=new Set(s.profile[key]); a.has(el.dataset.id)?a.delete(el.dataset.id):a.add(el.dataset.id);s.profile[key]=[...a];});rerender();actions['exercise-prefs'](); };
-actions['avoid-preset'] = el => {setState(s=>s.profile.avoidEx=[...new Set([...s.profile.avoidEx,...presets[el.dataset.v]])]);rerender();actions['exercise-prefs']();};
+actions['exercise-prefs']=()=>go('#/training-settings');
 actions['exercise-swap'] = el => {
   const {iso,index}=el.dataset; if(isLockedDay(iso)) return;
   const item=sessionFor(getState().profile,iso)?.items[Number(index)];if(!item)return;
-  sheet(`<h2>${L('เปลี่ยนท่า', 'Swap exercise')}</h2><a href="#/library?day=${iso}&swap=${index}" data-close>${L('คลังท่า','Exercise library')}</a><div class="chips">${allowed(getState().profile,true).filter(e=>e.group===EX[item.id].group && e.id!==item.id).map(e=>`<button class="chip" data-act="swap-select" data-iso="${iso}" data-index="${index}" data-id="${e.id}">${L(e.name)}</button>`).join('') || L('ไม่มีท่าอื่นที่อนุญาต', 'No other allowed alternatives')}</div><button class="btn ghost" data-close>${L('ปิด', 'Close')}</button>`);
+  sheet(`<div class="sheet-head"><h2>${L('เปลี่ยนท่า', 'Swap exercise')}</h2><button class="icon-btn" data-close aria-label="${L('ปิด','Close')}">${icon('x')}</button></div><a class="btn ghost" href="#/library?day=${iso}&swap=${index}" data-close>${L('ค้นหาในคลังท่า','Search exercise library')}</a><div class="swap-list">${allowed(getState().profile,true,true).filter(e=>e.group===EX[item.id].group && e.id!==item.id).map(e=>`<button class="list-row" data-act="swap-select" data-iso="${iso}" data-index="${index}" data-id="${e.id}"><div class="fig sm">${figureSVG(e)}</div><span><b>${esc(L(e.name))}</b><small>${esc(L(e.muscles))}</small></span>${icon('chev',16)}</button>`).join('') || L('ไม่มีท่าอื่นที่อนุญาต', 'No other allowed alternatives')}</div><button class="btn ghost" data-close>${L('ปิด', 'Close')}</button>`);
 };
 actions['swap-select'] = el => {setState(s=>{(s.exSwaps[el.dataset.iso] ||= {})[el.dataset.index]=el.dataset.id;});closeSheet();rerender();};
 let month, selected;

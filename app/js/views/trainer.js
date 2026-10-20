@@ -2,7 +2,7 @@ import { views, actions, rerender } from '../core.js';
 import { getState } from '../store.js';
 import { api } from '../account.js';
 import { locale, L, esc, toast } from '../ui.js';
-views.trainer=()=>`<header class="top"><h1>${L('เทรนเนอร์','Trainer')}</h1></header>${getState().account.user?.role==='trainer'?`<section class="card"><label class="field">${L('รหัสเชิญจากลูกค้า','Client invite code')}<input id="trainer-code" maxlength="6" autocomplete="off"></label><button class="btn primary" data-act="trainer-link">${L('เชื่อมต่อ','Link')}</button></section><div id="trainer-content" role="status">${L('กำลังโหลด…','Loading…')}</div>`:`<a href="#/account">${L('เข้าสู่ระบบและเปลี่ยนบทบาทเป็นเทรนเนอร์','Log in and switch to trainer')}</a>`}`;
+views.trainer=()=>`<header class="top"><h1>${L('เทรนเนอร์','Trainer')}</h1></header>${getState().account.user?.role==='trainer'?`<section class="card"><label class="field">${L('รหัสเชิญจากลูกค้า','Client invite code')}<input id="trainer-code" maxlength="6" autocomplete="off"></label><button class="btn primary" data-act="trainer-link">${L('เชื่อมต่อ','Link')}</button></section><div id="trainer-content" role="status">${L('กำลังโหลด…','Loading…')}</div>`:`<a class="btn ghost" href="#/account">${L('เข้าสู่ระบบและเปลี่ยนบทบาทเป็นเทรนเนอร์','Log in and switch to trainer')}</a>`}`;
 function chart(weights) {
  if(weights.length<2)return `<p>${L('ยังไม่มีข้อมูลแนวโน้ม','Not enough trend data')}</p>`;
  const min=Math.min(...weights.map(w=>w.kg))-1,max=Math.max(...weights.map(w=>w.kg))+1;

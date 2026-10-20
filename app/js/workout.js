@@ -1,3 +1,4 @@
+import { equipmentFor, styleGroups, styleAllows } from './training.js';
 import { medicalSession } from './conditions.js';
 import { readinessSession } from './readiness.js';
 import { healthAllowed, healthSession } from './womens-health.js';
@@ -9,6 +10,8 @@ import { addDays, diffDays, getState } from './store.js';
 import { rng } from './ui.js';
 
 const SPLITS = {
+  cardio: { th: 'เดิน / วิ่ง', en: 'Walk / run', groups: ['cardio','cardio','cardio','cardio','cardio','cardio'] },
+  mobility: { th: 'โยคะ / ยืดเหยียด', en: 'Mobility / yoga', groups: ['mobility','mobility','mobility','mobility','mobility','mobility'] },
   full: { th: 'ทั้งตัว', en: 'Full body', groups: ['legs', 'push', 'pull', 'legs', 'push', 'core'] },
   fullB: { th: 'ทั้งตัว B', en: 'Full body B', groups: ['legs', 'pull', 'push', 'pull', 'legs', 'core'] },
   upper: { th: 'ร่างกายส่วนบน', en: 'Upper body', groups: ['push', 'pull', 'push', 'pull', 'push', 'core'] },
@@ -37,10 +40,10 @@ const SCHEME = {
   strength: { sets: 5, reps: '4-6', rest: 150, time: 45, finisher: 0 },
 };
 
-export function allowed(p, includeLibrary = false) {
-  const eq = p.location === 'gym' ? ['none', 'db', 'gym'] : p.location === 'db' ? ['none', 'db'] : ['none'];
+export function allowed(p, includeLibrary = false, allPhases = false) {
+  const eq = equipmentFor(p);
   const maxLvl = p.level === 'beginner' ? 1 : p.level === 'intermediate' ? 2 : 3;
-  return (includeLibrary ? Object.values(EX) : EXERCISES).filter((e) => healthAllowed(p,e.id) && !p.avoidEx?.includes(e.id) && eq.includes(e.equip) && e.level <= maxLvl + (e.group === 'core' ? 1 : 0));
+  return (includeLibrary ? Object.values(EX) : [...EXERCISES, ...Object.values(EX).filter(e=>e.source && p.trainingConfigured && p.preferEx?.includes(e.id))]).filter((e) => healthAllowed(p,e.id) && (allPhases || styleAllows(p,e)) && !p.avoidEx?.includes(e.id) && eq.includes(e.equip) && e.level <= maxLvl + (e.group === 'core' ? 1 : 0));
 }
 
 // Week-based progression: weeks 1-3 build, week 4 deloads.
@@ -50,6 +53,7 @@ function weekMod(week) {
 }
 
 export function isTrainingDay(p, iso) {
+  if(p.trainingHistory?.length){const prior=p.trainingHistory.find(h=>iso<h.from);if(prior)p={...prior.profile,trainingHistory:undefined};}
   if(PROGRAMS[p.program?.id]){const special=programSession(p,iso);if(special)return special.type==='train';}
   const override = getState().dayOverrides?.[iso];
   if (override) return override === 'train';
@@ -57,6 +61,7 @@ export function isTrainingDay(p, iso) {
 }
 
 export function sessionFor(p, iso) {
+  if(p.trainingHistory?.length){const prior=p.trainingHistory.find(h=>iso<h.from);if(prior)p={...prior.profile,trainingHistory:undefined};}
   const result = rawSession(p,iso) || (getState().logs[iso]?.checkin?.override==='recovery'?recoverySession(p,iso,0):null);
   if(!result)return result;
   const extras=(getState().extraExercises?.[iso]||[]).filter(i=>allowed(p,true).some(e=>e.id===i.id));
@@ -76,18 +81,24 @@ function rawSession(p, iso) {
   let idx = 0;
   for (let d = 0; d < day; d++) if (isTrainingDay(p, addDays(p.startDate, d))) idx++;
   const rot = rotation(p.trainDays.length);
-  const splitKey = rot[idx % rot.length];
+  const styled=styleGroups(p),strength=styled?.includes('push');
+  const splitKey = styled&&!strength ? (p.styles.includes('hiit')?'hiit':p.styles.includes('cardio')?'cardio':'mobility') : rot[idx % rot.length];
   const week = Math.floor(diffDays(p.blockStart || p.startDate, iso) / 7) + 1;
   const { deload, extraReps } = weekMod(week);
   const sc = SCHEME[p.goal] || SCHEME.maintain;
   const lvlSets = p.level === 'beginner' ? -1 : p.level === 'advanced' ? 1 : 0;
   const pool = allowed(p);
   const r = rng(`${splitKey}-${Math.floor((week - 1) / 2)}-${p.location}${p.planSeed ? "-" + p.planSeed : ""}`); // exercise choice changes every 2 weeks
-  const mainCount = Math.max(3, Math.min(6, Math.round((p.sessionMin - 15) / 8)));
+  const mainCount = p.trainingConfigured ? Math.max(2, Math.min(6, Math.round((p.sessionMin - 5) / 8))) : Math.max(3, Math.min(6, Math.round((p.sessionMin - 15) / 8)));
   const used = new Set();
   const main = [];
   const focus = [...new Set(Array.isArray(p.focus) ? p.focus : [])].filter((g) => ['legs', 'push', 'pull', 'core', 'cardio', 'mobility'].includes(g));
-  const groups = [...SPLITS[splitKey].groups.slice(0, mainCount), ...focus];
+  const baseGroups = SPLITS[splitKey].groups.slice(0, mainCount);
+  if(styled){for(let i=0;i<baseGroups.length;i++)if(!styled.includes(baseGroups[i]))baseGroups[i]=styled[i%styled.length];
+    const supplemental=styled.filter(g=>['cardio','mobility'].includes(g));
+    supplemental.forEach((g,i)=>baseGroups[baseGroups.length-1-i]=g);
+  }
+  const groups = [...baseGroups, ...focus];
   for (const [index, g] of groups.entries()) {
     let opts = pool.filter((e) => e.group === g && !used.has(e.id));
     if (!opts.length && index >= mainCount) opts = pool.filter((e) => e.group === g);
@@ -102,8 +113,8 @@ function rawSession(p, iso) {
       ? { id: ex.id, sets, sec: Math.min(60, 25 + (p.level === 'beginner' ? 0 : 10) + extraReps * 5), rest: Math.min(sc.rest, 60) }
       : { id: ex.id, sets, reps: bumpReps(sc.reps, extraReps), rest: sc.rest });
   }
-  const warm = [{ id: 'jumping_jack', sets: 1, sec: 60, rest: 15, phase: 'warm' }, { id: pool.some((e) => e.id === 'high_knees') ? 'high_knees' : 'jog', sets: 1, sec: 45, rest: 20, phase: 'warm' }];
-  const finisher = sc.finisher && !deload ? [{ id: pick2(pool, r, ['mountain_climber', 'jumping_jack', 'squat_jump', 'jump_rope']), sets: 3, sec: 30, rest: 20, phase: 'finisher' }] : [];
+  const warm = [{ id: splitKey==='mobility'?'cat_cow':'jumping_jack', sets: 1, sec: 60, rest: 15, phase: 'warm' }, { id: splitKey==='mobility'?'breathing':pool.some((e) => e.id === 'high_knees') ? 'high_knees' : 'jog', sets: 1, sec: 45, rest: 20, phase: 'warm' }];
+  const finisher = sc.finisher && !deload && splitKey!=='mobility' ? [{ id: pick2(pool, r, ['mountain_climber', 'jumping_jack', 'squat_jump', 'jump_rope']), sets: 3, sec: 30, rest: 20, phase: 'finisher' }] : [];
   const cool = [{ id: 'forward_fold', sets: 1, sec: 40, rest: 5, phase: 'cool' }, { id: 'child_pose', sets: 1, sec: 45, rest: 0, phase: 'cool' }];
   const items = safeItems(p, iso, [...warm, ...main, ...finisher, ...cool]);
   return { type: 'train', split: splitKey, week, deload, items, minutes: estimateMin(items) };
@@ -157,7 +168,8 @@ export function weekPlan(p, startIso) {
 
 // Apply exclusions to every phase and ignore stale/unsafe saved swaps.
 function safeItems(p, iso, items, offset = 0) {
-  const pool = allowed(p, true), defaults = allowed(p);
+  // Training style selects main work, not basic warm-up or recovery movements.
+  const pool = allowed(p, true, true), defaults = allowed(p, false, true);
   return items.flatMap((it, index) => {
     const original = EX[it.id];
     const base = pool.find(e => e.id === it.id) || defaults.filter(e => e.group === original?.group).sort((a,b) => rank(b,p)-rank(a,p))[0] || [...defaults].sort((a,b) => rank(b,p)-rank(a,p))[0];

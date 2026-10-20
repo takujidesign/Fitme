@@ -1,3 +1,4 @@
+import { slot } from '../slots.js';
 import { legalLinks } from '../legal.js';
 import { createQuote, claimQuote } from '../pay.js';
 import { actions, views, go, rerender, pickFiles } from '../core.js';
@@ -37,7 +38,7 @@ views.pay = () => {
         <button class="btn primary block" data-act="pay-slip">${icon('image', 18)} ${L('แนบสลิปการโอน', 'Upload transfer slip')}</button></div>`
       : method === 'card' ? `<button class="btn primary block lg" data-act="pay-stripe">${icon('card', 18)} ${L('ไปหน้าชำระเงิน Stripe', 'Continue to Stripe checkout')}</button>
         <p class="muted sm center">${L('ข้อมูลบัตรถูกกรอกบนหน้า Stripe ที่ปลอดภัย แอปไม่เห็นข้อมูลบัตร', 'Card details are entered on Stripe\'s secure page; the app never sees them')}</p>` : ''}</div>
-    <p class="muted sm center">${L('ชำระครั้งเดียว ไม่ต่ออายุอัตโนมัติ', 'One-time payment, no auto-renewal')}</p>`;
+    <p class="muted sm center">${L('ชำระครั้งเดียว ไม่ต่ออายุอัตโนมัติ', 'One-time payment, no auto-renewal')}</p>${slot('pay.secondary')}${slot('pay.footer')}`;
 };
 views.pay.mount = async (root) => {
   const q = root.querySelector('#qr');

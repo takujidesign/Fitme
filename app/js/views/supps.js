@@ -1,3 +1,4 @@
+import { slot } from '../slots.js';
 import { actions, views, go, rerender, pickFiles } from '../core.js';
 import { getState, setState, todayISO, putImage, imageURL, compressImage, uid, delImage } from '../store.js';
 import { L, esc, icon, sheet, closeSheet, toast, dateLabel } from '../ui.js';
@@ -39,7 +40,7 @@ views.supps = () => {
         <span>${sp.paused ? L('หยุดชั่วคราว', 'Paused') : today.length ? today.map((x) => `${L(SLOTS[x.slot])} ${x.amount}`).join(' · ') : L('วันนี้ไม่ต้องทาน', 'Not today')}</span>
         <div class="row gap">${prod.loadingDays ? `<span class="tag ${ph === 'loading' ? 'amber' : 'teal'}">${ph === 'loading' ? 'Loading' : 'Maintenance'}</span>` : ''}${sup ? `<span class="tag">${L('เหลือ', 'Left')} ~${sup.left} ${L(prod.unit)}${sup.runsOut ? ` · ${L('หมด', 'until')} ${dateLabel(sup.runsOut, { day: 'numeric', month: 'short' })}` : ''}</span>` : ''}</div></div></button>`;
     }).join('')}</div>`}
-    <p class="muted sm center">${L('อ้างอิงตามตารางบนฉลากผลิตภัณฑ์ · อาหารเสริมไม่มีผลป้องกันหรือรักษาโรค · ปรึกษาแพทย์/เภสัชกรหากมีโรคประจำตัว', 'Based on the dosing chart on each label · supplements do not treat disease · ask a doctor or pharmacist if unsure')}</p>`;
+    <p class="muted sm center">${L('อ้างอิงตามตารางบนฉลากผลิตภัณฑ์ · อาหารเสริมไม่มีผลป้องกันหรือรักษาโรค · ปรึกษาแพทย์/เภสัชกรหากมีโรคประจำตัว', 'Based on the dosing chart on each label · supplements do not treat disease · ask a doctor or pharmacist if unsure')}</p>${slot('supps.secondary')}${slot('supps.footer')}`;
 };
 views.supps.mount = async (root) => {
   for (const el of root.querySelectorAll('[data-img]')) {

@@ -30,7 +30,8 @@ export function toast(msg, kind = '') {
 
 // ---- bottom sheet ----
 export function sheet(html, { onMount, wide } = {}) {
-  closeSheet();
+  closeSheet(true);
+  if (!html.includes('sheet-head')) html = html.replace(/<h2>([\s\S]*?)<\/h2>/, '<div class="sheet-head"><h2>$1</h2><button class="icon-btn" data-close aria-label="'+L('ปิด','Close')+'">×</button></div>');
   const wrap = document.createElement('div');
   wrap.className = 'sheet-wrap';
   wrap.innerHTML = `<div class="sheet-backdrop" data-close></div><div class="sheet ${wide ? 'wide' : ''}" role="dialog" aria-modal="true"><div class="sheet-grip"></div>${html}</div>`;
@@ -40,8 +41,8 @@ export function sheet(html, { onMount, wide } = {}) {
   onMount?.(wrap.querySelector('.sheet'));
   return wrap;
 }
-export function closeSheet() {
-  document.querySelectorAll('.sheet-wrap').forEach((w) => { w.classList.remove('open'); setTimeout(() => w.remove(), 250); });
+export function closeSheet(immediate = false) {
+  document.querySelectorAll('.sheet-wrap').forEach((w) => { w.classList.remove('open'); if(immediate)w.remove();else setTimeout(() => w.remove(), 250); });
 }
 
 // ---- progress ring ----
@@ -108,3 +109,5 @@ export function rng(seed) {
   };
 }
 export const pick = (arr, r) => arr[Math.floor(r() * arr.length) % arr.length];
+
+if (typeof window !== 'undefined') window.addEventListener('hashchange',()=>closeSheet(true));

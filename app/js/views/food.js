@@ -1,3 +1,4 @@
+import { slot } from '../slots.js';
 import { foodWarnings } from '../conditions.js';
 import { fastingFields, eatingWindow, inWindow } from '../fasting.js';
 import { actions, views, rerender } from '../core.js';
@@ -44,7 +45,7 @@ views.food = ({ params }) => {
     <div class="tips card soft"><b>${icon('info', 16)} ${L('เคล็ดลับ', 'Tips')}</b><ul>
       <li>${L('ชั่งอาหารสุก 1-2 สัปดาห์แรก จะกะปริมาณได้แม่นขึ้น', 'Weigh cooked food for 1-2 weeks to learn portions')}</li>
       <li>${L('ปรุงด้วยการต้ม นึ่ง ย่าง อบ ลดน้ำมัน น้ำตาล และโซเดียม', 'Boil, steam, grill or bake; go easy on oil, sugar and salt')}</li>
-      <li>${L('กดที่มื้อเพื่อดูรายละเอียดหรือสุ่มเมนูใหม่', 'Tap a meal for details or to swap it')}</li></ul></div>`;
+      <li>${L('กดที่มื้อเพื่อดูรายละเอียดหรือสุ่มเมนูใหม่', 'Tap a meal for details or to swap it')}</li></ul></div>${slot('food.secondary')}${slot('food.footer')}`;
 };
 actions['meal-open2'] = (el) => {
   const m = planDay(el.dataset.iso).meals.find((x) => x.key === el.dataset.k);
