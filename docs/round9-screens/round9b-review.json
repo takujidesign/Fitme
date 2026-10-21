@@ -1,0 +1,169 @@
+{
+  "squat": {
+    "approved": true,
+    "note": "Upright start and deep squat finish; correct limbs, no text."
+  },
+  "lunge": {
+    "approved": true,
+    "note": "Split stance to bent-knee lunge; correct equipment-free poses."
+  },
+  "calf_raise": {
+    "approved": true,
+    "note": "Heels grounded to raised heels; calves highlighted."
+  },
+  "squat_jump": {
+    "approved": true,
+    "note": "Standing to airborne extension; legs and calves highlighted."
+  },
+  "bridge": {
+    "approved": false,
+    "note": "Finish generation rejected by the built-in safety system; incomplete pair excluded."
+  },
+  "deadlift": {
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text."
+  },
+  "rdl": {
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text."
+  },
+  "pushup": {
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text."
+  },
+  "knee_pushup": {
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text."
+  },
+  "shoulder_press": {
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text."
+  },
+  "lateral_raise": {
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text."
+  },
+  "triceps_ext": {
+    "approved": false,
+    "note": "Finish generation rejected by built-in safety system; incomplete pair excluded."
+  },
+  "db_row": {
+    "approved": false,
+    "note": "Finish generation rejected by built-in safety system; incomplete pair excluded."
+  },
+  "goblet_squat": {
+    "approved": false,
+    "note": "Start generation returned no usable output; incomplete pair excluded."
+  },
+  "bench_press": {
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text."
+  },
+  "db_curl": {
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style."
+  },
+  "superman": {
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style."
+  },
+  "leg_raise": {
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style."
+  },
+  "mountain_climber": {
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style."
+  },
+  "high_knees": {
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style."
+  },
+  "jog": {
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style."
+  },
+  "jumping_jack": {
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style."
+  },
+  "jump_rope": {
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style."
+  },
+  "plank": {
+    "approved": true,
+    "static": true,
+    "note": "Static hold visually checked; identical Start and Finish as allowed by Round 9B."
+  },
+  "quad_stretch": {
+    "approved": true,
+    "static": true,
+    "note": "Static hold visually checked; identical Start and Finish as allowed by Round 9B."
+  },
+  "crunch": {
+    "approved": false,
+    "note": "Start generation rejected by built-in safety system; incomplete pair excluded."
+  },
+  "walk": {
+    "approved": false,
+    "note": "Start corrected to leg highlights; Finish still has incorrect chest/neck highlights after regeneration returned no usable replacement. Pair excluded."
+  },
+  "lat_pulldown": {
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text."
+  },
+  "bird_dog": {
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text."
+  },
+  "dead_bug": {
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text."
+  },
+  "chair_squat": {
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text."
+  },
+  "wall_pushup": {
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text."
+  },
+  "step_up": {
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text."
+  },
+  "run_interval": {
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text."
+  },
+  "child_pose": {
+    "approved": true,
+    "static": true,
+    "note": "Static hold visually reviewed; one generated pose reused for Start and Finish as permitted."
+  },
+  "forward_fold": {
+    "approved": true,
+    "static": true,
+    "note": "Static hold visually reviewed; one generated pose reused for Start and Finish as permitted."
+  },
+  "side_plank": {
+    "approved": true,
+    "static": true,
+    "note": "Static hold visually reviewed; one generated pose reused for Start and Finish as permitted."
+  },
+  "kegel": {
+    "approved": true,
+    "static": true,
+    "note": "Static hold visually reviewed; one generated pose reused for Start and Finish as permitted."
+  },
+  "breathing": {
+    "approved": true,
+    "static": true,
+    "note": "Static hold visually reviewed; one generated pose reused for Start and Finish as permitted."
+  },
+  "cat_cow": {
+    "approved": true,
+    "note": "Finish regenerated as all-fours rounded cat pose and mirrored with image generation to match Start direction; both visually reviewed."
+  }
+}

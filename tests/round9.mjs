@@ -9,7 +9,7 @@ for(const key of ['window','document','localStorage','sessionStorage','navigator
 globalThis.requestAnimationFrame=()=>1;
 let reduced=false;globalThis.matchMedia=()=>({matches:reduced,addEventListener(){},removeEventListener(){}});
 const {EXERCISES,EX}=await import('../app/js/exercises.js');
-const {figureSVG,movementArrow,startFinishHTML,animateFigure}=await import('../app/js/figure.js');
+const {figureSVG,figureViewBox,solve,movementArrow,startFinishHTML,animateFigure}=await import('../app/js/figure.js');
 const {exerciseMuscles,muscleMap,REGIONS}=await import('../app/js/muscle-map.js');
 const {approvedIllustrations,loadIllustrations,mountExerciseVisual}=await import('../app/js/illustrations.js');
 const {setState}=await import('../app/js/store.js');
@@ -22,11 +22,19 @@ for(const ex of EXERCISES){
 assert.equal(movementArrow({...EX.squat,arrow:{joint:'hip',bend:-12}}).joint,'hip');
 const map=document.createElement('div');map.innerHTML=muscleMap({},'Muscles','pick');assert.equal(map.querySelectorAll('rect').length,0);for(const id of Object.keys(REGIONS))assert(map.querySelector(`a[data-region="${id}"][tabindex="0"][aria-label] path`),id);
 const row={start:'img/ex/squat-start.webp',finish:'img/ex/squat-finish.webp',source:'ai',model:'mock-model',created:'2026-10-21'};
+const codexRow={...row,tool:'Codex image generation'};delete codexRow.model;
+assert.deepEqual(approvedIllustrations({squat:codexRow}),{squat:codexRow});
+for(const ex of EXERCISES){
+ const [x,y,w,h]=figureViewBox(ex).split(' ').map(Number);assert(w>0&&h>0&&[x,y,w,h].every(Number.isFinite));
+ for(const frame of ex.frames){const j=solve(frame,ex.view);for(const p of [j.head,...j.arm1,...j.arm2,...j.leg1,...j.leg2])assert(p[0]>=x&&p[0]<=x+w&&p[1]>=y&&p[1]<=y+h,ex.id+' crop contains joints');}
+ assert.equal(figureViewBox(ex),figureViewBox(ex),'stable framing');
+}
 assert.deepEqual(approvedIllustrations(null),{});assert.deepEqual(approvedIllustrations({squat:{...row,start:'https://bad/x'}}),{});
 assert.deepEqual(await loadIllustrations(async()=>{throw Error();}),{});assert.deepEqual(await loadIllustrations(async()=>({ok:false})),{});
 assert.deepEqual(await loadIllustrations(async()=>({ok:true,json:async()=>({})})),{});
 const host=document.createElement('div');document.body.append(host);
 let control=await mountExerciseVisual(host,EX.squat,{fetcher:async()=>({ok:true,json:async()=>({squat:row})})});assert.equal(host.querySelectorAll('img').length,4);assert(host.querySelector('[data-mode="ai"]').classList.contains('on'));host.querySelector('img').dispatchEvent(new window.Event('error'));assert.equal(host.querySelectorAll('img').length,0);assert(host.querySelector('svg'));control.stop();
+control=await mountExerciseVisual(host,EX.squat,{fetcher:async()=>({ok:true,json:async()=>({squat:codexRow})})});assert(host.textContent.includes('Codex image generation'));assert(!host.textContent.includes('undefined'));assert(host.querySelector('.seg .chip.on'));assert([...host.querySelectorAll('img')].every(img=>img.getAttribute('loading')==='lazy'));control.stop();
 reduced=true;control=await mountExerciseVisual(host,EX.squat,{fetcher:async()=>({ok:true,json:async()=>({squat:row})})});assert(host.querySelector('.start-finish'));assert.equal(host.querySelectorAll('img').length,0);host.querySelector('[data-mode="ai"]').click();assert.equal(host.querySelector('.illustration-crossfade').hidden,true);control.stop();animateFigure(host,EX.squat);assert(host.querySelector('.start-finish'));
 assert.equal(parseKie({code:200,data:{state:'success',resultJson:JSON.stringify({resultUrls:['https://example.test/image']})}}).url,'https://example.test/image');
 assert.throws(()=>parseKie({code:500,data:{}}));assert.throws(()=>parseKie({code:200,data:{state:'fail'}}));assert.throws(()=>parseKie({code:200,data:{state:'success',resultJson:'{}'}}));

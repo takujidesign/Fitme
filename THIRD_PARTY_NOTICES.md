@@ -31,7 +31,7 @@ This round does not replace licences of pre-existing package dependencies; their
 
 The animated muscle-belly paths and front/back muscle-map contours are original Fixmee drawings. No commercial anatomy illustration or third-party SVG was copied for this round.
 
-ภาพประกอบบางท่าสร้างด้วย AI (kie.ai, model ตามข้อมูลของแต่ละภาพที่อนุมัติ)
-Some exercise illustrations may be AI-generated with kie.ai. The exact model and creation date are recorded per approved pair in `app/data/illustrations.json`; the model is also displayed beside the images in the exercise sheet. The initial manifest is empty. No AI images were generated in Round 9. Provider output rights and owner-supplied reference rights must be checked by the owner before publication; this notice does not assert a third-party open-source licence for generated images.
+ภาพประกอบท่าออกกำลังกายสร้างด้วย AI (OpenAI image generation ผ่าน Codex)
+Exercise illustrations are AI-generated using OpenAI image generation through Codex. Approved pairs record their tool and creation date in `app/data/illustrations.json`. This notice does not assign an open-source licence to generated artwork. See `docs/ROUND9_VALIDATION.md` for the generated and approved inventory.
 
 The owner-only conversion script uses sharp (Apache-2.0), installed under `scripts/`; it is not shipped in the static app. Package licence notices are distributed with its npm package and transitive dependencies.

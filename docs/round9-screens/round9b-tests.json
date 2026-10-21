@@ -1,0 +1,67 @@
+﻿[
+    {
+        "suite":  "round3.mjs",
+        "exit":  0,
+        "output":  "PASS Round 3 old state, meal editing/logs/totals, custom-food filtering/generation/recipes, measurements/PDF, share dimensions, native health mock/import deduplication, reminders, theme, Thai/English voice and complete offline shell."
+    },
+    {
+        "suite":  "round4-ui.mjs",
+        "exit":  0,
+        "output":  "PASS Round 4 TH/EN and both-theme DOM routes, sync 409 merge/retry, join deduplication, replan apply/history, escaped trainer notes and approval, chat explicit approval, random helper, adherence snapshots."
+    },
+    {
+        "suite":  "round4.mjs",
+        "exit":  0,
+        "output":  "PASS Round 4 legacy defaults, timestamps, merge and photo stripping, six challenges/freezes, badges/PR, replan thresholds/floors/block application."
+    },
+    {
+        "suite":  "round5.mjs",
+        "exit":  0,
+        "output":  "PASS Round 5a DOM: separate/versioned consent, TH/EN routes and themes, promo input, sanitized telemetry opt-out, cycle phases/adjustments, pregnancy/postpartum safety across programs, eight-week run progression, all new poses in side/front."
+    },
+    {
+        "suite":  "round5b.mjs",
+        "exit":  0,
+        "output":  "PASS Round 5b app: five-language route rendering, readiness, condition safeguards, kidney protein budget, medication reminders/spacing across midnight, barcode serving conversion/cache, R2-only downloads and wall/chair poses."
+    },
+    {
+        "suite":  "round5c.mjs",
+        "exit":  0,
+        "output":  "PASS Round 5c app: five-language/two-theme render, synthetic landmark hysteresis/tracking loss, eating-out meal/diet rules, mood persistence, trial install identity and expiry reminder."
+    },
+    {
+        "suite":  "round6-offline.test.mjs",
+        "exit":  0,
+        "output":  "PASS offline: shell files exist, lazy catalogue excluded from install, viewed catalogue/photos cached, shell available offline, API never cached, unseen data fails explicitly."
+    },
+    {
+        "suite":  "round6.test.mjs",
+        "exit":  0,
+        "output":  "PASS Round 6 formula references, PRs, 40+876 muscle mappings, pinned import/155 Thai names, recovery/soreness, 30 recipe scaling, planner restrictions, admin login/401 gate, free session and five-language/two-theme DOM rendering. DOM does not prove pixel layout."
+    },
+    {
+        "suite":  "round7.mjs",
+        "exit":  0,
+        "output":  "PASS Round 7: exact legacy plan, six style mappings, equipment, exclusive preferences, generated library choice, avoidance, route sheet dismissal, staged settings/save/history/log retention, map check-in, header order in five languages/two themes, offline shell."
+    },
+    {
+        "suite":  "round8.mjs",
+        "exit":  0,
+        "output":  "PASS Round 8: all five languages/both-theme DOM rendering, credit pills/costs/pay, account auth, zero-credit sheet, AI usage, real resize bounds/JPEG quality/failure, admin model estimates/reset/login gate."
+    },
+    {
+        "suite":  "round9.mjs",
+        "exit":  0,
+        "output":  "PASS Round 9: 40 figures, muscle paths/tokens, arrows, five languages/two themes, reduced motion, approved/missing/broken images, mocked Kie parsing/rate limit/concurrency/resume/ambiguous creation, local review approval/queue/security. No provider calls."
+    },
+    {
+        "suite":  "test.mjs",
+        "exit":  0,
+        "output":  "PASS old-state load/import, avoidance across all phases/equipment/levels, preferences, safe swaps, override rotation, every IF window including midnight/under-18, supplement relocation, BLE flags/HR calories, PDF/ICS fasting boundaries and offline shell."
+    },
+    {
+        "suite":  "ui-test.mjs",
+        "exit":  0,
+        "output":  "PASS TH/EN view rendering; exclusion/swap/calendar/vacation/shopping/IF actions; simulated BLE connection, uint8/uint16 notifications, session finish, HR/set persistence; admin status, validation, preview and save payload."
+    }
+]

@@ -91,6 +91,26 @@ function propSVG(prop, j) {
 }
 
 let figureId = 0;
+const viewBoxes = new WeakMap();
+// Sample the whole rep once, including IK arcs, so framing never pumps or clips.
+export function figureViewBox(ex) {
+  if(viewBoxes.has(ex))return viewBoxes.get(ex);
+  const points=[];
+  for(let i=0;i<ex.frames.length;i++)for(let step=0;step<=16;step++){
+    const j=solve(lerpVal(ex.frames[i],ex.frames[(i+1)%ex.frames.length],step/16),ex.view);
+    points.push(j.head,j.hip,j.neckBase,...j.arm1,...j.arm2,...j.leg1,...j.leg2);
+    if(j.foot1)points.push(j.foot1,j.foot2);
+    if(/bar/.test(ex.prop||''))points.push(...[j.arm1[2],j.arm2[2]].flatMap(([x,y])=>[[x-28,y],[x+28,y]]));
+  }
+  const bounds={bench:[[33,143],[149,184]],wall:[[167,21],[182,185]],chair:[[45,104],[99,184]],box:[[17,143],[85,185]],mat:[[14,179],[186,184]],cable:[[100,10]]};
+  for(const prop of String(ex.prop||'').split(' '))points.push(...(bounds[prop]||[]));
+  const arrow=movementArrow(ex);if(arrow)points.push(arrow.a,arrow.b,arrow.c);
+  const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);
+  const left=Math.min(...xs)-14,top=Math.min(...ys)-14;
+  const width=Math.max(...xs)-left+14,height=Math.max(...ys)-top+14;
+  const box=[left,top,width,height].map(v=>+v.toFixed(2)).join(' ');
+  viewBoxes.set(ex,box);return box;
+}
 function figureDefs(id) {
   const gradients = [];
   for (const part of ['th', 'sh', 'ua', 'fa', 'torso', 'skin', 'shoe']) {
@@ -175,7 +195,7 @@ export function animateFigure(el, ex, { speed = 1, paused = false } = {}) {
   const id = 'fig-' + ++figureId;
   const frames = ex.frames;
   const durs = ex.dur || frames.map(() => 900);
-  el.innerHTML = `<svg viewBox="0 0 200 200" class="figure" role="img" aria-label="${ex.id}">${figureDefs(id)}<line x1="6" y1="182" x2="194" y2="182" class="ground"/><g class="body"></g><g class="motion-arrow">${arrowSVG(ex)}</g></svg>`;
+  el.innerHTML = `<svg viewBox="${figureViewBox(ex)}" class="figure" role="img" aria-label="${ex.id}">${figureDefs(id)}<g class="body"></g><g class="motion-arrow">${arrowSVG(ex)}</g></svg>`;
   const g = el.querySelector('.body'), paintBody = bodyPainter(g);
   const state = { el, stopped: false, paused, t0: performance.now(), offset: 0 };
   const total = durs.reduce((a, b) => a + b, 0);
@@ -210,7 +230,7 @@ export function figureSVG(ex, frameIdx = 1) {
   if(ex?.images)return photoHTML(ex);
   const id = 'fig-' + ++figureId;
   const f = ex.frames[Math.min(frameIdx, ex.frames.length - 1)];
-  return `<svg viewBox="0 0 200 200" class="figure">${figureDefs(id)}<line x1="6" y1="182" x2="194" y2="182" class="ground"/><g class="body">${renderPose(f, ex, id)}</g>${arrowSVG(ex)}</svg>`;
+  return `<svg viewBox="${figureViewBox(ex)}" class="figure">${figureDefs(id)}<g class="body">${renderPose(f, ex, id)}</g>${arrowSVG(ex)}</svg>`;
 }
 
 // Pick the farthest endpoint/keyframe automatically; explicit overrides stay optional.

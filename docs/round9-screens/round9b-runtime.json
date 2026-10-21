@@ -1,0 +1,10 @@
+{
+  "fadeBefore": "illustration-crossfade",
+  "fadeAfter": "illustration-crossfade finish",
+  "errors": [],
+  "afterManualToggle": "illustration-crossfade",
+  "fallback": {
+    "aiButtons": 0,
+    "svg": 1
+  }
+}

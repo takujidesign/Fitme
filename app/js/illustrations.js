@@ -3,13 +3,13 @@ import { animateFigure, startFinishHTML, arrowSVG } from './figure.js';
 
 export function approvedIllustrations(value) {
   if(!value || typeof value !== 'object' || Array.isArray(value))return {};
-  return Object.fromEntries(Object.entries(value).filter(([id,row])=>/^[a-z0-9_-]+$/i.test(id) && row?.source==='ai' && ['start','finish'].every(p=>row[p]===`img/ex/${id}-${p}.webp`) && typeof row.model==='string' && typeof row.created==='string'));
+  return Object.fromEntries(Object.entries(value).filter(([id,row])=>/^[a-z0-9_-]+$/i.test(id) && row?.source==='ai' && ['start','finish'].every(p=>row[p]===`img/ex/${id}-${p}.webp`) && (row.tool==='Codex image generation' || typeof row.model==='string') && typeof row.created==='string'));
 }
 export async function loadIllustrations(fetcher=globalThis.fetch) {
   try {const r=await fetcher(new URL('../data/illustrations.json',import.meta.url));return r.ok?approvedIllustrations(await r.json()):{};} catch {return {};}
 }
 export function illustrationHTML(ex,row) {
-  return `<div class="illustration-pair">${['start','finish'].map((pose,i)=>`<figure><div class="illustration-frame"><img loading="lazy" src="${esc(row[pose])}" alt="${esc(L(ex.name))} - ${i?L('จบ','Finish'):L('เริ่ม','Start')}"><svg class="illustration-arrow" viewBox="0 0 200 200" aria-hidden="true">${arrowSVG(ex)}</svg></div><figcaption>${i?L('จบ','Finish'):L('เริ่ม','Start')}</figcaption></figure>`).join('')}</div><button type="button" class="btn ghost" data-crossfade>${L('สลับภาพ','Alternate poses')}</button><label class="field"><input type="checkbox" data-arrows> ${L('ลูกศรการเคลื่อนไหว','Movement arrows')}</label><div class="illustration-crossfade" hidden>${['start','finish'].map(p=>`<img loading="lazy" src="${esc(row[p])}" alt="${esc(L(ex.name))}">`).join('')}</div><p class="note">${L('ภาพประกอบ AI','AI illustration')} - ${esc(row.model)}</p>`;
+  return `<div class="illustration-pair">${['start','finish'].map((pose,i)=>`<figure><div class="illustration-frame"><img loading="lazy" src="${esc(row[pose])}" alt="${esc(L(ex.name))} - ${i?L('จบ','Finish'):L('เริ่ม','Start')}"><svg class="illustration-arrow" viewBox="0 0 200 200" aria-hidden="true">${arrowSVG(ex)}</svg></div><figcaption>${i?L('จบ','Finish'):L('เริ่ม','Start')}</figcaption></figure>`).join('')}</div><button type="button" class="btn ghost" data-crossfade>${L('สลับภาพ','Alternate poses')}</button><label class="field"><input type="checkbox" data-arrows> ${L('ลูกศรการเคลื่อนไหว','Movement arrows')}</label><div class="illustration-crossfade" hidden>${['start','finish'].map(p=>`<img loading="lazy" src="${esc(row[p])}" alt="${esc(L(ex.name))}">`).join('')}</div><p class="note">${L('ภาพประกอบ AI','AI illustration')} - ${esc(row.tool || row.model)}</p>`;
 }
 export async function mountExerciseVisual(root,ex,{fetcher=globalThis.fetch}={}) {
   const motion=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)'),reduced=()=>!!motion?.matches;

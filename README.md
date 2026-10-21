@@ -346,7 +346,11 @@ See [Round 8 validation](docs/ROUND8_VALIDATION.md) for tests and the local Wran
 
 Round 9 adds original anatomical SVG figures, primary/secondary muscle colours, movement arrows and Animation / Start–Finish controls. Reduced-motion settings select static frames. Approved AI pairs are optional; missing manifests or broken images fall back to the figure. Viewed WebP files use the existing service-worker runtime cache; images are never precached in `SHELL`.
 
-The owner runs this pipeline on Node 22+ with their own environment key. No key belongs in a file, command shared with collaborators, or the app. The default model is `gpt-image-2-text-to-image`; **confirm the exact model ID and input fields in your kie.ai Playground first**. The integration follows the supplied Round 9 contract and has only been tested with mocked provider responses.
+Round 9B uses **Codex built-in image generation** by default, using `scripts/illustrations/prompts.json`. Inspect each pose before approval, convert to 768×768 WebP (quality 80), and save approved pairs under `app/img/ex/`. Manifest entries use `source: "ai"`, `tool: "Codex image generation"`, and `created`. Review the contact sheet at `docs/round9-screens/illustrations.html` and the validation log for omissions.
+
+### Optional alternative: kie.ai (owner-run only)
+
+The owner runs this optional pipeline on Node 22+ with their own environment key. No key belongs in a file, command shared with collaborators, or the app. The default model is `gpt-image-2-text-to-image`; **confirm the exact model ID and input fields in your kie.ai Playground first**. The integration follows the supplied Round 9 contract and has only been tested with mocked provider responses.
 
 ```powershell
 cd scripts
@@ -376,4 +380,4 @@ Generation admits at most four jobs and spaces all provider requests by at least
 
 A process lock prevents concurrent generators. After a crash, remove `illustrations/generate.lock` only after verifying the old process stopped. Queue progress tracks each completed pose and generation ID across partial failures. Review mutations are blocked while generation is running; run generation and review sequentially. Approve requires both outputs and matching model receipts; Regenerate removes approval and queues the ID; Reject removes approval and pending regeneration. Only approved entries are written to `app/data/illustrations.json`. Review binds to loopback, serves only known generated WebP pairs, and checks request origin plus a per-session token for writes. It never serves repo-root files.
 
-No illustrations were generated or published in this round. Future publication of approved images is a separate owner action. See [Round 9 validation](docs/ROUND9_VALIDATION.md) for checks and limitations.
+The original Round 9 generated no images. Round 9B generation results are recorded in the validation log. Publication remains a separate owner action. See [Round 9 validation](docs/ROUND9_VALIDATION.md) for checks and limitations.

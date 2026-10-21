@@ -81,3 +81,54 @@ The optional list of 150 external DB prompt IDs was not included. Female variant
 - Repo-root `*.jpg` files were never read, moved, copied or served. JPG screenshots are newly captured files under `docs/round9-screens/`, not repo-root photos.
 - No Kie API requests, provider credentials, generated exercise images, worker changes, migrations, commits, push or deploy.
 - `docs/CODEX_TASKS_9B.md` appeared during the session; it was not read, modified or implemented. It is unrelated to this Round 9 change.
+
+## Round 9B implementation — 2026-10-21
+
+This appended section records the subsequent Round 9B work on `codex/round9`. It supersedes the earlier statements that no images existed and Round 9B was not implemented. Earlier Round 9 evidence above is retained as history.
+
+### Illustrations and visual review
+
+- Used only built-in OpenAI image generation through Codex, based on the existing 40-exercise prompt catalog, with pose/camera/highlight refinements during review. No Kie or other external image API was called.
+- **75 WebP files exist**, all **768 × 768**, quality **80**, totaling **1,462,382 bytes** (1.46 MB / 1.39 MiB). Largest file: **27,214 bytes**, below the 90 KB target. Conversion checks dimensions and the 90,000-byte ceiling.
+- **34 approved exercise pairs / 68 enabled images**, totaling **1,321,032 bytes**, are in `app/data/illustrations.json`. Entries include `start`, `finish`, `source: "ai"`, `tool: "Codex image generation"`, and `created`.
+- Seven static holds reuse the same generated pose: plank, side plank, forward fold, quad stretch, child's pose, Kegel and breathing. Five missing poses and seven existing but unapproved images are not enabled by the manifest.
+- Reviewed all generated exercise poses visually. Corrected bench-press camera direction, lat-pulldown equipment continuity, and Cat–Cow's incorrect standing Finish. Walking Start was corrected, but its Finish remains unsuitable. Grey anatomical figures, black shorts, white backgrounds and red muscle highlights are retained; generated figures have minor differences in hair/detail and framing rather than identical character geometry.
+- [Contact sheet](round9-screens/illustrations.html) shows all **80 slots**, including missing/unapproved poses. [Inventory](round9-screens/round9b-inventory.json) records per-file sizes; [review decisions](round9-screens/round9b-review.json) record approval and exclusions.
+
+| Excluded exercise | Reason |
+| --- | --- |
+| `goblet_squat` | Start generation returned no usable image; incomplete pair. |
+| `bridge` | Finish was rejected by the built-in image safety system. |
+| `triceps_ext` | Finish was rejected by the built-in image safety system. |
+| `db_row` | Finish was rejected by the built-in image safety system. |
+| `crunch` | Start was rejected by the built-in image safety system. |
+| `walk` | Finish has incorrect chest/neck highlights; correction returned no usable replacement. |
+
+These six exercises use the existing animated-figure fallback. No safety-blocked image requests were retried to bypass the rejection. The spec explicitly permits fewer images with documented omissions.
+
+`scripts/illustrations/prepare-codex.mjs` converts only saved built-in generation receipts, applies explicit review decisions, and rebuilds the manifest/contact sheet/inventory. It makes no provider calls. Generated assets and receipts remain in the existing ignored directories (`app/img/ex/` and `scripts/illustrations/receipts/`); they exist locally but will not be included automatically in a future Git commit. No ignore rules were changed.
+
+### App changes
+
+- Cropped SVG viewBoxes to sampled whole-repetition joint, equipment and movement-arrow bounds with padding. Both Start–Finish and animation use the same stable bounds, avoiding framing changes during a repetition.
+- Target muscle maps use red primary and light-red secondary tokens in both themes; non-target regions are light grey. Recovery-status colors remain separate.
+- Visual modes use the app's `.seg` / `.chip` controls and fit in one row at 375 px.
+- Approved Codex manifests render without the old `model` field. Lazy loading, alternating poses, reduced-motion handling and image-failure fallback remain supported. No exercise image is in service-worker `SHELL`.
+- Credits and third-party notices now use: **ภาพประกอบท่าออกกำลังกายสร้างด้วย AI (OpenAI image generation ผ่าน Codex)**. App credit translations were updated; README documents Codex as the default and retains the Kie script as an optional alternative.
+
+### Validation
+
+All **13 eligible Node suites passed again after the final implementation**: `round3`, `round4-ui`, `round4`, `round5`, `round5b`, `round5c`, `round6-offline.test`, `round6.test`, `round7`, `round8`, `round9`, `test`, and `ui-test`. Full outputs and exit codes: [round9b-tests.json](round9-screens/round9b-tests.json). Browser/Playwright/serve and extract-i18n files were excluded as requested.
+
+`cd worker; node test.mjs`: **PASS**, all four test groups, exit 0. External services were mocked; only the informational SQLite experimental warning appeared. `git diff --check`: PASS. Round 9 coverage was extended for Codex manifest rows without `model`, lazy image markup/segmented controls, and finite stable figure bounds containing all keyframe joints.
+
+Connected Chrome verified the **actual exercise sheet** through the app-only loopback fixture `tests/serve-round9b.mjs` at **375 × 812**. Saved **12 screenshots** for squat, lunge, calf raise, deadlift, push-up and shoulder press in both themes: `round9b-<id>-<theme>.jpg`. Each displayed both real WebP poses, lazy-loading attributes, one-row mode controls and no horizontal overflow. [Browser measurements](round9-screens/round9b-browser.json). The fixture suppresses sheet/chip entrance transitions for deterministic screenshots; it imports the real workout sheet and app styles.
+
+Also saved [SVG/muscle-map evidence](round9-screens/round9b-svg-light.jpg). Light-theme computed fills were primary `rgb(201, 47, 66)`, secondary `rgb(233, 154, 163)` and neutral `rgb(213, 215, 218)`. Dark-theme target tokens were checked as red/light red. A fresh verification tab had **zero console errors**, showed automatic and manual pose changes, and rendered an SVG with no AI tab for excluded bridge: [runtime evidence](round9-screens/round9b-runtime.json). An earlier browser-control tab logged a receiving-end connection error; the fresh check did not reproduce it. This is scoped exercise-sheet evidence, not full-app, physical-device performance or offline-browser acceptance. Direct Playwright launch was blocked by `spawn EPERM`; connected Chrome supplied the browser evidence instead.
+
+### Boundaries and handoff
+
+- `app/sw.js` is entirely unchanged in this round; `const VERSION = 'fitme-v1'` is preserved.
+- Repo-root `*.jpg` files were never read, moved, copied, served or published. New screenshots are under `docs/round9-screens/` only.
+- No worker edits, provider-key access, Kie/external image API calls, commits, push or deployment. All changes remain uncommitted on `codex/round9`.
+- The existing 40 exercises still contain flat `bench_press`, not incline dumbbell press; no extra exercise or altered workout behavior was introduced.

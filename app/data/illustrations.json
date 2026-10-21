@@ -1,1 +1,240 @@
-{}
+{
+  "squat": {
+    "start": "img/ex/squat-start.webp",
+    "finish": "img/ex/squat-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "lunge": {
+    "start": "img/ex/lunge-start.webp",
+    "finish": "img/ex/lunge-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "calf_raise": {
+    "start": "img/ex/calf_raise-start.webp",
+    "finish": "img/ex/calf_raise-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "squat_jump": {
+    "start": "img/ex/squat_jump-start.webp",
+    "finish": "img/ex/squat_jump-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "deadlift": {
+    "start": "img/ex/deadlift-start.webp",
+    "finish": "img/ex/deadlift-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "rdl": {
+    "start": "img/ex/rdl-start.webp",
+    "finish": "img/ex/rdl-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "pushup": {
+    "start": "img/ex/pushup-start.webp",
+    "finish": "img/ex/pushup-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "knee_pushup": {
+    "start": "img/ex/knee_pushup-start.webp",
+    "finish": "img/ex/knee_pushup-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "bench_press": {
+    "start": "img/ex/bench_press-start.webp",
+    "finish": "img/ex/bench_press-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "shoulder_press": {
+    "start": "img/ex/shoulder_press-start.webp",
+    "finish": "img/ex/shoulder_press-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "lateral_raise": {
+    "start": "img/ex/lateral_raise-start.webp",
+    "finish": "img/ex/lateral_raise-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "lat_pulldown": {
+    "start": "img/ex/lat_pulldown-start.webp",
+    "finish": "img/ex/lat_pulldown-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "db_curl": {
+    "start": "img/ex/db_curl-start.webp",
+    "finish": "img/ex/db_curl-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "superman": {
+    "start": "img/ex/superman-start.webp",
+    "finish": "img/ex/superman-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "plank": {
+    "start": "img/ex/plank-start.webp",
+    "finish": "img/ex/plank-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "leg_raise": {
+    "start": "img/ex/leg_raise-start.webp",
+    "finish": "img/ex/leg_raise-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "mountain_climber": {
+    "start": "img/ex/mountain_climber-start.webp",
+    "finish": "img/ex/mountain_climber-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "jumping_jack": {
+    "start": "img/ex/jumping_jack-start.webp",
+    "finish": "img/ex/jumping_jack-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "high_knees": {
+    "start": "img/ex/high_knees-start.webp",
+    "finish": "img/ex/high_knees-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "jog": {
+    "start": "img/ex/jog-start.webp",
+    "finish": "img/ex/jog-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "jump_rope": {
+    "start": "img/ex/jump_rope-start.webp",
+    "finish": "img/ex/jump_rope-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "forward_fold": {
+    "start": "img/ex/forward_fold-start.webp",
+    "finish": "img/ex/forward_fold-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "quad_stretch": {
+    "start": "img/ex/quad_stretch-start.webp",
+    "finish": "img/ex/quad_stretch-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "child_pose": {
+    "start": "img/ex/child_pose-start.webp",
+    "finish": "img/ex/child_pose-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "bird_dog": {
+    "start": "img/ex/bird_dog-start.webp",
+    "finish": "img/ex/bird_dog-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "dead_bug": {
+    "start": "img/ex/dead_bug-start.webp",
+    "finish": "img/ex/dead_bug-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "cat_cow": {
+    "start": "img/ex/cat_cow-start.webp",
+    "finish": "img/ex/cat_cow-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "chair_squat": {
+    "start": "img/ex/chair_squat-start.webp",
+    "finish": "img/ex/chair_squat-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "wall_pushup": {
+    "start": "img/ex/wall_pushup-start.webp",
+    "finish": "img/ex/wall_pushup-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "step_up": {
+    "start": "img/ex/step_up-start.webp",
+    "finish": "img/ex/step_up-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "run_interval": {
+    "start": "img/ex/run_interval-start.webp",
+    "finish": "img/ex/run_interval-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "side_plank": {
+    "start": "img/ex/side_plank-start.webp",
+    "finish": "img/ex/side_plank-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "kegel": {
+    "start": "img/ex/kegel-start.webp",
+    "finish": "img/ex/kegel-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  },
+  "breathing": {
+    "start": "img/ex/breathing-start.webp",
+    "finish": "img/ex/breathing-finish.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-21"
+  }
+}

@@ -1,0 +1,254 @@
+[
+  {
+    "id": "squat",
+    "theme": "dark",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "id": "lunge",
+    "theme": "dark",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "id": "calf_raise",
+    "theme": "dark",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "id": "deadlift",
+    "theme": "dark",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "id": "pushup",
+    "theme": "dark",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "id": "shoulder_press",
+    "theme": "dark",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "id": "squat",
+    "theme": "light",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "id": "lunge",
+    "theme": "light",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "id": "calf_raise",
+    "theme": "light",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "id": "deadlift",
+    "theme": "light",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "id": "pushup",
+    "theme": "light",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  },
+  {
+    "id": "shoulder_press",
+    "theme": "light",
+    "chipTops": [
+      176.15625,
+      176.15625,
+      176.15625
+    ],
+    "images": [
+      {
+        "lazy": true,
+        "loaded": true
+      },
+      {
+        "lazy": true,
+        "loaded": true
+      }
+    ],
+    "overflow": false,
+    "width": 375
+  }
+]

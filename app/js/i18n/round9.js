@@ -5,6 +5,6 @@
 ['AI illustration','AI 插图','AI イラスト','Hình minh họa AI'],
 ['Alternate poses','切换姿势','ポーズ切り替え','Đổi tư thế'],
 ['Movement arrows','动作箭头','動作の矢印','Mũi tên chuyển động'],
-['Some exercise illustrations are AI-generated (kie.ai); the model is shown beside each approved image.','部分动作插图由 AI（kie.ai）生成；模型标注在已审核图片旁。','一部の種目イラストは AI（kie.ai）で生成され、承認済み画像の横にモデルを表示します。','Một số hình bài tập do AI (kie.ai) tạo; tên mô hình hiển thị cạnh hình đã duyệt.']
+['Exercise illustrations are AI-generated (OpenAI image generation through Codex).','运动插图由 AI 生成（通过 Codex 使用 OpenAI 图像生成）。','運動イラストは AI で生成されています（Codex 経由の OpenAI 画像生成）。','Hình minh họa bài tập được tạo bằng AI (OpenAI image generation qua Codex).']
 ];
 export default Object.fromEntries(['zh','ja','vi'].map((lang,i)=>[lang,Object.fromEntries(rows.map(row=>[row[0],row[i+1]]))]));

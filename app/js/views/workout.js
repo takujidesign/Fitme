@@ -84,7 +84,7 @@ actions['ex-open'] = (el) => {
   sheet(`<div class="sheet-head"><div><small class="muted">${L(GROUPS[ex.group])} · ${L(EQUIP[ex.equip])}</small><h2>${L(ex.name)}</h2></div><button class="icon-btn" data-close>${icon('x')}</button></div>
     <div class="exercise-visual-panel" id="ex-anim"></div>${videoToggle(ex.id)}
     <p class="muted">${L('กล้ามเนื้อหลัก', 'Target')}: <b>${L(ex.muscles)}</b></p>
-    ${muscleMap(Object.fromEntries(exerciseMuscles(ex).map(id=>[id,1])))}<ol class="cues">${L(ex.cues).map((c) => `<li>${esc(c)}</li>`).join('')}</ol>${historyHTML(ex.id)}`, { onMount: (r) => mountExerciseVisual(r.querySelector('#ex-anim'), ex) });
+    ${muscleMap(Object.fromEntries(exerciseMuscles(ex).map((id,i)=>[id,(ex.primaryMuscles?ex.primaryMuscles.includes(id):i===0)?1:.5])))}<ol class="cues">${L(ex.cues).map((c) => `<li>${esc(c)}</li>`).join('')}</ol>${historyHTML(ex.id)}`, { onMount: (r) => mountExerciseVisual(r.querySelector('#ex-anim'), ex) });
 };
 
 // ---------------- Player ----------------

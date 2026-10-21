@@ -1,0 +1,642 @@
+[
+  {
+    "id": "squat",
+    "name": "Bodyweight squat",
+    "approved": true,
+    "note": "Upright start and deep squat finish; correct limbs, no text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 16378
+      },
+      {
+        "pose": "finish",
+        "bytes": 22554
+      }
+    ]
+  },
+  {
+    "id": "goblet_squat",
+    "name": "Goblet squat",
+    "approved": false,
+    "note": "Start generation returned no usable output; incomplete pair excluded.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 0
+      },
+      {
+        "pose": "finish",
+        "bytes": 23494
+      }
+    ]
+  },
+  {
+    "id": "lunge",
+    "name": "Split squat",
+    "approved": true,
+    "note": "Split stance to bent-knee lunge; correct equipment-free poses.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 16972
+      },
+      {
+        "pose": "finish",
+        "bytes": 21228
+      }
+    ]
+  },
+  {
+    "id": "bridge",
+    "name": "Glute bridge",
+    "approved": false,
+    "note": "Finish generation rejected by the built-in safety system; incomplete pair excluded.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 19524
+      },
+      {
+        "pose": "finish",
+        "bytes": 0
+      }
+    ]
+  },
+  {
+    "id": "calf_raise",
+    "name": "Calf raise",
+    "approved": true,
+    "note": "Heels grounded to raised heels; calves highlighted.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 15328
+      },
+      {
+        "pose": "finish",
+        "bytes": 16302
+      }
+    ]
+  },
+  {
+    "id": "squat_jump",
+    "name": "Squat jump",
+    "approved": true,
+    "note": "Standing to airborne extension; legs and calves highlighted.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 18374
+      },
+      {
+        "pose": "finish",
+        "bytes": 18066
+      }
+    ]
+  },
+  {
+    "id": "deadlift",
+    "name": "Barbell deadlift",
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 27214
+      },
+      {
+        "pose": "finish",
+        "bytes": 22294
+      }
+    ]
+  },
+  {
+    "id": "rdl",
+    "name": "Romanian deadlift",
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 16212
+      },
+      {
+        "pose": "finish",
+        "bytes": 18860
+      }
+    ]
+  },
+  {
+    "id": "pushup",
+    "name": "Push-up",
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 23896
+      },
+      {
+        "pose": "finish",
+        "bytes": 22032
+      }
+    ]
+  },
+  {
+    "id": "knee_pushup",
+    "name": "Knee push-up",
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 23700
+      },
+      {
+        "pose": "finish",
+        "bytes": 21956
+      }
+    ]
+  },
+  {
+    "id": "bench_press",
+    "name": "Bench press",
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 26128
+      },
+      {
+        "pose": "finish",
+        "bytes": 25108
+      }
+    ]
+  },
+  {
+    "id": "shoulder_press",
+    "name": "Dumbbell shoulder press",
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 16938
+      },
+      {
+        "pose": "finish",
+        "bytes": 14488
+      }
+    ]
+  },
+  {
+    "id": "lateral_raise",
+    "name": "Lateral raise",
+    "approved": true,
+    "note": "Visually checked both poses: expected joint positions, appropriate equipment, grey/red anatomy, no extra limbs or text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 14886
+      },
+      {
+        "pose": "finish",
+        "bytes": 17566
+      }
+    ]
+  },
+  {
+    "id": "triceps_ext",
+    "name": "Overhead triceps extension",
+    "approved": false,
+    "note": "Finish generation rejected by built-in safety system; incomplete pair excluded.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 14876
+      },
+      {
+        "pose": "finish",
+        "bytes": 0
+      }
+    ]
+  },
+  {
+    "id": "db_row",
+    "name": "Bent-over dumbbell row",
+    "approved": false,
+    "note": "Finish generation rejected by built-in safety system; incomplete pair excluded.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 21830
+      },
+      {
+        "pose": "finish",
+        "bytes": 0
+      }
+    ]
+  },
+  {
+    "id": "lat_pulldown",
+    "name": "Lat pulldown",
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 23240
+      },
+      {
+        "pose": "finish",
+        "bytes": 21762
+      }
+    ]
+  },
+  {
+    "id": "db_curl",
+    "name": "Dumbbell curl",
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 15714
+      },
+      {
+        "pose": "finish",
+        "bytes": 16588
+      }
+    ]
+  },
+  {
+    "id": "superman",
+    "name": "Superman",
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 15636
+      },
+      {
+        "pose": "finish",
+        "bytes": 17360
+      }
+    ]
+  },
+  {
+    "id": "plank",
+    "name": "Forearm plank",
+    "approved": true,
+    "note": "Static hold visually checked; identical Start and Finish as allowed by Round 9B.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 19906
+      },
+      {
+        "pose": "finish",
+        "bytes": 19906
+      }
+    ]
+  },
+  {
+    "id": "crunch",
+    "name": "Crunch",
+    "approved": false,
+    "note": "Start generation rejected by built-in safety system; incomplete pair excluded.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 0
+      },
+      {
+        "pose": "finish",
+        "bytes": 22828
+      }
+    ]
+  },
+  {
+    "id": "leg_raise",
+    "name": "Lying leg raise",
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 15608
+      },
+      {
+        "pose": "finish",
+        "bytes": 20156
+      }
+    ]
+  },
+  {
+    "id": "mountain_climber",
+    "name": "Mountain climber",
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 21174
+      },
+      {
+        "pose": "finish",
+        "bytes": 25508
+      }
+    ]
+  },
+  {
+    "id": "jumping_jack",
+    "name": "Jumping jacks",
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 20008
+      },
+      {
+        "pose": "finish",
+        "bytes": 20082
+      }
+    ]
+  },
+  {
+    "id": "high_knees",
+    "name": "High knees",
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 16742
+      },
+      {
+        "pose": "finish",
+        "bytes": 20238
+      }
+    ]
+  },
+  {
+    "id": "jog",
+    "name": "Jog in place",
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 16220
+      },
+      {
+        "pose": "finish",
+        "bytes": 19226
+      }
+    ]
+  },
+  {
+    "id": "walk",
+    "name": "Brisk walk",
+    "approved": false,
+    "note": "Start corrected to leg highlights; Finish still has incorrect chest/neck highlights after regeneration returned no usable replacement. Pair excluded.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 19696
+      },
+      {
+        "pose": "finish",
+        "bytes": 19102
+      }
+    ]
+  },
+  {
+    "id": "jump_rope",
+    "name": "Jump rope",
+    "approved": true,
+    "note": "Both poses visually checked for joint positions, full limbs, equipment and consistent anatomical style.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 20110
+      },
+      {
+        "pose": "finish",
+        "bytes": 18416
+      }
+    ]
+  },
+  {
+    "id": "forward_fold",
+    "name": "Standing forward fold",
+    "approved": true,
+    "note": "Static hold visually reviewed; one generated pose reused for Start and Finish as permitted.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 22062
+      },
+      {
+        "pose": "finish",
+        "bytes": 22062
+      }
+    ]
+  },
+  {
+    "id": "quad_stretch",
+    "name": "Standing quad stretch",
+    "approved": true,
+    "note": "Static hold visually checked; identical Start and Finish as allowed by Round 9B.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 14886
+      },
+      {
+        "pose": "finish",
+        "bytes": 14886
+      }
+    ]
+  },
+  {
+    "id": "child_pose",
+    "name": "Child's pose",
+    "approved": true,
+    "note": "Static hold visually reviewed; one generated pose reused for Start and Finish as permitted.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 22312
+      },
+      {
+        "pose": "finish",
+        "bytes": 22312
+      }
+    ]
+  },
+  {
+    "id": "bird_dog",
+    "name": "Bird dog",
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 24088
+      },
+      {
+        "pose": "finish",
+        "bytes": 15698
+      }
+    ]
+  },
+  {
+    "id": "dead_bug",
+    "name": "Dead bug",
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 21672
+      },
+      {
+        "pose": "finish",
+        "bytes": 15648
+      }
+    ]
+  },
+  {
+    "id": "cat_cow",
+    "name": "Cat-cow",
+    "approved": true,
+    "note": "Finish regenerated as all-fours rounded cat pose and mirrored with image generation to match Start direction; both visually reviewed.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 23166
+      },
+      {
+        "pose": "finish",
+        "bytes": 21792
+      }
+    ]
+  },
+  {
+    "id": "chair_squat",
+    "name": "Chair squat",
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 16572
+      },
+      {
+        "pose": "finish",
+        "bytes": 22538
+      }
+    ]
+  },
+  {
+    "id": "wall_pushup",
+    "name": "Wall push-up",
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 17954
+      },
+      {
+        "pose": "finish",
+        "bytes": 17060
+      }
+    ]
+  },
+  {
+    "id": "step_up",
+    "name": "Low step-up",
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 18298
+      },
+      {
+        "pose": "finish",
+        "bytes": 16602
+      }
+    ]
+  },
+  {
+    "id": "run_interval",
+    "name": "Run interval",
+    "approved": true,
+    "note": "Both poses visually reviewed: expected joint positions, complete limbs, appropriate equipment, grey/red anatomy, no text.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 19224
+      },
+      {
+        "pose": "finish",
+        "bytes": 23720
+      }
+    ]
+  },
+  {
+    "id": "side_plank",
+    "name": "Side plank",
+    "approved": true,
+    "note": "Static hold visually reviewed; one generated pose reused for Start and Finish as permitted.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 19366
+      },
+      {
+        "pose": "finish",
+        "bytes": 19366
+      }
+    ]
+  },
+  {
+    "id": "kegel",
+    "name": "Breathing / pelvic floor",
+    "approved": true,
+    "note": "Static hold visually reviewed; one generated pose reused for Start and Finish as permitted.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 16416
+      },
+      {
+        "pose": "finish",
+        "bytes": 16416
+      }
+    ]
+  },
+  {
+    "id": "breathing",
+    "name": "Breathing",
+    "approved": true,
+    "note": "Static hold visually reviewed; one generated pose reused for Start and Finish as permitted.",
+    "poses": [
+      {
+        "pose": "start",
+        "bytes": 18418
+      },
+      {
+        "pose": "finish",
+        "bytes": 18418
+      }
+    ]
+  }
+]
