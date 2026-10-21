@@ -523,3 +523,26 @@ html[lang="zh"] body,html[lang="ja"] body{font-family:var(--language-font),sans-
 .ai-report .status-row{flex-wrap:wrap;gap:8px;overflow-wrap:anywhere}
 #ai-settings select{max-width:100%;min-width:0}
 #ai-usage .status-row{flex-wrap:wrap;gap:8px}
+
+/* Original anatomical exercise artwork. */
+:root { --muscle-primary:#f15b65; --muscle-secondary:#f4a07e; --muscle-neutral:#b0b2b3; }
+:root[data-theme="light"] { --muscle-primary:#c92f42; --muscle-secondary:#e78b66; --muscle-neutral:#c0c2c3; }
+@media (prefers-color-scheme:light) { :root[data-theme="auto"] { --muscle-primary:#c92f42; --muscle-secondary:#e78b66; --muscle-neutral:#c0c2c3; } }
+.figure .prop { fill:#41464e; stroke:#9b9da1; stroke-width:.5; }
+.figure .prop-o,.figure .prop-l { stroke:#696d75; }
+.start-finish,.illustration-pair { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; width:100%; }
+.start-finish figure,.illustration-pair figure { margin:0; min-width:0; text-align:center; }
+.start-finish figcaption,.illustration-pair figcaption { font-size:13px; font-weight:600; padding:8px; }
+.exercise-visual-panel { width:100%; margin:16px 0; }
+.visual-toggle { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+.exercise-visual > .figure { display:block; width:100%; height:260px; }
+.start-finish .figure { width:100%; height:auto; }
+.illustration-frame { position:relative; }
+.illustration-frame img { width:100%; aspect-ratio:1; object-fit:contain; background:white; border-radius:12px; }
+.illustration-arrow { position:absolute; inset:0; width:100%; height:100%; display:none; pointer-events:none; }
+.show-arrows .illustration-arrow { display:block; }
+.illustration-crossfade { position:relative; aspect-ratio:1; max-width:240px; margin:12px auto; }
+.illustration-crossfade img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; transition:opacity .4s; }
+.illustration-crossfade img:last-child { opacity:0; }
+.illustration-crossfade.finish img:last-child { opacity:1; }
+@media (prefers-reduced-motion:reduce) { .illustration-crossfade img { transition:none; } }

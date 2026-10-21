@@ -341,3 +341,39 @@ The recommended routing is Sonnet for chat and reviews, Haiku for suggestion ext
 Before a future release, migration `worker/migrations/0005_ai_credits.sql` must follow migrations 0001?0004. This implementation did not apply any remote migrations or deploy. `GET /api/ai/credits` accepts an account session or a verified guest purchase token. `GET/PUT /api/admin/ai` requires an admin session. Public config exposes credit prices/allowances; private model settings and cost reports remain authenticated. Usage accounting stores token counts, model, feature, cost and credit amounts, never AI prompts or uploaded images. The existing account sync feature is separate from AI usage accounting.
 
 See [Round 8 validation](docs/ROUND8_VALIDATION.md) for tests and the local Wrangler sandbox limitations. Cost rates are planning assumptions supplied in `CODEX_TASKS_8.md`, not verified live provider quotations.
+
+## Generating illustrations
+
+Round 9 adds original anatomical SVG figures, primary/secondary muscle colours, movement arrows and Animation / Start–Finish controls. Reduced-motion settings select static frames. Approved AI pairs are optional; missing manifests or broken images fall back to the figure. Viewed WebP files use the existing service-worker runtime cache; images are never precached in `SHELL`.
+
+The owner runs this pipeline on Node 22+ with their own environment key. No key belongs in a file, command shared with collaborators, or the app. The default model is `gpt-image-2-text-to-image`; **confirm the exact model ID and input fields in your kie.ai Playground first**. The integration follows the supplied Round 9 contract and has only been tested with mocked provider responses.
+
+```powershell
+cd scripts
+npm ci
+# No key or network required; prints 80 prompts:
+node illustrations/generate.mjs --dry-run
+node illustrations/generate.mjs --only squat,pushup --dry-run
+# Set KIE_API_KEY privately in this shell using your normal secret workflow.
+$env:KIE_MODEL = 'gpt-image-2-text-to-image'
+$env:KIE_INPUT = '{"aspect_ratio":"1:1"}' # replace with fields supported by your model
+# Optional model-specific settings:
+# $env:KIE_INPUT_AS_STRING = '1'
+# $env:KIE_REF_IMAGE_URL = 'https://your-owned-reference.example/style.webp'
+# $env:KIE_REF_FIELD = 'reference_image_url'
+# The following command makes paid provider calls when you run it:
+node illustrations/generate.mjs --only squat,pushup
+node illustrations/review.mjs
+# Open http://127.0.0.1:5189; Approve / Regenerate / Reject each pair.
+# Stop the review server before processing the regeneration queue:
+node illustrations/generate.mjs --queue --dry-run
+node illustrations/generate.mjs --queue
+```
+
+Bash equivalent for a privately supplied environment key: `cd scripts && npm ci && node illustrations/generate.mjs --dry-run`; export `KIE_API_KEY` privately before a non-dry run. `KIE_INPUT` is a JSON object merged with the shared prompt. `KIE_INPUT_AS_STRING=1` serializes that input object for models requiring it. Reference-field values are passed as strings; use `KIE_INPUT` for a model that expects an array. `prompts.json` has 40 start/finish pairs and a disabled female-variant descriptor; no optional external 150-ID list is included. `node illustrations/build-prompts.mjs` rebuilds the prompts from the shared style and curated descriptions.
+
+Generation admits at most four jobs and spaces all provider requests by at least 550 ms (under 20 requests/10 s), polls every three seconds, backs off on 429, downloads immediately and converts to 768×768 WebP at quality 80. Existing nonempty outputs are skipped. Receipts retain task IDs, model, creation time and reported credits; download/poll failures resume the same task. A creation intent is saved **before** POST: a missing/ambiguous receipt is never blindly recreated. Reconcile `taskId` against your provider dashboard before resuming; do not delete an ambiguous receipt merely to retry. Failed tasks retain receipts for manual review. Receipt files, queues, lock files and generated images are ignored by Git.
+
+A process lock prevents concurrent generators. After a crash, remove `illustrations/generate.lock` only after verifying the old process stopped. Queue progress tracks each completed pose and generation ID across partial failures. Review mutations are blocked while generation is running; run generation and review sequentially. Approve requires both outputs and matching model receipts; Regenerate removes approval and queues the ID; Reject removes approval and pending regeneration. Only approved entries are written to `app/data/illustrations.json`. Review binds to loopback, serves only known generated WebP pairs, and checks request origin plus a per-session token for writes. It never serves repo-root files.
+
+No illustrations were generated or published in this round. Future publication of approved images is a separate owner action. See [Round 9 validation](docs/ROUND9_VALIDATION.md) for checks and limitations.

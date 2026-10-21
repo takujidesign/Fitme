@@ -1,0 +1,562 @@
+[
+  {
+    "id": "squat",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "goblet_squat",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "lunge",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "bridge",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "calf_raise",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "squat_jump",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "deadlift",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "rdl",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "pushup",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "knee_pushup",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "bench_press",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "shoulder_press",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "lateral_raise",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "triceps_ext",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "db_row",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "lat_pulldown",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "db_curl",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "superman",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "plank",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "crunch",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "leg_raise",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "mountain_climber",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "jumping_jack",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "high_knees",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "jog",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "walk",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "jump_rope",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "forward_fold",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "quad_stretch",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "child_pose",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "bird_dog",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "dead_bug",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "cat_cow",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "chair_squat",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "wall_pushup",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "step_up",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "run_interval",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "side_plank",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "kegel",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "breathing",
+    "theme": "dark",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "squat",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "goblet_squat",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "lunge",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "bridge",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "calf_raise",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "squat_jump",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "deadlift",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "rdl",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "pushup",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "knee_pushup",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "bench_press",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "shoulder_press",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "lateral_raise",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "triceps_ext",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "db_row",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "lat_pulldown",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "db_curl",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "superman",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "plank",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "crunch",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "leg_raise",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "mountain_climber",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "jumping_jack",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "high_knees",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "jog",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "walk",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "jump_rope",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "forward_fold",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "quad_stretch",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "child_pose",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "bird_dog",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "dead_bug",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "cat_cow",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "chair_squat",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "wall_pushup",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "step_up",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "run_interval",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "side_plank",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "kegel",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  },
+  {
+    "id": "breathing",
+    "theme": "light",
+    "bad": false,
+    "pairs": 2,
+    "width": 375
+  }
+]

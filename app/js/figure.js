@@ -1,3 +1,5 @@
+import { exerciseMuscles } from './muscle-map.js';
+import { L } from './ui.js';
 import { photoHTML } from './exercise-library.js';
 // Animated exercise figure: a 2D skeleton driven by keyframed poses.
 // Angle convention (degrees): 0 = pointing down, 90 = forward (right), 180 = up, -90 = back (left).
@@ -94,7 +96,7 @@ function figureDefs(id) {
   for (const part of ['th', 'sh', 'ua', 'fa', 'torso', 'skin', 'shoe']) {
     for (const far of [false, true]) for (const highlight of [false, true]) {
       const colors = highlight ? (far ? ['#B8D85A', '#637B1F'] : ['#E9FF9A', '#97BC31'])
-        : far ? ['#8796AA', '#435165'] : part === 'shoe' ? ['#9AA9BA', '#455264'] : ['#EFF3F8', '#9DADC1'];
+        : far ? ['#8796AA', '#435165'] : part === 'shoe' ? ['#9AA9BA', '#455264'] : ['#eeeeec', '#a3a5a6'];
       gradients.push(`<linearGradient id="${id}-${part}-${+far}-${+highlight}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${colors[0]}"/><stop offset="1" stop-color="${colors[1]}"/></linearGradient>`);
     }
   }
@@ -102,7 +104,15 @@ function figureDefs(id) {
 }
 
 export function renderPose(pose, ex, id = 'figure') {
-  const j = solve(pose, ex.view), hl = new Set(ex.hl || []);
+  const j = solve(pose, ex.view), hl = new Set();
+  const regions = exerciseMuscles(ex), primary = new Set(ex.primaryMuscles || regions.slice(0, 1));
+  const musclePaint = region => primary.has(region) ? 'var(--muscle-primary)' : regions.includes(region) ? 'var(--muscle-secondary)' : 'var(--muscle-neutral)';
+  // Fusiform muscle bellies follow bone coordinates, with a central highlight ridge.
+  const belly = (a, b, width, region, offset = 0) => {
+    const dx=b[0]-a[0], dy=b[1]-a[1], len=Math.hypot(dx,dy)||1, nx=-dy/len, ny=dx/len;
+    const point=(t,w)=>`${(a[0]+dx*t+nx*(w+offset)).toFixed(2)},${(a[1]+dy*t+ny*(w+offset)).toFixed(2)}`;
+    return `<path data-muscle="${region}" d="M${point(.08,0)} C${point(.18,width)},${point(.58,width)},${point(.92,0)} C${point(.65,-width*.65)},${point(.23,-width*.65)},${point(.08,0)}Z" fill="${musclePaint(region)}" stroke="#59616a" stroke-opacity=".3" stroke-width=".45"/><path d="M${point(.2,-width*.15)} Q${point(.45,-width*.45)} ${point(.75,0)}" fill="none" stroke="white" stroke-opacity=".28" stroke-width=".6"/>`;
+  };
   const paint = (part, far = false) => `fill="url(#${id}-${part}-${+far}-${+hl.has(part)})" stroke="#536174" stroke-opacity=".22" stroke-width=".5" ${hl.has(part) ? `filter="url(#${id}-glow)"` : ''}`;
   // Tapered capsule: straight sides and rounded joint caps, widths in SVG units.
   const capsule = (a, b, w1, w2, part, far = false) => {
@@ -113,8 +123,10 @@ export function renderPose(pose, ex, id = 'figure') {
     return `<path d="M${pt(a, r1)} L${pt(b, r2)} A${r2},${r2} 0 0 0 ${pt(b, -r2)} L${pt(a, -r1)} A${r1},${r1} 0 0 0 ${pt(a, r1)}Z" ${paint(part, far)}/>`;
   };
   const legs = (leg, foot, far) => capsule(leg[0], leg[1], 15, 10, 'th', far) + capsule(leg[1], leg[2], 10, 7, 'sh', far)
+    + belly(leg[0],leg[1],5,'quads',-2) + belly(leg[0],leg[1],3,'hamstrings',3) + belly(leg[1],leg[2],4,'calves')
     + capsule(leg[2], foot || [leg[2][0] + (leg === j.leg1 ? 4 : -4), leg[2][1] + 1], 7, 6, 'shoe', far);
   const arms = (arm, far) => capsule(arm[0], arm[1], 10, 8, 'ua', far) + capsule(arm[1], arm[2], 8, 6, 'fa', far)
+    + belly(arm[0],arm[1],3.5,'biceps',-2) + belly(arm[0],arm[1],2.8,'triceps',2.5) + belly(arm[1],arm[2],3,'forearms') + belly(arm[0],along(arm[0],angTo(arm[0],arm[1]),13),4,'front_delts',-2) + belly(arm[0],along(arm[0],angTo(arm[0],arm[1]),13),3,'rear_delts',2)
     + capsule(arm[2], along(arm[2], angTo(arm[1], arm[2]), 3), 6, 5, 'skin', far);
   const far = ex.view !== 'front';
   const behindProps = ['bench', 'box', 'wall', 'chair', 'mat', 'cable'].filter((p) => String(ex.prop || '').includes(p)).join(' ');
@@ -123,23 +135,48 @@ export function renderPose(pose, ex, id = 'figure') {
   const torsoPoint = (length, width) => along(along(j.hip, t, length), t - 90, width).map((v) => v.toFixed(2)).join(',');
   const torso = [[0, 9], [13, 7], [34, front ? 15 : 10], [44, front ? 14 : 8], [46, 0], [44, front ? -14 : -8], [34, front ? -15 : -10], [13, -7], [0, -9], [-4, 0]];
   const [hx, hy] = j.head;
+  const tp=(l,w)=>along(along(j.hip,t,l),t-90,w);
+  const anatomy = [-1,1].map(sign=>
+    belly(tp(39,sign*1),tp(36,sign*(front?14:9)),6,'chest') +
+    belly(tp(44,sign*2),tp(32,sign*10),3,'traps') +
+    belly(tp(31,sign*9),tp(12,sign*6),3,'lats') +
+    belly(tp(27,sign*6),tp(9,sign*6),2.5,'obliques') +
+    [12,19,26].map(l=>belly(tp(l,sign*.6),tp(l,sign*4.5),3,'abs')).join('') +
+    belly(tp(10,sign*3),tp(3,sign*5),4,'lower_back')
+  ).join('');
+  const shorts = `<path d="M${torsoPoint(6,9)} Q${torsoPoint(-3,13)} ${torsoPoint(-12,9)} L${torsoPoint(-10,0)} L${torsoPoint(-12,-9)} Q${torsoPoint(-3,-13)} ${torsoPoint(6,-9)}Z" fill="#242832"/>`;
+
   return `<ellipse cx="${j.hip[0]}" cy="${Math.max(j.leg1[2][1], j.leg2[2][1]) + 4}" rx="31" ry="4" fill="#17202D" opacity=".2" filter="url(#${id}-shadow)"/>
     ${propSVG(behindProps, j)}${arms(j.arm2, far)}${legs(j.leg2, j.foot2, far)}
     <polygon points="${torso.map(([l, w]) => torsoPoint(l, w)).join(' ')}" ${paint('torso')}/>
-    ${legs(j.leg1, j.foot1, false)}${capsule(j.neckBase, j.head, 8, 7, 'skin')}
+    ${anatomy}${legs(j.leg1, j.foot1, false)}${shorts}${belly(tp(3,-5),tp(-6,-5),4,'glutes')}${belly(tp(3,5),tp(-6,5),4,'adductors')}${belly(tp(2,-2),tp(2,2),2,'pelvic_floor')}${capsule(j.neckBase, j.head, 8, 7, 'skin')}
     <path d="M${hx - 9},${hy - 3} Q${hx - 9},${hy - 11} ${hx},${hy - 11} Q${hx + 10},${hy - 11} ${hx + 9},${hy} L${hx + 6},${hy + 8} Q${hx},${hy + 12} ${hx - 6},${hy + 7}Z" ${paint('skin')} transform="rotate(${180 - t} ${hx} ${hy})"/>
-    ${arms(j.arm1, false)}${propSVG(handProps, j)}`;
+    ${belly(j.neckBase,along(j.neckBase,t,8),2,'neck')}${arms(j.arm1, false)}${propSVG(handProps, j)}`;
 }
 
 // Mounts a looping animation into a container; returns a stop() function.
 const running = new Set();
+// Stable topology per exercise: retain SVG nodes and update only changed attributes.
+// Definitions, gradients and paths are never rebuilt during a rep.
+function bodyPainter(group) {
+  let nodes;
+  return markup=>{
+    if(!nodes){group.innerHTML=markup;nodes=[...group.querySelectorAll('*')];return;}
+    let index=0;
+    for(const tag of markup.matchAll(/<([a-zA-Z][\w:-]*)\b([^>]*)>/g)){
+      const node=nodes[index++];if(!node)continue;
+      for(const attr of tag[2].matchAll(/([\w:-]+)="([^"]*)"/g))if(node.getAttribute(attr[1])!==attr[2])node.setAttribute(attr[1],attr[2]);
+    }
+  };
+}
 export function animateFigure(el, ex, { speed = 1, paused = false } = {}) {
   if(ex?.images){el.innerHTML=photoHTML(ex);return {stop(){el.innerHTML='';},pause(){el.classList.add('photos-paused');},play(){el.classList.remove('photos-paused');}};}
+  if (globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches) { el.innerHTML = startFinishHTML(ex); return {stop(){},pause(){},play(){}}; }
   const id = 'fig-' + ++figureId;
   const frames = ex.frames;
   const durs = ex.dur || frames.map(() => 900);
-  el.innerHTML = `<svg viewBox="0 0 200 200" class="figure" role="img" aria-label="${ex.id}">${figureDefs(id)}<line x1="6" y1="182" x2="194" y2="182" class="ground"/><g class="body"></g></svg>`;
-  const g = el.querySelector('.body');
+  el.innerHTML = `<svg viewBox="0 0 200 200" class="figure" role="img" aria-label="${ex.id}">${figureDefs(id)}<line x1="6" y1="182" x2="194" y2="182" class="ground"/><g class="body"></g><g class="motion-arrow">${arrowSVG(ex)}</g></svg>`;
+  const g = el.querySelector('.body'), paintBody = bodyPainter(g);
   const state = { el, stopped: false, paused, t0: performance.now(), offset: 0 };
   const total = durs.reduce((a, b) => a + b, 0);
   const draw = (now) => {
@@ -151,7 +188,12 @@ export function animateFigure(el, ex, { speed = 1, paused = false } = {}) {
     while (t > durs[i]) { t -= durs[i]; i++; }
     const a = frames[i], b = frames[(i + 1) % frames.length];
     const hold = ex.hold ? Math.min(1, t / (durs[i] * 0.75)) : t / durs[i];
-    g.innerHTML = renderPose(lerpVal(a, b, ease(hold)), ex, id);
+    const rect=el.getBoundingClientRect?.();
+    if (!document.hidden && (!rect || (rect.bottom >= 0 && rect.top <= (globalThis.innerHeight || Infinity)))) {
+      paintBody(renderPose(lerpVal(a, b, ease(hold)), ex, id));
+      const arrow = el.querySelector('.motion-arrow');
+      if (arrow) arrow.style.opacity = String(.25 + .65 * Math.sin(Math.PI * state.offset / total) ** 2);
+    }
     requestAnimationFrame(draw);
   };
   if (frames.length === 1) g.innerHTML = renderPose(frames[0], ex, id);
@@ -168,5 +210,32 @@ export function figureSVG(ex, frameIdx = 1) {
   if(ex?.images)return photoHTML(ex);
   const id = 'fig-' + ++figureId;
   const f = ex.frames[Math.min(frameIdx, ex.frames.length - 1)];
-  return `<svg viewBox="0 0 200 200" class="figure">${figureDefs(id)}<line x1="6" y1="182" x2="194" y2="182" class="ground"/><g class="body">${renderPose(f, ex, id)}</g></svg>`;
+  return `<svg viewBox="0 0 200 200" class="figure">${figureDefs(id)}<line x1="6" y1="182" x2="194" y2="182" class="ground"/><g class="body">${renderPose(f, ex, id)}</g>${arrowSVG(ex)}</svg>`;
+}
+
+// Pick the farthest endpoint/keyframe automatically; explicit overrides stay optional.
+export function movementArrow(ex) {
+  if (!ex.frames?.length || ex.hold || ['side_plank','kegel','breathing'].includes(ex.id)) return null;
+  const at=(j,key)=>({hand1:j.arm1[2],hand2:j.arm2[2],foot1:j.leg1[2],foot2:j.leg2[2],hip:j.hip})[key];
+  const start=solve(ex.frames[0],ex.view); let best=null;
+  for(let i=1;i<ex.frames.length;i++)for(const key of ex.arrow?.joint?[ex.arrow.joint]:['hand1','hand2','hip','foot1','foot2']) {
+    const a=at(start,key),b=at(solve(ex.frames[i],ex.view),key); if(!a||!b)continue;
+    const length=Math.hypot(b[0]-a[0],b[1]-a[1]);
+    if(length>.1 && (!best||length>best.length))best={a,b,length,peak:i,joint:key};
+  }
+  if(!best)return null;
+  const {a,b,length}=best, bend=ex.arrow?.bend ?? 18;
+  const c=[(a[0]+b[0])/2-(b[1]-a[1])/length*bend,(a[1]+b[1])/2+(b[0]-a[0])/length*bend];
+  return {...best,c,path:`M${a.join(',')} Q${c.join(',')} ${b.join(',')}`};
+}
+export function arrowSVG(ex) {
+  const arrow=movementArrow(ex);if(!arrow)return '';
+  const {b,c}=arrow,angle=Math.atan2(b[1]-c[1],b[0]-c[0]);
+  const tip=sign=>[b[0]-7*Math.cos(angle+sign*.5),b[1]-7*Math.sin(angle+sign*.5)].join(',');
+  return `<g class="movement-arrow" fill="none" stroke="var(--muscle-primary)" stroke-width="2.5" stroke-linecap="round"><path d="${arrow.path}"/><path d="M${tip(1)} L${b.join(',')} L${tip(-1)}"/></g>`;
+}
+export function startFinishHTML(ex) {
+  if(ex?.images)return photoHTML(ex);
+  const peak=movementArrow(ex)?.peak ?? Math.min(1,ex.frames.length-1);
+  return `<div class="start-finish">${[0,peak].map((frame,i)=>`<figure>${figureSVG(ex,frame)}<figcaption>${i?L('จบ','Finish'):L('เริ่ม','Start')}</figcaption></figure>`).join('')}</div>`;
 }

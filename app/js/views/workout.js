@@ -1,3 +1,4 @@
+import { mountExerciseVisual } from '../illustrations.js';
 import { slot } from '../slots.js';
 import { detectPRs } from '../records.js';
 import { muscleMap, exerciseMuscles } from '../muscle-map.js';
@@ -81,9 +82,9 @@ actions['wo-filter'] = (el) => { filter = el.dataset.v; rerender(); };
 actions['ex-open'] = (el) => {
   const ex = EX[el.dataset.id];
   sheet(`<div class="sheet-head"><div><small class="muted">${L(GROUPS[ex.group])} · ${L(EQUIP[ex.equip])}</small><h2>${L(ex.name)}</h2></div><button class="icon-btn" data-close>${icon('x')}</button></div>
-    <div class="fig xl" id="ex-anim"></div>${videoToggle(ex.id)}
+    <div class="exercise-visual-panel" id="ex-anim"></div>${videoToggle(ex.id)}
     <p class="muted">${L('กล้ามเนื้อหลัก', 'Target')}: <b>${L(ex.muscles)}</b></p>
-    ${muscleMap(Object.fromEntries(exerciseMuscles(ex).map(id=>[id,1])))}<ol class="cues">${L(ex.cues).map((c) => `<li>${esc(c)}</li>`).join('')}</ol>${historyHTML(ex.id)}`, { onMount: (r) => animateFigure(r.querySelector('#ex-anim'), ex) });
+    ${muscleMap(Object.fromEntries(exerciseMuscles(ex).map(id=>[id,1])))}<ol class="cues">${L(ex.cues).map((c) => `<li>${esc(c)}</li>`).join('')}</ol>${historyHTML(ex.id)}`, { onMount: (r) => mountExerciseVisual(r.querySelector('#ex-anim'), ex) });
 };
 
 // ---------------- Player ----------------

@@ -1,0 +1,209 @@
+{
+  "style": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, {equipment} in white/black, target muscles {muscles} highlighted in red, no text, no logo, consistent style",
+  "femaleVariant": {
+    "enabled": false,
+    "replacement": "muscular grey-skinned female figure, black sports bra and shorts"
+  },
+  "exercises": [
+    {
+      "id": "squat",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Quads, glutes highlighted in red, no text, no logo, consistent style. Stand with feet shoulder-width apart, arms forward.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Quads, glutes highlighted in red, no text, no logo, consistent style. Sit hips back into a deep squat, knees tracking toes."
+    },
+    {
+      "id": "goblet_squat",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, kb in white/black, target muscles Quads, glutes, core highlighted in red, no text, no logo, consistent style. Stand holding a kettlebell against the chest.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, kb in white/black, target muscles Quads, glutes, core highlighted in red, no text, no logo, consistent style. Lower into a squat keeping the kettlebell close to the chest."
+    },
+    {
+      "id": "lunge",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Quads, glutes highlighted in red, no text, no logo, consistent style. Stand in a long split stance.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Quads, glutes highlighted in red, no text, no logo, consistent style. Bend both knees and lower the rear knee toward the floor."
+    },
+    {
+      "id": "bridge",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Glutes, hamstrings highlighted in red, no text, no logo, consistent style. Lie supine, knees bent, feet planted, hips on the mat.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Glutes, hamstrings highlighted in red, no text, no logo, consistent style. Lift hips until shoulders, hips and knees form a line."
+    },
+    {
+      "id": "calf_raise",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Calves highlighted in red, no text, no logo, consistent style. Stand tall with heels on the floor.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Calves highlighted in red, no text, no logo, consistent style. Raise heels and balance on the balls of the feet."
+    },
+    {
+      "id": "squat_jump",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Legs, glutes, cardio highlighted in red, no text, no logo, consistent style. Stand tall with arms beside the body.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Legs, glutes, cardio highlighted in red, no text, no logo, consistent style. At the peak of the jump, extend hips, knees and ankles."
+    },
+    {
+      "id": "deadlift",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, plate in white/black, target muscles Posterior chain highlighted in red, no text, no logo, consistent style. Hinge hips back, bend knees, hold the weight near shins.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, plate in white/black, target muscles Posterior chain highlighted in red, no text, no logo, consistent style. Stand tall with hips extended and the weight near thighs."
+    },
+    {
+      "id": "rdl",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Hamstrings, glutes highlighted in red, no text, no logo, consistent style. Stand holding dumbbells at thighs with softly bent knees.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Hamstrings, glutes highlighted in red, no text, no logo, consistent style. Hinge hips back, lower dumbbells along shins, spine neutral."
+    },
+    {
+      "id": "pushup",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Chest, shoulders, triceps highlighted in red, no text, no logo, consistent style. High plank with palms planted under shoulders and elbows straight.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Chest, shoulders, triceps highlighted in red, no text, no logo, consistent style. Lower chest close to mat with elbows bent and body straight."
+    },
+    {
+      "id": "knee_pushup",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Chest, shoulders, triceps highlighted in red, no text, no logo, consistent style. Kneeling push-up with hands planted, shoulders through knees aligned.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Chest, shoulders, triceps highlighted in red, no text, no logo, consistent style. Bend elbows and lower chest near mat while knees stay planted."
+    },
+    {
+      "id": "bench_press",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, bench plate in white/black, target muscles Chest, front delts, triceps highlighted in red, no text, no logo, consistent style. Lie on a flat bench, feet planted, weight at mid-chest, elbows bent.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, bench plate in white/black, target muscles Chest, front delts, triceps highlighted in red, no text, no logo, consistent style. Press weight vertically above chest until elbows extend."
+    },
+    {
+      "id": "shoulder_press",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Shoulders, triceps highlighted in red, no text, no logo, consistent style. Stand with dumbbells at shoulder height, elbows bent.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Shoulders, triceps highlighted in red, no text, no logo, consistent style. Press both dumbbells overhead with arms extended."
+    },
+    {
+      "id": "lateral_raise",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Side delts highlighted in red, no text, no logo, consistent style. Stand with dumbbells by sides and elbows slightly bent.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Side delts highlighted in red, no text, no logo, consistent style. Raise arms out to the sides to shoulder height."
+    },
+    {
+      "id": "triceps_ext",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Triceps highlighted in red, no text, no logo, consistent style. Stand with a dumbbell behind the head, elbows bent pointing upward.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Triceps highlighted in red, no text, no logo, consistent style. Extend elbows to lift the dumbbell overhead, upper arms still."
+    },
+    {
+      "id": "db_row",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Lats, mid-back, biceps highlighted in red, no text, no logo, consistent style. Hip hinge with back flat, dumbbells hanging beneath shoulders.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Lats, mid-back, biceps highlighted in red, no text, no logo, consistent style. Draw elbows back and pull dumbbells toward lower ribs."
+    },
+    {
+      "id": "lat_pulldown",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, cable bar in white/black, target muscles Lats, back, biceps highlighted in red, no text, no logo, consistent style. Sit under a cable with arms extended upward holding a wide bar.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, cable bar in white/black, target muscles Lats, back, biceps highlighted in red, no text, no logo, consistent style. Pull the bar to upper chest with elbows down and back."
+    },
+    {
+      "id": "db_curl",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Biceps highlighted in red, no text, no logo, consistent style. Stand with dumbbells at sides and elbows extended.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, db in white/black, target muscles Biceps highlighted in red, no text, no logo, consistent style. Flex elbows and curl dumbbells toward shoulders, upper arms still."
+    },
+    {
+      "id": "superman",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Lower back, glutes highlighted in red, no text, no logo, consistent style. Lie prone with arms reaching forward and legs straight.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Lower back, glutes highlighted in red, no text, no logo, consistent style. Lift chest, arms and legs gently off mat."
+    },
+    {
+      "id": "plank",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Abs, core highlighted in red, no text, no logo, consistent style. Forearm plank with elbows under shoulders and straight body.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Abs, core highlighted in red, no text, no logo, consistent style. Maintain the same forearm plank, abdomen braced, no joint movement."
+    },
+    {
+      "id": "crunch",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Upper abs highlighted in red, no text, no logo, consistent style. Lie supine, knees bent, hands near head, shoulders on mat.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Upper abs highlighted in red, no text, no logo, consistent style. Curl shoulders and upper back off mat without pulling neck."
+    },
+    {
+      "id": "leg_raise",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Lower abs highlighted in red, no text, no logo, consistent style. Lie supine with straight legs close to the floor.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Lower abs highlighted in red, no text, no logo, consistent style. Raise straight legs toward vertical without arching lower back."
+    },
+    {
+      "id": "mountain_climber",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Core, legs, cardio highlighted in red, no text, no logo, consistent style. High plank with both legs extended.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Core, legs, cardio highlighted in red, no text, no logo, consistent style. Bring one knee forward under the chest, hands stay planted."
+    },
+    {
+      "id": "jumping_jack",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Full body, cardio highlighted in red, no text, no logo, consistent style. Stand with feet together and arms at sides.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Full body, cardio highlighted in red, no text, no logo, consistent style. Jump feet apart and raise arms overhead."
+    },
+    {
+      "id": "high_knees",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Legs, hip flexors, cardio highlighted in red, no text, no logo, consistent style. Stand upright with elbows bent.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Legs, hip flexors, cardio highlighted in red, no text, no logo, consistent style. Lift one knee toward hip height while opposite arm swings forward."
+    },
+    {
+      "id": "jog",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Cardio, legs highlighted in red, no text, no logo, consistent style. Light jogging stance, one foot beneath hips.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Cardio, legs highlighted in red, no text, no logo, consistent style. Opposite knee moves forward, arms counter-swing."
+    },
+    {
+      "id": "walk",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Cardio, recovery highlighted in red, no text, no logo, consistent style. Upright walking stance, one foot forward.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Cardio, recovery highlighted in red, no text, no logo, consistent style. Transfer weight and step forward with the opposite foot."
+    },
+    {
+      "id": "jump_rope",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Calves, cardio highlighted in red, no text, no logo, consistent style. Stand holding rope handles beside hips, knees soft.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Calves, cardio highlighted in red, no text, no logo, consistent style. Small jump over the rope with feet together, wrists turning."
+    },
+    {
+      "id": "forward_fold",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Hamstrings, low back highlighted in red, no text, no logo, consistent style. Stand tall, legs straight but knees soft.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Hamstrings, low back highlighted in red, no text, no logo, consistent style. Hinge at hips and fold forward, hands reaching toward feet."
+    },
+    {
+      "id": "quad_stretch",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Quads highlighted in red, no text, no logo, consistent style. Stand balanced, one knee bent behind.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Quads highlighted in red, no text, no logo, consistent style. Hold lifted ankle near glute, knees close together, torso tall."
+    },
+    {
+      "id": "child_pose",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Back, hips (relax) highlighted in red, no text, no logo, consistent style. Kneel on mat with hands forward.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, mat in white/black, target muscles Back, hips (relax) highlighted in red, no text, no logo, consistent style. Sit hips toward heels and lengthen arms forward, head lowered."
+    },
+    {
+      "id": "bird_dog",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. On hands and knees with a neutral spine.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Extend opposite arm and leg horizontally while keeping trunk stable."
+    },
+    {
+      "id": "dead_bug",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Lie supine, hips and knees bent 90 degrees, arms toward ceiling.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Extend one leg and opposite arm toward floor, back stays supported."
+    },
+    {
+      "id": "cat_cow",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. On hands and knees, gently extend upper back and lift chest.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Round spine upward and tuck chin and pelvis gently."
+    },
+    {
+      "id": "chair_squat",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, chair in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Stand in front of a chair with arms forward.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, chair in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Lower hips to the chair, knees bent and feet planted."
+    },
+    {
+      "id": "wall_pushup",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, wall in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Stand facing a wall, palms on wall, arms extended.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, wall in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Bend elbows and lean the straight body toward wall."
+    },
+    {
+      "id": "step_up",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Stand facing a low step with one foot on it.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Press through the raised foot and bring body onto the step."
+    },
+    {
+      "id": "run_interval",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Upright light running stride, left knee forward.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Right knee forward with opposite arm counter-swing."
+    },
+    {
+      "id": "side_plank",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Side plank supported on one forearm and stacked feet.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Maintain the same side plank with hips lifted, no joint movement."
+    },
+    {
+      "id": "kegel",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Stand relaxed, breathe naturally; discreet internal pelvic-floor engagement.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Same standing posture, gently lift pelvic floor internally, no visible limb movement."
+    },
+    {
+      "id": "breathing",
+      "start": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Stand relaxed and inhale gently, ribs expand.",
+      "finish": "anatomical fitness illustration, muscular grey-skinned male figure with visible muscle definition, black shorts, barefoot, white background, clean 3/4 view, no equipment in white/black, target muscles Movement and stability highlighted in red, no text, no logo, consistent style. Same relaxed stance, exhale gently, ribs settle."
+    }
+  ]
+}

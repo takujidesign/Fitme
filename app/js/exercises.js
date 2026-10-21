@@ -272,5 +272,11 @@ const programExercises = [
 ];
 for(const [id,th,en,group,type,frames] of programExercises) EXERCISES.push({id,name:{th,en},group,type,frames,prop:({wall_pushup:'wall',chair_squat:'chair'})[id],equip:'none',level:1,met:group==='cardio'?6:2.5,hl:[],dur:[1800,1800],muscles:{th:'การเคลื่อนไหวและการทรงตัว',en:'Movement and stability'},cues:{th:['เคลื่อนไหวช้า ๆ ในช่วงที่สบาย','หายใจตามปกติ ไม่กลั้นหายใจ','หยุดเมื่อปวด เวียนหัว หรือไม่สบาย'],en:['Move slowly through a comfortable range','Breathe normally without holding your breath','Stop with pain, dizziness or discomfort']}});
 
+// Optional motion-arrow overrides; joints: hand1/hand2, hip, foot1/foot2.
+// Signed bend is the quadratic-curve offset in SVG units; poses/IK stay unchanged.
+for(const entry of EXERCISES){
+  if(['squat','goblet_squat','lunge','bridge','chair_squat'].includes(entry.id))entry.arrow={joint:'hip',bend:18};
+  if(entry.id==='bench_press')entry.arrow={joint:'hand1',bend:12};
+}
 for(const entry of EXERCISES)localizedNames(entry.name||entry);
 export const EX = Object.fromEntries(EXERCISES.map((e) => [e.id, e]));
