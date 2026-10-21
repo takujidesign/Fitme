@@ -1,0 +1,21 @@
+﻿import { api } from '../account.js';
+import { adminToken } from '../admin-session.js';
+import { featureName } from '../ai-credits.js';
+import { L, esc, toast } from '../ui.js';
+const models=['claude-opus-5-5','claude-sonnet-5-5','claude-haiku-5-5'];
+const features=['chat','chatSuggestions','mealPhoto','bodyReview','planReview','labelRead'];
+const call=(body)=>api('admin/ai',body,body?'PUT':'GET',adminToken());
+export async function renderAdminAI(host){
+ const data=await call();let draft=structuredClone(data.ai);
+ const numeric=(key,label,value)=>`<label class="field">${label}<input type="number" name="${key}" min="0" step="${key==='thbRate'?'0.01':'1'}" value="${value}" required></label>`;
+ const draw=()=>{
+ const d=data.dashboard;
+ host.innerHTML=`<h2>AI</h2><form id="ai-settings">${features.map(f=>`<section class="card"><h3>${featureName(f)}</h3><div class="grid2"><label class="field">${L('โมเดล','Model')}<select name="${f}.model">${models.map(m=>`<option ${draft[f].model===m?'selected':''}>${m}</option>`).join('')}</select></label><label class="field">${L('ระดับการคิด','Effort')}<select name="${f}.effort">${[['low',L('ต่ำ','Low')],['medium',L('ปานกลาง','Medium')],['high',L('สูง','High')]].map(([v,label])=>`<option value="${v}" ${draft[f].effort===v?'selected':''}>${label}</option>`).join('')}</select></label>${numeric(f+'.maxTokens',L('โทเคนสูงสุด','Maximum tokens'),draft[f].maxTokens)}${f==='chatSuggestions'?'':numeric('prices.'+f,L('เครดิตต่อครั้ง','Credits per call'),draft.prices[f])}</div><small>${L('ค่าใช้จ่ายประมาณต่อครั้ง','Estimated cost per call')}: <span data-estimate="${f}">$${data.estimates[f][models.indexOf(draft[f].model)].toFixed(5)}</span></small></section>`).join('')}
+ <div class="grid2">${numeric('credits.trial',L('เครดิตทดลองครั้งเดียว','One-time trial credits'),draft.credits.trial)}${numeric('credits.period',L('เครดิต Pro ทุก 30 วัน','Pro credits every 30 days'),draft.credits.period)}${numeric('credits.topup',L('เครดิตเติมเงิน','Top-up credits'),draft.credits.topup)}${numeric('credits.topupDays',L('อายุเครดิตเติมเงิน (วัน)','Top-up validity (days)'),draft.credits.topupDays)}${numeric('thbRate',L('บาทต่อ USD','THB per USD'),draft.thbRate)}</div><div class="row gap"><button class="btn primary" type="submit">${L('บันทึก','Save')}</button><button class="btn ghost" type="button" id="ai-reset">${L('คืนค่าที่แนะนำ','Reset to recommended')}</button></div><p role="status" id="ai-save-status"></p></form>
+ <h2>${L('AI ใน 30 วันล่าสุด','AI in the last 30 days')}</h2><div class="status-row"><span>${L('จำนวนครั้ง','Calls')}</span><b>${d.totals.calls}</b></div><p>$${d.totals.costUSD.toFixed(4)} / ฿${d.totals.costTHB.toFixed(2)}</p><p>${L('อัตรา cache hit','Cache hit rate')}: ${(d.totals.cacheHitRate*100).toFixed(1)}%</p><p>${L('ค่าเฉลี่ยต่อผู้ใช้ Pro ที่ใช้ AI','Average cost per active AI Pro user')}: $${d.totals.averageCostPerPro.toFixed(4)}</p><p>${L('ผู้ใช้ที่เครดิตหมด','Owners with zero credits')}: ${d.zeroOwners}</p><p>${L('การใช้ Sonnet แทน Haiku','Haiku to Sonnet fallbacks')}: ${d.fallbacks}</p>${[d.byFeature,d.byModel].map(rows=>`<div class="ai-report">${rows.map(r=>`<div class="status-row"><span>${r.feature?featureName(r.feature):esc(r.model)}</span><span>${r.calls} · $${r.costUSD.toFixed(4)} / ฿${r.costTHB.toFixed(2)}</span></div>`).join('')||'—'}</div>`).join('')}`;
+ const form=host.querySelector('form');
+ form.addEventListener('input',e=>{const [a,b]=e.target.name.split('.');if(!a)return;const value=e.target.type==='number'?Number(e.target.value):e.target.value;if(b)draft[a][b]=value;else draft[a]=value;if(b==='model')host.querySelector(`[data-estimate="${a}"]`).textContent='$'+data.estimates[a][models.indexOf(value)].toFixed(5);host.querySelector('#ai-save-status').textContent=L('มีการเปลี่ยนแปลงที่ยังไม่บันทึก','Unsaved changes');});
+ form.onsubmit=async e=>{e.preventDefault();if(!form.reportValidity())return;const button=form.querySelector('[type=submit]');button.disabled=true;try{await call(draft);host.querySelector('#ai-save-status').textContent=L('บันทึกแล้ว','Saved');}catch(err){toast(err.message,'warn');}finally{button.disabled=false;}};
+ host.querySelector('#ai-reset').onclick=()=>{draft=structuredClone(data.recommended);draw();host.querySelector('#ai-save-status').textContent=L('มีการเปลี่ยนแปลงที่ยังไม่บันทึก','Unsaved changes');};
+ };draw();
+}

@@ -330,3 +330,14 @@ Admin access is at `#/admin` without a public navigation link. Login creates a t
 ### Round 7 training settings
 
 Use Training settings from Train or Me to choose training styles, equipment, weekdays, session length, muscle focus and preferred/avoided exercises, including library exercises. Changes apply on Save; existing profiles keep their previous plan until settings are saved. See [Round 7 validation](docs/ROUND7_VALIDATION.md) for tests, screenshots and local visual-review instructions.
+
+
+### Round 8: AI credits and model settings
+
+AI calls now use server-enforced credits for signed-in accounts and verified guest purchase wallets. A signed-in account receives 10 one-time trial credits. Pro receives 60 credits per 30-day window, including 90-day purchases and Stripe subscriptions; unused period credits do not stack. `credits40` adds 40 credits for THB 49 / USD 1.49, expiring after 90 days, through the existing Thunder or Stripe Checkout flow. Credit amounts, call costs, model/effort/token limits and THB conversion are configurable in the authenticated Admin ? AI tab.
+
+The recommended routing is Sonnet for chat and reviews, Haiku for suggestion extraction and labels. AI requests share cached, stable system instructions; chat also enables automatic history caching. Photos are resized to at most 1024 pixels before AI upload. Ordinary on-device calculations do not consume AI credits. The coach and AI buttons show credits; Me ? AI usage shows balance, reset date, top-ups and the latest 20 usage records.
+
+Before a future release, migration `worker/migrations/0005_ai_credits.sql` must follow migrations 0001?0004. This implementation did not apply any remote migrations or deploy. `GET /api/ai/credits` accepts an account session or a verified guest purchase token. `GET/PUT /api/admin/ai` requires an admin session. Public config exposes credit prices/allowances; private model settings and cost reports remain authenticated. Usage accounting stores token counts, model, feature, cost and credit amounts, never AI prompts or uploaded images. The existing account sync feature is separate from AI usage accounting.
+
+See [Round 8 validation](docs/ROUND8_VALIDATION.md) for tests and the local Wrangler sandbox limitations. Cost rates are planning assumptions supplied in `CODEX_TASKS_8.md`, not verified live provider quotations.

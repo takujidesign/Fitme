@@ -138,15 +138,16 @@ export async function imageURL(id) {
 }
 
 // Downscale a user photo to keep storage small.
-export async function compressImage(file, max = 1280, quality = 0.82) {
+export async function compressImage(file, max = 1280, quality = 0.82, strict = false) {
   const bmp = await createImageBitmap(file).catch(() => null);
-  if (!bmp) return file;
+  if (!bmp) {if(strict)throw new Error('Could not resize image');return file;}
   const scale = Math.min(1, max / Math.max(bmp.width, bmp.height));
   const c = document.createElement('canvas');
   c.width = Math.round(bmp.width * scale);
   c.height = Math.round(bmp.height * scale);
   c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
-  return new Promise((res) => c.toBlob((b) => res(b || file), 'image/jpeg', quality));
+  bmp.close?.();
+  return new Promise((res,rej) => c.toBlob((b) => b?res(b):strict?rej(new Error('Could not resize image')):res(file), 'image/jpeg', quality));
 }
 export const blobToBase64 = (blob) => new Promise((res) => {
   const r = new FileReader();

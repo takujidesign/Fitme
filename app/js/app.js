@@ -1,3 +1,5 @@
+import './views/ai-usage.js';
+import { refreshCredits } from './ai-credits.js';
 import { cacheOfflineAssets } from './offline.js';
 import { languageFont } from './i18n/index.js';
 import { loadVideos } from './videos.js';
@@ -68,6 +70,7 @@ function render() {
   document.body.classList.toggle('full', !!v.full || r.name === 'onboarding');
   viewEl.innerHTML = `<div class="view-inner v-${r.name}">${html}</div>`;
   v.mount?.(viewEl);
+  if(viewEl.querySelector('[data-ai-balance],[data-ai-cost]'))refreshCredits().catch(()=>{});
   tabEl.innerHTML = TABS.map(([name, ic, label]) => `<a href="#/${name}" class="${r.name === name ? 'on' : ''}">${icon(ic, 22)}<span>${L(label)}</span></a>`).join('')
     + (installEvt ? '' : '');
   document.documentElement.lang = getState().lang;

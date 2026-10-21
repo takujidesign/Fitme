@@ -1,3 +1,4 @@
+import { creditCost } from '../ai-credits.js';
 import { slot } from '../slots.js';
 import { LANGUAGES, languageFont } from '../i18n/index.js';
 import { accountCard, mountTrainerNotes } from './account.js';
@@ -51,7 +52,7 @@ views.me = () => {
     <section class="card">
       <div class="row between"><h2>${icon('camera', 20)} ${L('รูปร่าง', 'Body photos')}</h2><button class="btn xs ghost" data-act="me-photo">${icon('plus', 16)} ${L('เพิ่มรูป', 'Add')}</button></div>
       <p class="muted sm">${L('รูปที่บันทึกเก็บในเครื่อง ส่งให้ AI เฉพาะเมื่อยินยอม · ถ่ายมุมเดิม แสงเดิม ทุก 2 สัปดาห์', 'Saved photos stay on this device; AI uploads only with consent · same angle and light every 2 weeks')}</p>
-      <button class="btn ghost block" data-act="ai-body">${L('วิเคราะห์รูปร่างด้วย AI', 'Analyze body with AI')}</button>
+      <button class="btn ghost block" data-act="ai-body">${L('วิเคราะห์รูปร่างด้วย AI', 'Analyze body with AI')} ${creditCost('bodyReview')}</button>
       <div class="photo-grid">${s.photos.slice().reverse().map((ph) => `<button class="ph" data-act="me-photo-open" data-id="${ph.id}" data-img="${ph.id}"><small>${dateLabel(ph.date, { day: 'numeric', month: 'short' })}</small></button>`).join('') || `<div class="muted sm">${L('ยังไม่มีรูป', 'No photos yet')}</div>`}</div>
       ${s.photos.length >= 2 ? `<button class="btn ghost block" data-act="me-compare">${icon('swap', 18)} ${L('เปรียบเทียบก่อน/หลัง', 'Compare before/after')}</button>` : ''}
     </section>
@@ -71,6 +72,7 @@ views.me = () => {
     ${[['account','user','บัญชี','Account'],['groups','user','กลุ่มและชาเลนจ์','Groups and challenges'],['shop','card','ร้านค้า','Shop']].map(([path,ic,th,en])=>`<a class="list-row" href="#/${path}">${icon(ic,18)}<span>${L(th,en)}</span>${icon('chev',16)}</a>`).join('')}
     <button class="list-row" data-act="me-data">${icon('download',18)}<span>${L('ข้อมูลและสำรอง','Data & backup')}</span>${icon('chev',16)}</button>
     <a class="list-row" href="#/privacy">${icon('lock',18)}<span>${L('ความเป็นส่วนตัวและเงื่อนไข','Privacy & terms')}</span>${icon('chev',16)}</a>
+    <a class="list-row" href="#/ai-usage">${icon('spark',18)}<span>${L('การใช้ AI','AI usage')}</span>${icon('chev',16)}</a>
     <a class="list-row" href="#/credits">${icon('info',18)}<span>${L('เครดิต','Credits')}</span>${icon('chev',16)}</a></div></section>
     <details class="card"><summary>${L('สุขภาพและความก้าวหน้า','Health and progress')}</summary><div class="list">${[['muscles','กล้ามเนื้อ','Muscles'],['records','สถิติส่วนตัว','Personal records'],['tools','เครื่องคำนวณ','Calculators']].map(([path,th,en])=>`<a class="list-row" href="#/${path}">${L(th,en)}${icon('chev',16)}</a>`).join('')}</div>${accountCard()}${badgeGrid()}${replanCard()}${healthCard()}${slot('me.secondary')}</details>
     <details class="card" id="me-data"><summary>${L('ข้อมูลและสำรอง','Data & backup')}</summary>    <section class="card premium ${hasPro() ? 'on' : ''}">

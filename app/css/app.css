@@ -517,3 +517,9 @@ html[lang="zh"] body,html[lang="ja"] body{font-family:var(--language-font),sans-
 .top .day-nav { display:flex; flex:0 0 auto; gap:6px; flex-wrap:nowrap; }
 .quick-actions .btn { flex:0 0 96px; line-height:1.25; }
 .quick-actions .btn span, .quick-actions .btn { overflow-wrap:normal; word-break:keep-all; }
+
+/* AI credits: compact costs and readable reports on narrow screens. */
+.ai-cost{display:inline-block;white-space:nowrap;font-size:.85em;opacity:.85;margin-inline-start:6px}
+.ai-report .status-row{flex-wrap:wrap;gap:8px;overflow-wrap:anywhere}
+#ai-settings select{max-width:100%;min-width:0}
+#ai-usage .status-row{flex-wrap:wrap;gap:8px}

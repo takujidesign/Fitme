@@ -1,3 +1,4 @@
+import { creditCost, requireCredits } from '../ai-credits.js';
 import { slot } from '../slots.js';
 import { actions, views, go, rerender, pickFiles } from '../core.js';
 import { getState, setState, todayISO, putImage, imageURL, compressImage, uid, delImage } from '../store.js';
@@ -58,7 +59,7 @@ actions['sp-add'] = () => {
   }
   sheet(`<div class="sheet-head"><h2>${L('เพิ่มอาหารเสริม', 'Add supplement')}</h2><button class="icon-btn" data-close>${icon('x')}</button></div>
     <div class="add-opts">
-      <button class="opt" data-act="sp-photo">${icon('camera', 26)}<b>${L('ถ่าย/อัปโหลดรูปฉลาก', 'Photo of the label')}</b><small>${L('AI อ่านวิธีทานจากฉลาก', 'AI reads the directions')}${hasPro() ? '' : ' · Pro'}</small></button>
+      <button class="opt" data-act="sp-photo">${icon('camera', 26)}<b>${L('ถ่าย/อัปโหลดรูปฉลาก', 'Photo of the label')}</b><small>${L('AI อ่านวิธีทานจากฉลาก', 'AI reads the directions')} ${creditCost('labelRead')}</small></button>
       <button class="opt" data-act="sp-custom">${icon('settings', 26)}<b>${L('กรอกเอง', 'Enter manually')}</b><small>${L('ชื่อ ขนาด ความถี่', 'Name, dose, frequency')}</small></button>
     </div>
     <h3>${L('หรือเลือกจากรายการ', 'Or pick from the list')}</h3>
@@ -80,15 +81,16 @@ let pendingPhoto = null;
 actions['sp-photo'] = async () => {
   const files = await pickFiles({ accept: 'image/*', multiple: true });
   if (!files.length) return;
-  const blobs = await Promise.all(files.slice(0, 3).map((f) => compressImage(f, 1600, 0.85)));
+  const blobs = await Promise.all(files.slice(0, 3).map((f) => compressImage(f, 1024, 0.8, true))).catch(()=>null);
+  if(!blobs)return toast(L('????????????????????','Could not resize image'),'warn');
   const photoId = 'sp-' + uid();
   await putImage(photoId, blobs[0]);
   pendingPhoto = { photoId, blobs };
   const url = await imageURL(photoId);
-  const aiOk = hasPro() && !isDemo();
+  const aiOk = !isDemo();
   sheet(`<div class="sheet-head"><h2>${L('รูปฉลาก', 'Label photo')}</h2><button class="icon-btn" data-close>${icon('x')}</button></div>
     <div class="photo-prev" style="background-image:url(${url})"></div>
-    <button class="btn primary block" data-act="sp-ai" ${aiOk ? '' : 'disabled'}>${icon('spark', 18)} ${L('ให้ AI อ่านฉลาก', 'Read label with AI')}</button>
+    <button class="btn primary block" data-act="sp-ai" ${aiOk ? '' : 'disabled'}>${icon('spark', 18)} ${L('ให้ AI อ่านฉลาก', 'Read label with AI')} ${creditCost('labelRead')}</button>
     ${!aiOk ? `<p class="muted sm center">${isDemo() ? L('AI ต้องเชื่อมต่อเซิร์ฟเวอร์ (ตั้งค่า API_BASE)', 'AI needs the API server (set API_BASE)') : L('ฟีเจอร์ AI สำหรับสมาชิก Pro', 'AI reading is a Pro feature')}</p>` : ''}
     <h3>${L('หรือเลือกว่าเป็นผลิตภัณฑ์ไหน', 'Or match it to a product')}</h3>
     <div class="cat-list">${CATALOG.map((c) => `<button class="cat-item" data-act="sp-match" data-id="${c.id}"><span class="dot lg" style="background:${c.color}"></span><div><b>${esc(L(c.name))}</b></div>${icon('check', 18)}</button>`).join('')}
@@ -96,6 +98,7 @@ actions['sp-photo'] = async () => {
 };
 actions['sp-match'] = (el) => addSupp(el.dataset.id, { photoId: pendingPhoto?.photoId });
 actions['sp-ai'] = async (el) => {
+  if(!await requireCredits('labelRead'))return;
   el.disabled = true;
   el.innerHTML = `<span class="spin"></span> ${L('กำลังอ่านฉลาก...', 'Reading label...')}`;
   try {

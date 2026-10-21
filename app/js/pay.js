@@ -1,9 +1,10 @@
+import { aiRequest } from './ai-credits.js';
 import { installId } from './install-id.js';
 import { api as accountAPI } from './account.js';
 import { track } from './telemetry.js';
 // Payments (PromptPay slip via Thunder API, Stripe Checkout) and entitlements.
 import { CONFIG, isDemo } from './config.js';
-import { getState, setState, blobToBase64 } from './store.js';
+import { getState, setState, blobToBase64, compressImage } from './store.js';
 
 export const hasPro = () => { const u = getState().premium.until; return !!u && new Date(u) > new Date(); };
 export const canExport = () => hasPro() || getState().premium.exportsLeft > 0;
@@ -26,16 +27,6 @@ export function applyEntitlement(ent, token, method) {
   });
 }
 
-async function api(path, opts = {}) {
-  const res = await fetch(CONFIG.API_BASE.replace(/\/$/, '') + path, {
-    ...opts,
-    headers: { 'Content-Type': 'application/json', ...(getState().premium.token ? { Authorization: 'Bearer ' + getState().premium.token } : {}), ...(opts.headers || {}) },
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok || data.ok === false) throw new Error(data.error || `HTTP ${res.status}`);
-  return data;
-}
-
 export async function verifySlip(pid, blob, quote) {
   if (isDemo()) {
     await new Promise((r) => setTimeout(r, 1200));
@@ -45,7 +36,7 @@ export async function verifySlip(pid, blob, quote) {
   const image = await blobToBase64(blob);
   quote ||= await createQuote(pid,'thb');
   const data = await accountAPI('slip/verify',{orderId:quote.orderId,image});
-  if(data.entitlement)applyEntitlement(data.entitlement, data.token, 'promptpay');
+  if(data.entitlement&&!data.topup)applyEntitlement(data.entitlement, data.token, 'promptpay');
   track('purchase_completed');
   return data;
 }
@@ -71,7 +62,7 @@ export async function handleStripeReturn() {
   history.replaceState(null, '', location.pathname + location.hash);
   if (getState().payments.some((p) => p.ref === sid)) return null;
   const data = await accountAPI('stripe/confirm?session_id=' + encodeURIComponent(sid));
-  if(data.entitlement)applyEntitlement({ ...data.entitlement, ref: sid }, data.token, 'stripe');
+  if(data.entitlement&&!data.topup)applyEntitlement({ ...data.entitlement, ref: sid }, data.token, 'stripe');
   if(data.planId)location.hash='#/plans';
   track('purchase_completed');
   return data;
@@ -79,8 +70,8 @@ export async function handleStripeReturn() {
 
 export async function analyzeLabel(blobs) {
   if (isDemo()) throw new Error('demo');
-  const images = await Promise.all(blobs.map(async (b) => ({ data: await blobToBase64(b), media_type: 'image/jpeg' })));
-  const data = await api('/api/label/analyze', { method: 'POST', body: JSON.stringify({ images, lang: getState().lang }) });
+  const images = await Promise.all(blobs.map(async (b) => ({ data: await blobToBase64(await compressImage(b,1024,0.8,true)), media_type: 'image/jpeg' })));
+  const data = await aiRequest('label/analyze', { images, lang: getState().lang });
   track('ai_used');
   return data.product;
 }
@@ -124,10 +115,10 @@ export async function qrSVG(text) {
 
 export async function askCoach(kind, input) {
   if (isDemo()) throw new Error('AI requires a configured API');
-  const data = await api('/api/ai/' + kind, { method: 'POST', body: JSON.stringify({...input,lang:getState().lang}) });
+  const data = await aiRequest('ai/' + kind, {...input,lang:getState().lang});
   track('ai_used');
   return data.review;
 }
 
-export async function createQuote(productId,currency,promo=''){const r=await accountAPI('quote',{productId,currency,installId:installId(),...(promo?{promo}: {})});track('purchase_started');return r;}
-export async function claimQuote(quote){const r=await accountAPI('orders/claim',{orderId:quote.orderId});if(r.entitlement)applyEntitlement(r.entitlement,r.token,'promo');track('purchase_completed');return r;}
+export async function createQuote(productId,currency,promo=''){const r=await accountAPI('quote',{productId,currency,installId:installId(),...(!getState().account?.token&&getState().premium.token?{entitlementToken:getState().premium.token}:{}),...(promo?{promo}: {})});track('purchase_started');return r;}
+export async function claimQuote(quote){const r=await accountAPI('orders/claim',{orderId:quote.orderId});if(r.entitlement&&!r.topup)applyEntitlement(r.entitlement,r.token,'promo');track('purchase_completed');return r;}

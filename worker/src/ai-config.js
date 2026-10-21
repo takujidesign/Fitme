@@ -1,0 +1,7 @@
+﻿import { z } from 'zod/v4';
+export const MODELS=['claude-opus-5-5','claude-sonnet-5-5','claude-haiku-5-5'];
+export const FEATURES=['chat','chatSuggestions','mealPhoto','bodyReview','planReview','labelRead'];
+const feature=z.object({model:z.enum(MODELS),effort:z.enum(['low','medium','high']),maxTokens:z.number().int().min(128).max(16000)}).strict();
+export const AIConfig=z.object({...Object.fromEntries(FEATURES.map(k=>[k,feature])),prices:z.object({chat:z.number().int().min(0).max(1000),labelRead:z.number().int().min(0).max(1000),planReview:z.number().int().min(0).max(1000),mealPhoto:z.number().int().min(0).max(1000),bodyReview:z.number().int().min(0).max(1000)}).strict(),credits:z.object({trial:z.number().int().min(0).max(10000),period:z.number().int().min(0).max(10000),topup:z.number().int().min(1).max(10000),topupDays:z.number().int().min(1).max(365)}).strict(),thbRate:z.number().positive().max(1000)}).strict();
+export const AI_DEFAULTS=AIConfig.parse({...Object.fromEntries(FEATURES.map((k,i)=>[k,{model:MODELS[['chatSuggestions','labelRead'].includes(k)?2:1],effort:k==='bodyReview'?'medium':'low',maxTokens:[1200,600,2500,2500,2500,4000][i]}])),prices:{chat:1,labelRead:1,planReview:2,mealPhoto:3,bodyReview:3},credits:{trial:10,period:60,topup:40,topupDays:90},thbRate:34});
+export function aiConfig(saved){return AIConfig.parse({...AI_DEFAULTS,...saved,prices:{...AI_DEFAULTS.prices,...saved?.prices},credits:{...AI_DEFAULTS.credits,...saved?.credits}});}

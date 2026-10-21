@@ -7,7 +7,9 @@ export const CONFIG = {
   // PromptPay receiver (mobile number 0812345678 or 13-digit tax ID). Used to build the payment QR.
   PROMPTPAY_ID: '0812345678',
   PROMPTPAY_NAME: 'Fixmee',
+  AI: { prices:{chat:1,labelRead:1,planReview:2,mealPhoto:3,bodyReview:3}, credits:{trial:10,period:60,topup:40,topupDays:90} },
   PRODUCTS: {
+    credits40: {thb:49,usd:1.49,days:0,exports:0,th:'เติมเครดิต AI',en:'AI credit top-up',descTh:'เครดิต AI เพิ่มเติม',descEn:'Extra AI credits'},
     export1: { thb: 49, usd: 1.49, days: 0, exports: 1, th: 'ดาวน์โหลดแผน 1 ครั้ง', en: 'One plan download',
       descTh: 'PDF + ปฏิทินแจ้งเตือน (.ics) ของแผนปัจจุบัน', descEn: 'PDF + calendar reminders (.ics) of your current plan' },
     pro30: { thb: 99, usd: 2.99, days: 30, exports: 99, th: 'Fixmee Pro 30 วัน', en: 'Fixmee Pro · 30 days',
@@ -23,6 +25,7 @@ export const isDemo = () => !CONFIG.API_BASE;
 
 const fields = { promptpayId: 'PROMPTPAY_ID', promptpayName: 'PROMPTPAY_NAME', receiverName: 'RECEIVER_NAME', products: 'PRODUCTS', freePlanDays: 'FREE_PLAN_DAYS', freeSupplements: 'FREE_SUPPLEMENTS' };
 export function mergeConfig(config) {
+  if(config.ai)CONFIG.AI=config.ai;
   for(const [k,v] of Object.entries({contactEmail:'CONTACT_EMAIL',referralDays:'REFERRAL_DAYS',trainerShare:'TRAINER_SHARE'}))if(config[k]!==undefined)CONFIG[v]=config[k];
   if (config.vapidPublicKey !== undefined) CONFIG.VAPID_PUBLIC_KEY = config.vapidPublicKey;
   for (const [key, target] of Object.entries(fields)) if (config[key] !== undefined) CONFIG[target] = config[key];

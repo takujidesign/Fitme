@@ -1,3 +1,4 @@
+import { aiConfig } from './ai-config.js';
 import { variantFor } from './growth.js';
 import { z } from 'zod/v4';
 import { admin, input, fail, hash } from './security.js';
@@ -5,7 +6,7 @@ import { user, query as q, serverState } from './accounts.js';
 import { EX } from '../../app/js/exercises.js';
 
 const code = z.string().trim().toUpperCase().regex(/^[A-Z0-9_-]{3,32}$/);
-const pid = z.string().regex(/^(export1|pro30|pro90|plan_[a-f0-9-]{36})$/);
+const pid = z.string().regex(/^(export1|credits40|pro30|pro90|plan_[a-f0-9-]{36})$/);
 const uuid = z.string().uuid();
 export const Promo = z.object({code, type:z.enum(['percent','fixed']), value:z.number().positive().max(100000), currency:z.enum(['thb','usd']), products:z.array(pid).min(1).max(100), maxUses:z.number().int().positive().max(1000000), expiry:z.number().int().positive(), active:z.boolean()}).strict().refine(p=>p.type!=='percent'||p.value<=100);
 export function discounted(amount, promo, product, currency, now=Date.now()) {
@@ -22,7 +23,7 @@ const optionalUser = async(req,env)=>/^Bearer\s+\S+/.test(req.headers.get('Autho
 
 export async function accountData(req,env) {
   const u=await user(req,env);
-  if(req.method==='GET') return {user:await q(env,'SELECT id,email,role,created_at,referral_code,pro_until FROM users WHERE id=?',u.id).first(),sessions:await rows(env,'SELECT expires_at FROM sessions WHERE user_id=?',u.id),invites:await rows(env,'SELECT * FROM invites WHERE client_id=?',u.id),trainerAccount:await q(env,'SELECT stripe_id FROM trainer_accounts WHERE user_id=?',u.id).first(),payables:await rows(env,'SELECT * FROM payables WHERE trainer_id=?',u.id),state:await serverState(env,u.id),payments:await rows(env,'SELECT * FROM payments WHERE user_id=?',u.id),links:await rows(env,'SELECT * FROM trainer_links WHERE trainer_id=? OR client_id=?',u.id,u.id),notes:await rows(env,'SELECT * FROM notes WHERE trainer_id=? OR client_id=?',u.id,u.id),referrals:await rows(env,'SELECT * FROM referrals WHERE user_id=? OR referrer_id=?',u.id,u.id),plans:await rows(env,'SELECT * FROM plans WHERE trainer_id=?',u.id),purchases:await rows(env,'SELECT * FROM plan_purchases WHERE user_id=?',u.id),push:await rows(env,'SELECT device_id FROM push_subscriptions WHERE user_id=?',u.id)};
+  if(req.method==='GET') return {aiUsage:await rows(env,'SELECT feature,model,input_tokens,output_tokens,cache_read,cache_write,cost_usd,credits,created FROM ai_usage WHERE owner=?',u.id),user:await q(env,'SELECT id,email,role,created_at,referral_code,pro_until FROM users WHERE id=?',u.id).first(),sessions:await rows(env,'SELECT expires_at FROM sessions WHERE user_id=?',u.id),invites:await rows(env,'SELECT * FROM invites WHERE client_id=?',u.id),trainerAccount:await q(env,'SELECT stripe_id FROM trainer_accounts WHERE user_id=?',u.id).first(),payables:await rows(env,'SELECT * FROM payables WHERE trainer_id=?',u.id),state:await serverState(env,u.id),payments:await rows(env,'SELECT * FROM payments WHERE user_id=?',u.id),links:await rows(env,'SELECT * FROM trainer_links WHERE trainer_id=? OR client_id=?',u.id,u.id),notes:await rows(env,'SELECT * FROM notes WHERE trainer_id=? OR client_id=?',u.id,u.id),referrals:await rows(env,'SELECT * FROM referrals WHERE user_id=? OR referrer_id=?',u.id,u.id),plans:await rows(env,'SELECT * FROM plans WHERE trainer_id=?',u.id),purchases:await rows(env,'SELECT * FROM plan_purchases WHERE user_id=?',u.id),push:await rows(env,'SELECT device_id FROM push_subscriptions WHERE user_id=?',u.id)};
   if(req.method!=='DELETE')throw fail('Method not allowed',405);
   const b=await input(req,z.object({email:z.string().email()}).strict());
   if(b.email.trim().toLowerCase()!==u.email)throw fail('Type your email to confirm');
@@ -30,6 +31,7 @@ export async function accountData(req,env) {
   for(const d of await rows(env,'SELECT device_id FROM push_subscriptions WHERE user_id=?',u.id))await env.PUSH?.delete('device:'+d.device_id);
   const anon=await hash(crypto.randomUUID());
   await env.DB.batch([
+    ...['ai_credits','ai_topups','ai_usage','ai_reservations','ai_limits','ai_events','ai_periods'].map(t=>q(env,`DELETE FROM ${t} WHERE owner=?`,u.id)),
     q(env,'UPDATE payments SET user_id=? WHERE user_id=?',anon,u.id),
     q(env,'UPDATE payables SET trainer_id=? WHERE trainer_id=?',anon,u.id),
     q(env,'DELETE FROM plan_purchases WHERE user_id=? OR plan_id IN (SELECT id FROM plans WHERE trainer_id=?)',u.id,u.id),
@@ -71,8 +73,8 @@ export async function referral(req,env) {
   return {...await q(env,'SELECT referral_code AS code,pro_until FROM users WHERE id=?',u.id).first(),...await q(env,'SELECT count(*) AS count FROM referrals WHERE referrer_id=? AND rewarded=1',u.id).first()};
 }
 
-export async function quote(req,env,readConfig) {
-  const b=await input(req,z.object({productId:pid,currency:z.enum(['thb','usd']),promo:code.optional(),installId:z.string().uuid().optional()}).strict());
+export async function quote(req,env,readConfig,verifyToken) {
+  const b=await input(req,z.object({productId:pid,currency:z.enum(['thb','usd']),promo:code.optional(),installId:z.string().uuid().optional(),entitlementToken:z.string().max(4096).optional()}).strict());
   const u=await optionalUser(req,env),settings=await readConfig(env),config=await business(env);
   let product=settings.products[b.productId],trainer=null;
   if(b.productId.startsWith('plan_')) {if(!u)throw fail('Please log in to buy a plan',401);const p=await q(env,"SELECT * FROM plans WHERE id=? AND status='approved'",b.productId).first();if(!p)throw fail('Plan unavailable');product=JSON.parse(p.json);trainer=p.trainer_id;if(trainer===u.id)throw fail('Cannot buy your own plan');}
@@ -81,10 +83,13 @@ export async function quote(req,env,readConfig) {
   const variant=b.installId?await variantFor(env,b.installId,b.productId):null;if(variant)product={...product,thb:variant.thb,usd:variant.usd};
   let promo=null;
   if(b.promo){const row=await q(env,'SELECT * FROM promos WHERE code=?',b.promo).first();if(!row)throw fail('Unknown promo');promo=JSON.parse(row.json);}
+  let wallet=u?.id||null;
+  if(!u&&b.entitlementToken){let ent;try{ent=await verifyToken(env,b.entitlementToken);}catch{}if(!ent?.ref)throw fail('Invalid purchase token',401);const prior=await q(env,'SELECT payments.id,payments.user_id,orders.ai_owner FROM payments JOIN orders ON payments.id=orders.id WHERE payments.ref=?',ent.ref).first();if(!prior||prior.user_id)throw fail('Please sign in',401);wallet=prior.ai_owner||'purchase:'+prior.id;}
   const amount=discounted(Math.round(product[b.currency]*100),promo,b.productId,b.currency),id=crypto.randomUUID(),now=Date.now();
   // Atomic reservation prevents two buyers from taking the final promo use.
   const result=await q(env,`INSERT INTO orders(id,user_id,product,amount,currency,promo,trainer_id,share,days,created_at,expires_at) SELECT ?,?,?,?,?,?,?,?,?,?,? WHERE ? IS NULL OR (SELECT uses+(SELECT count(*) FROM orders WHERE promo=? AND paid=0 AND expires_at>?) FROM promos WHERE code=?) < ?`,id,u?.id||null,b.productId,amount,b.currency,b.promo||null,trainer,config.trainerShare,product.days||0,now,now+60*60000,b.promo||null,b.promo||null,now,b.promo||null,promo?.maxUses||0).run();
   if(!result.meta.changes)throw fail('Promo usage limit reached');
+  await q(env,'UPDATE orders SET ai_owner=?,ai_credits=?,ai_valid_days=? WHERE id=?',wallet||'purchase:'+id,settings.ai.credits.topup,settings.ai.credits.topupDays,id).run();
   if(variant){await q(env,'UPDATE orders SET experiment=?,variant=? WHERE id=?',variant.experiment,variant.variant,id).run();if(variant.active)await q(env,"INSERT OR IGNORE INTO experiment_events VALUES(?,?,?,'checkout')",variant.experiment,variant.variant,await hash(b.installId)).run();}
   return {orderId:id,amount:amount/100,currency:b.currency,expiresAt:now+60*60000};
 }
@@ -117,6 +122,8 @@ export async function recordPayment(env,o,method,ref) {
   const statements=[q(env,'INSERT INTO payments(id,user_id,product,amount,currency,method,ref,promo,created_at) SELECT id,user_id,product,amount,currency,?,?,promo,? FROM orders WHERE id=? AND paid=0 ON CONFLICT DO NOTHING',method,ref,now,o.id)];
   const pending='EXISTS(SELECT 1 FROM payments JOIN orders ON payments.id=orders.id WHERE payments.id=? AND orders.paid=0)';
   statements.push(q(env,`UPDATE promos SET uses=uses+1 WHERE code=? AND ${pending}`,o.promo,o.id));
+  if(o.product==='credits40'){const ai=aiConfig((await env.CONFIG?.get('settings','json'))?.ai);statements.push(q(env,`INSERT OR IGNORE INTO ai_topups SELECT ?,?,?,0,? WHERE ${pending}`,o.id,o.ai_owner||o.user_id||'purchase:'+o.id,o.ai_credits??ai.credits.topup,new Date(now+(o.ai_valid_days??ai.credits.topupDays)*86400000).toISOString(),o.id));}
+  if(o.days>0)statements.push(q(env,`INSERT OR IGNORE INTO ai_periods SELECT ?,? WHERE ${pending}`,o.ai_owner||o.user_id||'purchase:'+o.id,now,o.id));
   if(o.user_id){
     statements.push(q(env,`UPDATE users SET pro_until=MAX(pro_until,?)+? WHERE id=? AND ${pending}`,now,o.days*86400000,o.user_id,o.id));
     // A referral is rewarded only at the referred user's first verified purchase.
@@ -146,8 +153,12 @@ export async function slipPayment(req,env,verify,issue) {
 }
 async function paymentResult(env,o,payment,issue) {
   if(o.trainer_id)return {planId:o.product};
+  if(o.product==='credits40'&&!o.user_id&&o.ai_owner?.startsWith('purchase:')&&o.ai_owner!=='purchase:'+o.id){
+    const prior=await q(env,'SELECT payments.*,orders.days FROM payments JOIN orders ON payments.id=orders.id WHERE payments.id=?',o.ai_owner.slice(9)).first();
+    if(prior)return {...await issue(env,prior.product,prior.ref,{until:prior.days?new Date(prior.created_at+prior.days*86400000).toISOString():null}),topup:true};
+  }
   const u=o.user_id?await q(env,'SELECT pro_until FROM users WHERE id=?',o.user_id).first():null;
-  return issue(env,o.product,payment.ref,{days:o.days,until:o.days?new Date(u?.pro_until||payment.created_at+o.days*86400000).toISOString():null});
+  return issue(env,o.product,payment.ref,{ownerId:o.ai_owner,days:o.days,until:o.days?new Date(u?.pro_until||payment.created_at+o.days*86400000).toISOString():null});
 }
 
 const training=z.object({goal:z.enum(['cut','recomp','maintain','bulk','strength']),level:z.enum(['beginner','intermediate','advanced']),location:z.enum(['home','db','gym']),trainDays:z.array(z.number().int().min(0).max(6)).min(1).max(7),sessionMin:z.number().int().min(15).max(120),avoidEx:z.array(z.enum(Object.keys(EX))).max(100).default([])}).strict();

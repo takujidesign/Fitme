@@ -1,3 +1,4 @@
+import { creditCost } from '../ai-credits.js';
 import { slot } from '../slots.js';
 import { foodWarnings } from '../conditions.js';
 import { fastingFields, eatingWindow, inWindow } from '../fasting.js';
@@ -41,7 +42,7 @@ views.food = ({ params }) => {
       <ul class="food-chips">${m.items.map((it) => { const f = FOOD[it.id]; return `<li><span class="fcat ${f.cat}"></span>${esc(L(f))} <b>${it.g}g</b> <small>${esc(unitText(f, it.g, lang))}</small></li>`; }).join('')}</ul>
       <p class="note">${[...new Set(m.items.flatMap(it=>foodWarnings(p,FOOD[it.id]).map(L)))].map(esc).join(' · ')}</p><div class="meal-mac"><span>P ${m.total.p}g</span><span>C ${m.total.c}g</span><span>F ${m.total.f}g</span>${log.done['meal-' + m.key] ? `<span class="ok">${icon('check', 14)} ${L('ทานแล้ว', 'Eaten')}</span>` : ''}</div>
     </article>`).join('')}
-    <section class="card"><h2>${L('AI โค้ช', 'AI coach')}</h2><p class="muted sm">${L('ทบทวนอาหารและอาหารเสริมวันนี้ (Pro)', "Review today's meals and supplements (Pro)")}</p><button class="btn primary" data-act="ai-plan">${L('ทบทวนแผนวันนี้', "Review today's plan")}</button></section>
+    <section class="card"><h2>${L('AI โค้ช', 'AI coach')}</h2><p class="muted sm">${L('ทบทวนอาหารและอาหารเสริมวันนี้ (Pro)', "Review today's meals and supplements (Pro)")}</p><button class="btn primary" data-act="ai-plan">${L('ทบทวนแผนวันนี้', "Review today's plan")} ${creditCost('planReview')}</button></section>
     <div class="tips card soft"><b>${icon('info', 16)} ${L('เคล็ดลับ', 'Tips')}</b><ul>
       <li>${L('ชั่งอาหารสุก 1-2 สัปดาห์แรก จะกะปริมาณได้แม่นขึ้น', 'Weigh cooked food for 1-2 weeks to learn portions')}</li>
       <li>${L('ปรุงด้วยการต้ม นึ่ง ย่าง อบ ลดน้ำมัน น้ำตาล และโซเดียม', 'Boil, steam, grill or bake; go easy on oil, sugar and salt')}</li>

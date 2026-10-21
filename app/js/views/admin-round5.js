@@ -1,3 +1,4 @@
+import { renderAdminAI } from './admin-ai.js';
 import { adminToken, adminFetch } from '../admin-session.js';
 import './admin.js';
 import { views, actions } from '../core.js';
@@ -6,7 +7,7 @@ import { CONFIG, mergeConfig } from '../config.js';
 import { EXERCISES } from '../exercises.js';
 import { L, esc, toast } from '../ui.js';
 const original=views.admin,mount=original.mount;
-const tabs=[['overview','ภาพรวม','Overview'],['settings','การตั้งค่า','Settings'],['keys','คีย์ API','API keys'],['promos','โค้ดส่วนลด','Promos'],['trainers','เทรนเนอร์','Trainers'],['errors','ข้อผิดพลาด','Errors'],['videos','วิดีโอท่า','Exercise videos']];
+const tabs=[['ai','AI','AI'],['overview','ภาพรวม','Overview'],['settings','การตั้งค่า','Settings'],['keys','คีย์ API','API keys'],['promos','โค้ดส่วนลด','Promos'],['trainers','เทรนเนอร์','Trainers'],['errors','ข้อผิดพลาด','Errors'],['videos','วิดีโอท่า','Exercise videos']];
 views.admin=r=>`<nav class="chips scroll" aria-label="Admin">${tabs.map(([id,th,en])=>`<button class="chip" data-act="admin-tab" data-id="${id}">${L(th,en)}</button>`).join('')}</nav>${original(r)}<section class="card" id="round5-admin"><p>${L('เลือกแท็บเพื่อโหลดข้อมูล','Select a tab to load data')}</p></section>`;
 views.admin.mount=root=>{mount(root);root.querySelector('#admin-form').hidden=true;root.querySelector('#admin-key-settings').hidden=true;};
 const adminAPI=(path,body,method)=>api('admin/'+path,body,method,adminToken());
@@ -16,6 +17,7 @@ const btn=(act,th,en)=>`<button class="btn primary" data-act="${act}">${L(th,en)
 export function revenueChart(rows,currency){const values=Array.from({length:30},(_,i)=>{const day=new Date(Date.now()-(29-i)*86400000).toISOString().slice(0,10);return {day,amount:rows.find(r=>r.currency===currency&&r.day===day)?.amount||0};});const max=Math.max(1,...values.map(v=>v.amount));return `<h3>${currency.toUpperCase()}</h3><svg viewBox="0 0 300 110" role="img" aria-label="${currency.toUpperCase()} revenue, last 30 days">${values.map((v,i)=>`<rect x="${i*10}" y="${100-v.amount/max*95}" width="8" height="${v.amount/max*95}" fill="currentColor"><title>${v.day}: ${(v.amount/100).toFixed(2)} ${currency.toUpperCase()}</title></rect>`).join('')}</svg>`;}
 let lastTab='overview';
 actions['admin-tab']=guard(async el=>{lastTab=el.dataset.id;const host=document.getElementById('round5-admin');host.innerHTML='';document.getElementById('admin-form').hidden=lastTab!=='settings';document.getElementById('admin-key-settings').hidden=lastTab!=='keys';
+ if(lastTab==='ai'){await renderAdminAI(host);return;}
  if(lastTab==='keys')return;
  if(lastTab==='settings'){host.innerHTML=field('contact','Contact email','email',CONFIG.CONTACT_EMAIL)+field('reward',L('วัน Pro ต่อการแนะนำ','Referral Pro days'),'number',CONFIG.REFERRAL_DAYS)+field('share',L('ส่วนแบ่งเทรนเนอร์ %','Trainer share %'),'number',CONFIG.TRAINER_SHARE)+btn('business-save','บันทึกเพิ่มเติม','Save business settings');return;}
  if(lastTab==='overview'||lastTab==='errors'){const d=await adminAPI('dashboard');host.innerHTML=lastTab==='errors'?`<h2>${L('ข้อผิดพลาด 20 อันดับ','Top 20 errors')}</h2>${d.errors.map(e=>`<p>${esc(e.message)} · ${esc(e.route)} · ${esc(e.version)} × ${e.count}</p>`).join('')}`:`<h2>${L('สมาชิก','Members')}: ${d.members.total}</h2><p>7d: ${d.members.new7||0} · 30d: ${d.members.new30||0} · ${L('เทรนเนอร์','Trainers')}: ${d.members.trainers||0} · Pro: ${d.members.pro||0}</p><p>${L('สมัคร → ซื้อ','Signup → purchase')}: ${d.members.total?Math.round(d.conversion.buyers/d.members.total*100):0}%</p>${revenueChart(d.revenue,'thb')}${revenueChart(d.revenue,'usd')}<h3>${L('ยอดขายตามสินค้าและวิธีชำระ','Sales by product and method')}</h3>${d.sales.map(s=>`<p>${esc(s.product)} · ${esc(s.method)} · ${s.count} · ${(s.amount/100).toFixed(2)} ${s.currency.toUpperCase()}</p>`).join('')}<h3>${L('เหตุการณ์ / AI (เฉพาะผู้ยินยอมสถิติ)','Events / AI (telemetry opted in)')}</h3>${d.events.map(e=>`<p>${esc(e.name)}: ${e.count}</p>`).join('')}`;return;}

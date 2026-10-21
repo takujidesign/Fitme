@@ -17,7 +17,7 @@ views.pay = () => {
   return `<header class="top"><button class="icon-btn" data-act="pay-back">${icon('back')}</button><div class="grow"><small class="muted">Fixmee Pro</small><h1>${L('เลือกแพ็กเกจ', 'Choose a plan')}</h1></div></header>
     ${isDemo() ? `<p class="note warn">${icon('info', 16)} ${L('โหมดทดลอง: ยังไม่ได้เชื่อมต่อเซิร์ฟเวอร์ชำระเงิน การจ่ายจะเป็นการจำลอง', 'Demo mode: no payment server configured, payments are simulated')}</p>` : ''}
     ${hasPro() ? `<p class="note">${icon('check', 16)} ${L('คุณเป็นสมาชิก Pro อยู่แล้ว ซื้อเพิ่มเพื่อต่ออายุ', 'You are already Pro; buying again extends it')}</p>` : ''}
-    <ul class="perks">${[
+    <p class="note">${L('การสร้างแผน ออกกำลังกาย แผนอาหาร และตารางอาหารเสริมคำนวณในเครื่องได้ไม่จำกัด เฉพาะฟีเจอร์ AI ใช้เครดิต','Plan generation, workouts, meal plans and supplement schedules run on your device without limits. Only AI features use credits.')}</p><p>${L('เครดิตทดลองครั้งเดียวเมื่อเข้าสู่ระบบ','One-time trial credits when signed in')}: ✦ ${CONFIG.AI.credits.trial}</p><ul class="perks">${[
       ['cal', L('แผนออกกำลังกาย + อาหาร ครบทุกวัน 7-90 วัน', 'Full training + meal plan, 7-90 days')],
       ['pill', L('อาหารเสริมไม่จำกัด + AI อ่านฉลากให้', 'Unlimited supplements + AI label reading')],
       ['download', L('ดาวน์โหลด PDF และปฏิทินแจ้งเตือน', 'PDF + calendar reminder downloads')],
@@ -25,7 +25,7 @@ views.pay = () => {
     ].map(([i, t]) => `<li>${icon(i, 18)} ${t}</li>`).join('')}</ul>
     <div class="plans">${prods.map(([id, p]) => `<button class="plan ${sel === id ? 'on' : ''}" data-act="pay-sel" data-v="${id}">
       ${p.best ? `<span class="best">${L('คุ้มสุด', 'Best value')}</span>` : ''}<b>${L(p.th, p.en)}</b><small>${L(p.descTh, p.descEn)}</small>
-      <em>${th ? `฿${p.thb}` : `$${p.usd}`}</em></button>`).join('')}</div>
+      <small>${id==='credits40'?`✦ ${CONFIG.AI.credits.topup} · ${CONFIG.AI.credits.topupDays} ${L('วัน','days')}`:id.startsWith('pro')?`✦ ${CONFIG.AI.credits.period} / 30 ${L('วัน','days')}`:`✦ 0`}</small><em>${th ? `฿${p.thb}` : `$${p.usd}`}</em></button>`).join('')}</div>
     ${legalLinks()}<label class="field">${L('โค้ดส่วนลด','Promo code')}<input id="pay-promo" maxlength="32" value="${esc(promo)}"></label><button class="btn ghost" data-act="pay-quote">${L('ใช้โค้ด / ยืนยันราคา','Apply code / confirm price')}</button>
     <h3>${L('ชำระเงินด้วย', 'Pay with')}</h3>
     <div class="methods">

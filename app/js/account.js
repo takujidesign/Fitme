@@ -8,7 +8,7 @@ export async function api(path, body, method = body === undefined ? 'GET' : 'POS
   if (!CONFIG.API_BASE) throw Error(L('ต้องตั้งค่าเซิร์ฟเวอร์ก่อน ใช้งานในเครื่องได้ตามปกติ','Configure a server first. Local use remains available.'));
   const res = await (path.startsWith('admin/') ? adminFetch : fetch)(CONFIG.API_BASE.replace(/\/$/,'') + '/api/' + path, { method, headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})}, body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(30000) });
   const data = await res.json();
-  if(!res.ok) throw Object.assign(Error(data.error || 'Request failed'),{status:res.status,server:data.server});
+  if(!res.ok) throw Object.assign(Error(data.error || 'Request failed'),{status:res.status,server:data.server,code:data.code});
   return data;
 }
 let running=false, timer, applying=false;
