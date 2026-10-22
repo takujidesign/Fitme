@@ -37,6 +37,7 @@ export async function social(req,env,path){
  if(path==='/api/conversations/socket'){
   const ticket=url.searchParams.get('ticket');if(!/^[a-f0-9]{64}$/.test(ticket||''))throw fail('Invalid ticket',401);
   const key='chat-ticket:'+await hash(ticket),t=await env.CONFIG.get(key,'json');if(!t||t.expires<now)throw fail('Expired ticket',401);await env.CONFIG.delete(key);
+  if((await q(env,'SELECT suspended FROM profiles WHERE user_id=?',t.user).first())?.suspended)throw fail('Account suspended',403);
   await member(env,t.conversation,t.user);if(!env.CONVERSATIONS)throw fail('Realtime unavailable',503);
   const stub=env.CONVERSATIONS.get(env.CONVERSATIONS.idFromName(t.conversation));return stub.fetch(new Request('https://conversation/socket',{headers:{Upgrade:'websocket','X-Conversation':t.conversation,'X-User':t.user}}));
  }

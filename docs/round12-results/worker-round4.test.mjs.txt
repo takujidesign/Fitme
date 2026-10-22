@@ -1,0 +1,1 @@
+﻿PASS Round 4 encryption/redaction/precedence/delete; auth/hash/rate limit/logout; SQLite sync CAS/concurrent conflict/size/entitlement; trainer permissions/invite/notes/unlink; chat caps and mocked structured suggestions.

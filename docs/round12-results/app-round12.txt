@@ -1,0 +1,1 @@
+﻿PASS Round 12 screen DOM, escaping, language gates, mocked actions, CSP/SW; first-load static JS 331640 bytes gzip (109 modules). HTML fixtures saved, not browser screenshots.

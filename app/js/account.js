@@ -1,3 +1,4 @@
+import {challenge} from './turnstile.js';
 import { adminFetch } from './admin-session.js';
 import { consentCurrent } from './legal.js';
 import { getState, setState, subscribe } from './store.js';
@@ -7,7 +8,8 @@ import { L, toast } from './ui.js';
 import {friendlyError} from './errors.js';
 export async function api(path, body, method = body === undefined ? 'GET' : 'POST', token = getState().account?.token) {
   if (!CONFIG.API_BASE) throw Error(L('ต้องตั้งค่าเซิร์ฟเวอร์ก่อน ใช้งานในเครื่องได้ตามปกติ','Configure a server first. Local use remains available.'));
-  const res = await (path.startsWith('admin/') ? adminFetch : fetch)(CONFIG.API_BASE.replace(/\/$/,'') + '/api/' + path, { method, headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})}, body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(30000) }).catch(error=>{error.message=friendlyError(error);throw error;});
+  const captcha=method==='POST'&&['auth/register','auth/forgot','ideas','reports'].includes(path)?await challenge():'';
+  const res = await (path.startsWith('admin/') ? adminFetch : fetch)(CONFIG.API_BASE.replace(/\/$/,'') + '/api/' + path, { method, headers:{'Content-Type':'application/json',...(captcha?{'X-Turnstile-Token':captcha}:{}),...(token?{Authorization:'Bearer '+token}:{})}, body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(30000) }).catch(error=>{error.message=friendlyError(error);throw error;});
   const data = await res.json();
   if(!res.ok) throw Object.assign(Error(res.status===401||res.status>=500?friendlyError({status:res.status,message:'server'}):data.error || 'Request failed'),{status:res.status,server:data.server,code:data.code});
   return data;
@@ -49,6 +51,7 @@ export function startAccountSync() {
 export async function signIn(mode,email,password) {
   const ref=localStorage.getItem('fitme:ref');
   const result=await api('auth/'+mode,{email,password,...(mode==='register'?{age16:true,...(ref?{ref}:{})}:{})});
+  if(!result.token){toast(result.message);return;}
   if(mode==='register')localStorage.removeItem('fitme:ref');
   setState(s=>{s.socialProfile=null;s.account={token:result.token,user:result.user,version:0,lastSync:0,error:''};},{remote:true});
   await syncNow();

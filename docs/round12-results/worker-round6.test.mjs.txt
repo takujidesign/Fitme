@@ -1,0 +1,1 @@
+﻿PASS admin public config, hashed session TTL, missing/wrong/password/expired/revoked rejection and login rate limit

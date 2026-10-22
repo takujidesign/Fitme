@@ -1,0 +1,122 @@
+﻿[
+    {
+        "suite":  "tests/poses.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round10.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round11.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round12.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round3.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round4-ui.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round4.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round5.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round5b.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round5c.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round6-offline.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round6.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round7.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round8.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/round9.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/settings.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "tests/ui-test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/round10.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/round11-realtime.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/round11.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/round12.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/round4.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/round5.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/round5b.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/round5c.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/round6.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/round8-payments.test.mjs",
+        "exit":  0
+    },
+    {
+        "suite":  "worker/round8.test.mjs",
+        "exit":  0
+    }
+]

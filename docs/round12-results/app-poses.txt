@@ -1,0 +1,1 @@
+﻿PASS 810 poses: 40 exercises, every keyframe and eight intermediate samples per transition; bone connectivity, elbow/knee flexion, floor and listed movement invariants.

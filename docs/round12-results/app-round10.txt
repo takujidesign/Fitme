@@ -1,0 +1,1 @@
+﻿PASS Round 10: free/paid restoration, engine persistence, private key/state/sync, Gemini models/request/images/schema, Nano availability/images, FIXMEE validation, external fallback, five-language views, donation links and tab inheritance.

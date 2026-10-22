@@ -1,3 +1,4 @@
+import {authSecurity,adminLaunch,health,verified,turnstile,mailReady} from './launch-security.js';
 import { round10 } from './round10.js';
 import { social, pruneSocial, audit } from './social.js';
 export {Conversation} from './conversation.js';
@@ -38,6 +39,8 @@ const PRODUCTS = {
 export default {
   async scheduled(event, env) { await pruneSocial(env,event.scheduledTime); await sendScheduled(env, event.scheduledTime); await sendLine(env, event.scheduledTime); if(event.cron==='0 20 * * *'){await winback(env,event.scheduledTime);await backup(env,event.scheduledTime);} },
   async fetch(req, env) {
+    // Health must not depend on the normal KV-backed domain configuration read.
+    if(req.method==='GET'&&new URL(req.url).pathname==='/api/health')return json(await health(env),200,corsHeaders(req,env));
     env = await domainEnv(env);
     const cors = corsHeaders(req, env);
     if(new URL(req.url).pathname.startsWith('/api/admin/'))cors['Cache-Control']='no-store';
@@ -45,6 +48,14 @@ export default {
     const url = new URL(req.url);
     try {
       let out;
+      if(req.method==='POST'&&['/api/ideas','/api/reports'].includes(url.pathname)){await turnstile(req,env);if(url.pathname==='/api/ideas'&&await mailReady(env))await verified(env,await user(req,env));}
+      if(!['GET','HEAD','OPTIONS'].includes(req.method)&&(/^\/api\/(conversations|messages)(?:\/|$)/.test(url.pathname)||url.pathname==='/api/profile/avatar'))await verified(env,await user(req,env));
+      if(url.pathname==='/api/friends'&&req.method==='POST'&&(await req.clone().json()).action==='send')await verified(env,await user(req,env));
+      if(url.pathname==='/api/checkins'&&req.method==='POST'){const b=await req.clone().json();if(b.visibility!=='only me')await verified(env,await user(req,env));}
+      if(url.pathname==='/api/health'&&req.method==='GET')out=await health(env);
+      else if(['/api/admin/launch','/api/admin/2fa','/api/admin/test-email','/api/admin/test-push'].includes(url.pathname))out=await adminLaunch(req,env,url.pathname);
+      else if(['/api/auth/forgot','/api/auth/reset','/api/auth/verify','/api/auth/resend','/api/auth/password','/api/auth/sessions','/api/auth/logout-all'].includes(url.pathname))out=await authSecurity(req,env,url.pathname);
+      else
       if (/^\/api\/(profile(?:\/|$)|profiles\/|friends(?:\/|$)|reports$|conversations(?:\/|$)|messages\/|gyms(?:\/|$)|checkins$|feed(?:\/|$)|admin\/social\/)/.test(url.pathname)) out = await social(req,env,url.pathname);
       else if (['/api/stripe/webhook','/api/stripe/subscribe','/api/stripe/portal','/api/subscription'].includes(url.pathname)) out = await billing(req,env,url.pathname,stripe);
       else if (/^\/api\/(ideas(?:\/|$)|donate\/|supporter(?:\/|$)|admin\/(?:ideas|donations)$)/.test(url.pathname)) out = await round10(req,env,url.pathname,readConfig,verifyAmount);
@@ -107,8 +118,9 @@ function corsHeaders(req, env) {
   return {
     'Access-Control-Allow-Origin': allowed.length === 0 || allowed.includes(origin) ? origin || '*' : allowed[0],
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Turnstile-Token',
     Vary: 'Origin',
+    'X-Content-Type-Options':'nosniff','Strict-Transport-Security':'max-age=31536000; includeSubDomains','Cache-Control':'no-store',
   };
 }
 const fail = (msg, status = 400) => Object.assign(new Error(msg), { status, safe: true });
@@ -257,6 +269,7 @@ async function publicConfig(env) {
   const config=Object.fromEntries(['freeMode','aiEngines','donate','promptpayId','promptpayName','receiverName','freePlanDays','freeSupplements','products'].map(k=>[k,settings[k]]));
   for(const k of ['contactEmail','referralDays','trainerShare'])config[k]=biz[k];
   config.products = Object.fromEntries(Object.entries(config.products).map(([id,p]) => [id,Object.fromEntries(['thb','usd','days','exports','th','en','descTh','descEn','best'].filter(k=>p[k]!==undefined).map(k=>[k,p[k]]))]));
+  const launch=await env.CONFIG?.get('launch','json')||{};config.launch={turnstileSiteKey:launch.turnstileSiteKey||'',languages:{th:true,en:true,zh:false,ja:false,vi:false,...launch.languages},verification:!!await getSecret(env,'resendApiKey')};
   config.ai={prices:settings.ai.prices,credits:settings.ai.credits};
   config.vapidPublicKey = await getSecret(env, 'vapidPublicKey') || '';
   return { config };

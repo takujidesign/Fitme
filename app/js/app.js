@@ -3,7 +3,7 @@ import {applyTab,setupEffects,parentTab,reducedMotion,animateToday} from './tab-
 import './views/ai-usage.js';
 import { refreshCredits } from './ai-credits.js';
 import { cacheOfflineAssets } from './offline.js';
-import { languageFont } from './i18n/index.js';
+import { enabledLanguages, languageFont, languageLoaded, loadLanguage } from './i18n/index.js';
 import { loadVideos } from './videos.js';
 import { consentCurrent } from './legal.js';
 import { startTelemetry } from './telemetry.js';
@@ -13,6 +13,7 @@ import { startMetrics } from './metrics.js';
 import { blockDue } from './replan.js';
 import { startAccountSync, refreshEntitlement } from './account.js';
 import './views/account.js';
+import './views/account-security.js';
 import './views/trainer.js';
 import './views/chat.js';
 import './views/challenges.js';
@@ -22,7 +23,7 @@ import './custom-foods.js';
 import './share.js';
 import { startPushSync } from './notifications.js';
 import { actions, views, setRenderer, route, go, rerender } from './core.js';
-import { getState } from './store.js';
+import { getState, setState } from './store.js';
 import { L, icon, toast } from './ui.js';
 import { handleStripeReturn } from './pay.js';
 import './views/onboard.js';
@@ -65,14 +66,16 @@ const viewEl = document.getElementById('view');
 const tabEl = document.getElementById('tabbar');
 
 function render() {
+  if(!enabledLanguages().some(([id])=>id===getState().lang)){setState(s=>s.lang='en');toast('This language is unavailable. Switched to English.');}
+  if(!languageLoaded(getState().lang)){loadLanguage(getState().lang).then(rerender).catch(()=>{setState(s=>s.lang='en');toast('Translation unavailable. Switched to English.');rerender();});return;}
   applyTheme();
   languageFont(getState().lang);
   const r = route();
   applyTab(r.name);
   let robots=document.querySelector('meta[data-admin-robots]');
   if(r.name==='admin'){if(!robots){robots=document.createElement('meta');robots.name='robots';robots.dataset.adminRobots='';document.head.append(robots);}robots.content='noindex';}else robots?.remove();
-  if (!getState().onboarded && !['onboarding', 'admin', 'credits', 'privacy', 'terms', 'account', 'line-return', 'pay'].includes(r.name)) return go('#/onboarding');
-  if(getState().onboarded && !consentCurrent() && !['credits','consent','privacy','terms','account','admin','line-return'].includes(r.name))return go('#/consent');
+  if (!getState().onboarded && !['onboarding', 'admin', 'credits', 'privacy', 'terms', 'account', 'line-return', 'pay', 'forgot', 'reset', 'verify', 'sessions'].includes(r.name)) return go('#/onboarding');
+  if(getState().onboarded && !consentCurrent() && !['credits','consent','privacy','terms','account','admin','line-return','forgot','reset','verify','sessions'].includes(r.name))return go('#/consent');
   const v = views[r.name] || views.today;
   const html = v(r);
   document.body.classList.toggle('full', !!v.full || r.name === 'onboarding');

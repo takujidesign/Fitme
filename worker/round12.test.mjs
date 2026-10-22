@@ -1,0 +1,74 @@
+import assert from 'node:assert/strict';
+import worker from './src/index.js';
+import {testDB} from './test-db.mjs';
+import {hash,encrypt} from './src/security.js';
+import {totp} from './src/totp.js';
+import {cap,health} from './src/launch-security.js';
+const {db,DB}=testDB(),kv=new Map(),mail=[];
+const env={DB,MASTER_KEY:'m'.repeat(32),ADMIN_PASSWORD:'admin-test-only',CONFIG:{get:async(k,t)=>kv.has(k)?t==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v),delete:async k=>kv.delete(k)},MEDIA:{head:async()=>null}};
+kv.set('growth',JSON.stringify({emailFrom:'sender@example.test',appUrl:'https://example.test'}));
+let captcha=true;
+globalThis.fetch=async(url,opts)=>{
+ if(url==='https://api.resend.com/emails'){mail.push(JSON.parse(opts.body));return Response.json({id:'mock'});}
+ if(url==='https://challenges.cloudflare.com/turnstile/v0/siteverify'){assert.equal(opts.body.get('secret'),'mock-secret');assert(opts.body.get('remoteip'));return Response.json({success:captcha});}
+ throw Error('Unmocked external request prohibited: '+url);
+};
+async function call(path,body,token='',ip='test',extra={}){const res=await worker.fetch(new Request('https://example.test/api/'+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json','CF-Connecting-IP':ip,...(token?{Authorization:'Bearer '+token}:{}),...extra},body:body===undefined?undefined:JSON.stringify(body)}),env);return {status:res.status,data:await res.json(),headers:res.headers};}
+const pass='test-password-123';
+let a=await call('auth/register',{email:'alice@example.test',password:pass,age16:true});assert.equal(a.status,200);const first=a.data.token,id=a.data.user.id;
+assert.equal((await call('auth/sessions',undefined,first)).data.sessions[0].current,true);
+const second=(await call('auth/login',{email:'alice@example.test',password:pass})).data.token;
+assert.equal((await call('auth/password',{currentPassword:'incorrect-pass',password:'new-password-123'},first)).status,403);
+assert.equal((await call('auth/password',{currentPassword:pass,password:'new-password-123'},first)).status,200);
+assert.equal((await call('auth/me',undefined,second)).status,401);
+assert.equal((await call('auth/me',undefined,first)).status,200);
+env.RESEND_API_KEY='mock-resend';
+assert.equal((await call('friends',{target:crypto.randomUUID(),action:'send'},first)).status,403);
+const normal=await call('auth/register',{email:'new@example.test',password:pass,age16:true},'','new-ip');
+const duplicate=await call('auth/register',{email:'new@example.test',password:pass,age16:true},'','new-ip2');assert.deepEqual(normal.data,duplicate.data);assert(!normal.data.token);
+const extract=()=>mail.at(-1).text.match(/\/#\/(?:verify|reset)\/([a-f0-9]{64})/)[1];
+await call('auth/resend',{},first);const verify=extract();assert.equal((await call('auth/verify',{token:verify})).status,200);assert.equal((await call('auth/verify',{token:verify})).status,400);assert.equal((await call('auth/me',undefined,first)).data.user.verified,true);
+for(let i=0;i<2;i++)assert.equal((await call('auth/resend',{},first)).status,200);assert.equal((await call('auth/resend',{},first)).status,429);
+const unknown=await call('auth/forgot',{email:'absent@example.test'}),known=await call('auth/forgot',{email:'alice@example.test'});assert.deepEqual(unknown.data,known.data);const reset=extract();assert.equal(db.prepare('SELECT token_hash FROM auth_tokens WHERE kind=?').get('reset').token_hash,await hash(reset));
+assert.equal((await call('auth/reset',{token:reset,password:'reset-password-123'})).status,200);assert.equal((await call('auth/reset',{token:reset,password:'other-password-123'})).status,400);assert.equal((await call('auth/me',undefined,first)).status,401);
+a=await call('auth/login',{email:'alice@example.test',password:'reset-password-123'});assert.equal(a.status,200);
+await call('auth/forgot',{email:'alice@example.test'});const expired=extract();db.prepare('UPDATE auth_tokens SET expires=0 WHERE token_hash=?').run(await hash(expired));assert.equal((await call('auth/reset',{token:expired,password:pass})).status,400);
+const b=await call('auth/register',{email:'bob@example.test',password:pass,age16:true},'','bob-ip');assert.equal(b.status,200);
+assert.equal((await call('auth/sessions',undefined,a.data.token)).data.sessions.length,1);
+assert.equal((await call('auth/logout-all',{},a.data.token)).status,200);assert.equal((await call('auth/me',undefined,a.data.token)).status,401);
+a=await call('auth/login',{email:'alice@example.test',password:'reset-password-123'});
+db.prepare('UPDATE profiles SET suspended=1 WHERE user_id=?').run(id);assert.equal(db.prepare('SELECT count(*) n FROM sessions WHERE user_id=?').get(id).n,0);assert.equal((await call('ai/credits',undefined,a.data.token)).status,401);assert.equal((await call('auth/login',{email:'alice@example.test',password:'reset-password-123'})).status,403);
+kv.set('launch',JSON.stringify({turnstileSiteKey:'site'}));env.TURNSTILE_SECRET='mock-secret';
+assert.equal((await call('auth/forgot',{email:'x@example.test'},'','captcha')).status,403);captcha=false;assert.equal((await call('auth/forgot',{email:'x@example.test'},'','captcha',{'X-Turnstile-Token':'mock'})).status,403);captcha=true;assert.equal((await call('auth/forgot',{email:'x@example.test'},'','captcha',{'X-Turnstile-Token':'mock'})).status,200);
+for(let i=0;i<5;i++)await cap(env,'register-ip','cap-ip',5,86400000);await assert.rejects(()=>cap(env,'register-ip','cap-ip',5,86400000),e=>e.status===429);
+const secret='JBSWY3DPEHPK3PXPJBSWY3DPEHPK3PXP',admin=(await call('admin/login',{password:env.ADMIN_PASSWORD})).data.token;
+assert.equal((await call('admin/2fa',{secret,code:'000000'},admin)).status,403);
+const enrolled=await call('admin/2fa',{secret,code:await totp(secret)},admin);assert.equal(enrolled.status,200);assert.equal(enrolled.data.recoveryCodes.length,8);assert(!kv.get('secrets').includes(secret));assert.equal((await call('admin/status',undefined,admin)).status,401);
+assert.equal((await call('admin/login',{password:env.ADMIN_PASSWORD})).status,401);
+const recovered=await call('admin/login',{password:env.ADMIN_PASSWORD,totp:enrolled.data.recoveryCodes[0]});assert.equal(recovered.status,200);assert.equal((await call('admin/login',{password:env.ADMIN_PASSWORD,totp:enrolled.data.recoveryCodes[0]})).status,401);
+const admin2=recovered.data.token;assert.equal((await call('admin/2fa',{disable:true,code:'000000'},admin2)).status,403);assert.equal((await call('admin/2fa',{disable:true,code:await totp(secret)},admin2)).status,200);
+assert.deepEqual(await health(env),{ok:true,version:'round12',db:true,kv:true,r2:true});assert.equal((await health({...env,MEDIA:undefined})).r2,false);
+const h=await call('health');assert.equal(h.headers.get('X-Content-Type-Options'),'nosniff');assert(h.headers.get('Strict-Transport-Security'));
+
+// Across-email IP caps and across-IP email caps use atomic D1 counters.
+for(let i=0;i<20;i++)assert.equal((await call('auth/login',{email:`missing${i}@example.test`,password:pass},'','login-cap')).status,401);
+assert.equal((await call('auth/login',{email:'another@example.test',password:pass},'','login-cap')).status,429);
+for(let i=0;i<3;i++)assert.equal((await call('auth/forgot',{email:'limited@example.test'},'','email-ip'+i,{'X-Turnstile-Token':'mock'})).status,200);
+assert.equal((await call('auth/forgot',{email:'limited@example.test'},'','email-ip4',{'X-Turnstile-Token':'mock'})).status,429);
+const concurrent=await Promise.allSettled(Array.from({length:8},()=>cap(env,'concurrency','same',5,900000)));assert.equal(concurrent.filter(r=>r.status==='fulfilled').length,5);
+const bob=(await call('auth/login',{email:'bob@example.test',password:pass},'','bob-login')).data.token;
+for(const path of ['ideas','profile/avatar','conversations','checkins'])assert.equal((await call(path,{},bob,'gates',{'X-Turnstile-Token':'mock'})).status,403);
+assert.equal((await call('auth/me',undefined,bob)).status,200);
+const sessions=(await call('auth/sessions',undefined,bob)).data.sessions;assert.equal(sessions.length,1);assert(!JSON.stringify(sessions).includes('token_hash'));
+assert.equal((await call('auth/forgot',{email:'bob@example.test'},'','ttl',{'X-Turnstile-Token':'mock'})).status,200);
+let ttl=db.prepare("SELECT expires FROM auth_tokens WHERE kind='reset'").get().expires-Date.now();assert(ttl>1790000&&ttl<=1800000);
+assert.equal((await call('auth/resend',{},bob)).status,200);ttl=db.prepare("SELECT expires FROM auth_tokens WHERE user_id=(SELECT id FROM users WHERE email='bob@example.test') AND kind='verify'").get().expires-Date.now();assert(ttl>86390000&&ttl<=86400000);
+assert.equal((await health({...env,CONFIG:{get:()=>new Promise(()=>{})}})).kv,false);
+const unhealthy=await worker.fetch(new Request('https://example.test/api/health'),{...env,CONFIG:{get:()=>new Promise(()=>{})}});assert.equal((await unhealthy.json()).kv,false);
+const admin3=(await call('admin/login',{password:env.ADMIN_PASSWORD},'','admin-final')).data.token;
+assert.equal((await call('admin/launch',undefined,admin3)).status,200);
+kv.set('business',JSON.stringify({contactEmail:'contact@example.test'}));assert.equal((await call('admin/test-email',{},admin3)).status,200);assert.equal(mail.at(-1).to[0],'contact@example.test');
+assert(db.prepare("SELECT count(*) n FROM admin_audit WHERE target='/api/admin/test-email'").get().n>0);
+env.ADMIN_TOTP_SECRET=secret;assert.equal((await call('admin/login',{password:env.ADMIN_PASSWORD},'','override')).status,401);
+assert.equal((await call('admin/2fa',{disable:true,code:await totp(secret)},admin3)).status,409);
+console.log('PASS Round 12 mocked email/Turnstile, token expiry/replay, password/sessions, verification, enumeration, suspension, caps, encrypted 2FA/recovery and health');db.close();

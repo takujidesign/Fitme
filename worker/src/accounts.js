@@ -1,3 +1,4 @@
+import {cap,ip,mailReady,sendToken,genericMessage,turnstile} from './launch-security.js';
 import { z } from 'zod/v4';
 import { enc, hex, random, hash, equal, fail, input, limit } from './security.js';
 import { syncCopy } from '../../app/js/sync-data.js';
@@ -14,17 +15,23 @@ export async function user(req,env) {
   const token = (req.headers.get('Authorization') || '').replace(/^Bearer /,'');
   if (!/^[a-f0-9]{64}$/.test(token)) throw fail('Please log in',401);
   const u = await query(env,'SELECT users.id, users.email, users.role FROM sessions JOIN users ON users.id=sessions.user_id WHERE token_hash=? AND expires_at>?',await hash(token),Date.now()).first();
-  if (!u) throw fail('Session expired',401); return u;
+  if (!u) throw fail('Session expired',401);
+  if((await query(env,'SELECT suspended FROM profiles WHERE user_id=?',u.id).first())?.suspended)throw fail('Account suspended',403);
+  const activityHash=await hash(token);await query(env,'UPDATE session_activity SET last_used=? WHERE token_hash=?',Date.now(),activityHash).run();
+  u.verified=!!(await query(env,'SELECT verified FROM email_verifications WHERE user_id=?',u.id).first())?.verified;
+  return u;
 }
 export async function auth(req,env,path) {
   if (!env.DB) throw fail('DB binding is required',503);
   if (path.endsWith('/register') || path.endsWith('/login')) {
     if (req.method !== 'POST') throw fail('Method not allowed',405);
     const b = await input(req,credentials,2000); await limit(req,env,b.email);
+    await cap(env,path.endsWith('/register')?'register-ip':'login-ip',ip(req),path.endsWith('/register')?5:20,path.endsWith('/register')?86400000:900000);
     let u = await query(env,'SELECT * FROM users WHERE email=?',b.email).first();
     if (path.endsWith('/register')) {
       if(b.age16!==true)throw fail('Minimum age is 16',400);
-      if (u) throw fail('Unable to register this email',409);
+      await turnstile(req,env);
+      if(u){if(await mailReady(env)){try{await sendToken(env,u,'verify');}catch{}return {message:genericMessage};}throw fail('Unable to register this email',409);}
       const salt=random(16),id=crypto.randomUUID();
       try { await query(env,'INSERT INTO users(id,email,pass_hash,pass_salt,created_at) VALUES(?,?,?,?,?)',id,b.email,await passwordHash(b.password,salt),salt,Date.now()).run(); } catch { throw fail('Unable to register this email',409); }
       u={id,email:b.email,role:'user'};
@@ -34,8 +41,11 @@ export async function auth(req,env,path) {
       const computed=await passwordHash(b.password,u?.pass_salt || '00000000000000000000000000000000');
       if (!await equal(computed,u?.pass_hash || '') || !u) throw fail('Invalid email or password',401);
     }
+    if((await query(env,'SELECT suspended FROM profiles WHERE user_id=?',u.id).first())?.suspended)throw fail('Account suspended',403);
+    if(path.endsWith('/register')&&await mailReady(env)){try{await sendToken(env,u,'verify');}catch{}return {message:genericMessage};}
     const token=random(); await query(env,'INSERT INTO sessions(token_hash,user_id,expires_at) VALUES(?,?,?)',await hash(token),u.id,Date.now()+30*86400000).run();
-    return {token,user:{id:u.id,email:u.email,role:u.role}};
+    await query(env,'INSERT INTO session_activity VALUES(?,?,?,?)',await hash(token),Date.now(),Date.now(),(/Edg|Firefox|Chrome|Safari/.exec(req.headers.get('User-Agent')||'')||['Other'])[0]).run();
+    return {token,user:{id:u.id,email:u.email,role:u.role,verified:!!(await query(env,'SELECT verified FROM email_verifications WHERE user_id=?',u.id).first())?.verified}};
   }
   const u=await user(req,env);
   if(path.endsWith('/me') && req.method==='GET') return {user:u};

@@ -1,0 +1,2 @@
+﻿Created SQL and encrypted CONFIG KV import files. Apply all migrations to an EMPTY database first. Preserve MASTER_KEY separately.
+PASS Round 5c worker: SQLite trials/org privacy, server prices, signed subscription webhooks/replay/cancel, streamed backups/retention/download auth, domain CORS; external APIs mocked.

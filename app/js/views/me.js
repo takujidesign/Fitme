@@ -1,6 +1,6 @@
 import { creditCost } from '../ai-credits.js';
 import { slot } from '../slots.js';
-import { LANGUAGES, languageFont } from '../i18n/index.js';
+import { enabledLanguages, LANGUAGES, languageFont } from '../i18n/index.js';
 import { accountCard, mountTrainerNotes } from './account.js';
 import { badgeGrid } from './challenges.js';
 import { replanCard } from './replan.js';
@@ -111,8 +111,8 @@ views.me.mount = async (root) => {
 };
 
 actions['me-edit'] = () => { resetOnboardStep(); go('#/onboarding?edit=1'); };
-actions['me-lang'] = () => sheet(`<h2>${L('ภาษา','Language')}</h2>${Object.entries(LANGUAGES).map(([id,name])=>`<button class="btn ghost block" data-act="language-set" data-lang="${id}">${name}</button>`).join('')}`);
-actions['language-set']=el=>{if(!LANGUAGES[el.dataset.lang])return;setState(s=>s.lang=el.dataset.lang);languageFont(getState().lang);rerender();};
+actions['me-lang'] = () => sheet(`<h2>${L('ภาษา','Language')}</h2>${enabledLanguages().map(([id,name])=>`<button class="btn ghost block" data-act="language-set" data-lang="${id}">${name}</button>`).join('')}`);
+actions['language-set']=el=>{if(!enabledLanguages().some(([id])=>id===el.dataset.lang))return;setState(s=>s.lang=el.dataset.lang);languageFont(getState().lang);rerender();};
 actions['me-days'] = (el) => { setState((s) => (s.profile.planDays = Number(el.dataset.v))); rerender(); };
 actions['me-restart'] = () => { if (confirm(L('เริ่มนับแผนใหม่ตั้งแต่วันนี้?', 'Restart the plan from today?'))) { setState((s) => (s.profile.startDate = todayISO())); rerender(); toast(L('เริ่มแผนใหม่แล้ว', 'Plan restarted')); } };
 const gateExport = (fn) => {

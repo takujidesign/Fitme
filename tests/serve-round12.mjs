@@ -1,0 +1,4 @@
+﻿import {createServer} from 'node:http';
+import {readFile} from 'node:fs/promises';
+const root=new URL('../docs/round12-screens/',import.meta.url);
+createServer(async(req,res)=>{try{const name=new URL(req.url,'http://localhost').pathname.slice(1);if(!/^(dark|light)-(forgot|reset|sessions|verify-banner|admin-2fa|setup-languages)\.html$/.test(name)){res.writeHead(404);return res.end();}res.setHeader('Content-Type','text/html; charset=utf-8');res.setHeader('Content-Security-Policy',"default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src 'none'");const html=await readFile(new URL(name,root),'utf8');res.end(html.replace('</style>','body{max-width:375px;margin:0 auto}#view{padding:16px}#app{min-height:100vh}</style>'));}catch{res.writeHead(404);res.end();}}).listen(5192,'127.0.0.1',()=>console.log('Round 12 fixtures only: http://127.0.0.1:5192/dark-forgot.html'));

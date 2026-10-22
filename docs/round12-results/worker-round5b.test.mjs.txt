@@ -1,0 +1,1 @@
+﻿PASS Round 5b worker: real SQLite migrations, group privacy/ownership/cap/aggregates, approved shop redirects, LINE PKCE/nonce/link proof/replay and atomic reminder cap. External LINE calls mocked.

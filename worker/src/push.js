@@ -37,13 +37,13 @@ export async function encryptPush(subscription,payload){
   return join(salt,new Uint8Array([0,0,16,0,65]),pub,encrypted);
 }
 const fail=message=>Object.assign(Error(message),{status:400});
-function validEndpoint(endpoint){
+export function validEndpoint(endpoint){
   const u=new URL(endpoint);
   // Only browser push services; never fetch an arbitrary caller-supplied host.
   return u.protocol==='https:'&&!u.port&&!u.username&&!u.password&&(u.hostname==='fcm.googleapis.com'||u.hostname==='updates.push.services.mozilla.com'||u.hostname.endsWith('.push.services.mozilla.com')||u.hostname==='web.push.apple.com'||u.hostname.endsWith('.notify.windows.com'));
 }
 export async function pushRequest(req,env,unsubscribe=false){
-  if(!env.PUSH||!(await getSecret(env, 'vapidPublicKey'))||!(await getSecret(env, 'vapidPrivateKey'))||!env.VAPID_SUBJECT)throw Object.assign(Error('Push server is not configured'),{status:503});
+  if(!env.PUSH||!(await getSecret(env, 'vapidPublicKey'))||!(await getSecret(env, 'vapidPrivateKey'))||!(env.VAPID_SUBJECT||(await env.CONFIG?.get('business','json'))?.contactEmail))throw Object.assign(Error('Push server is not configured'),{status:503});
   const input=await readInput(req,unsubscribe?z.object({deviceId:z.string().uuid()}).strict():z.object({deviceId:z.string().uuid().optional(),subscription:z.object({endpoint:z.string().url().max(4096),expirationTime:z.number().nullable().optional(),keys:z.object({p256dh:z.string().max(200),auth:z.string().max(100)}).strict()}).strict(),tz:z.string().max(100),reminders:z.array(z.object({time:z.string().max(5),title:z.string().max(120),body:z.string().max(500),days:z.array(z.number().int().min(0).max(6)).max(7).optional(),date:z.string().max(10).optional(),route:z.string().max(30).optional()}).strict()).max(300)}).strict(),150000);
   const id=input.deviceId;
   const account=/^Bearer\s+\S+/.test(req.headers.get('Authorization')||'')?await user(req,env):null;
@@ -70,7 +70,7 @@ export function dueReminders(record,now){
   }return due;
 }
 export async function sendScheduled(env,now=Date.now()){
-  if(!env.PUSH||!(await getSecret(env, 'vapidPrivateKey'))||!(await getSecret(env, 'vapidPublicKey'))||!env.VAPID_SUBJECT)return;
+  if(!env.PUSH||!(await getSecret(env, 'vapidPrivateKey'))||!(await getSecret(env, 'vapidPublicKey'))||!(env.VAPID_SUBJECT||(await env.CONFIG?.get('business','json'))?.contactEmail))return;
   let cursor;
   do{const page=await env.PUSH.list({prefix:'device:',...(cursor?{cursor}:{})});
     for(const {name} of page.keys){try{

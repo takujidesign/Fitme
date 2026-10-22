@@ -1,0 +1,1 @@
+﻿PASS Round 10: local migration, free default, admin authentication, pending/public approval, rate limit, idempotent vote/unvote, supporter double vote, slip amount/receiver/replay across payments, HMAC token, one-time code, monthly totals, merge. All provider calls mocked.

@@ -1,0 +1,1 @@
+﻿PASS Round 8: migration, config allowlist, SDK models/cache/language stability, atomic reserve/refund/concurrency, trial, 30-day reset, top-up ordering/expiry/idempotency, no_credits, hourly cap, usage privacy, admin access/dashboard, subscription allowance.

@@ -1,24 +1,26 @@
-import round10 from './round10.js';
-import round11 from './round11.js';
-import round9 from './round9.js';
-import round7 from './round7.js';
-import round6 from './round6.js';
-import zh from './zh.js';
-import ja from './ja.js';
-import vi from './vi.js';
-export const dictionaries={zh,ja,vi};
-for(const [lang,dict] of Object.entries(round6))Object.assign(dictionaries[lang],dict);
-for(const [lang,dict] of Object.entries(round7))Object.assign(dictionaries[lang],dict);
-for(const [lang,dict] of Object.entries(round9))Object.assign(dictionaries[lang],dict);
-for(const [lang,dict] of Object.entries(round10))Object.assign(dictionaries[lang],dict);
-for(const [lang,dict] of Object.entries(round11))Object.assign(dictionaries[lang],dict);
+import {CONFIG} from '../config.js';
+export const dictionaries={zh:{},ja:{},vi:{}};
+const loaded=new Set(['th','en']),pending={};
+export const languageLoaded=lang=>loaded.has(lang);
+export async function loadLanguage(lang){
+ if(loaded.has(lang)||!['zh','ja','vi'].includes(lang))return;
+ if(pending[lang])return pending[lang];
+ pending[lang]=(async()=>{
+  const base=await ({zh:()=>import('./zh.js'),ja:()=>import('./ja.js'),vi:()=>import('./vi.js')})[lang]();
+  const rounds=await Promise.all([import('./round6.js'),import('./round7.js'),import('./round9.js'),import('./round10.js'),import('./round11.js'),import('./round12.js')]);
+  Object.assign(dictionaries[lang],base.default,...rounds.map(m=>m.default[lang]));
+  rebuildTemplates(lang);loaded.add(lang);
+ })().catch(error=>{delete pending[lang];throw error;});return pending[lang];
+}
 export const LANGUAGES={th:'ไทย',en:'English',zh:'中文',ja:'日本語',vi:'Tiếng Việt'};
+export const enabledLanguages=()=>Object.entries(LANGUAGES).filter(([id])=>['th','en'].includes(id)||CONFIG.launch?.languages?.[id]===true).map(([id,name])=>[id,name+(['th','en'].includes(id)?'':' · Beta')]);
 export const LOCALES={th:'th-TH',en:'en-US',zh:'zh-CN',ja:'ja-JP',vi:'vi-VN'};
-const templates=Object.fromEntries(Object.entries(dictionaries).map(([lang,dict])=>[lang,Object.keys(dict).filter(key=>/\{\d+\}/.test(key)).sort((a,b)=>b.length-a.length).map(key=>{
+const templates={};
+function rebuildTemplates(lang){const dict=dictionaries[lang];templates[lang]=Object.keys(dict).filter(key=>/\{\d+\}/.test(key)).sort((a,b)=>b.length-a.length).map(key=>{
  const order=[...key.matchAll(/\{(\d+)\}/g)].map(m=>m[1]);
  const pattern=key.split(/(\{\d+\})/).map(part=>/^\{\d+\}$/.test(part)?'(.+?)':part.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('');
  return {pattern:new RegExp('^'+pattern+'$'),order,value:dict[key]};
-})]));
+});}
 function translated(en,language){
  if(typeof en!=='string')return undefined;
  if(dictionaries[language]?.[en])return dictionaries[language][en];

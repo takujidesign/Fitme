@@ -33,8 +33,11 @@ limit.fail = async (req, env, email = 'admin') => {
 };
 export async function adminLogin(req, env) {
   await limit(req, env, 'admin', false);
-  const {password,totp} = await input(req, z.object({password:z.string().max(4096),totp:z.string().regex(/^\d{6}$/).optional()}).strict());
-  if (!env.ADMIN_PASSWORD || !await equal(password, env.ADMIN_PASSWORD) || env.ADMIN_TOTP_SECRET&&!await verifyTOTP(env.ADMIN_TOTP_SECRET,totp)) {
+  const {password,totp} = await input(req, z.object({password:z.string().max(4096),totp:z.string().regex(/^(?:\d{6}|[a-f0-9]{20})$/).optional()}).strict());
+  const secret=await getSecret(env,'adminTotpSecret');
+  let secondFactor=!secret;
+  if(env.ADMIN_PASSWORD&&await equal(password,env.ADMIN_PASSWORD)&&secret){secondFactor=await verifyTOTP(secret,totp);if(!secondFactor&&!env.ADMIN_TOTP_SECRET&&/^[a-f0-9]{20}$/.test(totp||'')){secondFactor=!!(await env.DB.prepare('DELETE FROM admin_recovery WHERE code_hash=? RETURNING code_hash').bind(await hash(totp)).first());}}
+  if (!env.ADMIN_PASSWORD || !await equal(password, env.ADMIN_PASSWORD) || !secondFactor) {
     await limit.fail(req, env);
     throw fail('Unauthorized', 401);
   }
@@ -54,7 +57,7 @@ export async function adminLogout(req, env) {
   await env.CONFIG.delete('admin-session:' + await hash(req.headers.get('Authorization').slice(7)));
   return {ok:true};
 }
-export const secretNames = { stripeWebhookSecret:'STRIPE_WEBHOOK_SECRET',resendApiKey:'RESEND_API_KEY', lineChannelSecret: 'LINE_CHANNEL_SECRET', lineMessagingToken: 'LINE_MESSAGING_TOKEN', thunderApiKey: 'THUNDER_API_KEY', stripeSecretKey: 'STRIPE_SECRET_KEY', anthropicApiKey: 'ANTHROPIC_API_KEY', vapidPublicKey: 'VAPID_PUBLIC_KEY', vapidPrivateKey: 'VAPID_PRIVATE_KEY' };
+export const secretNames = { adminTotpSecret:'ADMIN_TOTP_SECRET',turnstileSecret:'TURNSTILE_SECRET', stripeWebhookSecret:'STRIPE_WEBHOOK_SECRET',resendApiKey:'RESEND_API_KEY', lineChannelSecret: 'LINE_CHANNEL_SECRET', lineMessagingToken: 'LINE_MESSAGING_TOKEN', thunderApiKey: 'THUNDER_API_KEY', stripeSecretKey: 'STRIPE_SECRET_KEY', anthropicApiKey: 'ANTHROPIC_API_KEY', vapidPublicKey: 'VAPID_PUBLIC_KEY', vapidPrivateKey: 'VAPID_PRIVATE_KEY' };
 async function key(env) {
   if (!env.MASTER_KEY || env.MASTER_KEY.length < 32) throw fail('MASTER_KEY must have at least 32 characters', 503);
   const material = await crypto.subtle.importKey('raw', enc.encode(env.MASTER_KEY), 'HKDF', false, ['deriveKey']);
@@ -76,11 +79,12 @@ export async function getSecret(env, name) {
   return saved?.[name] ? decrypt(env, name, saved[name]) : '';
 }
 export async function secretStatus(env) {
-  return Object.fromEntries(await Promise.all(Object.keys(secretNames).map(async name => { const value = await getSecret(env, name); return [name, { set: !!value, last4: value ? value.slice(-4) : '' }]; })));
+  return Object.fromEntries(await Promise.all(Object.keys(secretNames).map(async name => { const value = await getSecret(env, name); if(name==='adminTotpSecret')return [name,{set:!!value}]; return [name, { set: !!value, last4: value ? value.slice(-4) : '' }]; })));
 }
 export async function saveSecrets(req, env) {
   await admin(req, env);
   const body = await input(req, z.object(Object.fromEntries(Object.keys(secretNames).map(k => [k, z.string().max(4096).optional()]))).strict(), 25000);
+  if(Object.hasOwn(body,'adminTotpSecret'))throw fail('Use the 2FA enrolment endpoint',403);
   const saved = await env.CONFIG.get('secrets', 'json') || {};
   for (const [name, value] of Object.entries(body)) { if (value) saved[name] = await encrypt(env, name, value); else delete saved[name]; }
   await env.CONFIG.put('secrets', JSON.stringify(saved));

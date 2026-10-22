@@ -1,0 +1,1 @@
+﻿PASS round11: profiles, privacy, friendships, blocks, chat permissions/rate/deletion, report, gym moderation, check-in and retention; providers blocked.

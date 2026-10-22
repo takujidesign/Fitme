@@ -1,0 +1,1 @@
+﻿PASS Round 5a SQLite: promo reservations/math/expiry, immutable checkout amounts, payment replay, referral once, plan approval/access/fees/payout, telemetry redaction/rate cap, admin media, full export/deletion. External services mocked.

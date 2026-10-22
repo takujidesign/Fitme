@@ -22,3 +22,6 @@ scripts/illustrations/receipts/
 scripts/illustrations/queue.json
 scripts/illustrations/queue-progress.json
 scripts/illustrations/generate.lock
+
+# Throwaway browser profiles from automated QA
+tests/.round*-chrome/

@@ -7,7 +7,8 @@ for(const k of ['window','document','localStorage','sessionStorage','navigator',
 globalThis.requestAnimationFrame=()=>1;globalThis.cancelAnimationFrame=()=>{};
 const {getState,setState,todayISO}=await import('../app/js/store.js');
 const {L,locale}=await import('../app/js/ui.js');
-const {dictionaries}=await import('../app/js/i18n/index.js');
+const {dictionaries,loadLanguage}=await import('../app/js/i18n/index.js');
+await Promise.all(['zh','ja','vi'].map(loadLanguage));
 const keys=JSON.parse(readFileSync(new URL('./i18n-strings.json',import.meta.url),'utf8'));
 for(const [lang,dict] of Object.entries(dictionaries))for(const key of keys){assert.equal(typeof dict[key],'string',lang+': '+key);assert(dict[key].trim());assert(!dict[key].includes('▁'));assert.deepEqual([...key.matchAll(/\{\d+\}/g)].map(m=>m[0]).sort(),[...dict[key].matchAll(/\{\d+\}/g)].map(m=>m[0]).sort(),lang+' placeholders: '+key);}
 const {views,actions,setRenderer}=await import('../app/js/core.js');setRenderer(()=>{});

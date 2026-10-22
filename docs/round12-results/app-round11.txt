@@ -1,0 +1,1 @@
+﻿PASS 1000 palette seeds in both themes, locks, exact save/restore, 25 FAQs in five languages and search

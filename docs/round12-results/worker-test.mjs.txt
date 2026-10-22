@@ -1,0 +1,4 @@
+﻿PASS config authorization/validation/KV/secrets; KV checkout price and slip price/duration; Pro rejection; consent validation; both mocked structured AI responses/model/effort. No live API calls.
+PASS meal-photo Pro/input/structured output; push validation/subscribe/update/unsubscribe; VAPID signature; RFC8291 receiver decryption; timezone due window, deduplication and expired subscription cleanup.
+PASS Round 4 encryption/redaction/precedence/delete; auth/hash/rate limit/logout; SQLite sync CAS/concurrent conflict/size/entitlement; trainer permissions/invite/notes/unlink; chat caps and mocked structured suggestions.
+PASS Round 5a SQLite: promo reservations/math/expiry, immutable checkout amounts, payment replay, referral once, plan approval/access/fees/payout, telemetry redaction/rate cap, admin media, full export/deletion. External services mocked.

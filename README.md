@@ -407,3 +407,19 @@ Maps use the vendored BSD-2-Clause Leaflet 1.9.4 library. With no tile URL, the 
 Round 11 requires `worker/migrations/0007_round11.sql` and the `CONVERSATIONS` Durable Object binding/migration declared in Wrangler. `worker/r2-chat-lifecycle.json` describes the proposed 24-hour `chat/` cleanup rule; D1 expiry checks hide expired photos immediately and the scheduled job removes expired objects. **Neither the migration, lifecycle configuration nor deployment was applied during this implementation.** Use the existing GitHub release workflows after review; do not treat the local validation as deployment evidence.
 
 See [Round 11 validation](docs/ROUND11_VALIDATION.md) for test results, screenshots, implementation boundaries and reproduction commands.
+
+## Round 12 launch hardening
+
+Apply `worker/migrations/0008_round12.sql` after 0007 through the existing release workflow when authorized. No remote migration is performed by local tests. Keep the existing Worker name, bindings and API URL.
+
+`GET /api/health` is public and returns `{ok, version, db, kv, r2}`. Each read-only binding probe has a one-second timeout; a missing/unavailable binding reports false. Monitors should inspect `ok`, not only HTTP 200. Responses expose no binding IDs or secrets.
+
+Admin → Setup adds Turnstile site/secret keys and language availability. TH/EN remain enabled; ZH/JA/VI default off and are beta. Resend must have a verified sender configured in Growth (`emailFrom`); `appUrl` supplies trusted email links, falling back to `https://fixmee.app`. Missing Resend disables verification enforcement and shows a warning. A configured API key with no sender keeps enforcement on and displays the sender setup note; finish configuration before launch. Test-email and test-push buttons deliberately send only when clicked by an authorized admin.
+
+Admin → System supports browser-generated TOTP enrolment, local QR/manual key, confirmation, eight one-time recovery codes and code-required disable. Save recovery codes securely; they are displayed once. An environment `ADMIN_TOTP_SECRET` overrides the encrypted CONFIG secret. 2FA changes revoke existing admin sessions. Never save an authenticator secret through the generic key form.
+
+Account → Account security lists active sessions, changes passwords with current-password proof, or logs out all devices. Forgot/reset and verify links work before onboarding. Password reset revokes all account sessions. Unverified accounts retain private features, but community publication/chat/avatar actions require verification when Resend is configured. Rate caps use atomic D1 counters, including 5 registration attempts/IP/day and 20 login attempts/IP/15 minutes.
+
+`app/_headers` is copied unchanged by the existing recursive app-to-`web/dist` copy in `web/deploy.mjs`. **Do not run that deployment script for local verification.** Images may load from any HTTPS origin (map tiles, shop and Open Food Facts product images), so a configured tile provider works without editing the CSP. Scripts are limited to this site, Turnstile, jsDelivr (MediaPipe, ZXing) and cdnjs (QR generator); MediaPipe's WebAssembly needs `'wasm-unsafe-eval'`. Connections are allowed to the API (HTTPS and WebSocket), Gemini, Turnstile, Open Food Facts, jsDelivr, cdnjs and storage.googleapis.com (MediaPipe model). Exercise videos load from the API via `media-src`. Inline script/event attributes are disallowed; inline CSS remains allowed for existing dynamic layout/figures. External embedded video/form-model origins require separately reviewed CSP additions if enabled.
+
+Privacy/terms remain drafts. [PDPA record](docs/PDPA_RECORD.md) identifies owner/counsel decisions and unfinished retention policies. [Round 12 validation](docs/ROUND12_VALIDATION.md) records exact test boundaries.
