@@ -1,3 +1,4 @@
+import {friendlyError} from './errors.js';
 import { translate, LOCALES } from './i18n/index.js';
 import { getState } from './store.js';
 
@@ -20,6 +21,7 @@ export function dateLabel(iso, opts = { weekday: 'short', day: 'numeric', month:
 
 // ---- toast ----
 export function toast(msg, kind = '') {
+  if (/Failed to fetch|NetworkError|Network request failed|Load failed/i.test(String(msg))) msg=friendlyError(new TypeError(String(msg)));
   const el = document.createElement('div');
   el.className = 'toast ' + kind;
   el.textContent = msg;

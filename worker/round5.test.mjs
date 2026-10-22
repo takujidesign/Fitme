@@ -7,7 +7,7 @@ const env={DB,CONFIG:{get:async(k,type)=>kv.has(k)?type==='json'?JSON.parse(kv.g
 const request=(path,body,token='',method=body===undefined?'GET':'POST')=>worker.fetch(new Request('https://test/api/'+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:body===undefined?undefined:JSON.stringify(body)}),env);
 const adminSession=(await (await request('admin/login',{password:env.ADMIN_PASSWORD})).json()).token;
 const ok=async r=>{const data=await r.json();assert.equal(r.status,200,JSON.stringify(data));return data;};
-const register=async(email,ref)=>ok(await request('auth/register',{email,password:'password-for-test',...(ref?{ref}:{})}));
+const register=async(email,ref)=>ok(await request('auth/register',{age16:true,email,password:'password-for-test',...(ref?{ref}:{})}));
 const owner=await register('owner@example.com'),ref=await ok(await request('referral',undefined,owner.token));
 const buyer=await register('buyer@example.com',ref.code),trainer=await register('trainer@example.com');
 await ok(await request('auth/role',{role:'trainer'},trainer.token,'PUT'));

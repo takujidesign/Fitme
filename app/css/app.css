@@ -596,3 +596,14 @@ a{color:var(--accent)}
 :root[data-tab][data-theme=light]{--accent-text:color-mix(in srgb,var(--accent) 88%,#000)}
 @media(prefers-color-scheme:light){:root[data-tab][data-theme=auto]{--accent-text:color-mix(in srgb,var(--accent) 88%,#000)}}
 a,#tabbar a.on,.sec .ic,.btn.ghost:not(.danger){color:var(--accent-text)}
+/* Round 11 compact settings and accessible coach marks. */
+.profile-avatar{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-on);font-size:24px;font-weight:700}
+.palette-presets{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:12px 0}
+.settings-list .list-row{width:100%;min-height:48px;text-align:start}.settings-list .list-row span{flex:1}.settings-list small{max-width:100px;overflow-wrap:anywhere}
+#avatar-preview{max-width:100%;display:block;margin:auto}#messages p{white-space:pre-wrap;overflow-wrap:anywhere}
+.tour-wrap{position:fixed;inset:0;z-index:200}.tour-spotlight{position:fixed;bottom:0;left:0;width:70px;height:70px;box-shadow:0 0 0 9999px #000a;border:3px solid var(--accent);border-radius:16px;pointer-events:none}
+.tour-dialog{position:fixed;bottom:100px;left:max(12px,calc(50% - 220px));width:min(440px,calc(100% - 24px));border:2px solid var(--accent)}
+.admin-layout{min-width:0}.admin-nav{display:flex;overflow:auto;gap:8px;padding:8px 0}.admin-nav .chip{flex-shrink:0}.admin-layout main{min-width:0}
+@media(min-width:900px){.admin-layout{display:grid;grid-template-columns:200px 1fr;gap:24px}.admin-nav{flex-direction:column;position:sticky;top:0;max-height:100vh;align-self:start}}
+
+.btn.primary{background-image:var(--accent-gradient,none)}

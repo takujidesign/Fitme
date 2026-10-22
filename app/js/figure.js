@@ -24,15 +24,29 @@ function ik(p, t, l1, l2, bend) {
 }
 
 const lerp = (a, b, t) => a + (b - a) * t;
-function lerpVal(a, b, t) {
-  if (typeof a === 'number') return lerp(a, b ?? a, t);
-  if (Array.isArray(a)) return a.map((v, i) => lerpVal(v, b?.[i], t));
+export function lerpVal(a, b, t, angle = false) {
+  if (typeof a === 'number') return a + (angle ? (((((b ?? a) - a + 180) % 360) + 360) % 360 - 180) : (b ?? a) - a) * t;
+  if (Array.isArray(a)) return a.map((v, i) => lerpVal(v, b?.[i], t, angle));
   if (a && typeof a === 'object') {
     const o = {};
     for (const k in a) o[k] = lerpVal(a[k], b?.[k], t);
     return o;
   }
   return a;
+}
+// Coordinates and IK targets are linear; only absolute joint angles wrap.
+export function interpolatePose(a, b, t, ex = {}) {
+  let from,to;
+  return Object.fromEntries(Object.keys(a).map(k => {
+    const limbKey={a1:'arm1',a2:'arm2',l1:'leg1',l2:'leg2'}[k];let av=a[k],bv=b[k];
+    // A transition may switch from a planted IK target to a swinging limb.
+    // Convert both endpoints to the same angle representation before blending.
+    if(limbKey&&av&&bv&&Array.isArray(av)!==Array.isArray(bv)){
+      from??=solve(a,ex.view);to??=solve(b,ex.view);
+      const angles=j=>[angTo(j[0],j[1]),angTo(j[1],j[2])];av=angles(from[limbKey]);bv=angles(to[limbKey]);
+    }
+    return [k,lerpVal(av,bv,t,['t','h','f1','f2','a1','a2','l1','l2'].includes(k)&&!ex.longArc?.includes(k))];
+  }));
 }
 const ease = (t) => 0.5 - Math.cos(Math.PI * t) / 2;
 
@@ -84,6 +98,7 @@ function propSVG(prop, j) {
     if (p === 'wall') out.push('<rect x="170" y="24" width="9" height="158" rx="2" class="prop-o"/>');
     if (p === 'chair') out.push('<rect x="48" y="150" width="48" height="7" rx="3" class="prop-o"/><path d="M52 181V107H59V150M91 157V181" class="prop-l"/>');
     if (p === 'box') out.push('<rect x="20" y="146" width="62" height="36" rx="4" class="prop-o"/>');
+    if (p === 'step') out.push('<rect x="110" y="160" width="50" height="22" rx="3" class="prop-o"/>');
     if (p === 'mat') out.push('<rect x="14" y="179" width="172" height="5" rx="2.5" class="mat"/>');
     if (p === 'cable') out.push(`<line x1="100" y1="10" x2="${(hands[0][0] + hands[1][0]) / 2}" y2="${(hands[0][1] + hands[1][1]) / 2}" class="prop-t"/>`);
   }
@@ -97,12 +112,13 @@ export function figureViewBox(ex) {
   if(viewBoxes.has(ex))return viewBoxes.get(ex);
   const points=[];
   for(let i=0;i<ex.frames.length;i++)for(let step=0;step<=16;step++){
-    const j=solve(lerpVal(ex.frames[i],ex.frames[(i+1)%ex.frames.length],step/16),ex.view);
+    const j=solve(interpolatePose(ex.frames[i],ex.frames[(i+1)%ex.frames.length],step/16,ex),ex.view);
     points.push(j.head,j.hip,j.neckBase,...j.arm1,...j.arm2,...j.leg1,...j.leg2);
     if(j.foot1)points.push(j.foot1,j.foot2);
     if(/bar/.test(ex.prop||''))points.push(...[j.arm1[2],j.arm2[2]].flatMap(([x,y])=>[[x-28,y],[x+28,y]]));
   }
   const bounds={bench:[[33,143],[149,184]],wall:[[167,21],[182,185]],chair:[[45,104],[99,184]],box:[[17,143],[85,185]],mat:[[14,179],[186,184]],cable:[[100,10]]};
+  bounds.step=[[107,157],[163,185]];
   for(const prop of String(ex.prop||'').split(' '))points.push(...(bounds[prop]||[]));
   const arrow=movementArrow(ex);if(arrow)points.push(arrow.a,arrow.b,arrow.c);
   const xs=points.map(p=>p[0]),ys=points.map(p=>p[1]);
@@ -111,7 +127,7 @@ export function figureViewBox(ex) {
   const box=[left,top,width,height].map(v=>+v.toFixed(2)).join(' ');
   viewBoxes.set(ex,box);return box;
 }
-function figureDefs(id) {
+export function figureDefs(id) {
   const gradients = [];
   for (const part of ['th', 'sh', 'ua', 'fa', 'torso', 'skin', 'shoe']) {
     for (const far of [false, true]) for (const highlight of [false, true]) {
@@ -149,7 +165,7 @@ export function renderPose(pose, ex, id = 'figure') {
     + belly(arm[0],arm[1],3.5,'biceps',-2) + belly(arm[0],arm[1],2.8,'triceps',2.5) + belly(arm[1],arm[2],3,'forearms') + belly(arm[0],along(arm[0],angTo(arm[0],arm[1]),13),4,'front_delts',-2) + belly(arm[0],along(arm[0],angTo(arm[0],arm[1]),13),3,'rear_delts',2)
     + capsule(arm[2], along(arm[2], angTo(arm[1], arm[2]), 3), 6, 5, 'skin', far);
   const far = ex.view !== 'front';
-  const behindProps = ['bench', 'box', 'wall', 'chair', 'mat', 'cable'].filter((p) => String(ex.prop || '').includes(p)).join(' ');
+  const behindProps = ['bench', 'box', 'step', 'wall', 'chair', 'mat', 'cable'].filter((p) => String(ex.prop || '').includes(p)).join(' ');
   const handProps = String(ex.prop || '').split(' ').filter((p) => !behindProps.includes(p)).join(' ');
   const t = pose.t ?? 180, front = ex.view === 'front';
   const torsoPoint = (length, width) => along(along(j.hip, t, length), t - 90, width).map((v) => v.toFixed(2)).join(',');
@@ -210,7 +226,7 @@ export function animateFigure(el, ex, { speed = 1, paused = false } = {}) {
     const hold = ex.hold ? Math.min(1, t / (durs[i] * 0.75)) : t / durs[i];
     const rect=el.getBoundingClientRect?.();
     if (!document.hidden && (!rect || (rect.bottom >= 0 && rect.top <= (globalThis.innerHeight || Infinity)))) {
-      paintBody(renderPose(lerpVal(a, b, ease(hold)), ex, id));
+      paintBody(renderPose(interpolatePose(a, b, ease(hold), ex), ex, id));
       const arrow = el.querySelector('.motion-arrow');
       if (arrow) arrow.style.opacity = String(.25 + .65 * Math.sin(Math.PI * state.offset / total) ** 2);
     }

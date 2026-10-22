@@ -1,4 +1,6 @@
 import { round10 } from './round10.js';
+import { social, pruneSocial, audit } from './social.js';
+export {Conversation} from './conversation.js';
 import { Doses, Bi, MealItem, Product, Review, BodyReview } from '../../app/js/ai-schemas.js';
 const Language=z.enum(['th','en','zh','ja','vi']);
 const languageName=lang=>({th:'Thai',en:'English',zh:'Simplified Chinese',ja:'Japanese',vi:'Vietnamese'}[lang]||'English');
@@ -34,7 +36,7 @@ const PRODUCTS = {
 };
 
 export default {
-  async scheduled(event, env) { await sendScheduled(env, event.scheduledTime); await sendLine(env, event.scheduledTime); if(event.cron==='0 20 * * *'){await winback(env,event.scheduledTime);await backup(env,event.scheduledTime);} },
+  async scheduled(event, env) { await pruneSocial(env,event.scheduledTime); await sendScheduled(env, event.scheduledTime); await sendLine(env, event.scheduledTime); if(event.cron==='0 20 * * *'){await winback(env,event.scheduledTime);await backup(env,event.scheduledTime);} },
   async fetch(req, env) {
     env = await domainEnv(env);
     const cors = corsHeaders(req, env);
@@ -43,7 +45,8 @@ export default {
     const url = new URL(req.url);
     try {
       let out;
-      if (['/api/stripe/webhook','/api/stripe/subscribe','/api/stripe/portal','/api/subscription'].includes(url.pathname)) out = await billing(req,env,url.pathname,stripe);
+      if (/^\/api\/(profile(?:\/|$)|profiles\/|friends(?:\/|$)|reports$|conversations(?:\/|$)|messages\/|gyms(?:\/|$)|checkins$|feed(?:\/|$)|admin\/social\/)/.test(url.pathname)) out = await social(req,env,url.pathname);
+      else if (['/api/stripe/webhook','/api/stripe/subscribe','/api/stripe/portal','/api/subscription'].includes(url.pathname)) out = await billing(req,env,url.pathname,stripe);
       else if (/^\/api\/(ideas(?:\/|$)|donate\/|supporter(?:\/|$)|admin\/(?:ideas|donations)$)/.test(url.pathname)) out = await round10(req,env,url.pathname,readConfig,verifyAmount);
       else if (['/api/admin/backups','/api/backups/download'].includes(url.pathname)) out = await backupRoute(req,env);
       else if (['/api/admin/growth','/api/admin/organisations','/api/admin/experiments','/api/experiment','/api/trial','/api/engagement','/api/org','/api/org/join','/api/org/challenge','/api/org/scores'].includes(url.pathname)) out = await growth(req,env,url.pathname,issue);
@@ -87,6 +90,8 @@ export default {
       else if (req.method === 'POST' && url.pathname === '/api/push/unsubscribe') out = await pushRequest(req, env, true);
       else if (req.method === 'POST' && url.pathname === '/api/ai/meal-photo') out = await runAI(req,env,'mealPhoto',verifyToken,(await readConfig(env)).ai,e=>mealPhoto(req,e));
       else return json({ ok: false, error: 'not found' }, 404, cors);
+      if(env.DB&&url.pathname.startsWith('/api/admin/')&&!url.pathname.startsWith('/api/admin/social/')&&!['GET','HEAD'].includes(req.method))await audit(req,env,req.method,url.pathname,{result:'success'});
+      if (out instanceof Response && out.status===101) return out;
       if (out instanceof Response) { for (const [key,value] of Object.entries(cors)) out.headers.set(key,value); return out; }
       return json({ ok: true, ...out }, 200, cors);
     } catch (e) {

@@ -31,6 +31,7 @@ const defaults = () => ({
     womensHealth: {enabled:false,mode:'cycle',lastPeriod:'',cycleLength:28,adjustments:false,weeks:0,cleared:false,breastfeeding:false},
   },
   account: { token:null, user:null, version:0, lastSync:0, error:'' }, updatedAt:{}, chat:[], challenges:[], badges:[], blocks:[], suggestionDecisions:{},
+  colours: {mode:'tab',locked:[],saved:[],daily:false}, guidance: {tourDone:false,tips:{},dismissed:false}, socialProfile:null,
   theme: 'auto', voiceCoach: false, measurements: [], customFoods: [],
   notifications: { enabled: false, deviceId: null, meals: true, supplements: true, workout: true, water: false, medications: true, sleep: true, fasting: true },
   weights: [],
@@ -92,7 +93,8 @@ export function updateLog(date, fn) {
 }
 
 export function resetAll() {
-  localStorage.removeItem(KEY);
+  for(const key of Object.keys(localStorage))if(key.startsWith('fitme:'))localStorage.removeItem(key);
+  for(const key of Object.keys(globalThis.sessionStorage||{}))if(key.startsWith('fitme:'))sessionStorage.removeItem(key);
   state = defaults();
   return idbClear();
 }

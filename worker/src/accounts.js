@@ -2,7 +2,8 @@ import { z } from 'zod/v4';
 import { enc, hex, random, hash, equal, fail, input, limit } from './security.js';
 import { syncCopy } from '../../app/js/sync-data.js';
 import { CONFIG } from '../../app/js/config.js';
-const credentials = z.object({ email:z.string().email().max(254).transform(v=>v.trim().toLowerCase()), password:z.string().min(10).max(256), ref:z.string().regex(/^[A-Z0-9]{16}$/).optional() }).strict();
+import {publishWorkouts} from './social-activity.js';
+const credentials = z.object({ email:z.string().email().max(254).transform(v=>v.trim().toLowerCase()), password:z.string().min(10).max(256), age16:z.boolean().optional(), ref:z.string().regex(/^[A-Z0-9]{16}$/).optional() }).strict();
 export async function passwordHash(password, salt) {
   const key = await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveBits']);
   return hex(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:Uint8Array.from(salt.match(/../g),v=>parseInt(v,16)),iterations:100000},key,256));
@@ -22,10 +23,12 @@ export async function auth(req,env,path) {
     const b = await input(req,credentials,2000); await limit(req,env,b.email);
     let u = await query(env,'SELECT * FROM users WHERE email=?',b.email).first();
     if (path.endsWith('/register')) {
+      if(b.age16!==true)throw fail('Minimum age is 16',400);
       if (u) throw fail('Unable to register this email',409);
       const salt=random(16),id=crypto.randomUUID();
       try { await query(env,'INSERT INTO users(id,email,pass_hash,pass_salt,created_at) VALUES(?,?,?,?,?)',id,b.email,await passwordHash(b.password,salt),salt,Date.now()).run(); } catch { throw fail('Unable to register this email',409); }
       u={id,email:b.email,role:'user'};
+      if(b.age16===true)await query(env,'INSERT INTO profiles(user_id,age16,created) VALUES(?,1,?)',id,Date.now()).run();
       if(b.ref){const referrer=await query(env,'SELECT id FROM users WHERE referral_code=?',b.ref).first();if(referrer && referrer.id!==id)await query(env,'INSERT INTO referrals(user_id,referrer_id) VALUES(?,?)',id,referrer.id).run();}
     } else {
       const computed=await passwordHash(b.password,u?.pass_salt || '00000000000000000000000000000000');
@@ -47,6 +50,7 @@ export async function sync(req,env,verifyToken) {
   if(req.method!=='PUT') throw fail('Method not allowed',405);
   const b=await input(req,z.object({json:z.record(z.string(),z.json()),baseVersion:z.number().int().nonnegative()}).strict());
   const data=syncCopy(b.json);
+  const before=(await serverState(env,u.id)).json;
   if(data.premium?.token) {
     let ent;try{ent=await verifyToken(env,data.premium.token);}catch{}
     if(!ent || !['export1','pro30','pro90','trial7'].includes(ent.pid) || (ent.pid!=='export1' && !(Date.parse(ent.until)>Date.now()))) throw fail('Invalid premium entitlement',403);
@@ -59,6 +63,7 @@ export async function sync(req,env,verifyToken) {
     ? await query(env,'INSERT INTO user_state(user_id,json,updated_at,version) VALUES(?,?,?,1) ON CONFLICT(user_id) DO NOTHING',u.id,JSON.stringify(data),now).run()
     : await query(env,'UPDATE user_state SET json=?,updated_at=?,version=version+1 WHERE user_id=? AND version=?',JSON.stringify(data),now,u.id,b.baseVersion).run();
   if(!result.meta.changes) throw fail('Sync conflict',409,await serverState(env,u.id));
+  await publishWorkouts(env,u.id,before,data);
   return {json:data,updated_at:now,version:b.baseVersion+1};
 }
 const suggestions=z.object({goal:z.enum(['cut','bulk','recomp','maintain','strength']).optional(),avoidEx:z.array(z.string().max(80)).max(100).optional(),trainDays:z.array(z.number().int().min(0).max(6)).max(7).optional(),sessionMin:z.number().int().min(15).max(120).optional()}).strict();

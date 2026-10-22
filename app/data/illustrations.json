@@ -236,5 +236,47 @@
     "source": "ai",
     "tool": "Codex image generation",
     "created": "2026-10-21"
+  },
+  "goblet_squat": {
+    "start": "img/ex/goblet_squat-start-round11.webp",
+    "finish": "img/ex/goblet_squat-finish-round11.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-22"
+  },
+  "bridge": {
+    "start": "img/ex/bridge-start-round11.webp",
+    "finish": "img/ex/bridge-finish-round11.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-22"
+  },
+  "triceps_ext": {
+    "start": "img/ex/triceps_ext-start-round11.webp",
+    "finish": "img/ex/triceps_ext-finish-round11.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-22"
+  },
+  "db_row": {
+    "start": "img/ex/db_row-start-round11.webp",
+    "finish": "img/ex/db_row-finish-round11.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-22"
+  },
+  "crunch": {
+    "start": "img/ex/crunch-start-round11.webp",
+    "finish": "img/ex/crunch-finish-round11.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-22"
+  },
+  "walk": {
+    "start": "img/ex/walk-start-round11.webp",
+    "finish": "img/ex/walk-finish-round11.webp",
+    "source": "ai",
+    "tool": "Codex image generation",
+    "created": "2026-10-22"
   }
 }

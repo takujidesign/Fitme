@@ -1,0 +1,8 @@
+{
+  "rules": [{
+    "id": "round11-chat-photos-24h",
+    "enabled": true,
+    "conditions": {"prefix": "chat/"},
+    "deleteObjectsTransition": {"condition": {"type": "Age", "maxAge": 86400}}
+  }]
+}

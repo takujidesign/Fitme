@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+import {verifyTOTP} from './totp.js';
 export const fail = (message, status = 400, copy) => Object.assign(new Error(message), { status, copy, safe: true });
 export const enc = new TextEncoder();
 export const hex = b => Array.from(new Uint8Array(b), x => x.toString(16).padStart(2, '0')).join('');
@@ -32,19 +33,21 @@ limit.fail = async (req, env, email = 'admin') => {
 };
 export async function adminLogin(req, env) {
   await limit(req, env, 'admin', false);
-  const {password} = await input(req, z.object({password:z.string().max(4096)}).strict());
-  if (!env.ADMIN_PASSWORD || !await equal(password, env.ADMIN_PASSWORD)) {
+  const {password,totp} = await input(req, z.object({password:z.string().max(4096),totp:z.string().regex(/^\d{6}$/).optional()}).strict());
+  if (!env.ADMIN_PASSWORD || !await equal(password, env.ADMIN_PASSWORD) || env.ADMIN_TOTP_SECRET&&!await verifyTOTP(env.ADMIN_TOTP_SECRET,totp)) {
     await limit.fail(req, env);
     throw fail('Unauthorized', 401);
   }
   const token = random(), expires = Date.now() + 7200000;
-  await env.CONFIG.put('admin-session:' + await hash(token), JSON.stringify({expires}), {expirationTtl:7200});
+    await env.CONFIG.put('admin-session:' + await hash(token), JSON.stringify({expires,created:Date.now()}), {expirationTtl:7200});
   return {token, expires};
 }
 export async function admin(req, env) {
   const token = (req.headers.get('Authorization') || '').match(/^Bearer ([a-f0-9]{64})$/)?.[1];
   const session = token && await env.CONFIG?.get('admin-session:' + await hash(token), 'json');
   if (!session || !Number.isFinite(session.expires) || session.expires <= Date.now()) throw fail('Unauthorized', 401);
+    const revoked=Number(await env.CONFIG.get('admin-revoked-before'))||0;
+    if((session.created??session.expires-7200000)<=revoked)throw fail('Session revoked',401);
 }
 export async function adminLogout(req, env) {
   await admin(req, env);
@@ -85,16 +88,16 @@ export async function saveSecrets(req, env) {
 }
 export async function testSecret(req, env) {
   await admin(req, env);
-  const { service } = await input(req, z.object({ service: z.enum(['stripe', 'anthropic', 'thunder', 'vapid']) }).strict());
+  const { service } = await input(req, z.object({ service: z.enum(['stripe', 'anthropic', 'thunder', 'vapid', 'line', 'resend']) }).strict());
   if (service === 'vapid') {
     const pub = await getSecret(env, 'vapidPublicKey'), priv = await getSecret(env, 'vapidPrivateKey');
     const bytes = Uint8Array.from(atob(pub.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
     const b64 = a => btoa(String.fromCharCode(...a)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
     try { await crypto.subtle.importKey('jwk', { kty: 'EC', crv: 'P-256', x: b64(bytes.slice(1,33)), y: b64(bytes.slice(33)), d: priv }, { name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign']); return { connected: true }; } catch { return { connected: false, message: 'Invalid VAPID key pair' }; }
   }
-  const value = await getSecret(env, { stripe:'stripeSecretKey', anthropic:'anthropicApiKey', thunder:'thunderApiKey' }[service]);
+  const value = await getSecret(env, { stripe:'stripeSecretKey', anthropic:'anthropicApiKey', thunder:'thunderApiKey',line:'lineMessagingToken',resend:'resendApiKey' }[service]);
   if (!value) return { connected: false, message: 'Key not configured' };
-  const urls = { stripe:'https://api.stripe.com/v1/balance', anthropic:'https://api.anthropic.com/v1/models', thunder:'https://api.thunder.in.th/v2/info' };
+  const urls = { stripe:'https://api.stripe.com/v1/balance', anthropic:'https://api.anthropic.com/v1/models', thunder:'https://api.thunder.in.th/v2/info',line:'https://api.line.me/v2/bot/info',resend:'https://api.resend.com/domains' };
   const res = await fetch(urls[service], { headers: service === 'anthropic' ? { 'x-api-key': value, 'anthropic-version': '2023-06-01' } : { Authorization: 'Bearer ' + value }, signal: AbortSignal.timeout(10000) });
   return { connected: res.ok, message: res.ok ? 'OK' : 'Service returned HTTP ' + res.status };
 }

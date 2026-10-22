@@ -47,6 +47,11 @@ import './views/recipes.js';
 import './views/credits.js';
 import './views/training-settings.js';
 import { loadConfig } from './config.js';
+import {startSocialBadges} from './views/social.js';
+import {loadAnnouncements} from './views/social-extra.js';
+import './views/me-round11.js';
+import './views/admin-round11.js';
+import {pageGuidance} from './guidance.js';
 
 const TABS = [
   ['today', 'home', { th: 'วันนี้', en: 'Today' }],
@@ -78,6 +83,7 @@ function render() {
   tabEl.innerHTML = TABS.map(([name, ic, label]) => `<a href="#/${name}" class="${parentTab(r.name) === name ? 'on' : ''}">${icon(ic, 22)}<span>${L(label)}</span></a>`).join('')
     + (installEvt ? '' : '');
   document.documentElement.lang = getState().lang;
+  pageGuidance(viewEl,r.name);
 }
 setRenderer(render);
 setupEffects();
@@ -131,6 +137,8 @@ startPushSync();
 startLineReminders();
 startMetrics();
 startAccountSync();
+startSocialBadges();
+loadAnnouncements();
 refreshEntitlement();
 startTelemetry();
 handleStripeReturn().then((r) => r && toast(L('ชำระเงินสำเร็จ 🎉', 'Payment confirmed 🎉'))).catch((e) => toast(e.message, 'warn'));

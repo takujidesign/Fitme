@@ -221,8 +221,8 @@ export const EXERCISES = [
     name: { th: 'เดินเร็ว', en: 'Brisk walk' }, muscles: { th: 'หัวใจ ขา (ฟื้นฟู)', en: 'Cardio, recovery' },
     cues: { th: ['ก้าวยาวสม่ำเสมอ', 'แกว่งแขนตามจังหวะ', 'ให้หายใจแรงขึ้นแต่ยังพูดได้'], en: ['Steady long strides', 'Swing the arms', 'Breathing up but able to talk'] },
     frames: [
-      { x: 100, y: 114, t: 178, a1: [-22, 10], a2: [22, 40], l1: [25, 10], l2: [-20, -5] },
-      { x: 100, y: 113, t: 178, a1: [22, 40], a2: [-22, 10], l1: [-20, -5], l2: [25, 10] },
+      { x: 100, y: 114, t: 178, a1: [-22, 10], a2: [22, 40], l1: [25, 10], l2: [-20, -30] },
+      { x: 100, y: 113, t: 178, a1: [22, 40], a2: [-22, 10], l1: [-20, -30], l2: [25, 10] },
     ], dur: [550, 550],
   },
   {
@@ -280,3 +280,22 @@ for(const entry of EXERCISES){
 }
 for(const entry of EXERCISES)localizedNames(entry.name||entry);
 export const EX = Object.fromEntries(EXERCISES.map((e) => [e.id, e]));
+
+// Round 11: continuous anatomical poses, in the shared absolute-angle convention.
+EX.triceps_ext.frames = [stand({a1:[175,176],a2:[175,176]}),stand({a1:[175,-35],a2:[175,-35]})];
+EX.crunch.frames[1] = {...EX.crunch.frames[1],t:-117,h:0,a1:[110,100],a2:[110,100]};
+EX.deadlift.frames[0]={...EX.deadlift.frames[0],x:73,y:139,t:120,a1:[-4,0],a2:[-4,0]};
+EX.side_plank.prop='mat';
+EX.side_plank.frames = [0,1].map(()=>({x:93,y:145,t:115,h:0,a1:[0,90],a2:[180,180],l1:[-65,-65],l2:[-65,-65],f1:90,f2:90}));
+EX.plank.frames = [0,1].map(()=>({x:90,y:145,t:115,h:0,a1:[0,90],a2:[0,90],l1:[-65,-65],l2:[-65,-65],f1:90,f2:90}));
+EX.jog.frames=[0,1].map(i=>({x:100,y:110,t:172,a1:i?[25,115]:[-25,65],a2:i?[-25,65]:[25,115],l1:i?[-12,-52]:[40,-12],l2:i?[40,-12]:[-12,-52],f1:90,f2:90}));
+EX.run_interval.frames=EX.jog.frames.map(p=>structuredClone(p));
+EX.run_interval.dur=[400,400];
+EX.mountain_climber.frames.forEach((p,i)=>{p.l1=i?[-57,-57]:[50,-105];p.l2=i?[50,-105]:[-57,-57];p.f1=90;p.f2=90;});
+EX.step_up.prop='step';
+EX.pushup.frames.forEach(p=>{p.f1=90;p.f2=90;});
+EX.forward_fold.frames[1].t=62;
+EX.child_pose.frames=[0,1].map(()=>({x:65,y:152,t:75,h:-15,a1:{to:[156,178],bend:-1},a2:{to:[153,178],bend:-1},l1:[35,-110],l2:[35,-110],f1:0,f2:0}));
+EX.quad_stretch.prop=undefined;
+EX.quad_stretch.frames=[0,1].map(()=>({x:100,y:114,t:185,a1:{to:[88.24,115.0],bend:-1},a2:{to:[107,110],bend:1},l1:[-5,-165],l2:[0,0],f1:-90,f2:90}));
+EX.deadlift.prop='plate bar';

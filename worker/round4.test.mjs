@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import worker from './src/index.js';
 import { encrypt,decrypt,getSecret,hash } from './src/security.js';
 import { mergeState } from '../app/js/sync-data.js';
-const db=new DatabaseSync(':memory:');for(const name of ['0001_init.sql','0002_round5a.sql','0003_round5b.sql','0004_round5c.sql','0005_ai_credits.sql'])db.exec(readFileSync(new URL('./migrations/'+name,import.meta.url),'utf8'));
+const db=new DatabaseSync(':memory:');for(const name of ['0001_init.sql','0002_round5a.sql','0003_round5b.sql','0004_round5c.sql','0005_ai_credits.sql','0006_round10.sql','0007_round11.sql'])db.exec(readFileSync(new URL('./migrations/'+name,import.meta.url),'utf8'));
 const kv=new Map(),env={MASTER_KEY:'test-master-key-32-chars-abcdefghijklmnop',ADMIN_PASSWORD:'admin-only-secret',TOKEN_SECRET:'signed-token-secret',CONFIG:{get:async(k,type)=>kv.has(k)?type==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v)},DB:{prepare(sql){return {bind(...args){const q=db.prepare(sql);return {first:async()=>q.get(...args)||null,all:async()=>({results:q.all(...args)}),run:async()=>({meta:{changes:Number(q.run(...args).changes)}})};}}},batch:async statements=>{db.exec('BEGIN');try{const r=[];for(const s of statements)r.push(await s.run());db.exec('COMMIT');return r;}catch(e){db.exec('ROLLBACK');throw e;}}}};
 const request=(path,body,token='',method=body===undefined?'GET':'POST',ip='1')=>worker.fetch(new Request('https://test/api/'+path,{method,headers:{'Content-Type':'application/json',Authorization:'Bearer '+token,'CF-Connecting-IP':ip},body:body===undefined?undefined:JSON.stringify(body)}),env);
 const adminSession=(await (await request('admin/login',{password:env.ADMIN_PASSWORD})).json()).token;
@@ -16,7 +16,7 @@ r=await request('config');const publicData=await r.json();assert.equal(publicDat
 assert.equal((await request('admin/secrets',{bad:'key'},adminSession,'PUT')).status,400);
 assert.equal((await request('admin/secrets',{thunderApiKey:''},adminSession,'PUT')).status,200);assert.equal(await getSecret(env,'thunderApiKey'),'');
 for(let i=0;i<10;i++)assert.equal((await request('admin/login',{password:'wrong'},'','POST','admin-rate')).status,401);assert.equal((await request('admin/login',{password:'wrong'},'','POST','admin-rate')).status,429);
-const register=async(email,ip)=>{const r=await request('auth/register',{email,password:'valid-password-123'},'','POST',ip);assert.equal(r.status,200);return r.json();};
+const register=async(email,ip)=>{const r=await request('auth/register',{age16:true,email,password:'valid-password-123'},'','POST',ip);assert.equal(r.status,200);return r.json();};
 const client=await register('client@example.com','client'),trainer=await register('trainer@example.com','trainer'),stranger=await register('stranger@example.com','stranger');
 const stored=db.prepare('SELECT * FROM users WHERE id=?').get(client.user.id);assert.notEqual(stored.pass_hash,'valid-password-123');assert.equal(stored.pass_salt.length,32);assert.equal(db.prepare('SELECT token_hash FROM sessions WHERE user_id=?').get(client.user.id).token_hash,await hash(client.token));
 assert.equal((await request('auth/login',{email:'CLIENT@example.com',password:'valid-password-123'},'','POST','login')).status,200);

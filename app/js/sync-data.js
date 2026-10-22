@@ -1,5 +1,5 @@
 // Shared wire format: never send local credentials, notifications or image references.
-export const syncKeys = ['consents','profile','logs','supplements','weights','measurements','customFoods','foodLog','premium','chat','challenges','badges','blocks','dayOverrides','exSwaps','mealSeed'];
+export const syncKeys = ['colours','consents','profile','logs','supplements','weights','measurements','customFoods','foodLog','premium','chat','challenges','badges','blocks','dayOverrides','exSwaps','mealSeed'];
 const forbidden = new Set(['photos','photoId','image','images','photo','dataUrl','account','password','token_hash','__proto__','constructor','prototype']);
 export function clean(value) {
   if (Array.isArray(value)) return value.map(clean);

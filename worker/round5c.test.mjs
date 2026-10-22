@@ -16,7 +16,7 @@ env.BACKUPS.createMultipartUpload=async key=>{const parts=[];return {uploadPart:
 const request=(path,body,token='',method=body===undefined?'GET':'POST')=>worker.fetch(new Request('https://api.test/api/'+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:body===undefined?undefined:JSON.stringify(body)}),env);
 const adminSession=(await (await request('admin/login',{password:env.ADMIN_PASSWORD})).json()).token;
 const ok=async r=>{const b=await r.json();assert.equal(r.status,200,JSON.stringify(b));return b;};
-const a=await ok(await request('auth/register',{email:'a@example.com',password:'password-123'})),b=await ok(await request('auth/register',{email:'b@example.com',password:'password-123'}));
+const a=await ok(await request('auth/register',{age16:true,email:'a@example.com',password:'password-123'})),b=await ok(await request('auth/register',{age16:true,email:'b@example.com',password:'password-123'}));
 const device=crypto.randomUUID(),trial=await ok(await request('trial',{installId:device},a.token));assert.equal(trial.entitlement.pid,'trial7');assert.equal((await request('trial',{installId:device},b.token)).status,409);assert.equal((await request('trial',{installId:crypto.randomUUID()},a.token)).status,409);assert.equal(db.prepare('SELECT count(*) n FROM trial_devices').get().n,1);
 assert((await entitlementUntil(env,a.user.id))>Date.now());
 const org=await ok(await request('admin/organisations',{adminEmail:a.user.email,name:'Team',seats:2,expiry:Date.now()+86400000,priceNote:'test'},adminSession));

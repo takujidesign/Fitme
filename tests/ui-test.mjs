@@ -42,7 +42,7 @@ let disconnected=false;
 const characteristic=new window.EventTarget();characteristic.startNotifications=async()=>{};characteristic.stopNotifications=async()=>{};
 const device=new window.EventTarget();device.gatt={disconnect:()=>{disconnected=true;},connect:async()=>({getPrimaryService:async name=>{assert.equal(name,'heart_rate');return {getCharacteristic:async name=>{assert.equal(name,'heart_rate_measurement');return characteristic;}};}})};
 Object.defineProperty(navigator,'bluetooth',{value:{requestDevice:async options=>{assert.deepEqual(options,{filters:[{services:['heart_rate']}]});return device;}}});
-current='player';render();views.player.mount(root);await actions['hr-connect']();
+current='player';render();views.player.mount(root);actions['hr-sheet']();await actions['hr-connect']();
 characteristic.value=new DataView(Uint8Array.from([0,140]).buffer);characteristic.dispatchEvent(new Event('characteristicvaluechanged'));
 characteristic.value=new DataView(Uint8Array.from([1,160,0]).buffer);characteristic.dispatchEvent(new Event('characteristicvaluechanged'));
 assert(document.getElementById('live-hr').textContent.includes('160 BPM'));

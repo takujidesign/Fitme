@@ -17,7 +17,7 @@ web/dist/
 .wrangler/
 
 # Owner-generated illustration artifacts (review before any publication)
-app/img/ex/
+scripts/illustrations/rejected/
 scripts/illustrations/receipts/
 scripts/illustrations/queue.json
 scripts/illustrations/queue-progress.json

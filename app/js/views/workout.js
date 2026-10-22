@@ -135,12 +135,12 @@ function renderStep(host) {
   const st = P.steps[P.i];
   if (!st) return finish(host);
   const pct = (P.i / P.steps.length) * 100;
-  const top = `<div class="pl-top">${voiceButton()}<button class="icon-btn" data-act="pl-exit">${icon('x')}</button><div class="pl-bar"><i style="width:${pct}%"></i></div><span class="muted sm">${Math.round(pct)}%</span></div>`;
+  const top = `<div class="pl-top">${voiceButton()}<button class="icon-btn" data-act="hr-sheet" aria-label="${L('\u0e0a\u0e35\u0e1e\u0e08\u0e23','Heart rate')}">♥</button><button class="icon-btn" data-act="pl-exit">${icon('x')}</button><div class="pl-bar"><i style="width:${pct}%"></i></div><span class="muted sm">${Math.round(pct)}%</span></div>`;
   if (st.kind === 'rest') {
     speak('พัก', 'Rest starts');
     P.left = st.sec;
     const nx = EX[st.next.id];
-    host.innerHTML = `${top}${heartUI()}<div class="pl-rest"><small>${L('พัก', 'Rest')}</small><div class="big-count" id="cnt">${P.left}</div>
+    host.innerHTML = `${top}<div class="pl-rest"><small>${L('พัก', 'Rest')}</small><div class="big-count" id="cnt">${P.left}</div>
       <div class="row gap center"><button class="btn ghost" data-act="pl-add">+15s</button><button class="btn primary" data-act="pl-next">${L('ข้าม', 'Skip')} ${icon('skip', 16)}</button></div>
       <div class="next-up"><small>${L('ต่อไป', 'Up next')} · ${L('เซ็ต', 'Set')} ${st.nextSet}/${st.next.sets}</small><div class="fig md" id="pl-fig"></div><b>${L(nx.name)}</b><span>${target(st.next)}</span></div></div>`;
     anim = animateFigure(host.querySelector('#pl-fig'), nx, { speed: 0.8 });
@@ -151,7 +151,7 @@ function renderStep(host) {
   speak(`${P.steps[P.i-1]?.kind === 'rest' ? 'หมดเวลาพัก ' : ''}${ex.name.th} เซ็ต ${st.set} ${ex.cues.th[st.set % 3]}`, `${P.steps[P.i-1]?.kind === 'rest' ? 'Rest ends. ' : ''}${ex.name.en}. Set ${st.set}. ${ex.cues.en[st.set % 3]}`);
   const timed = !!it.sec;
   P.left = timed ? it.sec : 0;
-  host.innerHTML = `${top}${heartUI()}<div class="pl-work">
+  host.innerHTML = `${top}<div class="pl-work">
     <div class="fig xl" id="pl-fig"></div>${videoToggle(ex.id)}
     <small class="muted">${L(PHASE[it.phase || 'main'])} · ${L('เซ็ต', 'Set')} ${st.set}/${it.sets}</small>
     <h1>${L(ex.name)}</h1>
@@ -242,3 +242,5 @@ function saveSet(){
 }
 
 actions["form-check"]=()=>{const st=P?.steps[P.i];if(!st||st.kind!=="work")return;startFormCheck(document.getElementById("form-check"),st.it.id,summary=>{const input=document.getElementById("set-reps");if(input&&summary.reps)input.value=summary.reps;if(summary.reps||summary.seconds)toast(`${summary.reps} reps · ${summary.seconds}s · ${summary.cues.join(" / ")}`);updateLog(P.iso,l=>{(l.formChecks||=[]).push({id:st.it.id,set:st.set,...summary});});});};
+
+actions['hr-sheet']=()=>sheet(heartUI());

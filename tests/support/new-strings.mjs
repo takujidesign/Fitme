@@ -1,0 +1,2 @@
+﻿import {readFileSync} from 'node:fs';import {dictionaries} from '../../app/js/i18n/index.js';
+const files=['guidance','theme','errors','views/social','views/me-round11','views/admin-round11','views/admin-system','views/admin-content','views/admin-setup','views/social-extra'];const keys=new Set();for(const f of files){const t=readFileSync('app/js/'+f+'.js','utf8');for(const m of t.matchAll(/L\('[^']*',\s*'([^']*)'\)/g))if(!dictionaries.zh[m[1]])keys.add(m[1]);}console.log([...keys].join('\n'));

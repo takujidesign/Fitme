@@ -54,6 +54,7 @@ export async function reserve(env,c,amount,now=Date.now()) {
 export const refund=(env,id)=>q(env,'UPDATE ai_reservations SET refunded=1 WHERE id=? AND refunded=0',id).run();
 export const event=(env,owner,kind,now=Date.now())=>q(env,'INSERT INTO ai_events VALUES(?,?,?,?)',crypto.randomUUID(),owner,kind,iso(now)).run();
 export async function runAI(req,env,feature,verifyToken,config,fn){
+ if((await env.CONFIG?.get('social-settings','json'))?.aiEnabled===false)throw fail('AI is disabled',503);
  const c=await creditOwner(req,env,verifyToken,config);
  const n=await q(env,'INSERT INTO ai_limits VALUES(?,?,1) ON CONFLICT(owner,bucket) DO UPDATE SET count=count+1 RETURNING count',c.owner,Math.floor(Date.now()/3600000)).first();
  if(n.count>30)throw fail('AI limit: 30 calls per hour',429);

@@ -1,0 +1,20 @@
+[
+  {
+    "level": "error",
+    "message": "Error: Could not establish connection. Receiving end does not exist.",
+    "timestamp": "2026-10-22T07:33:28.982Z",
+    "url": "http://127.0.0.1:5191/review?theme=light&screen=checkin"
+  },
+  {
+    "level": "error",
+    "message": "Error: Could not establish connection. Receiving end does not exist.",
+    "timestamp": "2026-10-22T07:33:28.982Z",
+    "url": "http://127.0.0.1:5191/?theme=light#/checkin"
+  },
+  {
+    "level": "error",
+    "message": "Error: Could not establish connection. Receiving end does not exist.",
+    "timestamp": "2026-10-22T07:33:28.982Z",
+    "url": "http://127.0.0.1:5191/?theme=light#/checkin"
+  }
+]

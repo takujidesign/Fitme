@@ -1,3 +1,4 @@
+import {eraseSocial} from './social-cleanup.js';
 import { aiConfig } from './ai-config.js';
 import { variantFor } from './growth.js';
 import { z } from 'zod/v4';
@@ -27,9 +28,13 @@ export async function accountData(req,env) {
   if(req.method!=='DELETE')throw fail('Method not allowed',405);
   const b=await input(req,z.object({email:z.string().email()}).strict());
   if(b.email.trim().toLowerCase()!==u.email)throw fail('Type your email to confirm');
+  return deleteAccount(env,u);
+}
+export async function deleteAccount(env,u){
   // Delete external push records first, so a failure is retryable without losing ownership.
   for(const d of await rows(env,'SELECT device_id FROM push_subscriptions WHERE user_id=?',u.id))await env.PUSH?.delete('device:'+d.device_id);
   const anon=await hash(crypto.randomUUID());
+  await eraseSocial(env,u.id,anon);
   await env.DB.batch([
     ...['ai_credits','ai_topups','ai_usage','ai_reservations','ai_limits','ai_events','ai_periods'].map(t=>q(env,`DELETE FROM ${t} WHERE owner=?`,u.id)),
     q(env,'UPDATE payments SET user_id=? WHERE user_id=?',anon,u.id),

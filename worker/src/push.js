@@ -9,7 +9,15 @@ export const unb64 = s => Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,
 const join = (...parts) => { const out=new Uint8Array(parts.reduce((n,p)=>n+p.length,0));let at=0;for(const p of parts){out.set(p,at);at+=p.length;}return out; };
 async function hkdf(ikm,salt,info,length){const key=await crypto.subtle.importKey('raw',ikm,'HKDF',false,['deriveBits']);return new Uint8Array(await crypto.subtle.deriveBits({name:'HKDF',hash:'SHA-256',salt,info},key,length*8));}
 export async function generateVapidKeys(){const keys=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']);const jwk=await crypto.subtle.exportKey('jwk',keys.privateKey);return {publicKey:b64(await crypto.subtle.exportKey('raw',keys.publicKey)),privateKey:jwk.d};}
+export async function pushUser(env,userId,payload){
+ if(!env.DB||!env.PUSH||!await getSecret(env,'vapidPrivateKey')||!await getSecret(env,'vapidPublicKey'))return false;
+ const devices=(await query(env,'SELECT device_id FROM push_subscriptions WHERE user_id=?',userId).all()).results;let sent=false;
+ for(const {device_id} of devices){try{const record=await env.PUSH.get('device:'+device_id,'json');if(!record||record.expires<Date.now()||!validEndpoint(record.subscription.endpoint))continue;const endpoint=record.subscription.endpoint,res=await fetch(endpoint,{method:'POST',redirect:'error',headers:{TTL:'300','Content-Encoding':'aes128gcm','Content-Type':'application/octet-stream',Authorization:`vapid t=${await vapidJWT(endpoint,env)}, k=${await getSecret(env,'vapidPublicKey')}`},body:await encryptPush(record.subscription,payload)});if(res.ok)sent=true;else if([404,410].includes(res.status)){await env.PUSH.delete('device:'+device_id);await query(env,'DELETE FROM push_subscriptions WHERE device_id=?',device_id).run();}}catch{/* A notification failure must not fail the saved message. */}}
+ return sent;
+}
 export async function vapidJWT(endpoint,env,now=Date.now()){
+  const contact=(await env.CONFIG?.get('business','json'))?.contactEmail;
+  if(contact)env={...env,VAPID_SUBJECT:'mailto:'+contact};
   const pub=unb64((await getSecret(env, 'vapidPublicKey')));
   const key=await crypto.subtle.importKey('jwk',{kty:'EC',crv:'P-256',x:b64(pub.slice(1,33)),y:b64(pub.slice(33)),d:(await getSecret(env, 'vapidPrivateKey'))},{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
   const unsigned=b64(enc.encode(JSON.stringify({typ:'JWT',alg:'ES256'})))+'.'+b64(enc.encode(JSON.stringify({aud:new URL(endpoint).origin,exp:Math.floor(now/1000)+3600,sub:env.VAPID_SUBJECT})));

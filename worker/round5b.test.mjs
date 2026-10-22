@@ -8,7 +8,7 @@ const env={DB,CONFIG:{get:async(k,t)=>kv.has(k)?t==='json'?JSON.parse(kv.get(k))
 const request=(path,body,token='',method=body===undefined?'GET':'POST')=>worker.fetch(new Request('https://api.test/api/'+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:body===undefined?undefined:JSON.stringify(body)}),env);
 const adminSession=(await (await request('admin/login',{password:env.ADMIN_PASSWORD})).json()).token;
 const ok=async r=>{const b=await r.json();assert.equal(r.status,200,JSON.stringify(b));return b;};
-const register=async email=>ok(await request('auth/register',{email,password:'test-password-123'}));
+const register=async email=>ok(await request('auth/register',{age16:true,email,password:'test-password-123'}));
 const owner=await register('owner@example.com'),other=await register('other@example.com'),outsider=await register('outside@example.com');
 const g=await ok(await request('groups',{name:'Walking',nickname:'Owner'},owner.token));assert.match(g.code,/^[A-Z2-9]{6}$/);
 assert.equal((await request('groups/'+g.id,undefined,outsider.token)).status,403);
