@@ -2,6 +2,7 @@
 // API_BASE: URL of the deployed Cloudflare Worker (see /worker). Leave empty to run in demo mode:
 // payments are simulated and AI label reading is disabled.
 export const CONFIG = {
+  freeMode: true, aiEngines: {claude:true}, donate: {wiseUrl:'',stripeUrl:''},
   CONTACT_EMAIL: '', REFERRAL_DAYS: 7, TRAINER_SHARE: 70,
   API_BASE: 'https://api.fixmee.app',
   // PromptPay receiver (mobile number 0812345678 or 13-digit tax ID). Used to build the payment QR.
@@ -23,7 +24,7 @@ export const CONFIG = {
 
 export const isDemo = () => !CONFIG.API_BASE;
 
-const fields = { promptpayId: 'PROMPTPAY_ID', promptpayName: 'PROMPTPAY_NAME', receiverName: 'RECEIVER_NAME', products: 'PRODUCTS', freePlanDays: 'FREE_PLAN_DAYS', freeSupplements: 'FREE_SUPPLEMENTS' };
+const fields = { freeMode:'freeMode', aiEngines:'aiEngines', donate:'donate', promptpayId: 'PROMPTPAY_ID', promptpayName: 'PROMPTPAY_NAME', receiverName: 'RECEIVER_NAME', products: 'PRODUCTS', freePlanDays: 'FREE_PLAN_DAYS', freeSupplements: 'FREE_SUPPLEMENTS' };
 export function mergeConfig(config) {
   if(config.ai)CONFIG.AI=config.ai;
   for(const [k,v] of Object.entries({contactEmail:'CONTACT_EMAIL',referralDays:'REFERRAL_DAYS',trainerShare:'TRAINER_SHARE'}))if(config[k]!==undefined)CONFIG[v]=config[k];

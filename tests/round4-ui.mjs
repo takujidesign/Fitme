@@ -3,6 +3,7 @@ const {Window}=await import(process.env.HAPPY_DOM_PATH||'happy-dom');
 const window=new Window({url:'http://localhost/#/account'});
 for(const k of ['window','document','localStorage','sessionStorage','navigator','location','FormData','Event'])Object.defineProperty(globalThis,k,{configurable:true,value:k==='window'?window:window[k]});
 globalThis.requestAnimationFrame=()=>1;
+localStorage.setItem('fitme:ai-engine','claude');
 const {getState,setState,todayISO,addDays}=await import('../app/js/store.js');
 const {views,actions,setRenderer}=await import('../app/js/core.js');
 const {CONFIG}=await import('../app/js/config.js');

@@ -1,3 +1,7 @@
+import { round10 } from './round10.js';
+import { Doses, Bi, MealItem, Product, Review, BodyReview } from '../../app/js/ai-schemas.js';
+const Language=z.enum(['th','en','zh','ja','vi']);
+const languageName=lang=>({th:'Thai',en:'English',zh:'Simplified Chinese',ja:'Japanese',vi:'Vietnamese'}[lang]||'English');
 import { growth, domainEnv, entitlementUntil } from './growth.js';
 import { billing } from './billing.js';
 import { backup, backupRoute } from './backups.js';
@@ -40,6 +44,7 @@ export default {
     try {
       let out;
       if (['/api/stripe/webhook','/api/stripe/subscribe','/api/stripe/portal','/api/subscription'].includes(url.pathname)) out = await billing(req,env,url.pathname,stripe);
+      else if (/^\/api\/(ideas(?:\/|$)|donate\/|supporter(?:\/|$)|admin\/(?:ideas|donations)$)/.test(url.pathname)) out = await round10(req,env,url.pathname,readConfig,verifyAmount);
       else if (['/api/admin/backups','/api/backups/download'].includes(url.pathname)) out = await backupRoute(req,env);
       else if (['/api/admin/growth','/api/admin/organisations','/api/admin/experiments','/api/experiment','/api/trial','/api/engagement','/api/org','/api/org/join','/api/org/challenge','/api/org/scores'].includes(url.pathname)) out = await growth(req,env,url.pathname,issue);
       else if (url.pathname.startsWith('/api/auth/line/') || url.pathname === '/api/admin/line') out = await lineAuth(req,env,url.pathname);
@@ -146,7 +151,7 @@ async function verifyAmount(amountExpected, image, env) {
   const receiverName = (await readConfig(env)).receiverName;
   if (receiverName) {
     const names = [slip.receiver?.account?.name?.th, slip.receiver?.account?.name?.en].filter(Boolean).join(' ').toLowerCase();
-    const wanted = receiverName.toLowerCase().split('|');
+    const wanted = receiverName.toLowerCase().split('|').map(v=>v.trim()).filter(Boolean);
     if (!wanted.some((w) => names.includes(w.trim()))) throw fail('receiver does not match');
   }
   if (!slip.transRef) throw fail('Missing payment reference');
@@ -172,14 +177,6 @@ function safeReturn(u, env) {
   return url.origin + url.pathname;
 }
 // ---------- Supplement label reading with Claude ----------
-const Doses = z.object({
-  morning: z.number(), breakfast: z.number(), lunch: z.number(), afternoon: z.number(),
-  pre: z.number(), post: z.number(), dinner: z.number(), night: z.number(),
-});
-const Language=z.enum(['th','en','zh','ja','vi']);
-const languageName=lang=>({th:'Thai',en:'English',zh:'Simplified Chinese',ja:'Japanese',vi:'Vietnamese'}[lang]||'English');
-const Bi = z.object({ th: z.string(), en: z.string(),zh:z.string().optional(),ja:z.string().optional(),vi:z.string().optional() });
-const MealItem = z.object({ name: Bi, grams: z.number().positive(), kcal: z.number().nonnegative(), p: z.number().nonnegative(), c: z.number().nonnegative(), f: z.number().nonnegative(), confidence: z.enum(['low', 'medium', 'high']) });
 async function mealPhoto(req, env) {
   const raw = await req.text();
   if (raw.length > 8_100_000) throw fail('Request too large', 413);
@@ -195,23 +192,6 @@ async function mealPhoto(req, env) {
   const totals = Object.fromEntries(['kcal', 'p', 'c', 'f'].map(k => [k, items.reduce((n, it) => n + it[k], 0)]));
   return { review: { items, totals } };
 }
-const Product = z.object({
-  isSupplement: z.boolean(),
-  name: Bi,
-  brand: z.string(),
-  category: z.enum(['creatine', 'protein', 'carnitine', 'multi', 'bcomplex', 'collagen', 'antioxidant', 'other']),
-  unit: Bi,
-  perContainer: z.number(),
-  nutrition: z.object({ k: z.number(), p: z.number(), c: z.number(), f: z.number() }),
-  loadingDays: z.number(),
-  note: Bi,
-  rules: z.array(z.object({
-    wMin: z.number().nullable(), wMax: z.number().nullable(),
-    day: z.enum(['train', 'rest', 'any']), phase: z.enum(['loading', 'maint', 'any']),
-    doses: Doses,
-  })),
-});
-
 const SYSTEM = `You read photos of dietary-supplement labels (often Thai and English) and convert the printed directions into a dosing schedule for a fitness app.
 Slots: morning (on waking), breakfast (after breakfast), lunch, afternoon, pre (pre-workout), post (post-workout), dinner (after dinner), night (before bed). Amounts are in the product's serving unit (scoop, capsule, tablet); use 0 for slots without a dose.
 If the label has a chart by body weight and/or training vs non-training days and/or loading vs maintenance phase, output one rule per column/phase combination with wMin/wMax in kg (wMax inclusive, null when open-ended). "Non-training" maps to day "rest". If there is only a simple instruction such as "1 capsule daily after a meal", output a single rule with day "any" and phase "any" and pick the slot the label implies (after a meal → breakfast unless stated otherwise).
@@ -249,6 +229,8 @@ const Price = z.object({
   descTh: z.string().max(1000), descEn: z.string().max(1000), best: z.boolean().optional(),
 }).strict();
 const Settings = z.object({
+  freeMode:z.boolean().default(true), aiEngines:z.object({claude:z.boolean().default(true)}).default({claude:true}),
+  donate:z.object({wiseUrl:z.union([z.literal(''),z.string().url().startsWith('https://')]),stripeUrl:z.union([z.literal(''),z.string().url().startsWith('https://')])}).default({wiseUrl:'',stripeUrl:''}),
   promptpayId: z.string().regex(/^(?:0[0-9]{9}|[0-9]{13})$/),
   promptpayName: z.string().min(1).max(200), receiverName: z.string().max(300),
   products: z.object({ export1: Price, pro30: Price, pro90: Price, credits40: Price.optional() }).strict(),
@@ -258,6 +240,7 @@ const Settings = z.object({
 export async function readConfig(env) {
   const saved = env.CONFIG ? await env.CONFIG.get('settings', 'json') : null;
   return {
+    freeMode:true, aiEngines:{claude:true}, donate:{wiseUrl:'',stripeUrl:''},
     promptpayId: DEFAULTS.PROMPTPAY_ID, promptpayName: DEFAULTS.PROMPTPAY_NAME,
     receiverName: env.RECEIVER_NAME || '', freePlanDays: DEFAULTS.FREE_PLAN_DAYS,
     freeSupplements: DEFAULTS.FREE_SUPPLEMENTS,
@@ -266,7 +249,7 @@ export async function readConfig(env) {
 }
 async function publicConfig(env) {
   const settings=await readConfig(env),biz=await business(env);
-  const config=Object.fromEntries(['promptpayId','promptpayName','receiverName','freePlanDays','freeSupplements','products'].map(k=>[k,settings[k]]));
+  const config=Object.fromEntries(['freeMode','aiEngines','donate','promptpayId','promptpayName','receiverName','freePlanDays','freeSupplements','products'].map(k=>[k,settings[k]]));
   for(const k of ['contactEmail','referralDays','trainerShare'])config[k]=biz[k];
   config.products = Object.fromEntries(Object.entries(config.products).map(([id,p]) => [id,Object.fromEntries(['thb','usd','days','exports','th','en','descTh','descEn','best'].filter(k=>p[k]!==undefined).map(k=>[k,p[k]]))]));
   config.ai={prices:settings.ai.prices,credits:settings.ai.credits};
@@ -284,15 +267,6 @@ async function saveConfig(req, env) {
 }
 
 // ---------- AI coach (requests and photos are never persisted by this Worker) ----------
-const Group = z.enum(['legs', 'push', 'pull', 'core', 'cardio', 'mobility']);
-const Review = z.object({
-  advice: z.array(Bi), swaps: z.array(z.object({ from: z.enum(Object.keys(FOOD)), to: z.enum(Object.keys(FOOD)), reason: Bi })), warnings: z.array(Bi),
-});
-const BodyReview = z.object({
-  bodyFatRange: z.object({ min: z.number(), max: z.number() }).nullable(),
-  posture: z.array(Bi), underDeveloped: z.array(Bi),
-  goal: z.enum(['cut', 'recomp', 'maintain', 'bulk', 'strength']), focus: z.array(Group), warnings: z.array(Bi),
-});
 async function coach(req, env, body) {
   const raw = await req.text();
   if (raw.length > (body ? 12_000_000 : 100_000)) throw fail('Request too large', 413);

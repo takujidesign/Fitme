@@ -1,3 +1,5 @@
+import './views/round10.js';
+import {applyTab,setupEffects,parentTab,reducedMotion,animateToday} from './tab-effects.js';
 import './views/ai-usage.js';
 import { refreshCredits } from './ai-credits.js';
 import { cacheOfflineAssets } from './offline.js';
@@ -61,6 +63,7 @@ function render() {
   applyTheme();
   languageFont(getState().lang);
   const r = route();
+  applyTab(r.name);
   let robots=document.querySelector('meta[data-admin-robots]');
   if(r.name==='admin'){if(!robots){robots=document.createElement('meta');robots.name='robots';robots.dataset.adminRobots='';document.head.append(robots);}robots.content='noindex';}else robots?.remove();
   if (!getState().onboarded && !['onboarding', 'admin', 'credits', 'privacy', 'terms', 'account', 'line-return', 'pay'].includes(r.name)) return go('#/onboarding');
@@ -70,18 +73,20 @@ function render() {
   document.body.classList.toggle('full', !!v.full || r.name === 'onboarding');
   viewEl.innerHTML = `<div class="view-inner v-${r.name}">${html}</div>`;
   v.mount?.(viewEl);
+  if(r.name==='today')animateToday(viewEl);
   if(viewEl.querySelector('[data-ai-balance],[data-ai-cost]'))refreshCredits().catch(()=>{});
-  tabEl.innerHTML = TABS.map(([name, ic, label]) => `<a href="#/${name}" class="${r.name === name ? 'on' : ''}">${icon(ic, 22)}<span>${L(label)}</span></a>`).join('')
+  tabEl.innerHTML = TABS.map(([name, ic, label]) => `<a href="#/${name}" class="${parentTab(r.name) === name ? 'on' : ''}">${icon(ic, 22)}<span>${L(label)}</span></a>`).join('')
     + (installEvt ? '' : '');
   document.documentElement.lang = getState().lang;
 }
 setRenderer(render);
+setupEffects();
 
 let lastHash = '';
 window.addEventListener('hashchange', () => {
   const [a] = lastHash.split('?'), [b] = location.hash.split('?');
   lastHash = location.hash;
-  render();
+  if(document.startViewTransition&&!reducedMotion())document.startViewTransition(render);else render();
   if (a !== b) window.scrollTo(0, 0);
 });
 

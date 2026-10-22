@@ -52,7 +52,7 @@ export function ring(pct, { size = 64, stroke = 7, color = 'var(--lime)', label 
     <svg viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
       <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="var(--line)" stroke-width="${stroke}"/>
       <circle cx="${size / 2}" cy="${size / 2}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}" stroke-linecap="round"
-        stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - p)}" transform="rotate(-90 ${size / 2} ${size / 2})" style="transition:stroke-dashoffset .6s"/>
+        stroke-dasharray="${c}" stroke-dashoffset="${c * (1 - p)}" transform="rotate(-90 ${size / 2} ${size / 2})" style="transition:stroke-dashoffset .18s"/>
     </svg><div class="ring-label"><b>${label}</b>${sub ? `<small>${sub}</small>` : ''}</div></div>`;
 }
 

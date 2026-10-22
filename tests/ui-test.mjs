@@ -10,9 +10,12 @@ globalThis.requestAnimationFrame=fn=>{fn(0);return 1;};
 // Disable continuous figure animation while still creating the real SVG DOM.
 let frames=0;globalThis.requestAnimationFrame=fn=>{if(frames++<1)fn(0);return frames;};
 globalThis.confirm=()=>true;
+localStorage.setItem('fitme:ai-engine','claude');
 const {getState,setState,todayISO,addDays}=await import('../app/js/store.js');
 const {views,actions,setRenderer}=await import('../app/js/core.js');
 const {CONFIG,currentConfig}=await import('../app/js/config.js');
+CONFIG.freeMode=false; // Exercise the retained legacy paid mode.
+
 const {sessionFor}=await import('../app/js/workout.js');
 for(const name of ['today','workout','food','supps','me','pay','admin','coach','planning','training-settings'])await import(`../app/js/views/${name}.js`);
 const iso=todayISO(),s=getState();

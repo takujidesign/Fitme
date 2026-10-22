@@ -7,6 +7,7 @@ import { planDay } from '../day.js';
 import { FOOD } from '../foods.js';
 import { GOALS } from '../calc.js';
 import { GROUPS } from '../exercises.js';
+import { activeEngine } from '../ai-engines.js';
 
 const list = (items) => `<ul>${items.map((v) => `<li>${esc(L(v))}</li>`).join('')}</ul>`;
 actions['ai-plan'] = async (el) => {
@@ -23,7 +24,7 @@ actions['ai-body'] = async () => {
   if (!await requireCredits('bodyReview')) return;
   if (getState().profile.age < 18) return toast(L('การประเมินนี้สำหรับผู้ใหญ่เท่านั้น', 'This assessment is for adults only'), 'warn');
   sheet(`<h2>${L('ยินยอมส่งรูปให้ AI', 'Consent to AI photo analysis')}</h2>
-    <p>${L('เลือก 1-3 รูป ด้านหน้า/ข้าง/หลัง แนะนำกางเกงขาสั้นหรือสปอร์ตบรา รูปจะถูกส่งไปยังเซิร์ฟเวอร์และ Claude เพื่อวิเคราะห์ Worker ไม่บันทึกรูป และไม่บันทึกรูปใหม่ลงคลังในเครื่อง ผู้ให้บริการ AI อาจเก็บข้อมูลตามนโยบายของตน', 'Choose 1-3 front/side/back photos. Shorts or a sports bra are recommended. Photos are sent to the server and Claude for analysis. The Worker does not store them and this selection is not added to your local gallery. The AI provider may retain data under its policies.')}</p>
+    <p>${L('เลือก 1–3 รูปด้านหน้า/ข้าง/หลัง รูปใช้กับเอนจินที่เลือกเท่านั้น ผู้ให้บริการอาจเก็บข้อมูลตามนโยบาย แนะนำกางเกงขาสั้นหรือสปอร์ตบรา', 'Choose 1–3 front/side/back photos. Photos use the selected engine only; provider retention policies apply. Shorts or a sports bra are recommended.')} · ${esc(activeEngine())}</p>
     <p>${L('เป็นการประเมินคร่าว ๆ จากภาพ ไม่ใช่การวัดไขมันหรือการวินิจฉัย', 'This is a rough visual estimate, not a body-fat measurement or diagnosis.')}</p>
     <button class="btn primary block" data-act="ai-body-consent">${L('ยินยอมและเลือกรูป', 'I consent — choose photos')}</button><button class="btn ghost block" data-close>${L('ยกเลิก', 'Cancel')}</button>`);
 };

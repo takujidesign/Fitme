@@ -4,9 +4,12 @@ import {readFile} from 'node:fs/promises';
 const window=new Window({url:'http://localhost/#/coach'});
 for(const key of ['window','document','localStorage','sessionStorage','navigator','location','FormData','Event'])Object.defineProperty(globalThis,key,{value:key==='window'?window:window[key],configurable:true});
 globalThis.requestAnimationFrame=()=>1;
+localStorage.setItem('fitme:ai-engine','claude');
 const {getState,setState,compressImage}=await import('../app/js/store.js');
 const {views,actions}=await import('../app/js/core.js');
 const {CONFIG}=await import('../app/js/config.js');
+CONFIG.freeMode=false; // Exercise the retained legacy paid mode.
+
 const {requireCredits,refreshCredits,creditPill,aiRequest}=await import('../app/js/ai-credits.js');
 const {closeSheet}=await import('../app/js/ui.js');
 for(const v of ['chat','food','food-log','me','supps','pay','ai-usage','admin-round5','admin-round5b','admin-round5c','admin-login'])await import('../app/js/views/'+v+'.js');

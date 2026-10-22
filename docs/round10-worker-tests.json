@@ -1,0 +1,47 @@
+﻿[
+    {
+        "test":  "test.mjs",
+        "exit":  0,
+        "output":  "(node:54304) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS config authorization/validation/KV/secrets; KV checkout price and slip price/duration; Pro rejection; consent validation; both mocked structured AI responses/model/effort. No live API calls.\nPASS meal-photo Pro/input/structured output; push validation/subscribe/update/unsubscribe; VAPID signature; RFC8291 receiver decryption; timezone due window, deduplication and expired subscription cleanup.\nPASS Round 4 encryption/redaction/precedence/delete; auth/hash/rate limit/logout; SQLite sync CAS/concurrent conflict/size/entitlement; trainer permissions/invite/notes/unlink; chat caps and mocked structured suggestions.\nPASS Round 5a SQLite: promo reservations/math/expiry, immutable checkout amounts, payment replay, referral once, plan approval/access/fees/payout, telemetry redaction/rate cap, admin media, full export/deletion. External services mocked."
+    },
+    {
+        "test":  "round10.test.mjs",
+        "exit":  0,
+        "output":  "(node:58740) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 10: local migration, free default, admin authentication, pending/public approval, rate limit, idempotent vote/unvote, supporter double vote, slip amount/receiver/replay across payments, HMAC token, one-time code, monthly totals, merge. All provider calls mocked."
+    },
+    {
+        "test":  "round4.test.mjs",
+        "exit":  0,
+        "output":  "(node:47032) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 4 encryption/redaction/precedence/delete; auth/hash/rate limit/logout; SQLite sync CAS/concurrent conflict/size/entitlement; trainer permissions/invite/notes/unlink; chat caps and mocked structured suggestions."
+    },
+    {
+        "test":  "round5.test.mjs",
+        "exit":  0,
+        "output":  "(node:22660) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 5a SQLite: promo reservations/math/expiry, immutable checkout amounts, payment replay, referral once, plan approval/access/fees/payout, telemetry redaction/rate cap, admin media, full export/deletion. External services mocked."
+    },
+    {
+        "test":  "round5b.test.mjs",
+        "exit":  0,
+        "output":  "(node:12708) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 5b worker: real SQLite migrations, group privacy/ownership/cap/aggregates, approved shop redirects, LINE PKCE/nonce/link proof/replay and atomic reminder cap. External LINE calls mocked."
+    },
+    {
+        "test":  "round5c.test.mjs",
+        "exit":  0,
+        "output":  "(node:34100) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nCreated SQL and encrypted CONFIG KV import files. Apply all migrations to an EMPTY database first. Preserve MASTER_KEY separately.\nPASS Round 5c worker: SQLite trials/org privacy, server prices, signed subscription webhooks/replay/cancel, streamed backups/retention/download auth, domain CORS; external APIs mocked."
+    },
+    {
+        "test":  "round6.test.mjs",
+        "exit":  0,
+        "output":  "PASS admin public config, hashed session TTL, missing/wrong/password/expired/revoked rejection and login rate limit"
+    },
+    {
+        "test":  "round8-payments.test.mjs",
+        "exit":  0,
+        "output":  "(node:14136) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 8 payments: Thunder + Stripe top-ups, USD/THB pricing, 90-day validity, stable guest wallet, Pro balance preservation, replay idempotency, top-up-only guest without trial."
+    },
+    {
+        "test":  "round8.test.mjs",
+        "exit":  0,
+        "output":  "(node:52212) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 8: migration, config allowlist, SDK models/cache/language stability, atomic reserve/refund/concurrency, trial, 30-day reset, top-up ordering/expiry/idempotency, no_credits, hourly cap, usage privacy, admin access/dashboard, subscription allowance."
+    }
+]

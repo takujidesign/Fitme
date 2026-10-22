@@ -1,3 +1,4 @@
+import {confetti} from '../tab-effects.js';
 import { mountExerciseVisual } from '../illustrations.js';
 import { slot } from '../slots.js';
 import { detectPRs } from '../records.js';
@@ -183,7 +184,7 @@ function finish(host) {
   disconnectHR();
   track('workout_done');
   const prs=detectPRs(getState().logs,P.sets);if(prs.length)toast(L('สถิติใหม่','New personal record')+' 🏆');
-  updateLog(P.iso, (l) => { l.done.workout = true; l.sets = [...(l.freeSessions||[]).flatMap(s=>s.sets),...P.sets]; l.workout = { minutes: mins, kcal, avgHR, maxHR, hrSamples: P.samples, items: P.sess.items, at: new Date().toISOString() }; });
+  updateLog(P.iso, (l) => { l.done.workout = true; confetti(); l.sets = [...(l.freeSessions||[]).flatMap(s=>s.sets),...P.sets]; l.workout = { minutes: mins, kcal, avgHR, maxHR, hrSamples: P.samples, items: P.sess.items, at: new Date().toISOString() }; });
   host.innerHTML = `<div class="pl-done"><div class="burst">${icon('check', 46)}</div><h1>${L('เยี่ยมมาก!', 'Great work!')}</h1>
     <p>${L('จบการฝึกวันนี้แล้ว', 'Session complete')}</p>${avgHR ? `<p>${L('ชีพจรเฉลี่ย / สูงสุด','Average / max HR')}: ${avgHR} / ${maxHR} BPM</p>` : ''}<div class="sum-grid"><div class="stat"><small>${L('เวลา', 'Time')}</small><b>${mins}</b><span class="tag">${L('นาที', 'min')}</span></div><div class="stat"><small>${L('เผาผลาญ', 'Burned')}</small><b>~${kcal}</b><span class="tag">kcal</span></div></div>
     <p class="muted">${L('อย่าลืมมื้อหลังออกกำลังกาย และดื่มน้ำ 500 มล.', 'Have your post-workout meal and 500 ml of water')}</p>

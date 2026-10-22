@@ -6,7 +6,7 @@ import { track } from './telemetry.js';
 import { CONFIG, isDemo } from './config.js';
 import { getState, setState, blobToBase64, compressImage } from './store.js';
 
-export const hasPro = () => { const u = getState().premium.until; return !!u && new Date(u) > new Date(); };
+export const hasPro = () => { if (CONFIG.freeMode) return true; const u = getState().premium.until; return !!u && new Date(u) > new Date(); };
 export const canExport = () => hasPro() || getState().premium.exportsLeft > 0;
 export function useExport() {
   if (hasPro()) return;
@@ -69,7 +69,7 @@ export async function handleStripeReturn() {
 }
 
 export async function analyzeLabel(blobs) {
-  if (isDemo()) throw new Error('demo');
+
   const images = await Promise.all(blobs.map(async (b) => ({ data: await blobToBase64(await compressImage(b,1024,0.8,true)), media_type: 'image/jpeg' })));
   const data = await aiRequest('label/analyze', { images, lang: getState().lang });
   track('ai_used');
@@ -97,10 +97,11 @@ export function promptPayPayload(id, amount) {
 
 let qrLib;
 export async function qrSVG(text) {
+  if (!qrLib && window.qrcode) qrLib=Promise.resolve(window.qrcode);
   if (!qrLib) {
     qrLib = new Promise((res, rej) => {
       const s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js';
+      s.src = './js/vendor/qrcode.min.js';
       s.onload = () => res(window.qrcode);
       s.onerror = rej;
       document.head.appendChild(s);
@@ -114,7 +115,7 @@ export async function qrSVG(text) {
 }
 
 export async function askCoach(kind, input) {
-  if (isDemo()) throw new Error('AI requires a configured API');
+
   const data = await aiRequest('ai/' + kind, {...input,lang:getState().lang});
   track('ai_used');
   return data.review;

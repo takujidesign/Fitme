@@ -381,3 +381,14 @@ Generation admits at most four jobs and spaces all provider requests by at least
 A process lock prevents concurrent generators. After a crash, remove `illustrations/generate.lock` only after verifying the old process stopped. Queue progress tracks each completed pose and generation ID across partial failures. Review mutations are blocked while generation is running; run generation and review sequentially. Approve requires both outputs and matching model receipts; Regenerate removes approval and queues the ID; Reject removes approval and pending regeneration. Only approved entries are written to `app/data/illustrations.json`. Review binds to loopback, serves only known generated WebP pairs, and checks request origin plus a per-session token for writes. It never serves repo-root files.
 
 The original Round 9 generated no images. Round 9B generation results are recorded in the validation log. Publication remains a separate owner action. See [Round 9 validation](docs/ROUND9_VALIDATION.md) for checks and limitations.
+
+
+## Round 10: free access, AI choice, support and ideas
+
+`freeMode` defaults to true. Admin Settings can restore the retained paid-plan rules. Free mode unlocks all plan days, supplements and exports, hides Pro purchases and trial upsells, and keeps existing entitlements intact. Claude credit purchases are separate.
+
+Me / Coach links to AI settings: Gemini with a device-local key (default), Chrome Prompt API when available, optional Claude credits, or copy/paste through ChatGPT/Gemini. All structured replies use shared Zod v4 schemas. Gemini sends directly to Google, with a first-request payload/photo preview and privacy notice. Its key lives only in `fitme:gemini-key`, outside app state, backup and sync. Removing a key clears it; no key is sent to the Worker. Nano supports text tasks only. External replies must include a validated FIXMEE block; the existing meal/suggestion confirmation controls remain in use. `#/ai-summary` exposes only profile/plan/meals/progress for user-chosen AI side panels.
+
+`#/support` offers local PromptPay QR generation, optional slip verification, and configured HTTPS Wise/Stripe links. Admin Settings controls `donate.wiseUrl`, `donate.stripeUrl`, and `aiEngines.claude`. International donations are manually verified by the admin, who can grant by account email or issue a one-time code. `#/ideas` holds submissions for moderation, supports explicit idempotent vote/unvote, and counts supporters twice. Admin Settings includes moderation, merge, donation history/monthly totals and badge grants.
+
+The future release requires `worker/migrations/0006_round10.sql` after 0005. No remote migrations were applied. The migration also prevents reusing a PromptPay transfer across payments and donations. New dependencies are vendored under `app/js/vendor/` with MIT notices; no app build step is required. See `docs/ROUND10_VALIDATION.md` for exact validation and remaining runtime limitations.

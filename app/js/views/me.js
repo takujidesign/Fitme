@@ -75,11 +75,11 @@ views.me = () => {
     <a class="list-row" href="#/ai-usage">${icon('spark',18)}<span>${L('การใช้ AI','AI usage')}</span>${icon('chev',16)}</a>
     <a class="list-row" href="#/credits">${icon('info',18)}<span>${L('เครดิต','Credits')}</span>${icon('chev',16)}</a></div></section>
     <details class="card"><summary>${L('สุขภาพและความก้าวหน้า','Health and progress')}</summary><div class="list">${[['muscles','กล้ามเนื้อ','Muscles'],['records','สถิติส่วนตัว','Personal records'],['tools','เครื่องคำนวณ','Calculators']].map(([path,th,en])=>`<a class="list-row" href="#/${path}">${L(th,en)}${icon('chev',16)}</a>`).join('')}</div>${accountCard()}${badgeGrid()}${replanCard()}${healthCard()}${slot('me.secondary')}</details>
-    <details class="card" id="me-data"><summary>${L('ข้อมูลและสำรอง','Data & backup')}</summary>    <section class="card premium ${hasPro() ? 'on' : ''}">
+    <details class="card" id="me-data"><summary>${L('ข้อมูลและสำรอง','Data & backup')}</summary>    ${CONFIG.freeMode ? '' : `<section class="card premium ${hasPro() ? 'on' : ''}">
       <div class="row between"><h2>${icon('spark', 20)} Fixmee Pro</h2>${hasPro() ? `<span class="tag teal">${L('ใช้งานถึง', 'Active until')} ${dateLabel(s.premium.until.slice(0, 10), { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : ''}</div>
       ${hasPro() ? '' : `<p class="muted sm">${L('แผนเต็มทุกวัน · อาหารเสริมไม่จำกัด · AI อ่านฉลาก · ดาวน์โหลด PDF/ปฏิทิน', 'Full plan · unlimited supplements · AI label reader · PDF & calendar downloads')}</p><button class="btn primary block" data-act="go" data-to="#/pay">${L('อัปเกรด', 'Upgrade')}</button>`}
       ${!hasPro() && s.premium.exportsLeft ? `<p class="muted sm">${L(`สิทธิ์ดาวน์โหลดคงเหลือ ${s.premium.exportsLeft} ครั้ง`, `${s.premium.exportsLeft} download(s) left`)}</p>` : ''}
-    </section>
+    </section>`}
 
     <section class="card">
       <h2>${icon('download', 20)} ${L('ดาวน์โหลดแผน', 'Download plan')}</h2>

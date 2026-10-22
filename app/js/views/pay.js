@@ -12,11 +12,12 @@ let sel = 'pro30', method = null, quote=null, promo='';
 
 views.pay = () => {
   const th = getState().lang === 'th';
-  const prods = Object.entries(CONFIG.PRODUCTS);
+  const prods = Object.entries(CONFIG.PRODUCTS).filter(([id])=>!CONFIG.freeMode||id==='credits40');
+  if(CONFIG.freeMode && sel!=='credits40'){sel='credits40';quote=null;method=null;}
   const pr = {...CONFIG.PRODUCTS[sel]};if(quote && quote.expiresAt>Date.now())pr[quote.currency]=quote.amount;
-  return `<header class="top"><button class="icon-btn" data-act="pay-back">${icon('back')}</button><div class="grow"><small class="muted">Fixmee Pro</small><h1>${L('เลือกแพ็กเกจ', 'Choose a plan')}</h1></div></header>
+  return `<header class="top"><button class="icon-btn" data-act="pay-back">${icon('back')}</button><div class="grow"><small class="muted">${CONFIG.freeMode?'AI':'Fixmee Pro'}</small><h1>${L('เลือกแพ็กเกจ', 'Choose a plan')}</h1></div></header>
     ${isDemo() ? `<p class="note warn">${icon('info', 16)} ${L('โหมดทดลอง: ยังไม่ได้เชื่อมต่อเซิร์ฟเวอร์ชำระเงิน การจ่ายจะเป็นการจำลอง', 'Demo mode: no payment server configured, payments are simulated')}</p>` : ''}
-    ${hasPro() ? `<p class="note">${icon('check', 16)} ${L('คุณเป็นสมาชิก Pro อยู่แล้ว ซื้อเพิ่มเพื่อต่ออายุ', 'You are already Pro; buying again extends it')}</p>` : ''}
+    ${!CONFIG.freeMode && hasPro() ? `<p class="note">${icon('check', 16)} ${L('คุณเป็นสมาชิก Pro อยู่แล้ว ซื้อเพิ่มเพื่อต่ออายุ', 'You are already Pro; buying again extends it')}</p>` : ''}
     <p class="note">${L('การสร้างแผน ออกกำลังกาย แผนอาหาร และตารางอาหารเสริมคำนวณในเครื่องได้ไม่จำกัด เฉพาะฟีเจอร์ AI ใช้เครดิต','Plan generation, workouts, meal plans and supplement schedules run on your device without limits. Only AI features use credits.')}</p><p>${L('เครดิตทดลองครั้งเดียวเมื่อเข้าสู่ระบบ','One-time trial credits when signed in')}: ✦ ${CONFIG.AI.credits.trial}</p><ul class="perks">${[
       ['cal', L('แผนออกกำลังกาย + อาหาร ครบทุกวัน 7-90 วัน', 'Full training + meal plan, 7-90 days')],
       ['pill', L('อาหารเสริมไม่จำกัด + AI อ่านฉลากให้', 'Unlimited supplements + AI label reading')],

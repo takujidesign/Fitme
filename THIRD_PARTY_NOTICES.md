@@ -35,3 +35,8 @@ The animated muscle-belly paths and front/back muscle-map contours are original 
 Exercise illustrations are AI-generated using OpenAI image generation through Codex. Approved pairs record their tool and creation date in `app/data/illustrations.json`. This notice does not assign an open-source licence to generated artwork. See `docs/ROUND9_VALIDATION.md` for the generated and approved inventory.
 
 The owner-only conversion script uses sharp (Apache-2.0), installed under `scripts/`; it is not shipped in the static app. Package licence notices are distributed with its npm package and transitive dependencies.
+
+## Round 10 browser dependencies
+
+- Zod v4 (bundled from zod 3.25.76), MIT, Copyright (c) 2025 Colin McDonnell. License: `app/js/vendor/ZOD_LICENSE.txt`. Shared structured-output validation uses this same bundle in the browser and Worker.
+- qrcode-generator 1.4.4, MIT, Copyright (c) 2009 Kazuhiko Arase. License: `app/js/vendor/QRCODE_LICENSE.txt`. The existing PromptPay QR renderer is now vendored for offline use. Source: https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js

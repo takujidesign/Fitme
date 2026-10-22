@@ -1,3 +1,4 @@
+import {installId} from './install-id.js';
 import { EX } from './exercises.js';
 import { personalRecords } from './records.js';
 import { earnedBadges } from './challenges.js';
@@ -20,7 +21,7 @@ export async function drawShare(canvas,photos=[]){
   const latest=Object.entries(personalRecords(s.logs)).sort((a,b)=>b[1].date.localeCompare(a[1].date))[0];
   if(latest){c.fillStyle='#EEF3F9';c.font='24px Kanit, sans-serif';c.fillText('PR · '+L(EX[latest[0]]?.name||latest[0])+' · '+latest[1].weight+' kg · 1RM '+latest[1].estimatedRM.toFixed(1)+' kg',72,1220,936);}
   c.fillStyle='#C8F31D';c.font='28px Kanit, sans-serif';c.fillText(L('เหรียญรางวัล','Badges')+': '+earnedBadges(s).length,72,1260);
-  c.fillStyle='#8C9AAE';c.font='26px Kanit, sans-serif';c.fillText(todayISO()+' · Fixmee · PR: '+Object.keys(personalRecords(s.logs)).length,72,1300);
+  c.fillStyle='#8C9AAE';c.font='26px Kanit, sans-serif';if(localStorage.getItem('fitme:supporter:'+(s.account?.user?.id||installId())))c.fillText('Supporter',760,1300);c.fillText(todayISO()+' · Fixmee · PR: '+Object.keys(personalRecords(s.logs)).length,72,1300);
 }
 actions['share-card']=()=>{
   sheet(`<h2>${L('แชร์ผลลัพธ์','Share results')}</h2><p>${L('รูปก่อน/หลังจะใส่เฉพาะรูปที่คุณเลือกในครั้งนี้','Before/after photos are included only when you select them here.')}</p><div class="row gap"><button class="btn ghost" id="share-photos">${L('เลือกรูปก่อน/หลัง','Choose before/after')}</button><button class="btn ghost" id="share-clear">${L('ไม่ใส่รูป','Remove photos')}</button></div><canvas id="share-canvas" style="width:100%;height:auto"></canvas><button class="btn primary block" id="share-send" disabled>${L('แชร์ / ดาวน์โหลด PNG','Share / download PNG')}</button>`,{async onMount(root){

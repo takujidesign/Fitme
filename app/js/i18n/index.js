@@ -1,3 +1,4 @@
+import round10 from './round10.js';
 import round9 from './round9.js';
 import round7 from './round7.js';
 import round6 from './round6.js';
@@ -8,6 +9,7 @@ export const dictionaries={zh,ja,vi};
 for(const [lang,dict] of Object.entries(round6))Object.assign(dictionaries[lang],dict);
 for(const [lang,dict] of Object.entries(round7))Object.assign(dictionaries[lang],dict);
 for(const [lang,dict] of Object.entries(round9))Object.assign(dictionaries[lang],dict);
+for(const [lang,dict] of Object.entries(round10))Object.assign(dictionaries[lang],dict);
 export const LANGUAGES={th:'ไทย',en:'English',zh:'中文',ja:'日本語',vi:'Tiếng Việt'};
 export const LOCALES={th:'th-TH',en:'en-US',zh:'zh-CN',ja:'ja-JP',vi:'vi-VN'};
 const templates=Object.fromEntries(Object.entries(dictionaries).map(([lang,dict])=>[lang,Object.keys(dict).filter(key=>/\{\d+\}/.test(key)).sort((a,b)=>b.length-a.length).map(key=>{

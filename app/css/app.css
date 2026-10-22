@@ -1,4 +1,5 @@
 :root {
+  --accent:#C6F432; --accent-on:#11160A; --accent-dark:#C6F432; --accent-light:#5B7F00;
   --bg: #0B0F14; --bg2: #0F141B; --surface: #141B24; --surface2: #1B2430; --surface3: #232E3D; --line: #263244;
   --text: #EEF3F9; --muted: #A1AEC0; --dim: #92A0B3;
   --lime: #C8F31D; --lime-ink: #11160A; --teal: #19E3C4; --sky: #53B8FF; --amber: #FFB547; --pink: #FF5C8A; --violet: #9B8CFF;
@@ -547,3 +548,51 @@ html[lang="zh"] body,html[lang="ja"] body{font-family:var(--language-font),sans-
 .illustration-crossfade img:last-child { opacity:0; }
 .illustration-crossfade.finish img:last-child { opacity:1; }
 @media (prefers-reduced-motion:reduce) { .illustration-crossfade img { transition:none; } }
+/* Round 10: per-tab accents; status and muscle tokens remain independent. */
+@property --accent { syntax:'<color>'; inherits:true; initial-value:#C6F432; }
+:root[data-tab=today]{--accent-dark:#C6F432;--accent-light:#5B7F00}
+:root[data-tab=workout]{--accent-dark:#FF8A3D;--accent-light:#C2410C}
+:root[data-tab=food]{--accent-dark:#34D399;--accent-light:#047857}
+:root[data-tab=supps]{--accent-dark:#B197FC;--accent-light:#6D28D9}
+:root[data-tab=me]{--accent-dark:#4CC3FA;--accent-light:#0369A1}
+:root[data-supporter=on]{--accent-dark:#F7C76B;--accent-light:#865A0B}
+:root[data-tab]{--accent:var(--accent-dark);--accent-on:#101820;--accent-soft:color-mix(in srgb,var(--accent) 12%,transparent);--accent-glow:color-mix(in srgb,var(--accent) 25%,transparent);--lime:var(--accent);--lime-ink:var(--accent-on);transition:--accent 180ms}
+:root[data-tab][data-theme=light]{--accent:var(--accent-light);--accent-on:#fff}
+@media(prefers-color-scheme:light){:root[data-tab][data-theme=auto]{--accent:var(--accent-light);--accent-on:#fff}}
+#view{background-image:radial-gradient(ellipse at 50% 0,var(--accent-soft),transparent 450px)}
+a{color:var(--accent)}
+.btn.primary,.chip.on{background:var(--accent);color:var(--accent-on)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.sec .ic{color:var(--accent)}
+#tabbar{backdrop-filter:blur(18px);isolation:isolate;background:color-mix(in srgb,var(--surface) 85%,transparent)}
+#tabbar:before{content:'';position:absolute;z-index:-1;left:0;top:5px;width:20%;height:54px;border-radius:18px;background:var(--accent-soft);transform:translateX(calc(var(--tab-index,0)*100%));transition:transform 180ms ease}
+#tabbar a.on{color:var(--accent)}
+#tabbar a.on .ic{filter:drop-shadow(0 4px 6px var(--accent-glow))}
+.btn{transition:transform 120ms;position:relative;overflow:hidden}
+.btn:active{transform:scale(.97)}
+.btn.primary.tap:after{content:'';position:absolute;inset:0;border-radius:inherit;background:radial-gradient(circle,#ffffff55,transparent 65%);animation:r10-ripple 180ms ease-out both;pointer-events:none}
+#tabbar a.tap .ic{animation:r10-bounce 180ms ease-out}
+.view-inner>.card{animation:r10-enter 160ms ease-out both}
+.view-inner>.card:nth-child(2){animation-delay:15ms}.view-inner>.card:nth-child(3){animation-delay:30ms}
+.ring circle{transition:stroke-dashoffset 180ms ease}
+.skeleton{position:relative;overflow:hidden;min-height:60px}
+.skeleton:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--accent-soft),transparent);animation:r10-shimmer 200ms linear}
+.ai-preview{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;max-height:45vh;overflow:auto}
+.ai-preview-image{max-width:100%;max-height:220px;object-fit:contain}
+#donate-qr svg{width:100%;max-width:260px;background:#fff;padding:8px}
+.confetti{position:fixed;left:50%;top:40%;z-index:9999;pointer-events:none}
+.confetti i{position:absolute;width:7px;height:11px;background:var(--accent);animation:r10-confetti 200ms ease-out both}
+.confetti i:nth-child(even){background:var(--teal)}
+@keyframes r10-confetti{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
+@keyframes r10-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes r10-bounce{50%{transform:translateY(-3px)}}
+@keyframes r10-ripple{from{transform:scale(.3);opacity:1}to{transform:scale(1.5);opacity:0}}
+@keyframes r10-shimmer{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+::view-transition-old(root),::view-transition-new(root){animation-duration:180ms}
+@media(prefers-reduced-motion:reduce){:root[data-tab],.btn,.ring circle,#tabbar:before{transition:none}.view-inner>.card,.btn.primary.tap:after,#tabbar a.tap .ic,.skeleton:after,.confetti i,::view-transition-old(root),::view-transition-new(root){animation:none}.confetti{display:none}}
+@media(prefers-reduced-motion:reduce){.ring circle{transition:none!important}}
+/* Keep the requested fill colours; darken light-theme accent text for AA on tinted surfaces. */
+:root[data-tab]{--accent-text:var(--accent)}
+:root[data-tab][data-theme=light]{--accent-text:color-mix(in srgb,var(--accent) 88%,#000)}
+@media(prefers-color-scheme:light){:root[data-tab][data-theme=auto]{--accent-text:color-mix(in srgb,var(--accent) 88%,#000)}}
+a,#tabbar a.on,.sec .ic,.btn.ghost:not(.danger){color:var(--accent-text)}

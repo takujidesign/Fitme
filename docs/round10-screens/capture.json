@@ -1,0 +1,154 @@
+{
+  "checks": [
+    {
+      "route": "today",
+      "theme": "dark",
+      "heading": "Good afternoon",
+      "tab": "today",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "workout",
+      "theme": "dark",
+      "heading": "My plan",
+      "tab": "workout",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "food",
+      "theme": "dark",
+      "heading": "Meal plan",
+      "tab": "food",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "supps",
+      "theme": "dark",
+      "heading": "Today's schedule",
+      "tab": "supps",
+      "viewport": 375,
+      "width": 375
+    },
+    {
+      "route": "me",
+      "theme": "dark",
+      "heading": "Me",
+      "tab": "me",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "ai-settings",
+      "theme": "dark",
+      "heading": "AI settings",
+      "tab": "me",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "support",
+      "theme": "dark",
+      "heading": "Support Fixmee",
+      "tab": "me",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "ideas",
+      "theme": "dark",
+      "heading": "Ideas board",
+      "tab": "me",
+      "viewport": 375,
+      "width": 375
+    },
+    {
+      "route": "today",
+      "theme": "light",
+      "heading": "Good afternoon",
+      "tab": "today",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "workout",
+      "theme": "light",
+      "heading": "My plan",
+      "tab": "workout",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "food",
+      "theme": "light",
+      "heading": "Meal plan",
+      "tab": "food",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "supps",
+      "theme": "light",
+      "heading": "Today's schedule",
+      "tab": "supps",
+      "viewport": 375,
+      "width": 375
+    },
+    {
+      "route": "me",
+      "theme": "light",
+      "heading": "Me",
+      "tab": "me",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "ai-settings",
+      "theme": "light",
+      "heading": "AI settings",
+      "tab": "me",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "support",
+      "theme": "light",
+      "heading": "Support Fixmee",
+      "tab": "me",
+      "viewport": 375,
+      "width": 360
+    },
+    {
+      "route": "ideas",
+      "theme": "light",
+      "heading": "Ideas board",
+      "tab": "me",
+      "viewport": 375,
+      "width": 375
+    }
+  ],
+  "logs": [
+    {
+      "level": "error",
+      "message": "Error: Could not establish connection. Receiving end does not exist.",
+      "timestamp": "2026-10-22T05:25:38.268Z",
+      "url": "http://127.0.0.1:5180/?theme=dark#/today"
+    },
+    {
+      "level": "error",
+      "message": "Error: Could not establish connection. Receiving end does not exist.",
+      "timestamp": "2026-10-22T05:32:58.114Z",
+      "url": "http://127.0.0.1:5180/?theme=dark&screen=me#/me"
+    },
+    {
+      "level": "error",
+      "message": "Error: Could not establish connection. Receiving end does not exist.",
+      "timestamp": "2026-10-22T05:34:32.435Z",
+      "url": "http://127.0.0.1:5180/?theme=light&screen=me#/me"
+    }
+  ],
+  "externalTraffic": "API mocked; localhost app only",
+  "motion": "reduced motion capture fixture; normal-motion routes also inspected"
+}

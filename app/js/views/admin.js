@@ -1,3 +1,4 @@
+import {adminCommunity} from './admin-round10.js';
 import { adminToken, adminFetch } from '../admin-session.js';
 import { keySettings } from './admin-keys.js';
 import { views, actions } from '../core.js';
@@ -15,7 +16,7 @@ function field(name,value) {
 const commands=['npx wrangler login','npx wrangler kv namespace create CONFIG',...['ADMIN_PASSWORD','TOKEN_SECRET','MASTER_KEY'].map(k=>'npx wrangler secret put '+k),'npx wrangler deploy'];
 function statuses(flags={}) {return [['api',L('เซิร์ฟเวอร์ API', 'API server')],['token','Token secret'],['thunder','Thunder'],['stripe','Stripe'],['anthropic','Claude'],['config','CONFIG KV']].map(([k,label])=>`<div class="status-row"><span>${label}</span><span class="${flags[k]?'ok':'muted'}">${flags[k]?'✓':'—'} ${flags[k]?L('พร้อมใช้งาน', 'Ready'):L('ยังไม่ได้ตั้งค่า', 'Not configured')}</span></div>`).join('');}
 views.admin=()=>{const c=currentConfig();return `<header class="top"><h1>${L('ตั้งค่าระบบ', 'Admin settings')}</h1></header><p class="muted">${L('จัดการการรับเงิน แพ็กเกจ และสิทธิ์ฟรีของ Fixmee', 'Manage payments, packages and free access for Fixmee.')}</p><section class="card" id="admin-secrets">${statuses()}</section>
-<section class="card" id="admin-key-settings">${keySettings()}</section><form id="admin-form"><section class="card"><h2>${L('การรับเงิน', 'Payments')}</h2>${field('promptpayId',c.promptpayId)}<p class="muted sm">${L('เบอร์โทร 10 หลักขึ้นต้น 0 หรือเลขประจำตัว 13 หลัก', '10-digit phone starting with 0, or 13-digit national/tax ID')}</p>${field('promptpayName',c.promptpayName)}${field('receiverName',c.receiverName)}<p class="muted sm">${L('ชื่อบัญชีตามสลิป คั่นชื่อทางเลือกด้วย | เพื่อให้ตรวจผู้รับเงินได้', 'Use account names shown on slips. Separate alternatives with | for receiver matching.')}</p></section>
+<section class="card" id="admin-key-settings">${keySettings()}</section>${adminCommunity()}<form id="admin-form"><section class="card"><label><input type="checkbox" name="freeMode" ${c.freeMode?'checked':''}>${L('โหมดฟรี','Free mode')}</label><label><input type="checkbox" name="claudeEnabled" ${c.aiEngines.claude?'checked':''}>${L('เอนจิน Claude','Claude engine')}</label>${['wiseUrl','stripeUrl'].map(k=>`<label class="field">${k==='wiseUrl'?'Wise URL':'Stripe URL'}<input name="${k}" type="url" value="${esc(c.donate[k])}"></label>`).join('')}</section><section class="card"><h2>${L('การรับเงิน', 'Payments')}</h2>${field('promptpayId',c.promptpayId)}<p class="muted sm">${L('เบอร์โทร 10 หลักขึ้นต้น 0 หรือเลขประจำตัว 13 หลัก', '10-digit phone starting with 0, or 13-digit national/tax ID')}</p>${field('promptpayName',c.promptpayName)}${field('receiverName',c.receiverName)}<p class="muted sm">${L('ชื่อบัญชีตามสลิป คั่นชื่อทางเลือกด้วย | เพื่อให้ตรวจผู้รับเงินได้', 'Use account names shown on slips. Separate alternatives with | for receiver matching.')}</p></section>
 <h2>${L('แพ็กเกจ', 'Packages')}</h2>${Object.entries(c.products).map(([id,p])=>`<section class="card"><div class="product-preview" data-preview="${id}"></div><div class="grid2">${['th','en','thb','usd','days','exports','descTh','descEn'].map(k=>field(id+'.'+k,p[k])).join('')}</div><label class="shopping-row"><input type="checkbox" name="${id}.best" ${p.best?'checked':''}>${L('แสดงป้ายคุ้มสุด', 'Show best value badge')}</label></section>`).join('')}
 <section class="card"><h2>${L('แผนฟรี', 'Free plan')}</h2>${['freePlanDays','freeSupplements'].map(k=>`<div class="stepper"><button type="button" class="btn ghost" data-act="admin-step" data-key="${k}" data-n="-1">−</button>${field(k,c[k])}<button type="button" class="btn ghost" data-act="admin-step" data-key="${k}" data-n="1">+</button></div>`).join('')}</section>
 <div class="admin-save"><small id="admin-dirty" role="status"></small><button type="submit" class="btn primary" data-act="admin-save" ${CONFIG.API_BASE?'':'disabled'}>${L('บันทึก', 'Save')}</button></div></form>
@@ -49,11 +50,13 @@ actions['admin-save'] = async (el) => {
   if (!validate(form) || !form.reportValidity()) return;
   const config = structuredClone(currentConfig());
   for (const [key, value] of new FormData(form)) {
+    if(['freeMode','claudeEnabled','wiseUrl','stripeUrl'].includes(key))continue;
     const [id, field] = key.split('.');
     if (field) config.products[id][field] = ['thb', 'usd', 'days', 'exports'].includes(field) ? Number(value) : value;
     else config[id] = id.startsWith('free') ? Number(value) : id === 'promptpayId' ? value.replace(/[ -]/g, '') : value;
   }
   for (const id of Object.keys(config.products)) config.products[id].best = form.elements[`${id}.best`].checked;
+  config.freeMode=form.elements.freeMode.checked;config.aiEngines={claude:form.elements.claudeEnabled.checked};config.donate={wiseUrl:form.elements.wiseUrl.value,stripeUrl:form.elements.stripeUrl.value};
   el.disabled = true;
   try {
     const res = await adminFetch(CONFIG.API_BASE.replace(/\/$/, '') + '/api/admin/config', { method: 'PUT', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + adminToken() }, body: JSON.stringify(config) });
