@@ -95,7 +95,7 @@ let lastHash = '';
 window.addEventListener('hashchange', () => {
   const [a] = lastHash.split('?'), [b] = location.hash.split('?');
   lastHash = location.hash;
-  if(document.startViewTransition&&!reducedMotion())document.startViewTransition(render);else render();
+  if(document.startViewTransition&&!reducedMotion()){const t=document.startViewTransition(render);t.ready.catch(()=>{});t.finished.catch(()=>{});}else render();
   if (a !== b) window.scrollTo(0, 0);
 });
 
