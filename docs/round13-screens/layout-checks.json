@@ -1,0 +1,434 @@
+[
+  {
+    "theme": "dark",
+    "width": 375,
+    "section": "dashboard",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 360
+  },
+  {
+    "theme": "dark",
+    "width": 375,
+    "section": "setup",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 360
+  },
+  {
+    "theme": "dark",
+    "width": 375,
+    "section": "members",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 375
+  },
+  {
+    "theme": "dark",
+    "width": 375,
+    "section": "reports",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 375
+  },
+  {
+    "theme": "dark",
+    "width": 375,
+    "section": "content",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 375
+  },
+  {
+    "theme": "dark",
+    "width": 375,
+    "section": "gyms",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 375
+  },
+  {
+    "theme": "dark",
+    "width": 375,
+    "section": "finance",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 375
+  },
+  {
+    "theme": "dark",
+    "width": 375,
+    "section": "ai",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 360
+  },
+  {
+    "theme": "dark",
+    "width": 375,
+    "section": "system",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 360
+  },
+  {
+    "theme": "light",
+    "width": 375,
+    "section": "dashboard",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 360
+  },
+  {
+    "theme": "light",
+    "width": 375,
+    "section": "setup",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 360
+  },
+  {
+    "theme": "light",
+    "width": 375,
+    "section": "members",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 375
+  },
+  {
+    "theme": "light",
+    "width": 375,
+    "section": "reports",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 375
+  },
+  {
+    "theme": "light",
+    "width": 375,
+    "section": "content",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 375
+  },
+  {
+    "theme": "light",
+    "width": 375,
+    "section": "gyms",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 375
+  },
+  {
+    "theme": "light",
+    "width": 375,
+    "section": "finance",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 375
+  },
+  {
+    "theme": "light",
+    "width": 375,
+    "section": "ai",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 360
+  },
+  {
+    "theme": "light",
+    "width": 375,
+    "section": "system",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 360
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "section": "dashboard",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 753
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "section": "setup",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 753
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "section": "members",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 768
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "section": "reports",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 768
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "section": "content",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 768
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "section": "gyms",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 768
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "section": "finance",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 768
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "section": "ai",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 753
+  },
+  {
+    "theme": "dark",
+    "width": 768,
+    "section": "system",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 753
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "section": "dashboard",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 753
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "section": "setup",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 753
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "section": "members",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 768
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "section": "reports",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 768
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "section": "content",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 768
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "section": "gyms",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 768
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "section": "finance",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 768
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "section": "ai",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 753
+  },
+  {
+    "theme": "light",
+    "width": 768,
+    "section": "system",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 753
+  },
+  {
+    "theme": "dark",
+    "width": 1280,
+    "section": "dashboard",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1265
+  },
+  {
+    "theme": "dark",
+    "width": 1280,
+    "section": "setup",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1265
+  },
+  {
+    "theme": "dark",
+    "width": 1280,
+    "section": "members",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1280
+  },
+  {
+    "theme": "dark",
+    "width": 1280,
+    "section": "reports",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1280
+  },
+  {
+    "theme": "dark",
+    "width": 1280,
+    "section": "content",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1280
+  },
+  {
+    "theme": "dark",
+    "width": 1280,
+    "section": "gyms",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1280
+  },
+  {
+    "theme": "dark",
+    "width": 1280,
+    "section": "finance",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1280
+  },
+  {
+    "theme": "dark",
+    "width": 1280,
+    "section": "ai",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1265
+  },
+  {
+    "theme": "dark",
+    "width": 1280,
+    "section": "system",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1265
+  },
+  {
+    "theme": "light",
+    "width": 1280,
+    "section": "dashboard",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1265
+  },
+  {
+    "theme": "light",
+    "width": 1280,
+    "section": "setup",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1265
+  },
+  {
+    "theme": "light",
+    "width": 1280,
+    "section": "members",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1280
+  },
+  {
+    "theme": "light",
+    "width": 1280,
+    "section": "reports",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1280
+  },
+  {
+    "theme": "light",
+    "width": 1280,
+    "section": "content",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1280
+  },
+  {
+    "theme": "light",
+    "width": 1280,
+    "section": "gyms",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1280
+  },
+  {
+    "theme": "light",
+    "width": 1280,
+    "section": "finance",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1280
+  },
+  {
+    "theme": "light",
+    "width": 1280,
+    "section": "ai",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1265
+  },
+  {
+    "theme": "light",
+    "width": 1280,
+    "section": "system",
+    "logout": 1,
+    "nav": 1,
+    "scroll": 1265
+  }
+]

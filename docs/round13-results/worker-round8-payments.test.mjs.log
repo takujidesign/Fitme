@@ -1,0 +1,3 @@
+(node:39932) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Round 8 payments: Thunder + Stripe top-ups, USD/THB pricing, 90-day validity, stable guest wallet, Pro balance preservation, replay idempotency, top-up-only guest without trial.

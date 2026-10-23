@@ -1,7 +1,7 @@
 ﻿import assert from 'node:assert/strict';
 import worker from './src/index.js';
 import {testDB} from './test-db.mjs';
-const {db,DB}=testDB(),kv=new Map(),env={DB,TOKEN_SECRET:'test-token',ANTHROPIC_API_KEY:'mock',THUNDER_API_KEY:'mock',STRIPE_SECRET_KEY:'mock',CONFIG:{get:async(k,t)=>kv.has(k)?t==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v)}};
+const {db,DB}=testDB(),kv=new Map([['beta',JSON.stringify({enabled:false})]]),env={DB,TOKEN_SECRET:'test-token',ANTHROPIC_API_KEY:'mock',THUNDER_API_KEY:'mock',STRIPE_SECRET_KEY:'mock',CONFIG:{get:async(k,t)=>kv.has(k)?t==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v)}};
 const call=(path,body,token='',method=body===undefined?'GET':'POST')=>worker.fetch(new Request('https://test/api/'+path,{method,headers:{Authorization:'Bearer '+token,'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)}),env);
 let slipRef=0,expected=99,checkoutBody,sid;
 globalThis.fetch=async(url,opts)=>{

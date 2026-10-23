@@ -1,0 +1,3 @@
+(node:39424) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Round 4 encryption/redaction/precedence/delete; auth/hash/rate limit/logout; SQLite sync CAS/concurrent conflict/size/entitlement; trainer permissions/invite/notes/unlink; chat caps and mocked structured suggestions.

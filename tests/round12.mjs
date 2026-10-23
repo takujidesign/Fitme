@@ -26,7 +26,7 @@ for(const theme of ['dark','light']){
  root.innerHTML=views.account();assert(!root.querySelector('img'));assert(root.textContent.includes('Verify your email'));await capture('verify-banner',theme);
  root.innerHTML=views.sessions();await views.sessions.mount(root);assert(root.textContent.includes('Chrome'));await capture('sessions',theme);
  root.replaceChildren();await mountSecurity(root,true);await root.querySelector('#totp-generate').click();await new Promise(r=>setTimeout(r,30));assert(root.querySelector('#totp-key svg'));await capture('admin-2fa',theme);
- root.replaceChildren();await mountSetup(root);assert(root.querySelector('#lang-zh'));assert(!root.querySelector('#lang-zh').checked);await capture('setup-languages',theme);
+ root.replaceChildren();await mountSetup(root);assert(root.querySelector('a[href="#/admin/system?panel=languages"]'));assert(!root.querySelector('#lang-zh'));root.replaceChildren();await mountSecurity(root);assert(root.querySelector('#lang-zh'));assert(!root.querySelector('#lang-zh').checked);await capture('setup-languages',theme);
 }
 location.hash='#/forgot';root.innerHTML=views.forgot();root.querySelector('#forgot-email').value='person@example.test';await actions['forgot-send'](root.querySelector('button'));assert(requests.some(r=>r.url.endsWith('/api/auth/forgot')));
 for(const lang of ['th','en','zh','ja','vi']){await loadLanguage(lang);setState(s=>s.lang=lang);for(const name of ['forgot','reset','verify','sessions']){root.innerHTML=views[name]();assert(!root.textContent.includes('undefined'));assert(!root.querySelector('[onclick]'));}}

@@ -1,0 +1,54 @@
+﻿[
+    {
+        "file":  "test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round10.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round11-realtime.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round11.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round12.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round13.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round4.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round5.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round5b.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round5c.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round6.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round8-payments.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round8.test.mjs",
+        "exitCode":  0
+    }
+]

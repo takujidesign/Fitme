@@ -7,6 +7,7 @@ for(const k of ['window','document','localStorage','sessionStorage','navigator',
 globalThis.requestAnimationFrame=()=>1;
 globalThis.fetch=async()=>{throw Error('Unexpected network request');};
 const {CONFIG}=await import('../app/js/config.js');
+CONFIG.beta.enabled=false; // Exercise enabled integrations with mocked providers.
 const {getState,setState,todayISO,addDays}=await import('../app/js/store.js');
 const {hasPro,canExport,useExport}=await import('../app/js/pay.js');
 const {views,actions}=await import('../app/js/core.js');

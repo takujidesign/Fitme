@@ -1,3 +1,4 @@
+import {betaAllowed,previewAdmin} from './beta.js';
 import { z } from 'zod/v4';
 import { admin, input, fail, random, hash, getSecret, limit } from './security.js';
 import { user, query as q } from './accounts.js';
@@ -37,9 +38,13 @@ export async function lineAuth(req,env,path) {
     await q(env,'INSERT INTO sessions(token_hash,user_id,expires_at) VALUES(?,?,?)',await hash(session),u.id,now+30*86400000).run();return {token:session,user:u};
   }
   if(!settings.lineChannelId||!settings.appUrl)throw fail('LINE Login is not configured',503);
+  if(path.endsWith('/preview')&&req.method==='POST'){
+    if(!await previewAdmin(req,env))throw fail('Unauthorized',401);const b=await input(req,z.object({challenge}).strict()),ticket=random(),u=req.headers.get('Authorization')?await user(req,env):null;
+    await q(env,'INSERT INTO line_flows VALUES(?,?,?)',ticket,JSON.stringify({userId:u?.id||null,challenge:b.challenge,adminPreview:true}),now+300000).run();return {url:url.origin+'/api/auth/line/start?ticket='+ticket};
+  }
   if(path.endsWith('/link')&&req.method==='POST') {
     const u=await user(req,env),b=await input(req,z.object({challenge}).strict()),ticket=random();
-    await q(env,'INSERT INTO line_flows VALUES(?,?,?)',ticket,JSON.stringify({userId:u.id,challenge:b.challenge}),now+300000).run();
+    await q(env,'INSERT INTO line_flows VALUES(?,?,?)',ticket,JSON.stringify({userId:u.id,challenge:b.challenge,adminPreview:await previewAdmin(req,env)}),now+300000).run();
     return {url:url.origin+'/api/auth/line/start?ticket='+ticket};
   }
   if(path.endsWith('/start')&&req.method==='GET') {
@@ -49,7 +54,7 @@ export async function lineAuth(req,env,path) {
     if(b.ticket){const row=await q(env,'DELETE FROM line_flows WHERE state=? AND expires_at>? RETURNING json',b.ticket,now).first();if(!row)throw fail('Expired link');link=JSON.parse(row.json);}
     const clientChallenge=link?.challenge||b.challenge;if(!clientChallenge)throw fail('PKCE challenge required');
     const state=random(),verifier=random(),nonce=random(),callback=(env.API_URL||url.origin).replace(/\/$/,'')+'/api/auth/line/callback';
-    await q(env,'INSERT INTO line_flows VALUES(?,?,?)',state,JSON.stringify({verifier,nonce,callback,challenge:clientChallenge,userId:link?.userId||null}),now+600000).run();
+    await q(env,'INSERT INTO line_flows VALUES(?,?,?)',state,JSON.stringify({verifier,nonce,callback,challenge:clientChallenge,userId:link?.userId||null,adminPreview:link?.adminPreview===true}),now+600000).run();
     const target=new URL('https://access.line.me/oauth2/v2.1/authorize');target.search=new URLSearchParams({response_type:'code',client_id:settings.lineChannelId,redirect_uri:callback,state,scope:'openid profile',nonce,code_challenge:await pkce(verifier),code_challenge_method:'S256',bot_prompt:'aggressive'}).toString();return redirect(target.href);
   }
   if(path.endsWith('/callback')&&req.method==='GET') {
@@ -72,13 +77,14 @@ export async function lineReminders(req,env) {
   const b=await input(req,z.object({tz:z.string().max(100),reminders:z.array(Reminder).max(300)}).strict(),200000);
   try{new Intl.DateTimeFormat('en',{timeZone:b.tz}).format();}catch{throw fail('Invalid timezone');}
   if(!await q(env,'SELECT id FROM users WHERE id=? AND line_user_id IS NOT NULL',u.id).first())throw fail('Link LINE first');
-  await q(env,'INSERT INTO line_reminders VALUES(?,?,?) ON CONFLICT(user_id) DO UPDATE SET json=excluded.json,expires_at=excluded.expires_at',u.id,JSON.stringify(b),Date.now()+8*86400000).run();return {};
+  await q(env,'INSERT INTO line_reminders VALUES(?,?,?) ON CONFLICT(user_id) DO UPDATE SET json=excluded.json,expires_at=excluded.expires_at',u.id,JSON.stringify({...b,adminPreview:await previewAdmin(req,env)}),Date.now()+8*86400000).run();return {};
 }
 export async function sendLine(env,now=Date.now()) {
   if(!env.DB)return;const messaging=await getSecret(env,'lineMessagingToken');if(!messaging)return;
+  const enabled=await betaAllowed(env,'line');
   const settings=await lineSettings(env);if(!settings.dailyCap)return;
   const records=(await q(env,'SELECT line_reminders.*,users.line_user_id FROM line_reminders JOIN users ON users.id=user_id WHERE expires_at>? AND line_user_id IS NOT NULL',now).all()).results;
-  for(const record of records){const plan=JSON.parse(record.json);for(const {r} of dueReminders(plan,now)){
+  for(const record of records){const plan=JSON.parse(record.json);if(!enabled&&!plan.adminPreview)continue;for(const {r} of dueReminders(plan,now)){
     const key=await hash(JSON.stringify(r));
     // Reserve before sending: retries/crons cannot exceed the paid-message cap or duplicate an ambiguous send.
     const reserved=await q(env,'INSERT OR IGNORE INTO line_deliveries(user_id,day,event) SELECT ?,?,? WHERE (SELECT count(*) FROM line_deliveries WHERE user_id=? AND day=?)<?',record.user_id,r.date,key,record.user_id,r.date,settings.dailyCap).run();

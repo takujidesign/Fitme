@@ -7,6 +7,7 @@ localStorage.setItem('fitme:ai-engine','claude');
 const {getState,setState,todayISO,addDays}=await import('../app/js/store.js');
 const {views,actions,setRenderer}=await import('../app/js/core.js');
 const {CONFIG}=await import('../app/js/config.js');
+CONFIG.beta.enabled=false; // Exercise enabled integrations with mocked providers.
 const {syncNow}=await import('../app/js/account.js');
 const {startMetrics}=await import('../app/js/metrics.js');
 for(const name of ['account','trainer','chat','challenges','replan','admin'])await import('../app/js/views/'+name+'.js');

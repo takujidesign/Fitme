@@ -57,7 +57,7 @@ export async function adminLogout(req, env) {
   await env.CONFIG.delete('admin-session:' + await hash(req.headers.get('Authorization').slice(7)));
   return {ok:true};
 }
-export const secretNames = { adminTotpSecret:'ADMIN_TOTP_SECRET',turnstileSecret:'TURNSTILE_SECRET', stripeWebhookSecret:'STRIPE_WEBHOOK_SECRET',resendApiKey:'RESEND_API_KEY', lineChannelSecret: 'LINE_CHANNEL_SECRET', lineMessagingToken: 'LINE_MESSAGING_TOKEN', thunderApiKey: 'THUNDER_API_KEY', stripeSecretKey: 'STRIPE_SECRET_KEY', anthropicApiKey: 'ANTHROPIC_API_KEY', vapidPublicKey: 'VAPID_PUBLIC_KEY', vapidPrivateKey: 'VAPID_PRIVATE_KEY' };
+export const secretNames = { geminiApiKey:'GEMINI_API_KEY', adminTotpSecret:'ADMIN_TOTP_SECRET',turnstileSecret:'TURNSTILE_SECRET', stripeWebhookSecret:'STRIPE_WEBHOOK_SECRET',resendApiKey:'RESEND_API_KEY', lineChannelSecret: 'LINE_CHANNEL_SECRET', lineMessagingToken: 'LINE_MESSAGING_TOKEN', thunderApiKey: 'THUNDER_API_KEY', stripeSecretKey: 'STRIPE_SECRET_KEY', anthropicApiKey: 'ANTHROPIC_API_KEY', vapidPublicKey: 'VAPID_PUBLIC_KEY', vapidPrivateKey: 'VAPID_PRIVATE_KEY' };
 async function key(env) {
   if (!env.MASTER_KEY || env.MASTER_KEY.length < 32) throw fail('MASTER_KEY must have at least 32 characters', 503);
   const material = await crypto.subtle.importKey('raw', enc.encode(env.MASTER_KEY), 'HKDF', false, ['deriveKey']);

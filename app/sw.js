@@ -1,7 +1,8 @@
 // Offline-first service worker. Bump VERSION on every release.
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const SHELL = [
-  './js/i18n/round12.js','./js/turnstile.js','./js/views/account-security.js','./js/views/admin-security.js',
+  './js/render-stability.js','./js/beta-policy.js','./js/beta.js','./js/lab.js','./js/views/admin-round13.js','./js/views/admin-lab.js','./js/views/gemini-guide.js','./img/lab/meal.svg','./img/lab/label.svg','./img/lab/body.svg',
+  './js/i18n/round13.js','./js/i18n/round12.js','./js/turnstile.js','./js/views/account-security.js','./js/views/admin-security.js',
   './js/i18n/round11.js', './js/views/admin-setup.js',
   './js/gym-map.js', './js/vendor/leaflet/leaflet.js', './js/vendor/leaflet/leaflet.css', './js/chat-realtime.js', './js/palettes.js', './js/errors.js', './js/help-data.js', './js/guidance.js', './js/views/social.js', './js/views/social-extra.js', './js/views/me-round11.js', './js/views/admin-round11.js', './js/views/admin-system.js', './js/views/admin-content.js',
   './js/i18n/round10.js','./js/vendor/qrcode.min.js',
@@ -31,7 +32,7 @@ const SHELL = [
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL.filter(path=>path!=='./data/exercise-db.json'))).then(() => self.skipWaiting()));
+  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL.filter(path=>path!=='./data/exercise-db.json'))));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== 'fitme-videos-v1' && k !== 'fitme-assets-v1').map((k) => caches.delete(k)))).then(() => self.clients.claim()));
@@ -73,3 +74,5 @@ self.addEventListener('notificationclick', e => {
     if(client){await client.navigate(url.href);await client.focus();}else await self.clients.openWindow(url.href);
   }));
 });
+
+self.addEventListener('message',event=>{if(event.data?.type==='APPLY_UPDATE')self.skipWaiting();});

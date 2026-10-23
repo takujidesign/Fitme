@@ -1,3 +1,5 @@
+import {adminToken} from './admin-session.js';
+import {rerender} from './core.js';
 import {challenge} from './turnstile.js';
 import { adminFetch } from './admin-session.js';
 import { consentCurrent } from './legal.js';
@@ -9,7 +11,7 @@ import {friendlyError} from './errors.js';
 export async function api(path, body, method = body === undefined ? 'GET' : 'POST', token = getState().account?.token) {
   if (!CONFIG.API_BASE) throw Error(L('ต้องตั้งค่าเซิร์ฟเวอร์ก่อน ใช้งานในเครื่องได้ตามปกติ','Configure a server first. Local use remains available.'));
   const captcha=method==='POST'&&['auth/register','auth/forgot','ideas','reports'].includes(path)?await challenge():'';
-  const res = await (path.startsWith('admin/') ? adminFetch : fetch)(CONFIG.API_BASE.replace(/\/$/,'') + '/api/' + path, { method, headers:{'Content-Type':'application/json',...(captcha?{'X-Turnstile-Token':captcha}:{}),...(token?{Authorization:'Bearer '+token}:{})}, body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(30000) }).catch(error=>{error.message=friendlyError(error);throw error;});
+  const res = await (path.startsWith('admin/') ? adminFetch : fetch)(CONFIG.API_BASE.replace(/\/$/,'') + '/api/' + path, { method, headers:{'Content-Type':'application/json',...(adminToken()?{'X-Admin-Preview':adminToken()}:{}),...(captcha?{'X-Turnstile-Token':captcha}:{}),...(token?{Authorization:'Bearer '+token}:{})}, body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(30000) }).catch(error=>{error.message=friendlyError(error);throw error;});
   const data = await res.json();
   if(!res.ok) throw Object.assign(Error(res.status===401||res.status>=500?friendlyError({status:res.status,message:'server'}):data.error || 'Request failed'),{status:res.status,server:data.server,code:data.code});
   return data;
@@ -27,6 +29,7 @@ export async function syncNow() {
     if(getState().account.token!==token)return;
     // Preserve edits made while the network was in flight, and all device-only images.
     const merged=mergeState(syncCopy(getState()),saved.json);
+    const changed=JSON.stringify(syncCopy(getState()))!==JSON.stringify(merged);
     applying=true;
     setState(s=>{
       const photoIds=new Map(s.supplements.map(v=>[v.uid,v.photoId]));
@@ -36,6 +39,7 @@ export async function syncNow() {
       Object.entries(s.logs).forEach(([date,l])=>(l.foodLog||[]).forEach(v=>{if(foodPhotos.get(date+':'+v.time))v.photoId=foodPhotos.get(date+':'+v.time);}));
       s.account={...s.account,version:saved.version,lastSync:Date.now(),error:''};
     },{remote:true});
+    if(changed)rerender();
     if(JSON.stringify(merged)!==JSON.stringify(saved.json)){clearTimeout(timer);timer=setTimeout(syncNow,5000);}
   } catch(e) {
     if(getState().account.token===token){applying=true;setState(s=>{s.account.error=e.message;if(e.status===401)s.account.token=null;},{remote:true});}
@@ -43,8 +47,9 @@ export async function syncNow() {
 }
 export function startAccountSync() {
   subscribe(()=>{if(applying)return;clearTimeout(timer);timer=setTimeout(syncNow,5000);});
-  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')syncNow();});
-  window.addEventListener('online',syncNow);
+  let lastWake=0;const wake=()=>{if(Date.now()-lastWake<60000)return;lastWake=Date.now();syncNow();};
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')wake();});
+  window.addEventListener('online',wake);
   if(getState().account.token)api('auth/me').then(r=>setState(s=>{s.account.user=r.user;},{remote:true})).catch(()=>{});
   syncNow();
 }

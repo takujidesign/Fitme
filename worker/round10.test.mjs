@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import worker from './src/index.js';
 import {testDB} from './test-db.mjs';
 import {hash} from './src/security.js';
-const {db,DB}=testDB(),kv=new Map();
+const {db,DB}=testDB(),kv=new Map([['beta',JSON.stringify({enabled:false})]]);
 kv.set('settings',JSON.stringify({receiverName:'Fixmee'}));
 const env={DB,TOKEN_SECRET:'test-signing',ADMIN_PASSWORD:'test-admin',THUNDER_API_KEY:'mock-key',CONFIG:{get:async(k,t)=>kv.has(k)?t==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v)}};
 const id='round10-install-0001';

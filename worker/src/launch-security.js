@@ -1,3 +1,4 @@
+import {betaAllowed} from './beta.js';
 import {validEndpoint,encryptPush,vapidJWT} from './push.js';
 import {z} from 'zod/v4';
 import {input,fail,hash,random,getSecret,admin,encrypt,equal} from './security.js';
@@ -13,7 +14,7 @@ export async function cap(env,scope,value,max,window){
  if(!r.meta.changes)throw fail('Too many attempts; try again later',429);
 }
 export const ip=req=>req.headers.get('CF-Connecting-IP')||'local';
-export async function mailReady(env){return !!await getSecret(env,'resendApiKey');}
+export async function mailReady(env){return await betaAllowed(env,'email') && !!await getSecret(env,'resendApiKey');}
 export async function sendMail(env,to,subject,text){
  const key=await getSecret(env,'resendApiKey'),s=await env.CONFIG?.get('growth','json')||{};
  if(!key||!s.emailFrom)throw fail('Email sender is not configured',503);

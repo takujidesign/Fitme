@@ -8,6 +8,7 @@ localStorage.setItem('fitme:ai-engine','claude');
 const {getState,setState,compressImage}=await import('../app/js/store.js');
 const {views,actions}=await import('../app/js/core.js');
 const {CONFIG}=await import('../app/js/config.js');
+CONFIG.beta.enabled=false; // Exercise enabled integrations with mocked providers.
 CONFIG.freeMode=false; // Exercise the retained legacy paid mode.
 
 const {requireCredits,refreshCredits,creditPill,aiRequest}=await import('../app/js/ai-credits.js');

@@ -5,7 +5,7 @@ import {hash} from './src/security.js';
 import {AI_DEFAULTS,AIConfig,aiCall,stableJSON,PREAMBLE} from './src/ai.js';
 import {creditOwner,credits,reserve,refund} from './src/ai-credits.js';
 import {recordPayment} from './src/round5.js';
-const {db,DB}=testDB(),kv=new Map();
+const {db,DB}=testDB(),kv=new Map([['beta',JSON.stringify({enabled:false})]]);
 const env={DB,TOKEN_SECRET:'test-secret',ADMIN_PASSWORD:'test-admin',ANTHROPIC_API_KEY:'mock-key',CONFIG:{get:async(k,t)=>kv.has(k)?t==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v)}};
 const now=Date.now(),day=86400000,token='a'.repeat(64);
 db.prepare('INSERT INTO users(id,email,pass_hash,pass_salt,created_at) VALUES(?,?,?,?,?)').run('alice','a@example.test','unused','unused',now);

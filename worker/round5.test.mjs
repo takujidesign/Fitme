@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import worker from './src/index.js';
 import {testDB} from './test-db.mjs';
 import {discounted,connectFee,recordPayment,safeError,videoURL} from './src/round5.js';
-const {db,DB}=testDB(),kv=new Map(),push=new Map();
+const {db,DB}=testDB(),kv=new Map([['beta',JSON.stringify({enabled:false})]]),push=new Map();
 const env={DB,CONFIG:{get:async(k,type)=>kv.has(k)?type==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v)},PUSH:{delete:async k=>push.delete(k)},TOKEN_SECRET:'test-only-signing',ADMIN_PASSWORD:'test-admin',STRIPE_SECRET_KEY:'test-stripe',ALLOWED_ORIGINS:'https://test'};
 const request=(path,body,token='',method=body===undefined?'GET':'POST')=>worker.fetch(new Request('https://test/api/'+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:body===undefined?undefined:JSON.stringify(body)}),env);
 const adminSession=(await (await request('admin/login',{password:env.ADMIN_PASSWORD})).json()).token;

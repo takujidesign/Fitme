@@ -3,7 +3,7 @@ import worker from './src/index.js';
 import { testDB } from './test-db.mjs';
 import { pkce, sendLine } from './src/line.js';
 import { affiliateURL, standings } from './src/community.js';
-const {db,DB}=testDB(),kv=new Map();
+const {db,DB}=testDB(),kv=new Map([['beta',JSON.stringify({enabled:false})]]);
 const env={DB,CONFIG:{get:async(k,t)=>kv.has(k)?t==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v)},ADMIN_PASSWORD:'test-admin',ALLOWED_ORIGINS:'https://app.test',LINE_CHANNEL_SECRET:'test-line-secret',LINE_MESSAGING_TOKEN:'test-token'};
 const request=(path,body,token='',method=body===undefined?'GET':'POST')=>worker.fetch(new Request('https://api.test/api/'+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:body===undefined?undefined:JSON.stringify(body)}),env);
 const adminSession=(await (await request('admin/login',{password:env.ADMIN_PASSWORD})).json()).token;

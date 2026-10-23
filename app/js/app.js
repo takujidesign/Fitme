@@ -1,3 +1,6 @@
+import {filterBeta,entryIntegration,integrationEnabled,betaCard} from './beta.js';
+import {adminToken} from './admin-session.js';
+import { preserveView, enterView, offerUpdate } from './render-stability.js';
 import './views/round10.js';
 import {applyTab,setupEffects,parentTab,reducedMotion,animateToday} from './tab-effects.js';
 import './views/ai-usage.js';
@@ -52,6 +55,8 @@ import {startSocialBadges} from './views/social.js';
 import {loadAnnouncements} from './views/social-extra.js';
 import './views/me-round11.js';
 import './views/admin-round11.js';
+import './views/admin-round13.js';
+import './views/gemini-guide.js';
 import {pageGuidance} from './guidance.js';
 
 const TABS = [
@@ -65,6 +70,8 @@ const TABS = [
 const viewEl = document.getElementById('view');
 const tabEl = document.getElementById('tabbar');
 
+let renderedRoute = null;
+const visitedRoutes = new Set();
 function render() {
   if(!enabledLanguages().some(([id])=>id===getState().lang)){setState(s=>s.lang='en');toast('This language is unavailable. Switched to English.');}
   if(!languageLoaded(getState().lang)){loadLanguage(getState().lang).then(rerender).catch(()=>{setState(s=>s.lang='en');toast('Translation unavailable. Switched to English.');rerender();});return;}
@@ -76,12 +83,22 @@ function render() {
   if(r.name==='admin'){if(!robots){robots=document.createElement('meta');robots.name='robots';robots.dataset.adminRobots='';document.head.append(robots);}robots.content='noindex';}else robots?.remove();
   if (!getState().onboarded && !['onboarding', 'admin', 'credits', 'privacy', 'terms', 'account', 'line-return', 'pay', 'forgot', 'reset', 'verify', 'sessions'].includes(r.name)) return go('#/onboarding');
   if(getState().onboarded && !consentCurrent() && !['credits','consent','privacy','terms','account','admin','line-return','forgot','reset','verify','sessions'].includes(r.name))return go('#/consent');
-  const v = views[r.name] || views.today;
+  const disabled=entryIntegration({getAttribute:()=>location.hash,dataset:{}});
+  const v = disabled&&!integrationEnabled(disabled)?betaCard:(views[r.name] || views.today);
   const html = v(r);
+  const changed = renderedRoute !== location.hash;
+  const restore = preserveView(viewEl, !changed);
+  const first = !visitedRoutes.has(r.name);
+  renderedRoute = location.hash; visitedRoutes.add(r.name);
   document.body.classList.toggle('full', !!v.full || r.name === 'onboarding');
   viewEl.innerHTML = `<div class="view-inner v-${r.name}">${html}</div>`;
-  v.mount?.(viewEl);
-  if(r.name==='today')animateToday(viewEl);
+  if(changed) enterView(viewEl.firstElementChild);
+  const mounted=v.mount?.(viewEl),inner=viewEl.querySelector('.view-inner');
+  if(mounted?.then)mounted.then(()=>{if(viewEl.querySelector('.view-inner')===inner)restore();}).catch(()=>{});
+  filterBeta(viewEl);
+  if(adminToken()){const pill=document.createElement('small');pill.className='pill';pill.textContent='Admin preview';viewEl.prepend(pill);}
+  restore();
+  if(r.name==='today' && first)animateToday(viewEl);
   if(viewEl.querySelector('[data-ai-balance],[data-ai-cost]'))refreshCredits().catch(()=>{});
   tabEl.innerHTML = TABS.map(([name, ic, label]) => `<a href="#/${name}" class="${parentTab(r.name) === name ? 'on' : ''}">${icon(ic, 22)}<span>${L(label)}</span></a>`).join('')
     + (installEvt ? '' : '');
@@ -90,6 +107,7 @@ function render() {
 }
 setRenderer(render);
 setupEffects();
+new MutationObserver(()=>filterBeta(document.body)).observe(document.body,{childList:true,subtree:true});
 
 let lastHash = '';
 window.addEventListener('hashchange', () => {
@@ -103,6 +121,7 @@ window.addEventListener('hashchange', () => {
 document.addEventListener('click', (e) => {
   const el = e.target.closest('[data-act]');
   if (!el || el.disabled) return;
+  const integration=entryIntegration(el);if(integration&&!integrationEnabled(integration))return;
   const fn = actions[el.dataset.act];
   if (fn) { e.preventDefault(); fn(el, e); }
 });
@@ -131,7 +150,7 @@ function showInstall() {
 setTimeout(showInstall, 4000);
 
 if (!window.Capacitor?.isNativePlatform?.() && 'serviceWorker' in navigator && location.protocol !== 'file:') {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
+  navigator.serviceWorker.register('./sw.js').then(offerUpdate).catch(() => {});
 }
 
 await loadConfig();

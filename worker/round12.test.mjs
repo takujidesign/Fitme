@@ -4,7 +4,7 @@ import {testDB} from './test-db.mjs';
 import {hash,encrypt} from './src/security.js';
 import {totp} from './src/totp.js';
 import {cap,health} from './src/launch-security.js';
-const {db,DB}=testDB(),kv=new Map(),mail=[];
+const {db,DB}=testDB(),kv=new Map([['beta',JSON.stringify({enabled:false})]]),mail=[];
 const env={DB,MASTER_KEY:'m'.repeat(32),ADMIN_PASSWORD:'admin-test-only',CONFIG:{get:async(k,t)=>kv.has(k)?t==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v),delete:async k=>kv.delete(k)},MEDIA:{head:async()=>null}};
 kv.set('growth',JSON.stringify({emailFrom:'sender@example.test',appUrl:'https://example.test'}));
 let captcha=true;

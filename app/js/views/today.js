@@ -3,7 +3,7 @@ import { foodWarnings } from '../conditions.js';
 import { replanCard } from './replan.js';
 import { mealLogButtons } from './food-log.js';
 import { fastingCard } from '../fasting.js';
-import { actions, views, go, rerender } from '../core.js';
+import { actions, views, go, rerender, route } from '../core.js';
 import { getState, todayISO, dayLog, updateLog, addDays } from '../store.js';
 import { L, esc, icon, ring, fmt, dateLabel, sheet, closeSheet, toast, toMin, toHHMM } from '../ui.js';
 import { planDay } from '../day.js';
@@ -80,7 +80,7 @@ views.today = ({ query }) => {
     </section>
     ${slot('today.readiness',{query})}
     ${!lastNight && iso === todayISO() ? `<button class="card soft row-card" data-act="sleep-log" data-iso="${iso}">${icon('bed', 22)}<div><b>${L('เมื่อคืนนอนหลับเป็นอย่างไร?', 'How did you sleep?')}</b><small>${L('บันทึกการนอนเพื่อปรับแผนการพักผ่อน', 'Log sleep to tune your recovery')}</small></div>${icon('chev', 18)}</button>` : ''}
-    ${fastingCard(p)}${replanCard()}<h2 class="sec">${L('ไทม์ไลน์วันนี้', 'Today\'s timeline')}</h2>
+    <div data-fasting-clock>${fastingCard(p)}</div>${replanCard()}<h2 class="sec">${L('ไทม์ไลน์วันนี้', 'Today\'s timeline')}</h2>
     ${isLockedDay(iso) ? lockCard() : `<ol class="timeline">${d.events.map((e, i) => eventRow(e, log, iso).replace('<li class="tl', `<li class="tl ${i === nextIdx ? 'next' : ''}`)).join('')}</ol>`}
     ${d.sm.protein ? `<p class="muted sm center">${L(`อาหารเสริมวันนี้ให้โปรตีน ${d.sm.protein} g / ${d.sm.kcal} kcal (หักออกจากมื้ออาหารแล้ว)`, `Supplements today add ${d.sm.protein} g protein / ${d.sm.kcal} kcal (already deducted from meals)`)}</p>` : ''}${slot('today.secondary')}${slot('today.footer')}`;
 };
@@ -151,4 +151,11 @@ actions['sleep-log'] = (el) => {
 actions.go = (el) => go(el.dataset.to);
 export { toHHMM };
 
-views.today.mount = (root) => { const timer = setInterval(() => { if (!root.querySelector('.v-today')) return clearInterval(timer); rerender(); clearInterval(timer); }, 60000); };
+let clockTimer;
+export function updateTodayClock(root){
+ const host=root.querySelector('[data-fasting-clock]');if(host){const t=document.createElement('template');t.innerHTML=fastingCard(getState().profile);const next=t.content;const oldText=host.querySelector('p'),newText=next.querySelector('p');if(oldText&&newText)oldText.textContent=newText.textContent;const oldCircle=host.querySelectorAll('circle'),newCircle=next.querySelectorAll('circle');oldCircle.forEach((c,i)=>{if(newCircle[i])for(const a of newCircle[i].attributes)c.setAttribute(a.name,a.value);});}
+ const iso=route().query.get('d')||todayISO(),d=planDay(iso),log=dayLog(iso),now=new Date().getHours()*60+new Date().getMinutes();
+ const index=iso===todayISO()?d.events.findIndex(e=>e.min>=now-20&&!log.done[e.key]):-1;
+ root.querySelectorAll('.timeline>.tl').forEach((el,i)=>el.classList.toggle('next',i===index));
+}
+views.today.mount = root => {clearInterval(clockTimer);const inner=root.querySelector('.v-today')||root;clockTimer=setInterval(()=>{if(!inner.isConnected||!root.querySelector('.timeline')){clearInterval(clockTimer);return;}updateTodayClock(root);},60000);};

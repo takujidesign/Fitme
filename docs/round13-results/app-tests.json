@@ -1,0 +1,78 @@
+﻿[
+    {
+        "file":  "poses.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round10.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round11.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round12.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round13.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round3.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round4-ui.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round4.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round5.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round5b.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round5c.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round6-offline.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round6.test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round7.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round8.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "round9.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "settings.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "test.mjs",
+        "exitCode":  0
+    },
+    {
+        "file":  "ui-test.mjs",
+        "exitCode":  0
+    }
+]

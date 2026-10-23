@@ -1,0 +1,1 @@
+PASS offline: shell files exist, lazy catalogue excluded from install, viewed catalogue/photos cached, shell available offline, API never cached, unseen data fails explicitly.

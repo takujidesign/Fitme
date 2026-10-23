@@ -1,0 +1,2 @@
+Command: cd worker; node node_modules/wrangler/bin/wrangler.js deploy --dry-run --outdir ../docs/round13-results/worker-bundle
+Result: sandbox blocked child process spawn: EPERM at runWrangler. No bundle, deployment or remote migration occurred.
