@@ -6,8 +6,8 @@ compatibility_flags = ["nodejs_compat"]
 workers_dev = true
 
 [vars]
-# Contact for Web Push services; change to your own address before enabling push.
-VAPID_SUBJECT = "mailto:replace-with-your-email@example.com"
+# Contact for Web Push services (the admin contact email, when set, is used instead).
+VAPID_SUBJECT = "https://fixmee.app"
 # Comma-separated origins allowed to call the API (your GitHub Pages URL).
 ALLOWED_ORIGINS = "https://fixmee.app,https://www.fixmee.app,https://takujidesign.github.io"
 # Optional: only accept slips paid to this receiver name (match any of "|"-separated parts).
