@@ -1,0 +1,55 @@
+name: Set VAPID keys
+# Generates a Web Push key pair and stores both halves as Worker secrets.
+# The private key is created inside the runner, masked, and never printed or committed.
+on:
+  workflow_dispatch:
+    inputs:
+      rotate:
+        description: 'Replace existing keys (existing push subscriptions stop working)'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+jobs:
+  vapid:
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    defaults:
+      run:
+        working-directory: worker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+      - run: npm ci
+      - name: Skip if keys already exist
+        id: existing
+        shell: bash
+        run: |
+          if npx wrangler secret list --format json | grep -q '"VAPID_PRIVATE_KEY"' && [[ "${{ inputs.rotate }}" != "true" ]]; then
+            echo '::notice::VAPID keys already set; run again with rotate=true to replace them.'
+            echo 'skip=true' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Generate and store keys
+        if: steps.existing.outputs.skip != 'true'
+        shell: bash
+        run: |
+          node --input-type=module -e "
+            const b64 = (b) => Buffer.from(b).toString('base64url');
+            const k = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+            const pub = b64(await crypto.subtle.exportKey('raw', k.publicKey));
+            const priv = (await crypto.subtle.exportKey('jwk', k.privateKey)).d;
+            const fs = await import('node:fs');
+            fs.writeFileSync(process.env.RUNNER_TEMP + '/vapid_pub', pub);
+            fs.writeFileSync(process.env.RUNNER_TEMP + '/vapid_priv', priv);
+          "
+          echo "::add-mask::$(cat "$RUNNER_TEMP/vapid_priv")"
+          npx wrangler secret put VAPID_PUBLIC_KEY < "$RUNNER_TEMP/vapid_pub"
+          npx wrangler secret put VAPID_PRIVATE_KEY < "$RUNNER_TEMP/vapid_priv"
+          rm -f "$RUNNER_TEMP/vapid_pub" "$RUNNER_TEMP/vapid_priv"
+          echo '::notice::VAPID keys stored as Worker secrets.'
