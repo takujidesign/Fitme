@@ -2,6 +2,16 @@
 
 Product domain: `fixmee.app`.
 
+## Round 15 — local 3D assets and paged library
+
+The exercise sheet offers animated 3D with a lazy-loaded, vendored three.js 0.180.0 renderer and meshoptimizer 0.24.0 decoder. New installations default to animated 3D; existing illustration preferences remain valid. Reduced motion, Save-Data, low-memory devices and unavailable WebGL2 use the reviewed still images. Viewed 3D assets are cached at runtime, not downloaded during service-worker installation.
+
+3D character and motion: mesh2motion (CC0). 3D keyframes adapted from opengym3d (MIT). Sources are pinned to `ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae`, with input/output SHA-256 records in `app/3d/SOURCES.json`. The pipeline only accepts the two CC0 GLBs, licence files and twelve explicitly allowlisted keyframes-only exercise specs. The other 23 motions derive from Fixmee's corrected 2D poses. No restricted motion lane is used.
+
+Rebuild with `npm ci --prefix scripts` and `node scripts/three-d/build-rig.mjs` (Node 22+). Build tools: glTF Transform 4.2.1 and meshoptimizer, MIT. Runtime licence notices are in `app/js/vendor/three/`; upstream notices are in `licenses/`. The app itself still has no build step.
+
+The library retains its original filtering and appends 40 cards per page. See [Round 15 validation](docs/ROUND15_VALIDATION.md) for test results, CPU pose previews, and the outstanding browser screenshot/performance checks.
+
 ## Round 5a (sections 1–9 only)
 
 Sections 10–28 of `docs/CODEX_TASKS_5.md` are not part of this round.

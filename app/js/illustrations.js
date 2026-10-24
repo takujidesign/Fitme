@@ -1,3 +1,4 @@
+import {supports3D} from './three-support.js';
 import { getState } from './store.js';
 import { photoHTML } from './exercise-library.js';
 import { L, esc } from './ui.js';
@@ -21,11 +22,18 @@ export async function mountExerciseVisual(root,ex,{fetcher=globalThis.fetch}={})
   const motion=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)'),reduced=()=>!!motion?.matches;
   root.innerHTML=`<div class="seg visual-toggle"><button class="chip" data-mode="animation">${L('แอนิเมชัน','Animation')}</button><button class="chip" data-mode="pair">${L('เริ่ม–จบ','Start–Finish')}</button></div><div class="exercise-visual"></div>`;
   const host=root.querySelector('.exercise-visual'),nav=root.querySelector('.visual-toggle');
+  let request=0,controller;
+  const supported=supports3D();
   let anim,timer,row,flat,three,mode=reduced()?'pair':'animation',stopped=false,touched=false;
-  const cleanup=()=>{anim?.stop();clearInterval(timer);};
+  const cleanup=()=>{request++;controller?.abort();anim?.stop();anim=null;clearInterval(timer);delete host.dataset.threeReady;};
   const draw=()=>{
     cleanup();if(stopped)return;
     nav.querySelectorAll('[data-mode]').forEach(b=>{b.classList.toggle('on',b.dataset.mode===mode);b.setAttribute('aria-pressed',String(b.dataset.mode===mode));});
+    if(mode==='live'){
+      if(!supported){mode=three?'3d':'pair';draw();return;}
+      const ticket=request;controller=new AbortController();host.innerHTML=`<p class="note">${L('กำลังโหลด 3D','Loading 3D')}</p>`;
+      import('./three-viewer.js').then(m=>{if(stopped||ticket!==request)return;return m.mount3D(host,ex,{signal:controller.signal});}).then(player=>{if(!player)return;if(stopped||ticket!==request)player.stop();else anim=player;}).catch(()=>{if(!stopped&&ticket===request){mode=three?'3d':'pair';draw();}});return;
+    }
     row=mode==='3d'?three:flat;
     if((mode==='ai'||mode==='3d')&&row){
       host.innerHTML=illustrationHTML(ex,row);
@@ -40,12 +48,14 @@ export async function mountExerciseVisual(root,ex,{fetcher=globalThis.fetch}={})
     else anim=animateFigure(host,ex);
   };
   nav.onclick=e=>{const b=e.target.closest('[data-mode]');if(b){touched=true;mode=b.dataset.mode;draw();}};
-  const changed=()=>{if(reduced())mode='pair';draw();};motion?.addEventListener?.('change',changed);
+  host.addEventListener('three-fallback',()=>{mode=three?'3d':'pair';draw();});
+  const changed=()=>{if(reduced())mode=three?'3d':'pair';draw();};motion?.addEventListener?.('change',changed);
   const observer=new MutationObserver(()=>{if(!root.isConnected){stopped=true;cleanup();observer.disconnect();motion?.removeEventListener?.('change',changed);}});
   observer.observe(document.body,{childList:true,subtree:true});draw();
   const values=await Promise.all([loadIllustrations(fetcher),load3DIllustrations(fetcher)]);flat=values[0][ex.id];three=values[1][ex.id];row=flat;
   if(row&&!stopped&&root.isConnected){nav.insertAdjacentHTML('afterbegin',`<button class="chip" data-mode="ai">${L('ภาพประกอบ AI','AI illustration')}</button>`);if(!touched&&!reduced()&&getState().exerciseVisualStyle!=='animation')mode='ai';draw();}
   if(three&&!stopped&&root.isConnected){nav.insertAdjacentHTML('afterbegin','<button class="chip" data-mode="3d">3D</button>');if(!touched&&(getState().exerciseVisualStyle||'3d')==='3d')mode='3d';draw();}
+  if(!stopped&&root.isConnected){nav.insertAdjacentHTML('afterbegin',`<button class="chip" data-mode="live">${L('3D เคลื่อนไหว','Animated 3D')}</button>`);if(!touched&&getState().exerciseVisualStyle==='live')mode=supported?'live':three?'3d':reduced()?'pair':flat?'ai':'pair';draw();}
   return {stop(){stopped=true;cleanup();observer.disconnect();motion?.removeEventListener?.('change',changed);}};
 }
 

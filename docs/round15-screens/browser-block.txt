@@ -1,0 +1,5 @@
+browserType.connectOverCDP: connect ECONNREFUSED 127.0.0.1:9225
+Call log:
+[2m  - <ws preparing> retrieving websocket url from http://127.0.0.1:9225[22m
+
+    at D:\GitHub\takujidesign\Fitme\tests\round15-browser.mjs:21:53

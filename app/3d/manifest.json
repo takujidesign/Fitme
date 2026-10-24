@@ -1,0 +1,167 @@
+{
+  "squat": {
+    "lane": "original",
+    "keyframes": "keyframes/squat.json"
+  },
+  "goblet_squat": {
+    "lane": "original",
+    "keyframes": "keyframes/goblet_squat.json"
+  },
+  "lunge": {
+    "lane": "MIT",
+    "keyframes": "keyframes/lunge.json"
+  },
+  "bridge": {
+    "lane": "MIT",
+    "keyframes": "keyframes/bridge.json"
+  },
+  "calf_raise": {
+    "lane": "MIT",
+    "keyframes": "keyframes/calf_raise.json"
+  },
+  "squat_jump": {
+    "lane": "original",
+    "keyframes": "keyframes/squat_jump.json"
+  },
+  "deadlift": {
+    "lane": "MIT",
+    "keyframes": "keyframes/deadlift.json"
+  },
+  "rdl": {
+    "lane": "MIT",
+    "keyframes": "keyframes/rdl.json"
+  },
+  "pushup": {
+    "lane": "CC0",
+    "clip": "clips/pushup.glb",
+    "sourceClip": "Pushup"
+  },
+  "knee_pushup": {
+    "lane": "original",
+    "keyframes": "keyframes/knee_pushup.json"
+  },
+  "bench_press": {
+    "lane": "original",
+    "keyframes": "keyframes/bench_press.json"
+  },
+  "shoulder_press": {
+    "lane": "MIT",
+    "keyframes": "keyframes/shoulder_press.json"
+  },
+  "lateral_raise": {
+    "lane": "MIT",
+    "keyframes": "keyframes/lateral_raise.json"
+  },
+  "triceps_ext": {
+    "lane": "MIT",
+    "keyframes": "keyframes/triceps_ext.json"
+  },
+  "db_row": {
+    "lane": "MIT",
+    "keyframes": "keyframes/db_row.json"
+  },
+  "lat_pulldown": {
+    "lane": "original",
+    "keyframes": "keyframes/lat_pulldown.json"
+  },
+  "db_curl": {
+    "lane": "MIT",
+    "keyframes": "keyframes/db_curl.json"
+  },
+  "superman": {
+    "lane": "MIT",
+    "keyframes": "keyframes/superman.json"
+  },
+  "plank": {
+    "lane": "original",
+    "keyframes": "keyframes/plank.json"
+  },
+  "crunch": {
+    "lane": "original",
+    "keyframes": "keyframes/crunch.json"
+  },
+  "leg_raise": {
+    "lane": "original",
+    "keyframes": "keyframes/leg_raise.json"
+  },
+  "mountain_climber": {
+    "lane": "original",
+    "keyframes": "keyframes/mountain_climber.json"
+  },
+  "jumping_jack": {
+    "lane": "CC0",
+    "clip": "clips/jumping_jack.glb",
+    "sourceClip": "Jumping Jacks"
+  },
+  "high_knees": {
+    "lane": "MIT",
+    "keyframes": "keyframes/high_knees.json"
+  },
+  "jog": {
+    "lane": "CC0",
+    "clip": "clips/jog.glb",
+    "sourceClip": "Jog"
+  },
+  "walk": {
+    "lane": "CC0",
+    "clip": "clips/walk.glb",
+    "sourceClip": "Walk"
+  },
+  "jump_rope": {
+    "lane": "original",
+    "keyframes": "keyframes/jump_rope.json"
+  },
+  "forward_fold": {
+    "lane": "original",
+    "keyframes": "keyframes/forward_fold.json"
+  },
+  "quad_stretch": {
+    "lane": "original",
+    "keyframes": "keyframes/quad_stretch.json"
+  },
+  "child_pose": {
+    "lane": "original",
+    "keyframes": "keyframes/child_pose.json"
+  },
+  "bird_dog": {
+    "lane": "original",
+    "keyframes": "keyframes/bird_dog.json"
+  },
+  "dead_bug": {
+    "lane": "original",
+    "keyframes": "keyframes/dead_bug.json"
+  },
+  "cat_cow": {
+    "lane": "original",
+    "keyframes": "keyframes/cat_cow.json"
+  },
+  "chair_squat": {
+    "lane": "original",
+    "keyframes": "keyframes/chair_squat.json"
+  },
+  "wall_pushup": {
+    "lane": "original",
+    "keyframes": "keyframes/wall_pushup.json"
+  },
+  "step_up": {
+    "lane": "original",
+    "keyframes": "keyframes/step_up.json"
+  },
+  "run_interval": {
+    "lane": "CC0",
+    "clip": "clips/run_interval.glb",
+    "sourceClip": "Sprint"
+  },
+  "side_plank": {
+    "lane": "original",
+    "keyframes": "keyframes/side_plank.json"
+  },
+  "kegel": {
+    "lane": "original",
+    "keyframes": "keyframes/kegel.json"
+  },
+  "breathing": {
+    "lane": "original",
+    "keyframes": "keyframes/breathing.json"
+  }
+}

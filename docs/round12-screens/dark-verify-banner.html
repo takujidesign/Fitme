@@ -619,4 +619,11 @@ a,#tabbar a.on,.sec .ic,.btn.ghost:not(.danger){color:var(--accent-text)}
 body:has(.admin-layout) #app{max-width:1200px}
 
 @media(prefers-reduced-motion:reduce){.view-inner[data-enter]{animation:none}}
+
+/* Round 15: fixed media slots and touch-friendly 3D controls. */
+#library-results .exercise-photos,#library-results .ex-card>img{aspect-ratio:1;width:100%;object-fit:contain;}
+.three-stage{width:100%;aspect-ratio:1;overflow:hidden;touch-action:none;}
+.three-stage canvas{display:block;width:100%;height:100%;}
+.three-controls{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.three-controls select{min-height:44px;background:var(--surface);color:inherit;border:1px solid currentColor;border-radius:8px;}
 </style><body><div id="app"><main id="view"><div class="view-inner"><header class="top"><h1>Account &amp; sync</h1></header><section class="card"><p>You can always use this app without an account. Body and food photos are not synced.</p><p>&lt;img src=x onerror=alert(1)&gt;</p><p>Last synced at —</p><p role="status"></p><button class="btn primary" data-act="account-sync">Sync now</button><button class="btn ghost" data-act="account-logout">Log out</button><button class="btn ghost" data-act="account-role">Switch to trainer</button></section><section class="card"><h2>My trainer</h2><button class="btn ghost" data-act="trainer-invite">Create invite (48 h)</button><p id="invite-code"></p><div id="my-trainer"></div></section><section class="card"><a class="btn ghost" href="#/sessions">Account security</a><p role="status">Verify your email before using community features</p><button class="btn primary" data-act="verification-resend">Resend verification</button></section></div></main></div></body></html>

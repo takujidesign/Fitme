@@ -1,0 +1,200 @@
+{
+  "id": "shoulder_press",
+  "fps": 30,
+  "duration": 2.8,
+  "keyframes": [
+    {
+      "t": 0,
+      "bones": {
+        "pelvis": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        },
+        "spine": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        },
+        "chest": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        },
+        "upper_arm.*": {
+          "rot": [
+            -55,
+            0,
+            -35
+          ]
+        },
+        "forearm.*": {
+          "rot": [
+            0,
+            0,
+            -125
+          ]
+        },
+        "hand.*": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "t": 0.36,
+      "bones": {
+        "pelvis": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        },
+        "spine": {
+          "rot": [
+            -5,
+            0,
+            0
+          ]
+        },
+        "chest": {
+          "rot": [
+            -4,
+            0,
+            0
+          ]
+        },
+        "upper_arm.*": {
+          "rot": [
+            80,
+            0,
+            -8
+          ]
+        },
+        "forearm.*": {
+          "rot": [
+            0,
+            0,
+            -8
+          ]
+        },
+        "hand.*": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "t": 0.46,
+      "bones": {
+        "pelvis": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        },
+        "spine": {
+          "rot": [
+            -5,
+            0,
+            0
+          ]
+        },
+        "chest": {
+          "rot": [
+            -4,
+            0,
+            0
+          ]
+        },
+        "upper_arm.*": {
+          "rot": [
+            80,
+            0,
+            -8
+          ]
+        },
+        "forearm.*": {
+          "rot": [
+            0,
+            0,
+            -8
+          ]
+        },
+        "hand.*": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "t": 1,
+      "bones": {
+        "pelvis": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        },
+        "spine": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        },
+        "chest": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        },
+        "upper_arm.*": {
+          "rot": [
+            -55,
+            0,
+            -35
+          ]
+        },
+        "forearm.*": {
+          "rot": [
+            0,
+            0,
+            -125
+          ]
+        },
+        "hand.*": {
+          "rot": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ],
+  "provenance": {
+    "licence": "MIT",
+    "source": "dumbbell_shoulder_press",
+    "commit": "ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae"
+  }
+}

@@ -46,3 +46,11 @@ The owner-only conversion script uses sharp (Apache-2.0), installed under `scrip
 [Exercise data by RepDB (repdb.co)](https://repdb.co/). Runtime-only free-tier data, pinned to `b407c5951a027a27817fb2a5cee9ec9feffc4dc7`, schema 3. [Licence](https://github.com/RepDB/exercise-dataset/blob/b407c5951a027a27817fb2a5cee9ec9feffc4dc7/LICENSE-DATA.md). No RepDB dataset or standalone artwork is vendored in this repository; only original mappings, Thai names and aliases. RepDB images are never used as generative inputs. Premium samples are excluded. Browser runtime caching supports offline use after first library load.
 
 ภาพ 3D ของท่าหลักสร้างด้วย AI (OpenAI image generation ผ่าน Codex). Original text-only prompts; no external image references. Theme settings offer 3D / Illustration / Animation. Approved 3D pairs fall back to existing illustrations and animated figures. See `docs/ROUND14_VALIDATION.md` and `docs/round14-screens/ex3d.html` for reviewed coverage.
+
+## Round 15 animated 3D
+
+- **3D character and motion: mesh2motion (CC0)**. The two public `motions/cc0/mesh2motion/human-{base,addon}-animations.glb` files in AssiamahS/opengym3d at `ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae`. Only Walk, Jog, Sprint, Pushup and Jumping Jacks are retained. See `licenses/mesh2motion-CC0.txt` and `app/3d/SOURCES.json`.
+- **3D keyframes adapted from opengym3d (MIT)**. Copyright (c) 2026 SylvesterAssiamahGK. Twelve keyframes-only exercise specs, with the complete MIT notice in `licenses/opengym3d-MIT.txt`. Adaptations include dumbbell-row elbow limits, bridge arm placement and a supinated curl grip. The remaining 23 keyframe files are original Fixmee work derived from `app/js/exercises.js`. No Mixamo clip, FBX or private motion repository is used.
+- **three.js 0.180.0 (MIT)**, including GLTFLoader, OrbitControls and BufferGeometryUtils. Complete notice: `app/js/vendor/three/LICENSE-three.txt`.
+- **meshoptimizer 0.24.0 (MIT)**, including the vendored matching meshopt decoder. Complete notice: `app/js/vendor/three/LICENSE-meshoptimizer.txt`.
+- **glTF Transform 4.2.1 (MIT)** is a development dependency for the reproducible asset build, not vendored runtime code. Its licence is distributed with the npm packages.

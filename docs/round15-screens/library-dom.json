@@ -1,0 +1,31 @@
+{
+  "environment": "happy-dom; 375x812 configuration, no browser layout or paint",
+  "dataset": "40 original + 876 vendored Free Exercise DB; RepDB not downloaded",
+  "count": 916,
+  "before": {
+    "cards": 916,
+    "images": 1786,
+    "nodes": 6328,
+    "constructionMs": [
+      95.24130000000002,
+      108.04229999999995,
+      91.16649999999993,
+      74.15019999999993,
+      72.35910000000001
+    ],
+    "medianMs": 91.16649999999993
+  },
+  "after": {
+    "cards": 40,
+    "images": 40,
+    "nodes": 203,
+    "constructionMs": [
+      3.857400000000098,
+      2.7507000000000517,
+      2.1772000000000844,
+      1.9936999999999898,
+      6.052700000000186
+    ],
+    "medianMs": 2.7507000000000517
+  }
+}

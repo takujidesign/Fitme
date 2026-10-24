@@ -619,4 +619,11 @@ a,#tabbar a.on,.sec .ic,.btn.ghost:not(.danger){color:var(--accent-text)}
 body:has(.admin-layout) #app{max-width:1200px}
 
 @media(prefers-reduced-motion:reduce){.view-inner[data-enter]{animation:none}}
+
+/* Round 15: fixed media slots and touch-friendly 3D controls. */
+#library-results .exercise-photos,#library-results .ex-card>img{aspect-ratio:1;width:100%;object-fit:contain;}
+.three-stage{width:100%;aspect-ratio:1;overflow:hidden;touch-action:none;}
+.three-stage canvas{display:block;width:100%;height:100%;}
+.three-controls{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.three-controls select{min-height:44px;background:var(--surface);color:inherit;border:1px solid currentColor;border-radius:8px;}
 </style><body><div id="app"><main id="view"><div class="view-inner"><section class="card"><h2>Launch security</h2><p>Email verification: ✓</p><p>Turnstile: ⚠ Skipped: configure both keys</p><p>2FA: ⚠ Configure in System</p><label class="field">Turnstile site key<input id="turnstile-site" type="text" value=""></label><label class="field">Turnstile secret<input id="turnstile-secret" type="password" value=""></label><h3>Languages</h3><p>ไทย ✓ · English ✓</p><label class="list-row"><input id="lang-zh" type="checkbox">中文 · Beta</label><label class="list-row"><input id="lang-ja" type="checkbox">日本語 · Beta</label><label class="list-row"><input id="lang-vi" type="checkbox">Tiếng Việt · Beta</label><button class="btn primary" id="launch-save">Save</button><p>Configure a verified sender in Growth before sending email.</p><button class="btn ghost" id="test-email">Send test email to contact address</button><button class="btn ghost" id="test-push">Send test push to this device</button></section></div></main></div></body></html>

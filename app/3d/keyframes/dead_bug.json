@@ -1,0 +1,399 @@
+{
+  "id": "dead_bug",
+  "fps": 30,
+  "duration": 3.6,
+  "keyframes": [
+    {
+      "t": 0,
+      "bones": {
+        "pelvis": {
+          "loc": [
+            0,
+            0.168,
+            0
+          ]
+        },
+        "spine": {
+          "aim_world": [
+            0,
+            -6.123233995736766e-17,
+            -1
+          ]
+        },
+        "upper_arm.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            25,
+            0
+          ]
+        },
+        "forearm.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            23,
+            0
+          ]
+        },
+        "upper_arm.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            25,
+            0
+          ]
+        },
+        "forearm.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            23,
+            0
+          ]
+        },
+        "thigh.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            34,
+            0
+          ]
+        },
+        "shin.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            0,
+            34
+          ]
+        },
+        "thigh.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            34,
+            0
+          ]
+        },
+        "shin.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            0,
+            34
+          ]
+        },
+        "foot.L": {
+          "aim_world": [
+            0,
+            0,
+            1
+          ]
+        },
+        "foot.R": {
+          "aim_world": [
+            0,
+            0,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "t": 0.5,
+      "bones": {
+        "pelvis": {
+          "loc": [
+            0,
+            0.168,
+            0
+          ]
+        },
+        "spine": {
+          "aim_world": [
+            0,
+            -6.123233995736766e-17,
+            -1
+          ]
+        },
+        "upper_arm.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            0,
+            -25
+          ]
+        },
+        "forearm.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            0,
+            -23
+          ]
+        },
+        "upper_arm.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            25,
+            0
+          ]
+        },
+        "forearm.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            23,
+            0
+          ]
+        },
+        "thigh.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            -2.9632952534203696,
+            33.87061973511936
+          ]
+        },
+        "shin.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            -2.9632952534203696,
+            33.87061973511936
+          ]
+        },
+        "thigh.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            34,
+            0
+          ]
+        },
+        "shin.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            0,
+            34
+          ]
+        },
+        "foot.L": {
+          "aim_world": [
+            0,
+            0,
+            1
+          ]
+        },
+        "foot.R": {
+          "aim_world": [
+            0,
+            0,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "t": 1,
+      "bones": {
+        "pelvis": {
+          "loc": [
+            0,
+            0.168,
+            0
+          ]
+        },
+        "spine": {
+          "aim_world": [
+            0,
+            -6.123233995736766e-17,
+            -1
+          ]
+        },
+        "upper_arm.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            25,
+            0
+          ]
+        },
+        "forearm.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            23,
+            0
+          ]
+        },
+        "upper_arm.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            25,
+            0
+          ]
+        },
+        "forearm.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            23,
+            0
+          ]
+        },
+        "thigh.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            34,
+            0
+          ]
+        },
+        "shin.L": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            0,
+            34
+          ]
+        },
+        "thigh.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            34,
+            0
+          ]
+        },
+        "shin.R": {
+          "rot": [
+            0,
+            0,
+            0
+          ],
+          "aim_world": [
+            0,
+            0,
+            34
+          ]
+        },
+        "foot.L": {
+          "aim_world": [
+            0,
+            0,
+            1
+          ]
+        },
+        "foot.R": {
+          "aim_world": [
+            0,
+            0,
+            1
+          ]
+        }
+      }
+    }
+  ],
+  "provenance": {
+    "licence": "original",
+    "source": "app/js/exercises.js",
+    "derivation": "Round 11 solved joint directions; sagittal YZ and frontal XY planes"
+  }
+}

@@ -1,6 +1,8 @@
 // Offline-first service worker. Bump VERSION on every release.
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const SHELL = [
+  './js/vendor/three/BufferGeometryUtils.js','./js/vendor/three/GLTFLoader.js','./js/vendor/three/OrbitControls.js','./js/vendor/three/meshopt_decoder.module.js','./js/vendor/three/three.core.js','./js/vendor/three/three.module.js',
+  './js/three-motion.js','./js/three-viewer.js','./js/library-paging.js','./js/three-support.js','./js/i18n/round15.js',
   './js/repdb.js','./js/repdb-worker.js','./js/exercise-merge.js','./js/i18n/round14.js','./data/repdb-names-th.json','./data/exercise-aliases.json','./data/illustrations-3d.json',
   './js/render-stability.js','./js/beta-policy.js','./js/beta.js','./js/lab.js','./js/views/admin-round13.js','./js/views/admin-lab.js','./js/views/gemini-guide.js','./img/lab/meal.svg','./img/lab/label.svg','./img/lab/body.svg',
   './js/i18n/round13.js','./js/i18n/round12.js','./js/turnstile.js','./js/views/account-security.js','./js/views/admin-security.js',
@@ -33,7 +35,7 @@ const SHELL = [
 ];
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL.filter(path=>path!=='./data/exercise-db.json'))));
+  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(SHELL.filter(path=>path!=='./data/exercise-db.json'&&!path.startsWith('./js/vendor/three/')&&!['./js/three-motion.js','./js/three-viewer.js'].includes(path)))));
 });
 self.addEventListener('activate', (e) => {
   e.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((k) => k !== VERSION && k !== 'fitme-videos-v1' && k !== 'fitme-assets-v1').map((k) => caches.delete(k)))).then(() => self.clients.claim()));
@@ -45,11 +47,12 @@ self.addEventListener('fetch', (e) => {
   if (url.pathname.includes('/api/')) return; // never cache API calls
   const isShell = url.origin === location.origin;
   // exercise-db.json deliberately stays out of precache: fetch/cache only on library open.
+  const is3D = isShell && (/\/3d\//.test(url.pathname)||/\/js\/(three-viewer|three-motion)\.js$/.test(url.pathname)||url.pathname.includes('/js/vendor/three/'));
   const isFont = ['fonts.googleapis.com','fonts.gstatic.com','cdnjs.cloudflare.com','cdn.jsdelivr.net'].includes(url.hostname);
   if (!isShell && !isFont) return;
-  e.respondWith(caches.open(isFont ? 'fitme-assets-v1' : VERSION).then(async (cache) => {
+  e.respondWith(caches.open(is3D ? 'fitme-assets-v1' : isFont ? 'fitme-assets-v1' : VERSION).then(async (cache) => {
     const hit = await cache.match(req, { ignoreSearch: isShell });
-    if (isFont && hit) return hit; // fonts/libs: cache-first
+    if ((isFont || is3D) && hit) return hit; // fonts/libs: cache-first
     // app files: network-first so releases show up immediately, cache when offline
     try {
       const res = await fetch(req, { cache: 'no-cache' }); // revalidate, skip stale HTTP cache

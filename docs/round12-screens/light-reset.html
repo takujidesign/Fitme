@@ -619,4 +619,11 @@ a,#tabbar a.on,.sec .ic,.btn.ghost:not(.danger){color:var(--accent-text)}
 body:has(.admin-layout) #app{max-width:1200px}
 
 @media(prefers-reduced-motion:reduce){.view-inner[data-enter]{animation:none}}
+
+/* Round 15: fixed media slots and touch-friendly 3D controls. */
+#library-results .exercise-photos,#library-results .ex-card>img{aspect-ratio:1;width:100%;object-fit:contain;}
+.three-stage{width:100%;aspect-ratio:1;overflow:hidden;touch-action:none;}
+.three-stage canvas{display:block;width:100%;height:100%;}
+.three-controls{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+.three-controls select{min-height:44px;background:var(--surface);color:inherit;border:1px solid currentColor;border-radius:8px;}
 </style><body><div id="app"><main id="view"><div class="view-inner"><section class="card"><h1>Reset password</h1><label class="field">New password (at least 10 characters)<input id="new-password" type="password" maxlength="256" autocomplete="new-password"></label><button class="btn primary" data-act="reset-send">Reset password</button></section></div></main></div></body></html>

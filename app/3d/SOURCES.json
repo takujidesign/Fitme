@@ -1,0 +1,298 @@
+{
+  "commit": "ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae",
+  "sources": [
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/LICENSE",
+      "sha256": "292eed4e441413aa627eb1f80276264e24db5d28125c4602d6afceaf97a8d99e",
+      "bytes": 1076
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/motions/cc0/mesh2motion/LICENSE-CC0.md",
+      "sha256": "52fec1c484df708c16b4c27b2bf0d7f0d3994105c57adc4b9e6f95bcfd9de65f",
+      "bytes": 294
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/motions/cc0/mesh2motion/human-base-animations.glb",
+      "sha256": "406eb0a8dc4ab366e623b79b6e3005a4951392e1bda78ae39c1099d31147733c",
+      "bytes": 5656648
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/motions/cc0/mesh2motion/human-addon-animations.glb",
+      "sha256": "a0d64d555e0d492026b72d58bf8e16c5e86779295f9093e376dcc001915c2c95",
+      "bytes": 5292804
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/lunge.json",
+      "sha256": "2ab5298c0c07b5e1eefd3a4c947bfd34bb0211530f4e6a432fdbad97406d0f2a",
+      "bytes": 5813
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/glute_bridge.json",
+      "sha256": "9a297456691fb173e4f7d34ed20eb330dc945f70797bb8308aa2dab5e785ad16",
+      "bytes": 4947
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/calf_raise.json",
+      "sha256": "c52e7efd69feaefe7886b3024bbf460af8d0674520da57acba683691d0591396",
+      "bytes": 4863
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/deadlift.json",
+      "sha256": "285c13046a565ea00c6515c222fc44bc42c7d4335d080f27d1aab935027ecb9f",
+      "bytes": 5494
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/romanian_deadlift.json",
+      "sha256": "10cd736074f818a9fe78374bd8c7933752616af2fad4d1962e01535586a74be2",
+      "bytes": 5492
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/dumbbell_shoulder_press.json",
+      "sha256": "a97a47496c7bb6a102f579110f6a23b355fd02060ca7b2dbff4204955a2947ec",
+      "bytes": 3463
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/lateral_raise.json",
+      "sha256": "eb2ed4d74025d4048287e11c5ab046eccc9248aebe1968a9a562535fbb944dbd",
+      "bytes": 4979
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/overhead_tricep_extension.json",
+      "sha256": "618bec47446f61efbec83b51c67de9187c03e757c64164fac61c355c7de6e4dd",
+      "bytes": 5125
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/bent_over_row.json",
+      "sha256": "74b0235dc8fc72c72fa29d660467052271471eb5c2fb73ddfdba21e009d935dc",
+      "bytes": 5154
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/hammer_curl.json",
+      "sha256": "a2f9438269f538cc8327c9cc6c83b89c490bd2ede3a300ac0906a9c40a57da6d",
+      "bytes": 3185
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/superman.json",
+      "sha256": "ef039e9e07290a40ea60be44600f1bfeb8f9c8a3067e4f2b44e4c6438ac811be",
+      "bytes": 5020
+    },
+    {
+      "url": "https://raw.githubusercontent.com/AssiamahS/opengym3d/ea3a60130fdcfb3c4771e44d09f84ebab4ee9bae/exercises/high_knees.json",
+      "sha256": "df9fed100100856a48815cbfd59cb2bd17f2ba89fb47849f6ed9c6d8975b7713",
+      "bytes": 4483
+    }
+  ],
+  "outputs": [
+    {
+      "file": "human.glb",
+      "bytes": 52600,
+      "sha256": "a8720edf5df5ba852da34af4e888dee93ee5f4020df98518f2aab275e860f491"
+    },
+    {
+      "file": "clips/pushup.glb",
+      "bytes": 63540,
+      "sha256": "72e4f15765693183f3ad5b0a543fac44e2841e8b54cdeeceabe9b1baf55b4ce1"
+    },
+    {
+      "file": "clips/jumping_jack.glb",
+      "bytes": 63192,
+      "sha256": "eab55415029e646fb3c75ca7ff5af4cc35f1e5c62017e36ac7cf507b2870f27f"
+    },
+    {
+      "file": "clips/jog.glb",
+      "bytes": 64880,
+      "sha256": "534fe98d10cbefc43f2c08c8f3498d9645d67db93509e01bbf632669f46c22b3"
+    },
+    {
+      "file": "clips/run_interval.glb",
+      "bytes": 63712,
+      "sha256": "d0a3dbf44a85d71704e9497f5fc004258ecbd7ffbec0015ae67e1a27864ae895"
+    },
+    {
+      "file": "clips/walk.glb",
+      "bytes": 65488,
+      "sha256": "260a73a8260f35d4b365179f3677bca09d7b7853f6eeb4a6d7842b9dd227bb95"
+    },
+    {
+      "file": "keyframes/squat.json",
+      "bytes": 7114,
+      "sha256": "da3531d18217e2fb4ce89a7d379189ecaa78fd5750d072d0b4ea7fc1f30a0913"
+    },
+    {
+      "file": "keyframes/goblet_squat.json",
+      "bytes": 7192,
+      "sha256": "9b73a7f1c39bca1e09c0fcdc2a93daca499fdb5a6458059991c283180122ba9b"
+    },
+    {
+      "file": "keyframes/lunge.json",
+      "bytes": 5446,
+      "sha256": "adfc90508e05fbb16d4bd98177128ee83f9fb7f7eb58f3ce6404b74e97589676"
+    },
+    {
+      "file": "keyframes/bridge.json",
+      "bytes": 4742,
+      "sha256": "ec00c4498540f23779f5cabc07cbc89ba74f707533ad07f91d5e64b5380cb7fd"
+    },
+    {
+      "file": "keyframes/calf_raise.json",
+      "bytes": 4576,
+      "sha256": "913ff7eac82dd4bcc9cbf0166a80aa6395b21ac6c25a54e65de6a1ddfa67a30c"
+    },
+    {
+      "file": "keyframes/squat_jump.json",
+      "bytes": 9586,
+      "sha256": "b11b135e85e5d98038ce76ff00e272ff2ff94d0c626b6ee9e09db665d16525ed"
+    },
+    {
+      "file": "keyframes/deadlift.json",
+      "bytes": 4722,
+      "sha256": "c37a005708228250b35f11e7a3b777189ae254a45366fc7a40c0f3fc229d1435"
+    },
+    {
+      "file": "keyframes/rdl.json",
+      "bytes": 4722,
+      "sha256": "cb57ae4083c4b5e098876156d6dff2ca9a5250a499eaefa1819bb8d51a9c7075"
+    },
+    {
+      "file": "keyframes/knee_pushup.json",
+      "bytes": 7235,
+      "sha256": "2d6e35666fd826c14754d879390728bdeb0e4910c65cb288c065ba1dbbaddb0d"
+    },
+    {
+      "file": "keyframes/bench_press.json",
+      "bytes": 7260,
+      "sha256": "38501fded73c855010ee9161482f7a62ee715831658458ee42218d05ffbe98ca"
+    },
+    {
+      "file": "keyframes/shoulder_press.json",
+      "bytes": 3027,
+      "sha256": "2dfe2bc5fb7cb64e4811be66e53e29c5e94c0ce3adae5e0ae1931036de49da05"
+    },
+    {
+      "file": "keyframes/lateral_raise.json",
+      "bytes": 4574,
+      "sha256": "cc7fed49a35be125cf1ea7c533e6fc6db97c2d61ed1a18ab71f2c3b3756c9d82"
+    },
+    {
+      "file": "keyframes/triceps_ext.json",
+      "bytes": 4682,
+      "sha256": "4d499ca37e4466b478cfd79c8556e1623e92943e88e9ecac33bb1ecde197a590"
+    },
+    {
+      "file": "keyframes/db_row.json",
+      "bytes": 4747,
+      "sha256": "5ec5a9bb8157a1a7c4dc4f0599cdedb1ab5cf220d31a74052d1a18ef93016f6e"
+    },
+    {
+      "file": "keyframes/lat_pulldown.json",
+      "bytes": 7200,
+      "sha256": "54d01d246cb614edfc385b4411458f2f38511ac42c340dfcae0b3212f22cb1f6"
+    },
+    {
+      "file": "keyframes/db_curl.json",
+      "bytes": 2590,
+      "sha256": "f18645ab7a783dab6d12766cf9f6a04c79a488b79a25f5a66c2aa7229949e5b7"
+    },
+    {
+      "file": "keyframes/superman.json",
+      "bytes": 4717,
+      "sha256": "01637adcf07ca33695cb18badd9efc0d515a05f2016b50ea4bb9c0acd6c54cde"
+    },
+    {
+      "file": "keyframes/plank.json",
+      "bytes": 6865,
+      "sha256": "a602c0a1c2fddfbcc70c457f22463102fd180dc2b4d864df1a265cebc51b8e8c"
+    },
+    {
+      "file": "keyframes/crunch.json",
+      "bytes": 6953,
+      "sha256": "d118720c744a5a52e012a27ea45961d1ea866caa506db8a945d48856b699b526"
+    },
+    {
+      "file": "keyframes/leg_raise.json",
+      "bytes": 6790,
+      "sha256": "0cef0f09114b3efc92c208a69e7652a6f967616a47061fb787e20719f86067df"
+    },
+    {
+      "file": "keyframes/mountain_climber.json",
+      "bytes": 7276,
+      "sha256": "9be396530a6e28221c725742a0c345492663540ea132f16ef5348a0de05cf2b2"
+    },
+    {
+      "file": "keyframes/high_knees.json",
+      "bytes": 4167,
+      "sha256": "be2e4ce93048df9588f91b0a14e943b763d79166dad322053b9ae76bacc73385"
+    },
+    {
+      "file": "keyframes/jump_rope.json",
+      "bytes": 7188,
+      "sha256": "27962b8764a11dcf233d32d7439cad436da7d31720eef5133733c052b98626e6"
+    },
+    {
+      "file": "keyframes/forward_fold.json",
+      "bytes": 6850,
+      "sha256": "a296427966795c489347f176ffd155a74ac1d3a4f09b3c4fe09a61c9662cb006"
+    },
+    {
+      "file": "keyframes/quad_stretch.json",
+      "bytes": 7089,
+      "sha256": "febb35cf45f329f787594f4dbd30ebf84c222b67a7734216a7dfb3866c1f743d"
+    },
+    {
+      "file": "keyframes/child_pose.json",
+      "bytes": 7251,
+      "sha256": "feaecea5c76599977ead63233e6fbc6f355ad2b350366f6e2fda8749e763bee9"
+    },
+    {
+      "file": "keyframes/bird_dog.json",
+      "bytes": 7228,
+      "sha256": "92670e178f741a69c6651c755d1e333c0fb5fb1d49c64bbc2b2d09d38f3efb4d"
+    },
+    {
+      "file": "keyframes/dead_bug.json",
+      "bytes": 6465,
+      "sha256": "a76cd29cd41ead521ae277cf9e7c84a027fc31a1a7511d8773e809075f8830ec"
+    },
+    {
+      "file": "keyframes/cat_cow.json",
+      "bytes": 7196,
+      "sha256": "11262c5f6d73f91038ba73a9dd90b07b81fcf95a7ec714af04d6da078fef3944"
+    },
+    {
+      "file": "keyframes/chair_squat.json",
+      "bytes": 7194,
+      "sha256": "a3fc7b16afdfed8470491f3f92413b904e62aa4b8dd514abae5f6aae50256241"
+    },
+    {
+      "file": "keyframes/wall_pushup.json",
+      "bytes": 7281,
+      "sha256": "499a8be4b549f069c30eb7af84865e49f2cfbcb5ac36b06dd87b1b20a90110d6"
+    },
+    {
+      "file": "keyframes/step_up.json",
+      "bytes": 7122,
+      "sha256": "cb357beb538b2cf7e3a687cee2aaace48bb3706c73f569ce7a618666bab5f9ff"
+    },
+    {
+      "file": "keyframes/side_plank.json",
+      "bytes": 6870,
+      "sha256": "d5576d6974e09b7b7edf3fe49c9fca2c7f78895b9bc2e29c971d89f33016f44d"
+    },
+    {
+      "file": "keyframes/kegel.json",
+      "bytes": 7232,
+      "sha256": "93fe0335ed39525b4f6e5ccd3a1b2443facf0bd3189179d45d5aa2eceb7ac759"
+    },
+    {
+      "file": "keyframes/breathing.json",
+      "bytes": 7234,
+      "sha256": "c1698caeeb2ba402a950d0e49568f074da470afef4b678b3deaada77645fe16f"
+    }
+  ],
+  "tools": {
+    "three": "0.180.0",
+    "gltf-transform": "4.2.1",
+    "meshoptimizer": "0.24.0"
+  },
+  "resampleFps": 30
+}
