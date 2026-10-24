@@ -11,7 +11,7 @@ import {friendlyError} from './errors.js';
 export async function api(path, body, method = body === undefined ? 'GET' : 'POST', token = getState().account?.token) {
   if (!CONFIG.API_BASE) throw Error(L('ต้องตั้งค่าเซิร์ฟเวอร์ก่อน ใช้งานในเครื่องได้ตามปกติ','Configure a server first. Local use remains available.'));
   const captcha=method==='POST'&&['auth/register','auth/forgot','ideas','reports'].includes(path)?await challenge():'';
-  const res = await (path.startsWith('admin/') ? adminFetch : fetch)(CONFIG.API_BASE.replace(/\/$/,'') + '/api/' + path, { method, headers:{'Content-Type':'application/json',...(adminToken()?{'X-Admin-Preview':adminToken()}:{}),...(captcha?{'X-Turnstile-Token':captcha}:{}),...(token?{Authorization:'Bearer '+token}:{})}, body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(30000) }).catch(error=>{error.message=friendlyError(error);throw error;});
+  const res = await (path.startsWith('admin/') ? adminFetch : fetch)(CONFIG.API_BASE.replace(/\/$/,'') + '/api/' + path, { method, headers:{'Content-Type':body instanceof Blob?body.type:'application/json',...(adminToken()?{'X-Admin-Preview':adminToken()}:{}),...(captcha?{'X-Turnstile-Token':captcha}:{}),...(token?{Authorization:'Bearer '+token}:{})}, body:body===undefined?undefined:body instanceof Blob?body:JSON.stringify(body),signal:AbortSignal.timeout(30000) }).catch(error=>{error.message=friendlyError(error);throw error;});
   const data = await res.json();
   if(!res.ok) throw Object.assign(Error(res.status===401||res.status>=500?friendlyError({status:res.status,message:'server'}):data.error || 'Request failed'),{status:res.status,server:data.server,code:data.code});
   return data;

@@ -1,3 +1,4 @@
+import {storedImageType} from './social-images.js';
 import {z} from 'zod/v4';
 import {query as q,serverState} from './accounts.js';
 import {input,fail,hash} from './security.js';
@@ -32,7 +33,7 @@ export async function adminSocial(req,env,section){
  if(section==='errors'&&req.method==='GET')return {items:await rows(env,'SELECT * FROM errors ORDER BY last_seen DESC LIMIT 100')};
  if(section==='avatars'&&req.method==='GET')return {items:await rows(env,'SELECT user_id,handle,avatar_key FROM profiles WHERE avatar_key IS NOT NULL LIMIT 300')};
  if(section==='avatar'){
-  if(req.method==='GET'){const key=id.parse(url.searchParams.get('id')),profile=await q(env,'SELECT avatar_key FROM profiles WHERE user_id=?',key).first(),object=profile?.avatar_key&&await env.MEDIA?.get(profile.avatar_key);if(!object)throw fail('Not found',404);return new Response(object.body,{headers:{'Content-Type':'image/webp','Cache-Control':'private,no-store'}});}
+  if(req.method==='GET'){const key=id.parse(url.searchParams.get('id')),profile=await q(env,'SELECT avatar_key FROM profiles WHERE user_id=?',key).first(),object=profile?.avatar_key&&await env.MEDIA?.get(profile.avatar_key);if(!object)throw fail('Not found',404);return new Response(object.body,{headers:{'Content-Type':storedImageType(object,profile.avatar_key),'Cache-Control':'private,no-store','X-Content-Type-Options':'nosniff'}});}
   if(req.method==='DELETE'){const b=await input(req,z.object({id}).strict()),p=await q(env,'SELECT avatar_key FROM profiles WHERE user_id=?',b.id).first();if(p?.avatar_key)await env.MEDIA?.delete(p.avatar_key);await q(env,'UPDATE profiles SET avatar_key=NULL WHERE user_id=?',b.id).run();await log(req,env,'remove-avatar',b.id);return {ok:true};}
  }
  if(section==='reports'&&req.method==='PUT'){

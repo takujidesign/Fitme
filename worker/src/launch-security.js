@@ -27,7 +27,7 @@ export async function sendToken(env,u,kind){
  await sendMail(env,u.email,kind==='reset'?'Reset your Fixmee password':'Verify your Fixmee email',`${settings.appUrl||'https://fixmee.app'}/#/${kind}/${token}\nThis link is single-use.`);
 }
 export async function verified(env,u){
- if(await mailReady(env)&&!(await q(env,'SELECT verified FROM email_verifications WHERE user_id=?',u.id).first())?.verified)throw fail('Verify your email first',403);
+ if(await mailReady(env)&&!(await q(env,'SELECT verified FROM email_verifications WHERE user_id=?',u.id).first())?.verified)throw Object.assign(fail('Verify your email first',403),{code:'email_not_verified'});
 }
 export async function turnstile(req,env){
  const settings=await env.CONFIG?.get('launch','json')||{},secret=await getSecret(env,'turnstileSecret');

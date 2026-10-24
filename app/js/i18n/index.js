@@ -7,7 +7,7 @@ export async function loadLanguage(lang){
  if(pending[lang])return pending[lang];
  pending[lang]=(async()=>{
   const base=await ({zh:()=>import('./zh.js'),ja:()=>import('./ja.js'),vi:()=>import('./vi.js')})[lang]();
-  const rounds=await Promise.all([import('./round6.js'),import('./round7.js'),import('./round9.js'),import('./round10.js'),import('./round11.js'),import('./round12.js'),import('./round13.js'),import('./round14.js'),import('./round15.js')]);
+  const rounds=await Promise.all([import('./round6.js'),import('./round7.js'),import('./round9.js'),import('./round10.js'),import('./round11.js'),import('./round12.js'),import('./round13.js'),import('./round14.js'),import('./round15.js'),import('./round16.js')]);
   Object.assign(dictionaries[lang],base.default,...rounds.map(m=>m.default[lang]));
   rebuildTemplates(lang);loaded.add(lang);
  })().catch(error=>{delete pending[lang];throw error;});return pending[lang];

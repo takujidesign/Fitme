@@ -1,6 +1,7 @@
 // Offline-first service worker. Bump VERSION on every release.
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const SHELL = [
+  './js/image-upload.js', './js/i18n/round16.js',
   './js/vendor/three/BufferGeometryUtils.js','./js/vendor/three/GLTFLoader.js','./js/vendor/three/OrbitControls.js','./js/vendor/three/meshopt_decoder.module.js','./js/vendor/three/three.core.js','./js/vendor/three/three.module.js',
   './js/three-motion.js','./js/three-viewer.js','./js/library-paging.js','./js/three-support.js','./js/i18n/round15.js',
   './js/repdb.js','./js/repdb-worker.js','./js/exercise-merge.js','./js/i18n/round14.js','./data/repdb-names-th.json','./data/exercise-aliases.json','./data/illustrations-3d.json',

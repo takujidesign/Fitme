@@ -1,3 +1,4 @@
+import {readImage,storedImageType} from './social-images.js';
 import {betaAllowed,previewAdmin} from './beta.js';
 import {z} from 'zod/v4';
 import {user,query as q,serverState} from './accounts.js';
@@ -9,7 +10,7 @@ import {adminSocial} from './admin-social.js';
 import {publicContent} from './admin-content.js';
 const id=z.string().uuid(),visibility=z.enum(['everyone','friends','only me']);
 const privacy=z.object({profile:visibility.default('friends'),checkins:visibility.default('friends'),workouts:z.boolean().default(true),streak:z.boolean().default(true),weight:z.boolean().default(false),suggestions:z.boolean().default(false),gymPresence:z.boolean().default(false)}).strict();
-const profile=z.object({handle:z.string().toLowerCase().regex(/^[a-z0-9_.]{3,20}$/),display_name:z.string().trim().min(1).max(40),bio:z.string().max(160).default(''),home_gym:id.nullable().default(null),privacy:privacy.default({}),age16:z.literal(true)}).strict();
+const profile=z.object({handle:z.string().toLowerCase(),display_name:z.string().trim().min(1).max(40),bio:z.string().max(160).default(''),home_gym:id.nullable().default(null),privacy:privacy.default({}),age16:z.literal(true)}).strict();
 const reserved=['admin','administrator','support','fixmee','system','help','api','moderator','null','undefined'];
 export function validHandle(value,extra=[]){return /^[a-z0-9_.]{3,20}$/.test(value)&&![...reserved,...extra].includes(value);}
 export function distance(a,b){const r=Math.PI/180,dlat=(b.lat-a.lat)*r,dlng=(b.lng-a.lng)*r;return 6371000*2*Math.asin(Math.min(1,Math.sqrt(Math.sin(dlat/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dlng/2)**2)));}
@@ -62,14 +63,14 @@ export async function social(req,env,path){
  if(settings.social===false)throw fail('Social is disabled',503);
  if(path==='/api/profile'&&req.method==='GET')return {profile:p?{...p,privacy:JSON.parse(p.privacy)}:null};
  if(path==='/api/profile'&&req.method==='PUT'){
-  const b=await input(req,profile);if(!validHandle(b.handle,settings.bannedHandles))throw fail('Handle reserved');
+  const b=await input(req,profile);if(!/^[a-z0-9_.]{3,20}$/.test(b.handle))throw Object.assign(fail('Invalid handle'),{code:'handle_invalid'});if(!validHandle(b.handle,settings.bannedHandles))throw Object.assign(fail('Handle reserved'),{code:'handle_reserved'});
   if(b.home_gym&&!await q(env,"SELECT 1 FROM gyms WHERE id=? AND status='approved'",b.home_gym).first())throw fail('Gym unavailable');
-  try{await q(env,'INSERT INTO profiles(user_id,handle,display_name,bio,privacy,home_gym,age16,created) VALUES(?,?,?,?,?,?,1,?) ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,display_name=excluded.display_name,bio=excluded.bio,privacy=excluded.privacy,home_gym=excluded.home_gym,age16=1',u.id,b.handle,b.display_name,b.bio,JSON.stringify(b.privacy),b.home_gym,now).run();}catch{throw fail('Handle unavailable',409);}return {ok:true};
+  try{await q(env,'INSERT INTO profiles(user_id,handle,display_name,bio,privacy,home_gym,age16,created) VALUES(?,?,?,?,?,?,1,?) ON CONFLICT(user_id) DO UPDATE SET handle=excluded.handle,display_name=excluded.display_name,bio=excluded.bio,privacy=excluded.privacy,home_gym=excluded.home_gym,age16=1',u.id,b.handle,b.display_name,b.bio,JSON.stringify(b.privacy),b.home_gym,now).run();}catch(e){if(/unique.*profiles.handle/i.test(e.message))throw Object.assign(fail('Handle unavailable',409),{code:'handle_taken'});throw e;}return {ok:true};
  }
  if(!p?.age16)throw fail('Confirm age 16 or over in your profile',403);
  if(path.startsWith('/api/conversations')&&settings.chat===false)throw fail('Chat disabled',503);
  const extra=await socialExtra(req,env,path,{u,p,now,friends,member});if(extra)return extra;
- if(path.startsWith('/api/profile/avatar/')&&req.method==='GET'){const target=await q(env,'SELECT * FROM profiles WHERE handle=?',decodeURIComponent(path.split('/').at(-1))).first();if(!target||!await visible(env,u.id,target)||!target.avatar_key)throw fail('Avatar unavailable',404);const object=await env.MEDIA?.get(target.avatar_key);if(!object)throw fail('Avatar unavailable',404);return new Response(object.body,{headers:{'Content-Type':'image/webp','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});}
+ if(path.startsWith('/api/profile/avatar/')&&req.method==='GET'){const target=await q(env,'SELECT * FROM profiles WHERE handle=?',decodeURIComponent(path.split('/').at(-1))).first();if(!target||!await visible(env,u.id,target)||!target.avatar_key)throw fail('Avatar unavailable',404);const object=await env.MEDIA?.get(target.avatar_key);if(!object)throw fail('Avatar unavailable',404);return new Response(object.body,{headers:{'Content-Type':storedImageType(object,target.avatar_key),'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});}
  if(path==='/api/friends/invite'&&req.method==='POST'){const code=random(16);await q(env,'INSERT INTO social_invites VALUES(?,?,?)',code,u.id,now+7*86400000).run();return {code};}
  if(path==='/api/friends/invite'&&req.method==='PUT'){const b=await input(req,z.object({code:z.string().regex(/^[a-f0-9]{32}$/)}).strict()),invite=await q(env,'SELECT user_id FROM social_invites WHERE code=? AND expires>?',b.code,now).first();if(!invite||invite.user_id===u.id||await blocked(env,u.id,invite.user_id))throw fail('Invite unavailable',404);const target=await q(env,'SELECT user_id,handle,display_name FROM profiles WHERE user_id=? AND suspended=0',invite.user_id).first();return {profile:target};}
  if(path==='/api/friends/suggestions'&&req.method==='GET'){
@@ -78,10 +79,8 @@ export async function social(req,env,path){
  }
  if(path==='/api/profile/avatar'&&req.method==='POST'){
   if(!env.MEDIA)throw fail('Media unavailable',503);
-  if(req.headers.get('Content-Type')!=='image/webp')throw fail('WebP required',415);
-  if(Number(req.headers.get('Content-Length'))>150000)throw fail('Image too large',413);
-  const reader=req.body?.getReader();if(!reader)throw fail('Image required');let size=0,chunks=[];while(true){const r=await reader.read();if(r.done)break;size+=r.value.length;if(size>150000){await reader.cancel();throw fail('Image too large',413);}chunks.push(r.value);}const bytes=new Uint8Array(size);let at=0;for(const c of chunks){bytes.set(c,at);at+=c.length;}if(new TextDecoder().decode(bytes.slice(0,4))!=='RIFF'||new TextDecoder().decode(bytes.slice(8,12))!=='WEBP')throw fail('Invalid WebP');
-  const key=`avatars/${u.id}/${crypto.randomUUID()}.webp`;await env.MEDIA.put(key,bytes,{httpMetadata:{contentType:'image/webp'}});await q(env,'UPDATE profiles SET avatar_key=? WHERE user_id=?',key,u.id).run();if(p.avatar_key)await env.MEDIA.delete(p.avatar_key);return {ok:true};
+  const {bytes,type,extension}=await readImage(req,150000);
+  const key=`avatars/${u.id}/${crypto.randomUUID()}.${extension}`;await env.MEDIA.put(key,bytes,{httpMetadata:{contentType:type}});await q(env,'UPDATE profiles SET avatar_key=? WHERE user_id=?',key,u.id).run();if(p.avatar_key)await env.MEDIA.delete(p.avatar_key);return {ok:true};
  }
  if(path.startsWith('/api/profiles/')&&req.method==='GET'){
   const target=await q(env,'SELECT * FROM profiles WHERE handle=?',decodeURIComponent(path.split('/').at(-1))).first();if(!target||target.suspended||!await visible(env,u.id,target))throw fail('Profile unavailable',404);
@@ -121,8 +120,8 @@ export async function social(req,env,path){
   await member(env,cm[1],u.id);
   if(cm[2]==='ticket'&&req.method==='POST'){if(!env.CONVERSATIONS)throw fail('Realtime unavailable',503);const ticket=random();await env.CONFIG.put('chat-ticket:'+await hash(ticket),JSON.stringify({conversation:cm[1],user:u.id,expires:now+60000}),{expirationTtl:60});return {ticket};}
   if(cm[2]==='photo'&&req.method==='POST'){
-   const b=await input(req,z.object({data:z.string().min(16).max(1400000)}).strict(),1450000);let bytes;try{bytes=Uint8Array.from(atob(b.data),c=>c.charCodeAt(0));}catch{throw fail('Invalid photo');}if(bytes.length>1000000)throw fail('Image too large',413);if(new TextDecoder().decode(bytes.slice(0,4))!=='RIFF'||new TextDecoder().decode(bytes.slice(8,12))!=='WEBP')throw fail('WebP required',415);if(!env.MEDIA)throw fail('Media unavailable',503);
-   const mid=crypto.randomUUID(),key=`chat/${cm[1]}/${mid}.webp`;await env.MEDIA.put(key,bytes,{httpMetadata:{contentType:'image/webp'},customMetadata:{expires:String(now+86400000)}});
+   const {bytes,type,extension}=await readImage(req,1000000,{legacy:true});if(!env.MEDIA)throw fail('Media unavailable',503);
+   const mid=crypto.randomUUID(),key=`chat/${cm[1]}/${mid}.${extension}`;await env.MEDIA.put(key,bytes,{httpMetadata:{contentType:type},customMetadata:{expires:String(now+86400000)}});
    try{const r=await q(env,"INSERT INTO messages(id,conversation_id,sender,body,kind,media_key,expires,created) SELECT ?,?,?,'','photo',?,?,? WHERE (SELECT count(*) FROM messages WHERE sender=? AND created>?)<30",mid,cm[1],u.id,key,now+86400000,now,u.id,now-60000).run();if(!r.meta.changes)throw fail('30 messages per minute',429);}catch(e){await env.MEDIA.delete(key);throw e;}await notifyChat(env,cm[1],u.id);return {id:mid,expires:now+86400000};
   }
   if(req.method==='GET'){const result={messages:(await q(env,'SELECT id,sender,body,kind,expires,created,deleted,reply_to FROM messages WHERE conversation_id=? AND (expires IS NULL OR expires>?) AND created>? ORDER BY created DESC LIMIT 100',cm[1],now,now-180*86400000).all()).results.reverse(),members:(await q(env,'SELECT user_id,CASE WHEN receipts=1 THEN read_at ELSE NULL END read_at FROM conversation_members WHERE conversation_id=?',cm[1]).all()).results,preferences:await q(env,'SELECT muted,receipts FROM conversation_members WHERE conversation_id=? AND user_id=?',cm[1],u.id).first()};for(const message of result.messages)message.reactions=(await q(env,'SELECT emoji,count(*) n FROM reactions WHERE target_id=? GROUP BY emoji',message.id).all()).results;return result;}
@@ -134,7 +133,7 @@ export async function social(req,env,path){
    const mid=crypto.randomUUID(),r=await q(env,'INSERT INTO messages(id,conversation_id,sender,body,kind,created,reply_to) SELECT ?,?,?,?,?,?,? WHERE (SELECT count(*) FROM messages WHERE sender=? AND created>?)<30',mid,cm[1],u.id,b.body,b.kind,now,b.reply_to,u.id,now-60000).run();if(!r.meta.changes)throw fail('30 messages per minute',429);await notifyChat(env,cm[1],u.id);return {id:mid};
   }
  }
- const media=path.match(/^\/api\/messages\/([a-f0-9-]{36})\/photo$/);if(media&&req.method==='GET'){const m=await q(env,'SELECT * FROM messages WHERE id=? AND deleted=0 AND expires>?',media[1],now).first();if(!m?.media_key)throw fail('Photo expired',404);await member(env,m.conversation_id,u.id);const object=await env.MEDIA?.get(m.media_key);if(!object)throw fail('Photo expired',404);return new Response(object.body,{headers:{'Content-Type':'image/webp','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});}
+ const media=path.match(/^\/api\/messages\/([a-f0-9-]{36})\/photo$/);if(media&&req.method==='GET'){const m=await q(env,'SELECT * FROM messages WHERE id=? AND deleted=0 AND expires>?',media[1],now).first();if(!m?.media_key)throw fail('Photo expired',404);await member(env,m.conversation_id,u.id);const object=await env.MEDIA?.get(m.media_key);if(!object)throw fail('Photo expired',404);return new Response(object.body,{headers:{'Content-Type':storedImageType(object,m.media_key),'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});}
  const reaction=path.match(/^\/api\/messages\/([a-f0-9-]{36})\/react$/);if(reaction&&req.method==='POST'){const m=await q(env,'SELECT * FROM messages WHERE id=? AND deleted=0 AND (expires IS NULL OR expires>?)',reaction[1],now).first();if(!m)throw fail('Message unavailable',404);await member(env,m.conversation_id,u.id);const b=await input(req,z.object({emoji:z.enum(['💪','🔥','👏'])}).strict());await q(env,'INSERT INTO reactions VALUES(?,?,?) ON CONFLICT(target_id,user_id) DO UPDATE SET emoji=excluded.emoji',m.id,u.id,b.emoji).run();return {ok:true};}
  const dm=path.match(/^\/api\/messages\/([a-f0-9-]{36})$/);if(dm&&req.method==='DELETE'){const r=await q(env,"UPDATE messages SET deleted=1,body='' WHERE id=? AND sender=? AND created>=?",dm[1],u.id,now-3600000).run();if(!r.meta.changes)throw fail('Deletion window expired',403);return {ok:true};}
  if(path==='/api/gyms'&&req.method==='GET'){const lat=Number(url.searchParams.get('lat')),lng=Number(url.searchParams.get('lng'));if(!url.searchParams.has('lat')||!url.searchParams.has('lng')||!z.object(coords).safeParse({lat,lng}).success)throw fail('Location required');const maps=await betaAllowed(env,'maps')||await previewAdmin(req,env);if(maps)await refreshGyms(env,lat,lng);const rows=(await q(env,"SELECT * FROM gyms WHERE status='approved' AND lat BETWEEN ? AND ?",lat-.03,lat+.03).all()).results;return {items:rows.filter(g=>distance({lat,lng},g)<=3000),tileUrl:maps?settings.tileUrl||'':''};}
