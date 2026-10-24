@@ -2,7 +2,7 @@ import * as T from './vendor/three/three.module.js';
 import {GLTFLoader} from './vendor/three/GLTFLoader.js';
 import {OrbitControls} from './vendor/three/OrbitControls.js';
 import {MeshoptDecoder} from './vendor/three/meshopt_decoder.module.js';
-import {prepareRig,sampleKeyframes,groundRig} from './three-motion.js';
+import {prepareRig,sampleKeyframes,groundRig,constrainPose,palmSocket} from './three-motion.js';
 import {exerciseMuscles} from './muscle-map.js';
 import {L} from './ui.js';
 let active;
@@ -23,7 +23,7 @@ export async function mount3D(host,ex,{signal}={}){
   if(dt>.02){if(++slow>30)fps=30;}else slow=Math.max(0,slow-1);
   if(playing)elapsed+=dt*speed;if(now-lastDraw<1000/fps-1)return;lastDraw=now;
   const phase=elapsed/duration%1;
-  if(data)sampleKeyframes(model,rig,data,phase);else{model.position.set(0,0,0);mixer.setTime(elapsed);groundRig(model,rig);}
+  if(data)sampleKeyframes(model,rig,data,phase);else{model.position.set(0,0,0);mixer.setTime(elapsed);groundRig(model,rig);constrainPose(rig,ex.id,phase);}
   for(const m of materials)m.emissiveIntensity=.12+.08*(1-Math.cos(phase*Math.PI*2));
   updateProps(elapsed);controls.update();renderer.render(scene,camera);
  }
@@ -35,9 +35,13 @@ export async function mount3D(host,ex,{signal}={}){
   model=g.scene;scene=new T.Scene();scene.add(model);rig=prepareRig(model);
   if(row.clip){clip=motion.animations[0];mixer=new T.AnimationMixer(model);mixer.clipAction(clip).play();duration=clip.duration;}else{data=motion;duration=data.duration;}
   materials=highlight(model,ex);updateProps=props(scene,rig,ex);
-  const points=[];
+  const points=[],bounds=new T.Box3();
+  for(let i=0;i<32;i++){
+   if(data)sampleKeyframes(model,rig,data,i/32);else{model.position.set(0,0,0);mixer.setTime(i/32*duration);groundRig(model,rig);constrainPose(rig,ex.id,i/32);}
+   updateProps(i/32*duration);posedBounds(scene,bounds);
+  }
   for(let i=0;i<=20;i++){
-   if(data)sampleKeyframes(model,rig,data,i/40);else{model.position.set(0,0,0);mixer.setTime(i/40*duration);groundRig(model,rig);}
+   if(data)sampleKeyframes(model,rig,data,i/40);else{model.position.set(0,0,0);mixer.setTime(i/40*duration);groundRig(model,rig);constrainPose(rig,ex.id,i/40);}
    points.push(rig.bones[ex.arrow?.joint==='hip'?'pelvis':'hand_l'].getWorldPosition(new T.Vector3()));
   }
   if(points[0].distanceTo(points.at(-1))>.04){
@@ -50,7 +54,7 @@ export async function mount3D(host,ex,{signal}={}){
   renderer=new T.WebGLRenderer({alpha:true,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.setClearColor(0,0);stage.append(renderer.domElement);
   renderer.domElement.setAttribute('aria-label',L(ex.name));renderer.domElement.setAttribute('role','img');renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();if(stopped)return;stop();host.dispatchEvent(new Event('three-fallback'));},{once:true});
   camera=new T.PerspectiveCamera(36,1,.01,30);controls=new OrbitControls(camera,renderer.domElement);controls.enablePan=false;controls.minDistance=2;controls.maxDistance=6;controls.minPolarAngle=.35;controls.maxPolarAngle=Math.PI*.7;controls.minAzimuthAngle=-Math.PI;controls.maxAzimuthAngle=Math.PI;
-  const preset=kind=>{controls.target.set(0,.85,0);camera.position.set(...(kind==='front'?[0,1.25,3.6]:kind==='side'?[3.6,1.25,0]:[2.7,1.9,2.7]));controls.update();};preset('quarter');
+  const preset=kind=>{fitCamera(camera,bounds,kind);controls.target.copy(bounds.getCenter(new T.Vector3()));const distance=camera.position.distanceTo(controls.target);controls.minDistance=distance*.7;controls.maxDistance=distance*1.7;controls.update();};preset('quarter');
   resize=new ResizeObserver(()=>{const w=stage.clientWidth||320;renderer.setSize(w,w);});resize.observe(stage);
   host.querySelector('[data-play]').onclick=e=>{playing=!playing;e.target.textContent=playing?L('หยุดชั่วคราว','Pause'):L('เล่น','Play');};
   host.querySelector('[data-speed]').onchange=e=>speed=Number(e.target.value);
@@ -87,16 +91,35 @@ export function props(scene,rig,ex){
  if(/mat/.test(prop)||['plank','pushup','knee_pushup'].includes(ex.id))box([1.2,.018,2.2],[0,.009,0]);
  if(/wall/.test(prop)){
   const wall=box([1.4,1.8,.04],[0,.9,.7]);wall.material=mat.clone();wall.material.transparent=true;wall.material.opacity=.22;wall.material.depthWrite=false;
-  const a=rig.bones.hand_l.getWorldPosition(new T.Vector3()),b=rig.bones.hand_r.getWorldPosition(new T.Vector3());wall.position.z=Math.max(a.z,b.z)+.04;
+  wall.position.z=.72;
  }
  if(/step/.test(prop))box([.8,.35,.6],[0,.175,.4]);
  if(/chair/.test(prop)){box([.5,.08,.5],[0,.45,-.1]);box([.5,.55,.05],[0,.75,-.35]);for(const x of [-.2,.2])for(const z of [-.3,.1])box([.04,.42,.04],[x,.21,z]);}
- if(/db/.test(prop))for(const side of ['l','r']){const g=weight();rig.bones['hand_'+side].add(g);g.rotation.z=Math.PI/2;g.position.y=.06;}
- if(/kb/.test(prop)){const g=new T.Group(),bell=new T.Mesh(new T.SphereGeometry(.1,16,12),mat);bell.position.y=-.12;g.add(bell);const handle=new T.Mesh(new T.TorusGeometry(.065,.013,8,16),mat);g.add(handle);rig.bones.hand_l.add(g);dynamic.push(()=>g.quaternion.copy(rig.bones.hand_l.getWorldQuaternion(new T.Quaternion()).invert()));}
- if(/plate|bar/.test(prop)){const bar=weight(1.4,prop.includes('cable')?.022:.18);rig.bones.hand_l.add(bar);let cable;
+ if(/db/.test(prop))for(const side of ['l','r']){const g=weight();rig.bones['hand_'+side].add(g);g.position.copy(rig.sockets[side]);g.userData.handle=true;g.userData.side=side;}
+ if(/kb/.test(prop)){const g=new T.Group(),bell=new T.Mesh(new T.SphereGeometry(.1,16,12),mat);bell.position.y=-.18;g.add(bell);const handle=new T.Mesh(new T.TorusGeometry(.065,.013,8,16),mat);handle.position.y=-.065;g.add(handle);rig.bones.hand_l.add(g);g.position.copy(rig.sockets.l);g.userData.handle=true;g.userData.side='l';dynamic.push(()=>g.quaternion.copy(rig.bones.hand_l.getWorldQuaternion(new T.Quaternion()).invert()));}
+ if(/plate|bar/.test(prop)){const bar=weight(1.4,prop.includes('cable')?.022:.18);group.add(bar);bar.userData.handle=true;bar.userData.twoHanded=true;let cable;
   if(prop.includes('cable')){cable=new T.Line(new T.BufferGeometry().setFromPoints([new T.Vector3(0,2,-.2),new T.Vector3()]),new T.LineBasicMaterial({color:0x999999}));group.add(cable);}
-  dynamic.push(()=>{const hand=rig.bones.hand_l,a=hand.getWorldPosition(new T.Vector3()),b=rig.bones.hand_r.getWorldPosition(new T.Vector3()),center=a.clone().add(b).multiplyScalar(.5);bar.position.copy(hand.worldToLocal(center.clone()));bar.quaternion.copy(hand.getWorldQuaternion(new T.Quaternion()).invert().multiply(new T.Quaternion().setFromUnitVectors(new T.Vector3(1,0,0),a.sub(b).normalize())));if(cable){cable.geometry.attributes.position.setXYZ(1,...center.toArray());cable.geometry.attributes.position.needsUpdate=true;}});}
+  dynamic.push(()=>{const a=palmSocket(rig,'l'),b=palmSocket(rig,'r'),center=a.clone().add(b).multiplyScalar(.5);bar.position.copy(center);bar.quaternion.setFromUnitVectors(new T.Vector3(1,0,0),a.sub(b).normalize());if(cable){cable.geometry.attributes.position.setXYZ(1,...center.toArray());cable.geometry.attributes.position.needsUpdate=true;}});}
  if(ex.id==='lat_pulldown'){box([.4,1.8,.3],[0,.9,-.5]);box([1.3,.06,.06],[0,2,-.2]);}
  if(ex.id==='jump_rope'){const curve=new T.EllipseCurve(0,0,.55,1,0,Math.PI*2);const geo=new T.BufferGeometry().setFromPoints(curve.getPoints(48).map(p=>new T.Vector3(p.x,p.y+.8,0)));const rope=new T.Line(geo,new T.LineBasicMaterial({color:0x777777}));group.add(rope);dynamic.push(time=>rope.rotation.x=time*6);}
  return (time=0)=>dynamic.forEach(f=>f(time));
+}
+
+// Sample the actual deformed vertices, including attached props, without WebGL.
+export function posedBounds(scene,bounds=new T.Box3()){
+ scene.updateMatrixWorld(true);bounds.points??=[];
+ scene.traverse(mesh=>{if(!mesh.isMesh)return;mesh.skeleton?.update();const pos=mesh.geometry.attributes.position;
+  for(let i=0;i<pos.count;i++){const p=new T.Vector3().fromBufferAttribute(pos,i);if(mesh.isSkinnedMesh)mesh.applyBoneTransform(i,p);p.applyMatrix4(mesh.matrixWorld);bounds.expandByPoint(p);bounds.points.push(p);}
+ });return bounds;
+}
+export function fitCamera(camera,bounds,kind='quarter'){
+ const center=bounds.getCenter(new T.Vector3()),direction=new T.Vector3(...(kind==='front'?[0,.12,1]:kind==='side'?[1,.12,0]:[1,.39,1])).normalize();
+ const corners=[];for(const x of [bounds.min.x,bounds.max.x])for(const y of [bounds.min.y,bounds.max.y])for(const z of [bounds.min.z,bounds.max.z])corners.push(new T.Vector3(x,y,z));
+ let lo=.01,hi=20;
+ for(let i=0;i<40;i++){
+  const d=(lo+hi)/2;camera.position.copy(center).addScaledVector(direction,d);camera.lookAt(center);camera.updateMatrixWorld(true);
+  let extent=0;for(const p of bounds.points||corners){const q=p.clone().project(camera);extent=Math.max(extent,Math.abs(q.x),Math.abs(q.y));}
+  if(extent>.85||corners.some(p=>p.clone().applyMatrix4(camera.matrixWorldInverse).z>=0))lo=d;else hi=d;
+ }
+ return center;
 }

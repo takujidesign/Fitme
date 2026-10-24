@@ -84,3 +84,39 @@ Raw measurements: `docs/round15-screens/library-dom.json`. Reproduction: save `g
 `tests/round15-browser.mjs` contains the browser capture/measurement workflow. The current `browser-block.txt` records the blocked session; it is not a passing result. All task-created browser profile directories, including the attempted CDP profile, were removed. Cleanup was confirmed after a path-checked Node removal; shell cleanup commands had been rejected by automatic approval review.
 
 Root `*.jpg` files were not read, moved or published. No RepDB data or images were added. No commits, pushes or deployments were made.
+
+
+## Round 15B - 2026-10-24
+
+Implemented on the existing `codex/round15` branch. The earlier Round 15 text above is historical: the current default remains `exerciseVisualStyle: '3d'` (still images). Animated 3D stays opt-in; no default activation was made.
+
+### Motion and attachment changes
+
+- `app/js/three-motion.js` adds the six named hand poses (`grip_bar`, `grip_db`, `grip_kb`, `flat`, `fist`, `relaxed`). Finger rotations replace the source finger transforms on every sampled frame, including CC0 clips. Grips use 80-degree phalange flexion with opposing thumb flexion; flat fingers are aligned together. Both hands resolve a pose from the exercise/phase contact declarations covering all 40 exercises.
+- Palm sockets are measured from the loaded rig, halfway between the wrist and middle-finger base, offset 18 mm toward the palm. Dumbbell shafts run across the palm. The kettlebell handle's top tangent, rather than its empty hole, meets the socket. Two-handed bars use the sockets' midpoint and direction every frame.
+- Original analytic two-bone IK preserves limb lengths, clamps unreachable targets, and uses pole vectors to control elbow/knee bending. Root compensation brings retargeted support points into reach. Floor, wall and step contact phases are declared for the whole catalog, including alternating and landing contacts.
+- Bench press is authored supine along the bench, with supported pelvis/back/head, feet either side, fixed-width grip, a chest-to-shoulder bar path and vertical forearms. Deadlift has a flat-back hinge, mid-shin start, standing finish and a bar path adjusted to clear the knees/thighs while preserving grip width. Plank has extended legs and forearm support with elbows under shoulders. Lateral raise has both dumbbells, a slight elbow bend and shoulder-height peak. Lunge uses fixed split-stance feet, a nearly vertical front shin and a low rear knee.
+- Reviewed the remaining exercises in the contact sheet. Additional corrections include floor-hand reach, calf-raise toe support, step support, the bird-dog reaching arm, the supporting side-plank hand, and cable-bar head clearance.
+- `app/js/three-viewer.js` fits the default 3/4 camera to the actual skinned vertices and props sampled over 32 phases of the entire clip, targeting 85% of the frame. Front/side presets and reset reuse the same envelope; zoom limits scale with the fitted distance. The camera is stable during playback.
+
+### Validation and evidence
+
+- **Full requested sweep: 36/36 runner files passed** (23 top-level app tests and 13 worker tests). Excluded browser/Playwright/serve runners and `extract-i18n` as requested. `worker/test.mjs` and every `worker/round*.test.mjs` ran with `worker/` as the working directory. Raw per-run exit codes, timings and output: `docs/round15-screens/round15b-tests.json`.
+- After the final hand/handle refinements, focused rechecks passed: `node tests/round15b-geometry.mjs` (**11,249 checks, 640 frames, all 40 exercises**), `node tests/round15-poses.mjs` (**1,125 samples, zero issues**), and `node tests/round15.mjs` (licences/hashes, lazy loading, fallback policy, paging and offline contracts).
+- The new geometric runner loads the real compressed `human.glb` and clips without WebGL. It checks socket-to-handle-axis distance <= 25 mm, 70-90 degree finger flexion, declared planted-foot/step contacts within 10 mm, flat-hand surface contacts within 20 mm, bench support within 30 mm, straight plank alignment (170-190 degrees), forearm support, rear-lunge knee <= 150 mm, front-shin alignment, lateral-raise angle (75-100 degrees), vertical bench forearms, fixed deadlift grip width, implement clearance and 80-90% camera extent.
+- Surface checks use calibrated skin-contact offsets from the skeleton (including 10 mm under the toe marker and bench back/head/pelvis radii). Implement collision checks use torso/head spheres plus spheres sampled along upper-arm, thigh and calf segments; intentional hand contact is excluded. These are geometric proxies, not exhaustive triangle-level collision detection or anatomical certification.
+- `node scripts/three-d/render-animation.mjs` creates **`docs/round15-screens/anim-contact.png`**, a 1920 x 7000 contact sheet with start / mid / peak for all 40 exercises (120 frames). `anim-contact.html` provides a local viewer. Software rendering projects the actual deformed mesh and props into shaded SVG triangles and rasterizes with the already-installed Sharp dependency. No headless GL installation or browser profile was needed.
+- **`docs/round15-screens/anim-geometry.json`** also records 16 phases per exercise, with joints, both palm sockets, handle axes/centres and the fitted camera. The software contact sheet was visually inspected. This evidence is not a browser/WebGL screenshot; shader, browser interaction and device FPS validation remain separate from these non-browser checks.
+
+Reproduce:
+
+```text
+node tests/round15b-geometry.mjs
+node tests/round15-poses.mjs
+node tests/round15.mjs
+node scripts/three-d/render-animation.mjs
+```
+
+### Boundaries and cleanup
+
+No new motion assets, upstream downloads or dependencies were required. Existing CC0/MIT provenance, hashes, credits and licences remain unchanged; no forbidden motion lane was used. `app/sw.js` was not changed, including `const VERSION = 'fitme-v1'`. Root JPG contents were never read, moved or published. No RepDB data or images were saved or committed. No browser/profile was created. Temporary review images were removed; unrelated test-generated Round 12 artifacts were restored byte-for-byte from their pre-test contents. All changes are uncommitted; no push or deployment occurred.
