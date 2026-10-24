@@ -1,0 +1,47 @@
+name: Reset admin 2FA
+# Removes the admin two-factor secret saved from the admin page and its recovery codes,
+# so the owner can log in with the admin password alone and enrol 2FA again.
+# Other saved secrets are kept unchanged. Nothing secret is printed.
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type RESET to remove admin 2FA'
+        required: true
+permissions:
+  contents: read
+jobs:
+  reset:
+    if: inputs.confirm == 'RESET'
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    defaults:
+      run:
+        working-directory: worker
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: worker/package-lock.json
+      - run: npm ci
+      - name: Remove the 2FA secret, keep every other secret
+        shell: bash
+        run: |
+          id=$(grep -A2 'binding = "CONFIG"' wrangler.toml | grep -o '[0-9a-f]\{32\}')
+          npx wrangler kv key get secrets --namespace-id "$id" --remote > "$RUNNER_TEMP/s.json"
+          node -e "
+            const fs=require('fs'),f=process.env.RUNNER_TEMP+'/s.json';
+            const j=JSON.parse(fs.readFileSync(f,'utf8'));
+            const before=Object.keys(j).length, had=!!j.adminTotpSecret;
+            delete j.adminTotpSecret;
+            fs.writeFileSync(f,JSON.stringify(j));
+            console.log('had 2FA:',had,'| secrets kept:',Object.keys(j).length,'of',before);
+          "
+          npx wrangler kv key put secrets --namespace-id "$id" --remote --path "$RUNNER_TEMP/s.json"
+          rm -f "$RUNNER_TEMP/s.json"
+      - name: Delete recovery codes
+        run: npx wrangler d1 execute fixme --remote --command "DELETE FROM admin_recovery"
