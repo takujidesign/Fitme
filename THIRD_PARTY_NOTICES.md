@@ -40,3 +40,9 @@ The owner-only conversion script uses sharp (Apache-2.0), installed under `scrip
 
 - Zod v4 (bundled from zod 3.25.76), MIT, Copyright (c) 2025 Colin McDonnell. License: `app/js/vendor/ZOD_LICENSE.txt`. Shared structured-output validation uses this same bundle in the browser and Worker.
 - qrcode-generator 1.4.4, MIT, Copyright (c) 2009 Kazuhiko Arase. License: `app/js/vendor/QRCODE_LICENSE.txt`. The existing PromptPay QR renderer is now vendored for offline use. Source: https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js
+
+## Round 14 exercise sources
+
+[Exercise data by RepDB (repdb.co)](https://repdb.co/). Runtime-only free-tier data, pinned to `b407c5951a027a27817fb2a5cee9ec9feffc4dc7`, schema 3. [Licence](https://github.com/RepDB/exercise-dataset/blob/b407c5951a027a27817fb2a5cee9ec9feffc4dc7/LICENSE-DATA.md). No RepDB dataset or standalone artwork is vendored in this repository; only original mappings, Thai names and aliases. RepDB images are never used as generative inputs. Premium samples are excluded. Browser runtime caching supports offline use after first library load.
+
+ภาพ 3D ของท่าหลักสร้างด้วย AI (OpenAI image generation ผ่าน Codex). Original text-only prompts; no external image references. Theme settings offer 3D / Illustration / Animation. Approved 3D pairs fall back to existing illustrations and animated figures. See `docs/ROUND14_VALIDATION.md` and `docs/round14-screens/ex3d.html` for reviewed coverage.

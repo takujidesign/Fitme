@@ -1,6 +1,7 @@
 // Offline-first service worker. Bump VERSION on every release.
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const SHELL = [
+  './js/repdb.js','./js/repdb-worker.js','./js/exercise-merge.js','./js/i18n/round14.js','./data/repdb-names-th.json','./data/exercise-aliases.json','./data/illustrations-3d.json',
   './js/render-stability.js','./js/beta-policy.js','./js/beta.js','./js/lab.js','./js/views/admin-round13.js','./js/views/admin-lab.js','./js/views/gemini-guide.js','./img/lab/meal.svg','./img/lab/label.svg','./img/lab/body.svg',
   './js/i18n/round13.js','./js/i18n/round12.js','./js/turnstile.js','./js/views/account-security.js','./js/views/admin-security.js',
   './js/i18n/round11.js', './js/views/admin-setup.js',

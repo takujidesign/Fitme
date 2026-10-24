@@ -43,7 +43,7 @@ const SCHEME = {
 export function allowed(p, includeLibrary = false, allPhases = false) {
   const eq = equipmentFor(p);
   const maxLvl = p.level === 'beginner' ? 1 : p.level === 'intermediate' ? 2 : 3;
-  return (includeLibrary ? Object.values(EX) : [...EXERCISES, ...Object.values(EX).filter(e=>e.source && p.trainingConfigured && p.preferEx?.includes(e.id))]).filter((e) => healthAllowed(p,e.id) && (allPhases || styleAllows(p,e)) && !p.avoidEx?.includes(e.id) && eq.includes(e.equip) && e.level <= maxLvl + (e.group === 'core' ? 1 : 0));
+  return (includeLibrary ? Object.values(EX) : [...EXERCISES, ...Object.values(EX).filter(e=>e.source && p.trainingConfigured && p.preferEx?.includes(e.id))]).filter((e) => healthAllowed(p,e.id) && (allPhases || styleAllows(p,e)) && ![e.id,...(e.aliases||[])].some(id=>p.avoidEx?.includes(id)) && eq.includes(e.equip) && e.level <= maxLvl + (e.group === 'core' ? 1 : 0));
 }
 
 // Week-based progression: weeks 1-3 build, week 4 deloads.

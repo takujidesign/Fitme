@@ -1,0 +1,5 @@
+export default {
+ zh:{'Source':'来源','exercises':'个动作','Exercise illustration style':'动作插图风格','Illustration':'插图','RepDB unavailable. Load it online first for offline use.':'RepDB 暂不可用。首次在线加载后可离线使用。','Main exercise 3D images are AI-generated (OpenAI image generation through Codex).':'主要动作的 3D 图片由 AI 生成（通过 Codex 使用 OpenAI 图像生成）。'},
+ ja:{'Source':'出典','exercises':'種目','Exercise illustration style':'種目の画像スタイル','Illustration':'イラスト','RepDB unavailable. Load it online first for offline use.':'RepDB を利用できません。オフライン利用には最初にオンラインで読み込んでください。','Main exercise 3D images are AI-generated (OpenAI image generation through Codex).':'主要種目の3D画像はAIで生成されています（Codex経由のOpenAI画像生成）。'},
+ vi:{'Source':'Nguồn','exercises':'bài tập','Exercise illustration style':'Kiểu hình bài tập','Illustration':'Minh họa','RepDB unavailable. Load it online first for offline use.':'RepDB chưa khả dụng. Hãy tải trực tuyến lần đầu để dùng ngoại tuyến.','Main exercise 3D images are AI-generated (OpenAI image generation through Codex).':'Hình 3D của các bài tập chính được tạo bằng AI (OpenAI qua Codex).'}
+};

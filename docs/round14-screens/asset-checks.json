@@ -1,0 +1,642 @@
+[
+  {
+    "id": "squat",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 11044,
+    "enabled": true
+  },
+  {
+    "id": "squat",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 15894,
+    "enabled": true
+  },
+  {
+    "id": "goblet_squat",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 13546,
+    "enabled": true
+  },
+  {
+    "id": "goblet_squat",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 15378,
+    "enabled": true
+  },
+  {
+    "id": "lunge",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 10708,
+    "enabled": true
+  },
+  {
+    "id": "lunge",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 14758,
+    "enabled": true
+  },
+  {
+    "id": "bridge",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 13758,
+    "enabled": true
+  },
+  {
+    "id": "bridge",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 12430,
+    "enabled": true
+  },
+  {
+    "id": "calf_raise",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 10768,
+    "enabled": true
+  },
+  {
+    "id": "calf_raise",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 10470,
+    "enabled": true
+  },
+  {
+    "id": "squat_jump",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 12982,
+    "enabled": true
+  },
+  {
+    "id": "squat_jump",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 11580,
+    "enabled": true
+  },
+  {
+    "id": "deadlift",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 18102,
+    "enabled": true
+  },
+  {
+    "id": "deadlift",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 13996,
+    "enabled": true
+  },
+  {
+    "id": "rdl",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 10858,
+    "enabled": true
+  },
+  {
+    "id": "rdl",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 14982,
+    "enabled": true
+  },
+  {
+    "id": "pushup",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 15604,
+    "enabled": true
+  },
+  {
+    "id": "pushup",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 13830,
+    "enabled": true
+  },
+  {
+    "id": "knee_pushup",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 15500,
+    "enabled": true
+  },
+  {
+    "id": "knee_pushup",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 18150,
+    "enabled": true
+  },
+  {
+    "id": "bench_press",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 26352,
+    "enabled": true
+  },
+  {
+    "id": "bench_press",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 24796,
+    "enabled": true
+  },
+  {
+    "id": "shoulder_press",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 16222,
+    "enabled": true
+  },
+  {
+    "id": "shoulder_press",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 12932,
+    "enabled": true
+  },
+  {
+    "id": "lateral_raise",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 10306,
+    "enabled": true
+  },
+  {
+    "id": "lateral_raise",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 13318,
+    "enabled": true
+  },
+  {
+    "id": "triceps_ext",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 11980,
+    "enabled": true
+  },
+  {
+    "id": "triceps_ext",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 11348,
+    "enabled": true
+  },
+  {
+    "id": "db_row",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 17534,
+    "enabled": true
+  },
+  {
+    "id": "db_row",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 14968,
+    "enabled": true
+  },
+  {
+    "id": "lat_pulldown",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 21746,
+    "enabled": true
+  },
+  {
+    "id": "lat_pulldown",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 21696,
+    "enabled": true
+  },
+  {
+    "id": "db_curl",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 13912,
+    "enabled": true
+  },
+  {
+    "id": "db_curl",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 12014,
+    "enabled": true
+  },
+  {
+    "id": "superman",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 8742,
+    "enabled": true
+  },
+  {
+    "id": "superman",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 13956,
+    "enabled": true
+  },
+  {
+    "id": "plank",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 12550,
+    "enabled": true
+  },
+  {
+    "id": "plank",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 12550,
+    "enabled": true
+  },
+  {
+    "id": "crunch",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 10974,
+    "enabled": true
+  },
+  {
+    "id": "crunch",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 16744,
+    "enabled": true
+  },
+  {
+    "id": "leg_raise",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 10128,
+    "enabled": true
+  },
+  {
+    "id": "leg_raise",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 12288,
+    "enabled": true
+  },
+  {
+    "id": "mountain_climber",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 14302,
+    "enabled": true
+  },
+  {
+    "id": "mountain_climber",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 14924,
+    "enabled": true
+  },
+  {
+    "id": "jumping_jack",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 13766,
+    "enabled": true
+  },
+  {
+    "id": "jumping_jack",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 13498,
+    "enabled": true
+  },
+  {
+    "id": "high_knees",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 12576,
+    "enabled": true
+  },
+  {
+    "id": "high_knees",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 14840,
+    "enabled": true
+  },
+  {
+    "id": "jog",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 11856,
+    "enabled": true
+  },
+  {
+    "id": "jog",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 12794,
+    "enabled": true
+  },
+  {
+    "id": "walk",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 12574,
+    "enabled": true
+  },
+  {
+    "id": "walk",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 10040,
+    "enabled": true
+  },
+  {
+    "id": "jump_rope",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 13042,
+    "enabled": true
+  },
+  {
+    "id": "jump_rope",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 12446,
+    "enabled": true
+  },
+  {
+    "id": "forward_fold",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 15840,
+    "enabled": true
+  },
+  {
+    "id": "forward_fold",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 15840,
+    "enabled": true
+  },
+  {
+    "id": "quad_stretch",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 15548,
+    "enabled": true
+  },
+  {
+    "id": "quad_stretch",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 15548,
+    "enabled": true
+  },
+  {
+    "id": "child_pose",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 15792,
+    "enabled": true
+  },
+  {
+    "id": "child_pose",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 15792,
+    "enabled": true
+  },
+  {
+    "id": "bird_dog",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 18036,
+    "enabled": true
+  },
+  {
+    "id": "bird_dog",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 13676,
+    "enabled": true
+  },
+  {
+    "id": "dead_bug",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 16136,
+    "enabled": true
+  },
+  {
+    "id": "dead_bug",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 9170,
+    "enabled": true
+  },
+  {
+    "id": "cat_cow",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 15530,
+    "enabled": true
+  },
+  {
+    "id": "cat_cow",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 12158,
+    "enabled": true
+  },
+  {
+    "id": "chair_squat",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 13898,
+    "enabled": true
+  },
+  {
+    "id": "chair_squat",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 14988,
+    "enabled": true
+  },
+  {
+    "id": "wall_pushup",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 9024,
+    "enabled": true
+  },
+  {
+    "id": "wall_pushup",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 14630,
+    "enabled": true
+  },
+  {
+    "id": "step_up",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 16294,
+    "enabled": true
+  },
+  {
+    "id": "step_up",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 12170,
+    "enabled": true
+  },
+  {
+    "id": "run_interval",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 18582,
+    "enabled": true
+  },
+  {
+    "id": "run_interval",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 14978,
+    "enabled": true
+  },
+  {
+    "id": "side_plank",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 16172,
+    "enabled": true
+  },
+  {
+    "id": "side_plank",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 16172,
+    "enabled": true
+  },
+  {
+    "id": "kegel",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 12166,
+    "enabled": true
+  },
+  {
+    "id": "kegel",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 12166,
+    "enabled": true
+  },
+  {
+    "id": "breathing",
+    "pose": "start",
+    "width": 768,
+    "height": 768,
+    "bytes": 10162,
+    "enabled": true
+  },
+  {
+    "id": "breathing",
+    "pose": "finish",
+    "width": 768,
+    "height": 768,
+    "bytes": 10162,
+    "enabled": true
+  }
+]

@@ -1,0 +1,407 @@
+{
+  "tool": "Codex image generation",
+  "created": "2026-10-24",
+  "inputs": "Text only; no reference images",
+  "images": [
+    {
+      "id": "squat",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. ONE standing mannequin fully upright. Both knees completely straight, hips fully extended. Feet shoulder-width apart, arms reaching straight forward. This image is the upright starting stance before a squat; absolutely no knee bend or lowered hips. Quads and glutes red; hamstrings soft orange. No equipment."
+    },
+    {
+      "id": "deadlift",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose: hips hinged back, knees bent about 45 degrees, neutral flat back inclined forward. Both arms straight down gripping ONE barbell with plates at mid-shin level, close to shins. Feet hip-width apart flat on floor. Glutes and hamstrings red, lower back orange. Do not depict standing upright, do not depict a second figure or panel."
+    },
+    {
+      "id": "deadlift",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin standing FULLY upright, knees and hips fully extended, arms straight down holding ONE barbell with plates resting against upper thighs, shoulders above hips. Glutes and hamstrings red, lower back orange. No bending or hinging, no second figure, no split screen."
+    },
+    {
+      "id": "bench_press",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exercise: bench_press. Highlight ONLY Chest, front delts, triceps in red, secondary assisting muscles orange, all other muscles grey. Lie on a flat bench, feet planted, weight at mid-chest, elbows bent. Use a single barbell with plates and a flat bench."
+    },
+    {
+      "id": "bench_press",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exercise: bench_press. Highlight ONLY Chest, front delts, triceps in red, secondary assisting muscles orange, all other muscles grey. Press weight vertically above chest until elbows extend. Use a single barbell with plates and a flat bench."
+    },
+    {
+      "id": "goblet_squat",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Quads, glutes, core red with secondary assisting regions orange. Stand holding a kettlebell against the chest."
+    },
+    {
+      "id": "goblet_squat",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. Goblet squat bottom position. One kettlebell held tightly with both hands at chest. Hips lowered, thighs parallel to floor, knees track toes, heels grounded. Bare feet, no shoes. Quads and glutes red, abs orange."
+    },
+    {
+      "id": "lunge",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. BODYWEIGHT split squat upright start. One foot a long step forward, other behind, both feet on ground, front knee almost straight, torso upright, empty hands on hips. No weights, no bench, no machines. Quads and glutes red."
+    },
+    {
+      "id": "lunge",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. BODYWEIGHT split squat lowered position. One foot forward flat, other behind on toes. Both knees bent to 90 degrees, rear knee just above floor, torso upright, empty hands on hips. No weights, no bench, no machines. Quads and glutes red."
+    },
+    {
+      "id": "bridge",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Glutes, hamstrings red with secondary assisting regions orange. Lie supine, knees bent, feet planted, hips on the mat."
+    },
+    {
+      "id": "bridge",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. ONE mannequin lying supine on a thin floor mat. FINISH of floor glute bridge: shoulders, head and arms remain flat on the floor mat, knees bent 90 degrees, both bare feet planted, hips lifted making straight line from shoulders to knees. NO BENCH, NO weights or machines. Glutes strong red, hamstrings orange. View from side three-quarter."
+    },
+    {
+      "id": "calf_raise",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. BODYWEIGHT calf raise start: standing upright, both feet flat on floor with heels touching ground, feet hip-width apart, arms hanging relaxed, empty hands. ONLY mannequin, NO equipment, NO machines, NO platforms, NO handles. Calf muscles red."
+    },
+    {
+      "id": "calf_raise",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. BODYWEIGHT calf raise top: standing upright balanced on balls of both feet, both heels visibly raised 8 cm above floor, knees straight, arms hanging relaxed, empty hands. ONLY mannequin, NO equipment, NO machines, NO platforms, NO handles. Calf muscles red."
+    },
+    {
+      "id": "squat_jump",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. BODYWEIGHT squat jump starting stance: standing upright on floor, both feet shoulder-width, arms beside body, knees straight. NO box, NO bench, NO equipment. Quads and glutes red, calves orange."
+    },
+    {
+      "id": "squat_jump",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. BODYWEIGHT vertical squat jump in midair: whole body upright, both feet visibly 15 cm ABOVE the bare floor, legs extended, arms beside body. NO box, NO bench, NO equipment. Quads and glutes red, calves orange."
+    },
+    {
+      "id": "rdl",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Hamstrings, glutes red with secondary assisting regions orange. Stand holding dumbbells at thighs with softly bent knees."
+    },
+    {
+      "id": "rdl",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Hamstrings, glutes red with secondary assisting regions orange. Hinge hips back, lower dumbbells along shins, spine neutral."
+    },
+    {
+      "id": "knee_pushup",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Chest, shoulders, triceps red with secondary assisting regions orange. Kneeling push-up with hands planted, shoulders through knees aligned."
+    },
+    {
+      "id": "knee_pushup",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Chest, shoulders, triceps red with secondary assisting regions orange. Bend elbows and lower chest near mat while knees stay planted."
+    },
+    {
+      "id": "shoulder_press",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Shoulders, triceps red with secondary assisting regions orange. Stand with dumbbells at shoulder height, elbows bent."
+    },
+    {
+      "id": "shoulder_press",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. ONE barefoot mannequin standing upright with two grey dumbbells directly above the shoulders. FINISH of overhead press: both elbows extended, arms vertical and shoulder width apart. Both shoulder deltoids glow strong RED; triceps on back of upper arms glow soft ORANGE. Chest abs and legs all grey. No shoes or apparatus."
+    },
+    {
+      "id": "lateral_raise",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. ONE barefoot mannequin standing straight, knees extended, arms relaxed straight down by sides, one grey dumbbell in each hand next to thighs. START of lateral raise. Only lateral shoulder deltoids strong red; upper traps faint orange. Chest, abs and legs grey. No shoes, no apparatus."
+    },
+    {
+      "id": "lateral_raise",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. ONE barefoot mannequin standing straight on bare floor, both arms raised sideways to shoulder height forming a T, elbows very slightly bent, one grey dumbbell in each hand. Both feet clearly BARE with visible individual toes, NO SHOES. Lateral shoulder deltoids strong red, upper traps pale orange, remaining chest arms abs legs grey. No other equipment."
+    },
+    {
+      "id": "triceps_ext",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Triceps red with secondary assisting regions orange. Stand with a dumbbell behind the head, elbows bent pointing upward."
+    },
+    {
+      "id": "triceps_ext",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Triceps red with secondary assisting regions orange. Extend elbows to lift the dumbbell overhead, upper arms still."
+    },
+    {
+      "id": "db_row",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Lats, mid-back, biceps red with secondary assisting regions orange. Hip hinge with back flat, dumbbells hanging beneath shoulders."
+    },
+    {
+      "id": "db_row",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. Bent over TWO DUMBBELL row. Both feet planted hip-width, both knees softly bent, torso hinged forward 45 degrees with flat neutral back. BOTH elbows pulled backward alongside ribs symmetrically and BOTH dumbbells held against lower ribs. No torso twist. Bare feet, no shoes. Only two dumbbells, no bench. Lats red, biceps and mid-back orange."
+    },
+    {
+      "id": "lat_pulldown",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. ONE seated barefoot mannequin facing a grey lat cable machine. START: hands wide on overhead bar, both arms fully extended upward. Thighs beneath pads, bare feet planted. Show latissimus muscles strong red and biceps orange, all other muscles grey. No shoes. One cable, one bar."
+    },
+    {
+      "id": "lat_pulldown",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. LAT PULLDOWN seated facing camera at three-quarter FRONT view, knees under padded leg restraint, feet planted. Both hands grasp wide bar attached to overhead cable. Bar pulled down IN FRONT OF BODY to upper chest below chin, elbows down beside ribs, torso almost upright. Never behind neck. Matte grey cable stack behind mannequin. Lats red, biceps orange."
+    },
+    {
+      "id": "db_curl",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Biceps red with secondary assisting regions orange. Stand with dumbbells at sides and elbows extended."
+    },
+    {
+      "id": "db_curl",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Biceps red with secondary assisting regions orange. Flex elbows and curl dumbbells toward shoulders, upper arms still."
+    },
+    {
+      "id": "superman",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. SUPERMAN exercise resting start: mannequin lies face DOWN flat on thin floor mat, legs straight with tops of feet touching mat, both arms extended forward resting ON mat, head neutral looking down. Chest remains on mat, arms and legs NOT lifted. No equipment except mat. Lower back and glutes red, hamstrings orange."
+    },
+    {
+      "id": "superman",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Lower back, glutes red with secondary assisting regions orange. Lift chest, arms and legs gently off mat."
+    },
+    {
+      "id": "leg_raise",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. LYING leg raise: mannequin lies face UP on FLOOR mat, head shoulders whole torso and pelvis rest on mat. BOTH straight legs raised together vertically 90 degrees above hips. Arms on floor beside body, palms down. No hanging, no bar, no machine, no bench, only floor mat. Abdominals red, hip flexors light orange."
+    },
+    {
+      "id": "leg_raise",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Lower abs red with secondary assisting regions orange. Lie supine with straight legs close to the floor."
+    },
+    {
+      "id": "crunch",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. FLOOR abdominal crunch raised finish: lying face UP on mat, lower back and hips remain ON mat, only shoulder blades lifted about 10 cm with upper torso flexed 25 degrees. Knees bent 90 degrees and bare feet flat. Fingertips beside ears, no neck pulling. Not a situp. NO shoes, no bench or machine. Abdominals red, obliques orange."
+    },
+    {
+      "id": "crunch",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. FLOOR abdominal crunch RESTING start: lying face UP flat on mat, whole back and head touching mat, both knees bent 90 degrees, feet flat, fingertips gently beside ears, elbows open. Shoulder blades remain ON mat. Bare feet, NO shoes, no bench or machine. Abdominals red, obliques orange."
+    },
+    {
+      "id": "mountain_climber",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. Mountain climber starting HIGH PLANK on floor: both palms under shoulders, both elbows straight, both legs extended behind with toes on floor, body straight from head to heels, abdomen braced. No equipment. ONLY abdominal muscles red, quads and shoulders light orange; hamstrings and chest remain grey."
+    },
+    {
+      "id": "mountain_climber",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. Mountain climber knee drive on floor: both palms planted under shoulders, both elbows straight, ONE knee pulled forward under chest, opposite leg straight behind with toes planted. Torso stable close to horizontal. No equipment. ONLY abdominal muscles red, quads and shoulders light orange; hamstrings and chest remain grey."
+    },
+    {
+      "id": "jumping_jack",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. JUMPING JACK closed start position: stand upright with BOTH feet together touching and BOTH arms straight down along sides, palms facing thighs. No equipment. Quads and calves red, lateral shoulders orange. Chest and abdomen GREY, not red. Bare feet."
+    },
+    {
+      "id": "jumping_jack",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. JUMPING JACK open finish position: whole body upright with BOTH feet spread wide apart and BOTH arms extended overhead in wide V, elbows straight. No equipment. Quads and calves red, lateral shoulders orange. Chest and abdomen GREY, not red. Bare feet."
+    },
+    {
+      "id": "high_knees",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. HIGH KNEES starting upright stance. Both feet ON floor hip-width apart. Both knees straight, neither leg lifted, elbows bent 90 degrees in jogging position. No equipment. Bare feet, NO shoes. Quads red, abs and calves orange."
+    },
+    {
+      "id": "high_knees",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Legs, hip flexors, cardio red with secondary assisting regions orange. Lift one knee toward hip height while opposite arm swings forward."
+    },
+    {
+      "id": "jog",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. JOG IN PLACE on EMPTY FLOOR, small compact stride. LEFT knee slightly forward, RIGHT foot below hip, elbows bent 90 degrees with right arm forward. Upright torso leaning forward slightly. NO treadmill, NO equipment, barefoot, NO shoes. Quads and calves red, hamstrings orange."
+    },
+    {
+      "id": "jog",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. JOG IN PLACE on EMPTY FLOOR, small compact stride. RIGHT knee slightly forward, LEFT foot below hip, elbows bent 90 degrees with left arm forward. Upright torso leaning forward slightly. NO treadmill, NO equipment, barefoot, NO shoes. Quads and calves red, hamstrings orange."
+    },
+    {
+      "id": "walk",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. WALKING on EMPTY FLOOR, natural short stride. LEFT foot forward heel touching floor, RIGHT foot behind on toes; RIGHT arm swings forward, LEFT arm back, elbows relaxed. Upright torso. NO treadmill, NO elliptical, NO machines, NO equipment, barefoot, NO shoes. Quads and calves red, hamstrings orange, chest and arms grey."
+    },
+    {
+      "id": "walk",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. ONE barefoot mannequin in MID-STANCE of a walking step on empty floor. Camera three-quarter side view facing right. The LEFT leg is straight and vertical directly underneath torso bearing full weight on a flat left foot. RIGHT knee is slightly bent and right foot swings forward close alongside the left ankle, heel 5 cm above the floor. Legs close together, NOT a long split stride. Arms gently counter-swing. Quads and calves soft red, glutes and hamstrings orange. No machine, no shoes, no props."
+    },
+    {
+      "id": "jump_rope",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. SKIPPING ROPE starting stance: stand upright with both bare feet together ON FLOOR, one small skipping-rope handle in each hand beside hips, a single loose curved skipping rope rests on floor behind feet. ONLY equipment is one skipping rope, NO cable machine, NO weights, NO apparatus. Calves red."
+    },
+    {
+      "id": "jump_rope",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. SKIPPING ROPE airborne phase: upright body with both bare feet together 5 cm ABOVE FLOOR, one rope handle in each hand beside hips, curved rope sweeps under feet. ONLY equipment is one skipping rope, NO cable machine, NO weights, NO shoes. Calves red."
+    },
+    {
+      "id": "forward_fold",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Hamstrings, low back red with secondary assisting regions orange. Hinge at hips and fold forward, hands reaching toward feet."
+    },
+    {
+      "id": "quad_stretch",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Quads red with secondary assisting regions orange. Hold lifted ankle near glute, knees close together, torso tall."
+    },
+    {
+      "id": "child_pose",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Back, hips (relax) red with secondary assisting regions orange. Sit hips toward heels and lengthen arms forward, head lowered."
+    },
+    {
+      "id": "bird_dog",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Movement and stability red with secondary assisting regions orange. On hands and knees with a neutral spine."
+    },
+    {
+      "id": "bird_dog",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Movement and stability red with secondary assisting regions orange. Extend opposite arm and leg horizontally while keeping trunk stable."
+    },
+    {
+      "id": "dead_bug",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Movement and stability red with secondary assisting regions orange. Lie supine, hips and knees bent 90 degrees, arms toward ceiling."
+    },
+    {
+      "id": "dead_bug",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. DEAD BUG on FLOOR mat. Lie face UP with head, shoulders, spine and pelvis touching mat. RIGHT arm reaches overhead almost touching floor, LEFT leg extends almost touching floor. LEFT arm remains vertical above chest, RIGHT hip and knee bent 90 degrees with shin horizontal. Exactly two arms and two legs. No bench, NO gym equipment. Abdominals red, obliques orange."
+    },
+    {
+      "id": "cat_cow",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. CAT COW cow phase on FLOOR mat: on BOTH hands and BOTH knees, hands under shoulders and knees under hips, shins on mat. Gently arch back downward and lift chest/head slightly, pelvis tilted forward. No bench, no machine, ONLY mat. Lower back red, abdomen orange, shoulders and chest grey."
+    },
+    {
+      "id": "cat_cow",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. CAT COW cat phase on FLOOR mat: on BOTH hands and BOTH knees, hands under shoulders and knees under hips, shins on mat. Round entire spine upward into a gentle dome, chin tucked toward chest, pelvis tucked under. No bench, no machine, ONLY mat. Lower back red, abdomen orange, shoulders and chest grey."
+    },
+    {
+      "id": "chair_squat",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. CHAIR SQUAT upright start: mannequin stands fully upright directly IN FRONT of a simple matte grey dining chair, back toward chair, both feet on floor shoulder-width. Both knees straight and hips extended, both arms straight forward. Only equipment is ordinary chair with four legs, NO weights or machines. Quads and glutes red."
+    },
+    {
+      "id": "chair_squat",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. CHAIR SQUAT lowered finish: mannequin sits lightly on front edge of an ordinary matte grey dining CHAIR with four legs, hips back, BOTH knees bent 90 degrees, BOTH feet flat on floor, torso slightly forward, BOTH arms straight forward. No leg-extension machine, NO weights. Only ordinary chair. Quads and glutes red."
+    },
+    {
+      "id": "wall_pushup",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. WALL PUSHUP start: stand facing a plain wall at arm length, palms flat on wall at shoulder height, elbows completely straight. Feet together on floor, heels grounded, body straight and leaning slightly toward wall. Three-quarter SIDE view showing chest edge. Only wall, no equipment. Chest red, triceps and front shoulders orange; legs and calves grey."
+    },
+    {
+      "id": "wall_pushup",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Movement and stability red with secondary assisting regions orange. Bend elbows and lean the straight body toward wall."
+    },
+    {
+      "id": "step_up",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Movement and stability red with secondary assisting regions orange. Stand facing a low step with one foot on it."
+    },
+    {
+      "id": "step_up",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. LOW STEP-UP completed finish: mannequin standing fully upright ON TOP of a simple 20cm high rectangular step, BOTH feet fully on top of step, BOTH knees straight, hips extended, arms relaxed beside torso. Barefoot NO shoes. Only equipment low step. Quads and glutes red, calves orange."
+    },
+    {
+      "id": "run_interval",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Movement and stability red with secondary assisting regions orange. Upright light running stride, left knee forward."
+    },
+    {
+      "id": "run_interval",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. RUNNING on EMPTY FLOOR, compact running stride with RIGHT knee forward at mid-thigh height and LEFT leg slightly behind, LEFT arm forward and right arm back, elbows bent 90 degrees. Slight forward body lean. No treadmill, NO equipment, barefoot NO shoes. Quads and calves red, hamstrings and abs orange; chest grey."
+    },
+    {
+      "id": "side_plank",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Movement and stability red with secondary assisting regions orange. Maintain the same side plank with hips lifted, no joint movement."
+    },
+    {
+      "id": "kegel",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Movement and stability red with secondary assisting regions orange. Same standing posture, gently lift pelvic floor internally, no visible limb movement."
+    },
+    {
+      "id": "breathing",
+      "pose": "start",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. QUIET BREATHING: mannequin standing fully relaxed upright with both bare feet on floor and both EMPTY hands resting loosely beside hips. Ribs gently expanded, no exertion pose. No equipment of ANY kind, no cable machine, no handles, no weights. Subtle light orange band at lower ribs indicating diaphragm, abdominal wall soft red; chest shoulders arms legs all grey."
+    },
+    {
+      "id": "plank",
+      "pose": "start",
+      "prompt": "Create one square fitness educational 3D render, plank hold. Smooth matte light grey faceless hairless mannequin with simplified sculpted anatomy wearing dark grey shorts. Forearms rest flat on a matte grey mat, elbows directly below shoulders, toes on floor, straight line ears shoulders hips heels; two arms and two legs anatomically correct. Primary abdominal muscles glow red, obliques soft orange. Very light grey seamless background, soft studio light and floor shadow. Chest-height three-quarter view, entire body and mat in frame. No words, text, arrows, logos, watermark. This is a text-only original image. No external reference inputs."
+    },
+    {
+      "id": "plank",
+      "pose": "finish",
+      "prompt": "Create one square fitness educational 3D render, plank hold. Smooth matte light grey faceless hairless mannequin with simplified sculpted anatomy wearing dark grey shorts. Forearms rest flat on a matte grey mat, elbows directly below shoulders, toes on floor, straight line ears shoulders hips heels; two arms and two legs anatomically correct. Primary abdominal muscles glow red, obliques soft orange. Very light grey seamless background, soft studio light and floor shadow. Chest-height three-quarter view, entire body and mat in frame. No words, text, arrows, logos, watermark. This is a text-only original image. No external reference inputs."
+    },
+    {
+      "id": "squat",
+      "pose": "finish",
+      "prompt": "Original square fitness 3D render. Smooth matte light-grey faceless hairless mannequin, sculpted simplified anatomy, dark grey shorts, light grey seamless background, soft studio lighting and floor shadow, matte grey equipment, chest-height 3/4 camera whole body and equipment in frame. No text, arrows, logos or watermark. Primary muscles strong emissive red, secondary muscles orange. Anatomically accurate two arms, two legs. Pose specification: Sit hips back into a deep squat, knees tracking toes."
+    },
+    {
+      "id": "pushup",
+      "pose": "start",
+      "prompt": "Original square fitness 3D render. Smooth matte light-grey faceless hairless mannequin, sculpted simplified anatomy, dark grey shorts, light grey seamless background, soft studio lighting and floor shadow, matte grey equipment, chest-height 3/4 camera whole body and equipment in frame. No text, arrows, logos or watermark. Primary muscles strong emissive red, secondary muscles orange. Anatomically accurate two arms, two legs. Pose specification: High plank with palms planted under shoulders and elbows straight."
+    },
+    {
+      "id": "pushup",
+      "pose": "finish",
+      "prompt": "Original square fitness 3D render. Smooth matte light-grey faceless hairless mannequin, sculpted simplified anatomy, dark grey shorts, light grey seamless background, soft studio lighting and floor shadow, matte grey equipment, chest-height 3/4 camera whole body and equipment in frame. No text, arrows, logos or watermark. Primary muscles strong emissive red, secondary muscles orange. Anatomically accurate two arms, two legs. Pose specification: Lower chest close to mat with elbows bent and body straight."
+    },
+    {
+      "id": "forward_fold",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Hamstrings, low back red with secondary assisting regions orange. Hinge at hips and fold forward, hands reaching toward feet."
+    },
+    {
+      "id": "quad_stretch",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Quads red with secondary assisting regions orange. Hold lifted ankle near glute, knees close together, torso tall."
+    },
+    {
+      "id": "child_pose",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Back, hips (relax) red with secondary assisting regions orange. Sit hips toward heels and lengthen arms forward, head lowered."
+    },
+    {
+      "id": "side_plank",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Movement and stability red with secondary assisting regions orange. Maintain the same side plank with hips lifted, no joint movement."
+    },
+    {
+      "id": "kegel",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin in ONE pose, no split panels. Highlight Movement and stability red with secondary assisting regions orange. Same standing posture, gently lift pelvic floor internally, no visible limb movement."
+    },
+    {
+      "id": "breathing",
+      "pose": "finish",
+      "prompt": "Square 1:1 clean 3D studio render: smooth matte light-grey mannequin with sculpted simplified anatomy, no face details or hair, dark grey shorts. Very light grey seamless background and soft floor shadow, soft studio lighting, chest-height three-quarter view with whole body and equipment in frame, consistent normal proportions. Equipment matte grey. No text, letters, arrows, logos or watermark. Two arms and two legs, natural hands. Exactly ONE mannequin, ONE pose, no panels. Barefoot, no shoes, no clothing except dark grey shorts. QUIET BREATHING: mannequin standing fully relaxed upright with both bare feet on floor and both EMPTY hands resting loosely beside hips. Ribs gently expanded, no exertion pose. No equipment of ANY kind, no cable machine, no handles, no weights. Subtle light orange band at lower ribs indicating diaphragm, abdominal wall soft red; chest shoulders arms legs all grey."
+    }
+  ]
+}

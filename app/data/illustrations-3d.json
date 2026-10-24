@@ -1,0 +1,282 @@
+{
+  "squat": {
+    "start": "img/ex3d/squat-start.webp",
+    "finish": "img/ex3d/squat-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "goblet_squat": {
+    "start": "img/ex3d/goblet_squat-start.webp",
+    "finish": "img/ex3d/goblet_squat-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "lunge": {
+    "start": "img/ex3d/lunge-start.webp",
+    "finish": "img/ex3d/lunge-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "bridge": {
+    "start": "img/ex3d/bridge-start.webp",
+    "finish": "img/ex3d/bridge-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "calf_raise": {
+    "start": "img/ex3d/calf_raise-start.webp",
+    "finish": "img/ex3d/calf_raise-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "squat_jump": {
+    "start": "img/ex3d/squat_jump-start.webp",
+    "finish": "img/ex3d/squat_jump-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "deadlift": {
+    "start": "img/ex3d/deadlift-start.webp",
+    "finish": "img/ex3d/deadlift-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "rdl": {
+    "start": "img/ex3d/rdl-start.webp",
+    "finish": "img/ex3d/rdl-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "pushup": {
+    "start": "img/ex3d/pushup-start.webp",
+    "finish": "img/ex3d/pushup-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "knee_pushup": {
+    "start": "img/ex3d/knee_pushup-start.webp",
+    "finish": "img/ex3d/knee_pushup-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "bench_press": {
+    "start": "img/ex3d/bench_press-start.webp",
+    "finish": "img/ex3d/bench_press-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "shoulder_press": {
+    "start": "img/ex3d/shoulder_press-start.webp",
+    "finish": "img/ex3d/shoulder_press-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "lateral_raise": {
+    "start": "img/ex3d/lateral_raise-start.webp",
+    "finish": "img/ex3d/lateral_raise-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "triceps_ext": {
+    "start": "img/ex3d/triceps_ext-start.webp",
+    "finish": "img/ex3d/triceps_ext-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "db_row": {
+    "start": "img/ex3d/db_row-start.webp",
+    "finish": "img/ex3d/db_row-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "lat_pulldown": {
+    "start": "img/ex3d/lat_pulldown-start.webp",
+    "finish": "img/ex3d/lat_pulldown-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "db_curl": {
+    "start": "img/ex3d/db_curl-start.webp",
+    "finish": "img/ex3d/db_curl-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "superman": {
+    "start": "img/ex3d/superman-start.webp",
+    "finish": "img/ex3d/superman-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "plank": {
+    "start": "img/ex3d/plank-start.webp",
+    "finish": "img/ex3d/plank-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "crunch": {
+    "start": "img/ex3d/crunch-start.webp",
+    "finish": "img/ex3d/crunch-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "leg_raise": {
+    "start": "img/ex3d/leg_raise-start.webp",
+    "finish": "img/ex3d/leg_raise-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "mountain_climber": {
+    "start": "img/ex3d/mountain_climber-start.webp",
+    "finish": "img/ex3d/mountain_climber-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "jumping_jack": {
+    "start": "img/ex3d/jumping_jack-start.webp",
+    "finish": "img/ex3d/jumping_jack-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "high_knees": {
+    "start": "img/ex3d/high_knees-start.webp",
+    "finish": "img/ex3d/high_knees-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "jog": {
+    "start": "img/ex3d/jog-start.webp",
+    "finish": "img/ex3d/jog-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "walk": {
+    "start": "img/ex3d/walk-start.webp",
+    "finish": "img/ex3d/walk-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "jump_rope": {
+    "start": "img/ex3d/jump_rope-start.webp",
+    "finish": "img/ex3d/jump_rope-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "forward_fold": {
+    "start": "img/ex3d/forward_fold-start.webp",
+    "finish": "img/ex3d/forward_fold-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "quad_stretch": {
+    "start": "img/ex3d/quad_stretch-start.webp",
+    "finish": "img/ex3d/quad_stretch-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "child_pose": {
+    "start": "img/ex3d/child_pose-start.webp",
+    "finish": "img/ex3d/child_pose-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "bird_dog": {
+    "start": "img/ex3d/bird_dog-start.webp",
+    "finish": "img/ex3d/bird_dog-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "dead_bug": {
+    "start": "img/ex3d/dead_bug-start.webp",
+    "finish": "img/ex3d/dead_bug-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "cat_cow": {
+    "start": "img/ex3d/cat_cow-start.webp",
+    "finish": "img/ex3d/cat_cow-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "chair_squat": {
+    "start": "img/ex3d/chair_squat-start.webp",
+    "finish": "img/ex3d/chair_squat-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "wall_pushup": {
+    "start": "img/ex3d/wall_pushup-start.webp",
+    "finish": "img/ex3d/wall_pushup-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "step_up": {
+    "start": "img/ex3d/step_up-start.webp",
+    "finish": "img/ex3d/step_up-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "run_interval": {
+    "start": "img/ex3d/run_interval-start.webp",
+    "finish": "img/ex3d/run_interval-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "side_plank": {
+    "start": "img/ex3d/side_plank-start.webp",
+    "finish": "img/ex3d/side_plank-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "kegel": {
+    "start": "img/ex3d/kegel-start.webp",
+    "finish": "img/ex3d/kegel-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  },
+  "breathing": {
+    "start": "img/ex3d/breathing-start.webp",
+    "finish": "img/ex3d/breathing-finish.webp",
+    "style": "3d",
+    "tool": "Codex image generation",
+    "created": "2026-10-24"
+  }
+}

@@ -1,0 +1,167 @@
+﻿[
+    {
+        "file":  "tests/poses.mjs",
+        "exit":  0,
+        "output":  "PASS 810 poses: 40 exercises, every keyframe and eight intermediate samples per transition; bone connectivity, elbow/knee flexion, floor and listed movement invariants."
+    },
+    {
+        "file":  "tests/round10.mjs",
+        "exit":  0,
+        "output":  "PASS Round 10: free/paid restoration, engine persistence, private key/state/sync, Gemini models/request/images/schema, Nano availability/images, FIXMEE validation, external fallback, five-language views, donation links and tab inheritance."
+    },
+    {
+        "file":  "tests/round11.mjs",
+        "exit":  0,
+        "output":  "PASS 1000 palette seeds in both themes, locks, exact save/restore, 25 FAQs in five languages and search"
+    },
+    {
+        "file":  "tests/round12.mjs",
+        "exit":  0,
+        "output":  "PASS Round 12 screen DOM, escaping, language gates, mocked actions, CSP/SW; first-load static JS 351980 bytes gzip (118 modules). HTML fixtures saved, not browser screenshots."
+    },
+    {
+        "file":  "tests/round13.mjs",
+        "exit":  0,
+        "output":  "PASS Round 13: five-minute Today tick identity / taps without entrances; focus/caret/scroll/details/sheets; beta UI/admin; unique admin panels; notification states; bilingual guide/error patterns; isolated mocked lab engines."
+    },
+    {
+        "file":  "tests/round14.mjs",
+        "exit":  0,
+        "output":  "PASS Round 14: mapping, schema failure, original Thai names, aliases, equipment/level/avoid, persistence/planner/calories, image URL allowlist, 3D preference/fallback, attribution and repository licence guard. Synthetic fixtures only."
+    },
+    {
+        "file":  "tests/round3.mjs",
+        "exit":  0,
+        "output":  "PASS Round 3 old state, meal editing/logs/totals, custom-food filtering/generation/recipes, measurements/PDF, share dimensions, native health mock/import deduplication, reminders, theme, Thai/English voice and complete offline shell."
+    },
+    {
+        "file":  "tests/round4-ui.mjs",
+        "exit":  0,
+        "output":  "PASS Round 4 TH/EN and both-theme DOM routes, sync 409 merge/retry, join deduplication, replan apply/history, escaped trainer notes and approval, chat explicit approval, random helper, adherence snapshots."
+    },
+    {
+        "file":  "tests/round4.mjs",
+        "exit":  0,
+        "output":  "PASS Round 4 legacy defaults, timestamps, merge and photo stripping, six challenges/freezes, badges/PR, replan thresholds/floors/block application."
+    },
+    {
+        "file":  "tests/round5.mjs",
+        "exit":  0,
+        "output":  "PASS Round 5a DOM: separate/versioned consent, TH/EN routes and themes, promo input, sanitized telemetry opt-out, cycle phases/adjustments, pregnancy/postpartum safety across programs, eight-week run progression, all new poses in side/front."
+    },
+    {
+        "file":  "tests/round5b.mjs",
+        "exit":  0,
+        "output":  "PASS Round 5b app: five-language route rendering, readiness, condition safeguards, kidney protein budget, medication reminders/spacing across midnight, barcode serving conversion/cache, R2-only downloads and wall/chair poses."
+    },
+    {
+        "file":  "tests/round5c.mjs",
+        "exit":  0,
+        "output":  "PASS Round 5c app: five-language/two-theme render, synthetic landmark hysteresis/tracking loss, eating-out meal/diet rules, mood persistence, trial install identity and expiry reminder."
+    },
+    {
+        "file":  "tests/round6-offline.test.mjs",
+        "exit":  0,
+        "output":  "PASS offline: shell files exist, lazy catalogue excluded from install, viewed catalogue/photos cached, shell available offline, API never cached, unseen data fails explicitly."
+    },
+    {
+        "file":  "tests/round6.test.mjs",
+        "exit":  0,
+        "output":  "PASS Round 6 formula references, PRs, 40+876 muscle mappings, pinned import/155 Thai names, recovery/soreness, 30 recipe scaling, planner restrictions, admin login/401 gate, free session and five-language/two-theme DOM rendering. DOM does not prove pixel layout."
+    },
+    {
+        "file":  "tests/round7.mjs",
+        "exit":  0,
+        "output":  "PASS Round 7: exact legacy plan, six style mappings, equipment, exclusive preferences, generated library choice, avoidance, route sheet dismissal, staged settings/save/history/log retention, map check-in, header order in five languages/two themes, offline shell."
+    },
+    {
+        "file":  "tests/round8.mjs",
+        "exit":  0,
+        "output":  "PASS Round 8: all five languages/both-theme DOM rendering, credit pills/costs/pay, account auth, zero-credit sheet, AI usage, real resize bounds/JPEG quality/failure, admin model estimates/reset/login gate."
+    },
+    {
+        "file":  "tests/round9.mjs",
+        "exit":  0,
+        "output":  "PASS Round 9: 40 figures, muscle paths/tokens, arrows, five languages/two themes, reduced motion, approved/missing/broken images, mocked Kie parsing/rate limit/concurrency/resume/ambiguous creation, local review approval/queue/security. No provider calls."
+    },
+    {
+        "file":  "tests/settings.mjs",
+        "exit":  0,
+        "output":  "PASS settings effects: language, theme/accent, plan length, fasting, food exclusion, supplements, training, reminders, medical/medication notes, backup/restore, targets, consent, tour, checklist, row handlers and friendly errors."
+    },
+    {
+        "file":  "tests/test.mjs",
+        "exit":  0,
+        "output":  "PASS old-state load/import, avoidance across all phases/equipment/levels, preferences, safe swaps, override rotation, every IF window including midnight/under-18, supplement relocation, BLE flags/HR calories, PDF/ICS fasting boundaries and offline shell."
+    },
+    {
+        "file":  "tests/ui-test.mjs",
+        "exit":  0,
+        "output":  "PASS TH/EN view rendering; exclusion/swap/calendar/vacation/shopping/IF actions; simulated BLE connection, uint8/uint16 notifications, session finish, HR/set persistence; admin status, validation, preview and save payload."
+    },
+    {
+        "file":  "worker/test.mjs",
+        "exit":  0,
+        "output":  "(node:5724) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS config authorization/validation/KV/secrets; KV checkout price and slip price/duration; Pro rejection; consent validation; both mocked structured AI responses/model/effort. No live API calls.\nPASS meal-photo Pro/input/structured output; push validation/subscribe/update/unsubscribe; VAPID signature; RFC8291 receiver decryption; timezone due window, deduplication and expired subscription cleanup.\nPASS Round 4 encryption/redaction/precedence/delete; auth/hash/rate limit/logout; SQLite sync CAS/concurrent conflict/size/entitlement; trainer permissions/invite/notes/unlink; chat caps and mocked structured suggestions.\nPASS Round 5a SQLite: promo reservations/math/expiry, immutable checkout amounts, payment replay, referral once, plan approval/access/fees/payout, telemetry redaction/rate cap, admin media, full export/deletion. External services mocked."
+    },
+    {
+        "file":  "worker/round10.test.mjs",
+        "exit":  0,
+        "output":  "(node:29972) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 10: local migration, free default, admin authentication, pending/public approval, rate limit, idempotent vote/unvote, supporter double vote, slip amount/receiver/replay across payments, HMAC token, one-time code, monthly totals, merge. All provider calls mocked."
+    },
+    {
+        "file":  "worker/round11-realtime.test.mjs",
+        "exit":  0,
+        "output":  "(node:38892) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS round11 realtime: authenticated membership, hibernation attachments, typing throttle, shared rest state, block enforcement and malformed-event rejection. Mock sockets only."
+    },
+    {
+        "file":  "worker/round11.test.mjs",
+        "exit":  0,
+        "output":  "(node:46408) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS round11: profiles, privacy, friendships, blocks, chat permissions/rate/deletion, report, gym moderation, check-in and retention; providers blocked."
+    },
+    {
+        "file":  "worker/round12.test.mjs",
+        "exit":  0,
+        "output":  "(node:47700) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 12 mocked email/Turnstile, token expiry/replay, password/sessions, verification, enumeration, suspension, caps, encrypted 2FA/recovery and health"
+    },
+    {
+        "file":  "worker/round13.test.mjs",
+        "exit":  0,
+        "output":  "(node:38544) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 13 Worker: fail-closed beta, verified admin preview, toggles, skipped mail, mocked Claude/Gemini lab and isolated usage, actual scheduler Bangkok/New York summer/winter/DST deduplication, self-test ownership and 3/hour cap, admin device/user push."
+    },
+    {
+        "file":  "worker/round4.test.mjs",
+        "exit":  0,
+        "output":  "(node:33324) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 4 encryption/redaction/precedence/delete; auth/hash/rate limit/logout; SQLite sync CAS/concurrent conflict/size/entitlement; trainer permissions/invite/notes/unlink; chat caps and mocked structured suggestions."
+    },
+    {
+        "file":  "worker/round5.test.mjs",
+        "exit":  0,
+        "output":  "(node:34508) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 5a SQLite: promo reservations/math/expiry, immutable checkout amounts, payment replay, referral once, plan approval/access/fees/payout, telemetry redaction/rate cap, admin media, full export/deletion. External services mocked."
+    },
+    {
+        "file":  "worker/round5b.test.mjs",
+        "exit":  0,
+        "output":  "(node:37776) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 5b worker: real SQLite migrations, group privacy/ownership/cap/aggregates, approved shop redirects, LINE PKCE/nonce/link proof/replay and atomic reminder cap. External LINE calls mocked."
+    },
+    {
+        "file":  "worker/round5c.test.mjs",
+        "exit":  0,
+        "output":  "(node:36496) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nCreated SQL and encrypted CONFIG KV import files. Apply all migrations to an EMPTY database first. Preserve MASTER_KEY separately.\nPASS Round 5c worker: SQLite trials/org privacy, server prices, signed subscription webhooks/replay/cancel, streamed backups/retention/download auth, domain CORS; external APIs mocked."
+    },
+    {
+        "file":  "worker/round6.test.mjs",
+        "exit":  0,
+        "output":  "PASS admin public config, hashed session TTL, missing/wrong/password/expired/revoked rejection and login rate limit"
+    },
+    {
+        "file":  "worker/round8-payments.test.mjs",
+        "exit":  0,
+        "output":  "(node:41212) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 8 payments: Thunder + Stripe top-ups, USD/THB pricing, 90-day validity, stable guest wallet, Pro balance preservation, replay idempotency, top-up-only guest without trial."
+    },
+    {
+        "file":  "worker/round8.test.mjs",
+        "exit":  0,
+        "output":  "(node:36080) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\nPASS Round 8: migration, config allowlist, SDK models/cache/language stability, atomic reserve/refund/concurrency, trial, 30-day reset, top-up ordering/expiry/idempotency, no_credits, hourly cap, usage privacy, admin access/dashboard, subscription allowance."
+    }
+]

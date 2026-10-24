@@ -1,6 +1,6 @@
 {
-  "staticModules": 116,
-  "gzipBytes": 347284,
+  "staticModules": 118,
+  "gzipBytes": 351980,
   "budgetBytes": 358400,
   "pass": true,
   "note": "Static import graph only; no CPU/browser measurement."

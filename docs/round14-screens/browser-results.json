@@ -1,0 +1,105 @@
+{
+  "width": 375,
+  "exerciseChecks": [
+    {
+      "theme": "dark",
+      "id": "bench_press",
+      "imagesLoaded": true,
+      "overflow": false,
+      "width": 375
+    },
+    {
+      "theme": "dark",
+      "id": "squat",
+      "imagesLoaded": true,
+      "overflow": false,
+      "width": 375
+    },
+    {
+      "theme": "dark",
+      "id": "pushup",
+      "imagesLoaded": true,
+      "overflow": false,
+      "width": 375
+    },
+    {
+      "theme": "dark",
+      "id": "deadlift",
+      "imagesLoaded": true,
+      "overflow": false,
+      "width": 375
+    },
+    {
+      "theme": "dark",
+      "id": "plank",
+      "imagesLoaded": true,
+      "overflow": false,
+      "width": 375
+    },
+    {
+      "theme": "light",
+      "id": "bench_press",
+      "imagesLoaded": true,
+      "overflow": false,
+      "width": 375
+    },
+    {
+      "theme": "light",
+      "id": "squat",
+      "imagesLoaded": true,
+      "overflow": false,
+      "width": 375
+    },
+    {
+      "theme": "light",
+      "id": "pushup",
+      "imagesLoaded": true,
+      "overflow": false,
+      "width": 375
+    },
+    {
+      "theme": "light",
+      "id": "deadlift",
+      "imagesLoaded": true,
+      "overflow": false,
+      "width": 375
+    },
+    {
+      "theme": "light",
+      "id": "plank",
+      "imagesLoaded": true,
+      "overflow": false,
+      "width": 375
+    }
+  ],
+  "libraryCount": 1453,
+  "repdbSheetAttribution": 1,
+  "logs": [
+    {
+      "level": "error",
+      "message": "Error: Could not establish connection. Receiving end does not exist.",
+      "timestamp": "2026-10-24T05:52:32.450Z",
+      "url": "http://127.0.0.1:5195/?theme=dark#/library"
+    },
+    {
+      "level": "error",
+      "message": "Error: Could not establish connection. Receiving end does not exist.",
+      "timestamp": "2026-10-24T05:54:40.706Z",
+      "url": "http://127.0.0.1:5195/?theme=dark#/library"
+    },
+    {
+      "level": "error",
+      "message": "Error: Could not establish connection. Receiving end does not exist.",
+      "timestamp": "2026-10-24T05:54:40.707Z",
+      "url": "http://127.0.0.1:5195/?theme=dark#/library"
+    },
+    {
+      "level": "error",
+      "message": "Error: Could not establish connection. Receiving end does not exist.",
+      "timestamp": "2026-10-24T05:54:40.707Z",
+      "url": "http://127.0.0.1:5195/?theme=dark#/library"
+    }
+  ],
+  "appErrorEvents": [],
+  "notes": "Browser extension emitted Could not establish connection diagnostics; app error/unhandledrejection collection is independent."
+}

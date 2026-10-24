@@ -1,3 +1,4 @@
+import { sourceHTML } from '../exercise-library.js';
 import {confetti} from '../tab-effects.js';
 import { mountExerciseVisual } from '../illustrations.js';
 import { slot } from '../slots.js';
@@ -82,9 +83,9 @@ actions['wo-tab'] = (el) => { if(el.dataset.v==='lib')return go('#/library');tab
 actions['wo-filter'] = (el) => { filter = el.dataset.v; rerender(); };
 actions['ex-open'] = (el) => {
   const ex = EX[el.dataset.id];
-  sheet(`<div class="sheet-head"><div><small class="muted">${L(GROUPS[ex.group])} · ${L(EQUIP[ex.equip])}</small><h2>${L(ex.name)}</h2></div><button class="icon-btn" data-close>${icon('x')}</button></div>
-    <div class="exercise-visual-panel" id="ex-anim"></div>${videoToggle(ex.id)}
-    <p class="muted">${L('กล้ามเนื้อหลัก', 'Target')}: <b>${L(ex.muscles)}</b></p>
+  sheet(`<div class="sheet-head"><div><small class="muted">${L(GROUPS[ex.group])} · ${L(EQUIP[ex.equip])}</small><h2>${esc(L(ex.name))}</h2></div><button class="icon-btn" data-close>${icon('x')}</button></div>
+    <div class="exercise-visual-panel" id="ex-anim"></div>${videoToggle(ex.id)}${ex.frames?sourceHTML(ex):''}
+    <p class="muted">${L('กล้ามเนื้อหลัก', 'Target')}: <b>${esc(L(ex.muscles))}</b></p>
     ${muscleMap(Object.fromEntries(exerciseMuscles(ex).map((id,i)=>[id,(ex.primaryMuscles?ex.primaryMuscles.includes(id):i===0)?1:.5])))}<ol class="cues">${L(ex.cues).map((c) => `<li>${esc(c)}</li>`).join('')}</ol>${historyHTML(ex.id)}`, { onMount: (r) => mountExerciseVisual(r.querySelector('#ex-anim'), ex) });
 };
 
@@ -152,7 +153,7 @@ function renderStep(host) {
   const timed = !!it.sec;
   P.left = timed ? it.sec : 0;
   host.innerHTML = `${top}<div class="pl-work">
-    <div class="fig xl" id="pl-fig"></div>${videoToggle(ex.id)}
+    <div class="fig xl" id="pl-fig"></div>${videoToggle(ex.id)}${ex.frames?sourceHTML(ex):''}
     <small class="muted">${L(PHASE[it.phase || 'main'])} · ${L('เซ็ต', 'Set')} ${st.set}/${it.sets}</small>
     <h1>${L(ex.name)}</h1>
     ${timed ? `<div class="big-count" id="cnt">${P.left}</div>` : `<div class="reps">${it.reps}<small>${L('ครั้ง', 'reps')}</small></div>`}
