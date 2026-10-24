@@ -1,0 +1,2 @@
+# 3D assets are hashed byte-for-byte in app/3d/SOURCES.json; never convert line endings.
+app/3d/** -text

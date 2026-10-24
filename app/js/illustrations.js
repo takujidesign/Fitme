@@ -4,6 +4,9 @@ import { photoHTML } from './exercise-library.js';
 import { L, esc } from './ui.js';
 import { animateFigure, startFinishHTML, arrowSVG } from './figure.js';
 import {CONFIG} from './config.js';
+import { adminToken } from './admin-session.js';
+// Animated 3D is admin-preview only until hands and poses are good enough for users.
+const liveAllowed = () => !!adminToken();
 
 export function approvedIllustrations(value) {
   if(!value || typeof value !== 'object' || Array.isArray(value))return {};
@@ -54,8 +57,8 @@ export async function mountExerciseVisual(root,ex,{fetcher=globalThis.fetch}={})
   observer.observe(document.body,{childList:true,subtree:true});draw();
   const values=await Promise.all([loadIllustrations(fetcher),load3DIllustrations(fetcher)]);flat=values[0][ex.id];three=values[1][ex.id];row=flat;
   if(row&&!stopped&&root.isConnected){nav.insertAdjacentHTML('afterbegin',`<button class="chip" data-mode="ai">${L('ภาพประกอบ AI','AI illustration')}</button>`);if(!touched&&!reduced()&&getState().exerciseVisualStyle!=='animation')mode='ai';draw();}
-  if(three&&!stopped&&root.isConnected){nav.insertAdjacentHTML('afterbegin','<button class="chip" data-mode="3d">3D</button>');if(!touched&&(getState().exerciseVisualStyle||'3d')==='3d')mode='3d';draw();}
-  if(!stopped&&root.isConnected){nav.insertAdjacentHTML('afterbegin',`<button class="chip" data-mode="live">${L('3D เคลื่อนไหว','Animated 3D')}</button>`);if(!touched&&getState().exerciseVisualStyle==='live')mode=supported?'live':three?'3d':reduced()?'pair':flat?'ai':'pair';draw();}
+  if(three&&!stopped&&root.isConnected){nav.insertAdjacentHTML('afterbegin','<button class="chip" data-mode="3d">3D</button>');if(!touched&&[undefined,'3d','live'].includes(getState().exerciseVisualStyle))mode='3d';draw();}
+  if(!stopped&&root.isConnected&&liveAllowed()){nav.insertAdjacentHTML('afterbegin',`<button class="chip" data-mode="live">${L('3D เคลื่อนไหว','Animated 3D')}</button>`);if(!touched&&getState().exerciseVisualStyle==='live')mode=supported?'live':three?'3d':reduced()?'pair':flat?'ai':'pair';draw();}
   return {stop(){stopped=true;cleanup();observer.disconnect();motion?.removeEventListener?.('change',changed);}};
 }
 
