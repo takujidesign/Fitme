@@ -4,7 +4,7 @@ import { enc, hex, random, hash, equal, fail, input, limit } from './security.js
 import { syncCopy } from '../../app/js/sync-data.js';
 import { CONFIG } from '../../app/js/config.js';
 import {publishWorkouts} from './social-activity.js';
-const credentials = z.object({ email:z.string().email().max(254).transform(v=>v.trim().toLowerCase()), password:z.string().min(10).max(256), age16:z.boolean().optional(), ref:z.string().regex(/^[A-Z0-9]{16}$/).optional() }).strict();
+const credentials = z.object({ email:z.string().trim().toLowerCase().email().max(254), password:z.string().min(10).max(256), age16:z.boolean().optional(), ref:z.string().regex(/^[A-Z0-9]{16}$/).optional() }).strict();
 export async function passwordHash(password, salt) {
   const key = await crypto.subtle.importKey('raw',enc.encode(password),'PBKDF2',false,['deriveBits']);
   return hex(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:Uint8Array.from(salt.match(/../g),v=>parseInt(v,16)),iterations:100000},key,256));
@@ -25,7 +25,15 @@ export async function auth(req,env,path) {
   if (!env.DB) throw fail('DB binding is required',503);
   if (path.endsWith('/register') || path.endsWith('/login')) {
     if (req.method !== 'POST') throw fail('Method not allowed',405);
-    const b = await input(req,credentials,2000); await limit(req,env,b.email);
+    // Validate separately so the app can tell the user which field is wrong.
+    const parsed = credentials.safeParse(await input(req,z.json(),2000));
+    if (!parsed.success) {
+      const field = parsed.error.issues[0]?.path?.[0];
+      if (field === 'password') throw Object.assign(fail('Password must be 10 to 256 characters',400),{code:'password_length'});
+      if (field === 'email') throw Object.assign(fail('Enter a valid email address',400),{code:'invalid_email'});
+      throw fail('Invalid request');
+    }
+    const b = parsed.data; await limit(req,env,b.email);
     await cap(env,path.endsWith('/register')?'register-ip':'login-ip',ip(req),path.endsWith('/register')?5:20,path.endsWith('/register')?86400000:900000);
     let u = await query(env,'SELECT * FROM users WHERE email=?',b.email).first();
     if (path.endsWith('/register')) {
