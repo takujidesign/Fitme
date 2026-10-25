@@ -22,6 +22,7 @@ export async function syncNow() {
   running=true;
   const token=getState().account.token;
   try {
+    await (await import('./health-sync.js')).refreshHealth();
     const remote=await api('sync',undefined,'GET',token);
     let data=mergeState(syncCopy(getState()),remote.json),saved;
     try { saved=await api('sync',{json:data,baseVersion:remote.version},'PUT',token); }
@@ -58,7 +59,7 @@ export async function signIn(mode,email,password) {
   const result=await api('auth/'+mode,{email,password,...(mode==='register'?{age16:true,...(ref?{ref}:{})}:{})});
   if(!result.token){toast(result.message);return;}
   if(mode==='register')localStorage.removeItem('fitme:ref');
-  setState(s=>{s.socialProfile=null;s.account={token:result.token,user:result.user,version:0,lastSync:0,error:''};},{remote:true});
+  setState(s=>{delete s.healthImport;for(const log of Object.values(s.logs))if(log.health?.imported)delete log.health;s.socialProfile=null;s.account={token:result.token,user:result.user,version:0,lastSync:0,error:''};},{remote:true});
   await syncNow();
   await refreshEntitlement();
 }
@@ -70,7 +71,7 @@ export async function refreshEntitlement(){
 export async function signOut() {
   // Clear the local bearer even when the device is offline.
   try{await api('auth/logout',{});}catch(e){toast(e.message,'warn');}
-  setState(s=>{s.socialProfile=null;s.account={token:null,user:null,version:0,lastSync:0,error:''};},{remote:true});
+  setState(s=>{delete s.healthImport;for(const log of Object.values(s.logs))if(log.health?.imported)delete log.health;s.socialProfile=null;s.account={token:null,user:null,version:0,lastSync:0,error:''};},{remote:true});
 }
 
 if(typeof location!=='undefined'){const ref=new URLSearchParams(location.search).get('ref');if(/^[A-Z0-9]{16}$/.test(ref||''))localStorage.setItem('fitme:ref',ref);}

@@ -1,6 +1,7 @@
 // Offline-first service worker. Bump VERSION on every release.
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const SHELL = [
+ './js/views/admin-health.js','./js/health-entry.js','./js/i18n/round17.js','./js/notifications-ui.js','./js/health-math.js','./js/health-model.js','./js/health-sync.js','./js/health-parser.js','./js/health-import-worker.js','./js/vendor/fflate.js','./js/views/health-data.js',
   './js/image-upload.js', './js/i18n/round16.js',
   './js/vendor/three/BufferGeometryUtils.js','./js/vendor/three/GLTFLoader.js','./js/vendor/three/OrbitControls.js','./js/vendor/three/meshopt_decoder.module.js','./js/vendor/three/three.core.js','./js/vendor/three/three.module.js',
   './js/three-motion.js','./js/three-viewer.js','./js/library-paging.js','./js/three-support.js','./js/i18n/round15.js',
@@ -67,12 +68,12 @@ self.addEventListener('fetch', (e) => {
 
 self.addEventListener('push', e => {
   let data; try { data = e.data?.json(); } catch {}
-  const route = /^#\/(today|food|workout|supps|me)$/.test(data?.route) ? data.route : '#/today';
-  e.waitUntil(self.registration.showNotification(data?.title || 'Fixmee', {body:data?.body || '',icon:'./icons/icon-192.png',tag:data?.tag,data:{route}}));
+  const route = /^#\/(today|food|workout|supps|me|player\/\d{4}-\d{2}-\d{2})$/.test(data?.route) ? data.route : '#/today';
+  e.waitUntil(self.registration.showNotification(data?.title || 'Fixmee', {body:data?.body || '',icon:'./icons/icon-192.png',badge:'./icons/icon-192.png',tag:data?.tag,data:{route}}));
 });
 self.addEventListener('notificationclick', e => {
   e.notification.close();
-  const route = /^#\/(today|food|workout|supps|me)$/.test(e.notification.data?.route) ? e.notification.data.route : '#/today';
+  const route = /^#\/(today|food|workout|supps|me|player\/\d{4}-\d{2}-\d{2})$/.test(e.notification.data?.route) ? e.notification.data.route : '#/today';
   const url = new URL('./', self.registration.scope); url.hash = route;
   e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(async clients => {
     const client = clients.find(c => c.url.startsWith(self.registration.scope));

@@ -1,3 +1,4 @@
+import {overlayHealth} from './health-data.js';
 import {cap,ip,mailReady,sendToken,genericMessage,turnstile} from './launch-security.js';
 import { z } from 'zod/v4';
 import { enc, hex, random, hash, equal, fail, input, limit } from './security.js';
@@ -61,13 +62,13 @@ export async function auth(req,env,path) {
   if(path.endsWith('/logout') && req.method==='POST') { await input(req,z.object({}).strict());await query(env,'DELETE FROM sessions WHERE token_hash=?',await hash(req.headers.get('Authorization').slice(7))).run();return {}; }
   throw fail('Not found',404);
 }
-export async function serverState(env,id) { const row=await query(env,'SELECT json,updated_at,version FROM user_state WHERE user_id=?',id).first();return row ? {...row,json:JSON.parse(row.json)} : {json:{},updated_at:0,version:0}; }
+export async function serverState(env,id) { const row=await query(env,'SELECT json,updated_at,version FROM user_state WHERE user_id=?',id).first();return row ? {...row,json:await overlayHealth(env,id,JSON.parse(row.json))} : {json:await overlayHealth(env,id,{}),updated_at:0,version:0}; }
 export async function sync(req,env,verifyToken) {
   const u=await user(req,env);
   if(req.method==='GET') return serverState(env,u.id);
   if(req.method!=='PUT') throw fail('Method not allowed',405);
   const b=await input(req,z.object({json:z.record(z.string(),z.json()),baseVersion:z.number().int().nonnegative()}).strict());
-  const data=syncCopy(b.json);
+  const data=await overlayHealth(env,u.id,syncCopy(b.json));
   const before=(await serverState(env,u.id)).json;
   if(data.premium?.token) {
     let ent;try{ent=await verifyToken(env,data.premium.token);}catch{}

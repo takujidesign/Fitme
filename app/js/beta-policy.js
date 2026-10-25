@@ -1,5 +1,5 @@
 // Shared, fail-closed policy; never trusts a client-side admin flag on the server.
-export const integrations=['ai','mealPhoto','labelScan','bodyPhoto','payments','donations','line','email','maps'];
+export const integrations=['ai','mealPhoto','labelScan','bodyPhoto','payments','donations','line','email','maps','health_fitbit','health_polar','health_withings','health_strava','health_oura'];
 export const betaDefaults=()=>({enabled:true,...Object.fromEntries(integrations.map(k=>[k,false]))});
 export function allowed(flags,key){return flags?.enabled===false||flags?.[key]===true;}
 export function endpointIntegration(path){

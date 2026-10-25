@@ -33,7 +33,7 @@ const defaults = () => ({
   account: { token:null, user:null, version:0, lastSync:0, error:'' }, updatedAt:{}, chat:[], challenges:[], badges:[], blocks:[], suggestionDecisions:{},
   colours: {mode:'tab',locked:[],saved:[],daily:false}, guidance: {tourDone:false,tips:{},dismissed:false}, socialProfile:null,
   theme: 'auto', exerciseVisualStyle: '3d', voiceCoach: false, measurements: [], customFoods: [],
-  notifications: { enabled: false, deviceId: null, meals: true, supplements: true, workout: true, water: false, medications: true, sleep: true, fasting: true },
+  notifications: { enabled: false, deviceId: null, wake: true, quietStart: '', quietEnd: '', meals: true, supplements: true, workout: true, water: false, medications: true, sleep: true, fasting: true },
   weights: [],
   photos: [], // {id, date, pose}
   supplements: [], // {uid, productId, startDate, photoId, custom?}

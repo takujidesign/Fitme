@@ -1,0 +1,3 @@
+﻿(node:56004) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Round 12 mocked email/Turnstile, token expiry/replay, password/sessions, verification, enumeration, suspension, caps, encrypted 2FA/recovery and health

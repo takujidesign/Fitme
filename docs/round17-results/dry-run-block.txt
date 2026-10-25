@@ -1,0 +1,4 @@
+Command (cwd worker): node node_modules/wrangler/bin/wrangler.js deploy --dry-run --outdir ../.tmp/round17-worker-bundle
+WRANGLER_SEND_METRICS=false
+Result: Error: spawn EPERM at runWrangler (worker/node_modules/wrangler/bin/wrangler.js:24:9), errno -4048, syscall spawn.
+The sandbox denied the child process before a bundle was produced. No deployment occurred.

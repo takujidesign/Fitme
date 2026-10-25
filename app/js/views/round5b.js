@@ -1,3 +1,4 @@
+import {dailyHealthCheckin} from '../health-math.js';
 import {adminToken} from '../admin-session.js';
 import {integrationEnabled} from '../beta.js';
 import { muscleMap, REGIONS } from '../muscle-map.js';
@@ -28,7 +29,7 @@ const guard=fn=>async el=>{el.disabled=true;try{await fn(el);}catch(e){toast(e.m
 registerSlot('me.secondary',()=>`<section class="card"><a class="btn ghost" href="#/groups">${L('กลุ่มและชาเลนจ์','Groups and challenges')}</a><a class="btn ghost" href="#/shop">${L('ร้านค้า','Shop')}</a>${button('offline','โหมดออฟไลน์','Offline mode')}${button('medical','โรคประจำตัว','Medical conditions')}${button('medications','ยาที่ทานประจำ','Medications')}</section>`);
 registerSlot('account.secondary',()=>`<section class="card">${button('line-login',getState().account.token?'เชื่อมบัญชี LINE':'เข้าสู่ระบบด้วย LINE',getState().account.token?'Link LINE':'Log in with LINE')}${getState().account.token?button('line-prefs','แจ้งเตือนทาง LINE','LINE reminders'):''}</section>`);
 registerSlot('food.secondary',()=>`<p class="note">${medicalNotes(getState().profile).map(n=>esc(L(n))).join('<br>')}</p>`);
-for(const page of ['today','workout'])registerSlot(page+'.readiness',r=>{const iso=page==='today'?(r.query?.get('d')||todayISO()):(r.params?.[0]||todayISO()),c=getState().logs[iso]?.checkin,score=readiness(c);return `<section class="card readiness-row">${c?`<p>${score.score}/100 · ${esc(L({th:{normal:'ปกติ',lighter:'เบาลง',recovery:'ฟื้นตัว',rest:'พัก'}[score.mode],en:score.mode}))}</p>`:''}${button('checkin','เช็กความพร้อม','Check in',`data-iso="${iso}"`)}${button('recovery-now','วันนี้ไม่ไหว','Recovery today',`data-iso="${iso}"`)}<p class="note">${medicalNotes(getState().profile).map(n=>esc(L(n))).join('<br>')}</p></section>`;});
+for(const page of ['today','workout'])registerSlot(page+'.readiness',r=>{const iso=page==='today'?(r.query?.get('d')||todayISO()):(r.params?.[0]||todayISO()),c=dailyHealthCheckin(getState().logs,iso),score=readiness(c);return `<section class="card readiness-row">${c?`<p>${score.score}/100 · ${esc(L({th:{normal:'ปกติ',lighter:'เบาลง',recovery:'ฟื้นตัว',rest:'พัก'}[score.mode],en:score.mode}))}</p>`:''}${button('checkin','เช็กความพร้อม','Check in',`data-iso="${iso}"`)}${button('recovery-now','วันนี้ไม่ไหว','Recovery today',`data-iso="${iso}"`)}<p class="note">${medicalNotes(getState().profile).map(n=>esc(L(n))).join('<br>')}</p></section>`;});
 actions['recovery-now']=el=>{updateLog(el.dataset.iso,l=>{l.checkin={...l.checkin,override:'recovery'};});rerender();};
 actions.checkin=el=>{
  const iso=el.dataset.iso,log=getState().logs[iso]||{},c=log.checkin||{};

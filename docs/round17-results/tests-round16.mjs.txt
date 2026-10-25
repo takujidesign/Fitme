@@ -1,0 +1,1 @@
+﻿PASS Round 16 encoder fallback, quality/dimension caps, HEIC fallback/cleanup, handle normalization/caret/inline errors, bilingual codes and binary upload

@@ -1,0 +1,3 @@
+﻿(node:43020) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS Round 16 real local SQLite routes: handles, WebP/JPEG uploads and stored metadata, protected reads, PNG/magic/size rejection, legacy chat

@@ -1,3 +1,5 @@
+import {healthData} from './health-data.js';
+import {healthOAuth,syncHealthCron} from './health-oauth.js';
 import {testPush} from './push-test.js';
 import {adminLab,labUsage} from './admin-lab.js';
 import {betaGate,betaFlags,betaAllowed,adminBeta} from './beta.js';
@@ -18,7 +20,7 @@ import { accountData, telemetry, referral, quote, checkout, confirmPayment, slip
 import { adminLogin, adminLogout, admin, input, getSecret, secretStatus, saveSecrets, testSecret } from './security.js';
 import { auth, sync, trainer, user, query } from './accounts.js';
 import { chat } from './chat.js';
-import { pushRequest, sendScheduled } from './push.js';
+import { pushReminders, pushRequest, sendScheduled } from './push.js';
 // Fixmee API — Cloudflare Worker
 //   POST /api/slip/verify      PromptPay slip check via Thunder API → entitlement token
 //   POST /api/stripe/checkout  create a Stripe Checkout session
@@ -40,13 +42,13 @@ const PRODUCTS = {
 };
 
 export default {
-  async scheduled(event, env) { await pruneSocial(env,event.scheduledTime); await sendScheduled(env, event.scheduledTime); await sendLine(env, event.scheduledTime); if(event.cron==='0 20 * * *'){if(await betaAllowed(env,'email'))await winback(env,event.scheduledTime);await backup(env,event.scheduledTime);} },
+  async scheduled(event, env) { await pruneSocial(env,event.scheduledTime); await sendScheduled(env, event.scheduledTime); await sendLine(env, event.scheduledTime); if(event.cron==='0 20 * * *'){await syncHealthCron(env);if(await betaAllowed(env,'email'))await winback(env,event.scheduledTime);await backup(env,event.scheduledTime);} },
   async fetch(req, env) {
     // Health must not depend on the normal KV-backed domain configuration read.
     if(req.method==='GET'&&new URL(req.url).pathname==='/api/health')return json(await health(env),200,corsHeaders(req,env));
     env = await domainEnv(env);
     const cors = corsHeaders(req, env);
-    if(new URL(req.url).pathname.startsWith('/api/admin/'))cors['Cache-Control']='no-store';
+    if(/^\/api\/(admin|health|push)\//.test(new URL(req.url).pathname))cors['Cache-Control']='no-store';
     if (req.method === 'OPTIONS') return new Response(null, { headers: cors });
     const url = new URL(req.url);
     try {
@@ -56,7 +58,9 @@ export default {
       if(!['GET','HEAD','OPTIONS'].includes(req.method)&&(/^\/api\/(conversations|messages)(?:\/|$)/.test(url.pathname)||url.pathname==='/api/profile/avatar'))await verified(env,await user(req,env));
       if(url.pathname==='/api/friends'&&req.method==='POST'&&(await req.clone().json()).action==='send')await verified(env,await user(req,env));
       if(url.pathname==='/api/checkins'&&req.method==='POST'){const b=await req.clone().json();if(b.visibility!=='only me')await verified(env,await user(req,env));}
-      if(['/api/push/test','/api/admin/push-test'].includes(url.pathname))out=await testPush(req,env,url.pathname.startsWith('/api/admin/'));
+      if(url.pathname.startsWith('/api/health/oauth/'))out=await healthOAuth(req,env,url.pathname);
+      else if(url.pathname.startsWith('/api/health/')||url.pathname==='/api/admin/health')out=await healthData(req,env,url.pathname);
+      else if(['/api/push/test','/api/admin/push-test'].includes(url.pathname))out=await testPush(req,env,url.pathname.startsWith('/api/admin/'));
       else if(url.pathname==='/api/admin/ai-lab/usage')out=await labUsage(req,env);
       else if(url.pathname==='/api/admin/ai-lab')out=await adminLab(req,env);
       else if(url.pathname==='/api/admin/beta')out=await adminBeta(req,env);
@@ -105,6 +109,7 @@ export default {
       else if (req.method === 'PUT' && url.pathname === '/api/admin/config') out = await saveConfig(req, env);
       else if (req.method === 'POST' && ['/api/ai/plan-review', '/api/ai/body'].includes(url.pathname)) out = await runAI(req,env,url.pathname.endsWith('/body')?'bodyReview':'planReview',verifyToken,(await readConfig(env)).ai,e=>coach(req,e,url.pathname.endsWith('/body')));
       else if (req.method === 'POST' && url.pathname === '/api/label/analyze') out = await runAI(req,env,'labelRead',verifyToken,(await readConfig(env)).ai,e=>analyzeLabel(req,e));
+      else if(req.method==='GET'&&url.pathname==='/api/push/reminders')out=await pushReminders(req,env);
       else if (req.method === 'POST' && url.pathname === '/api/push/subscribe') out = await pushRequest(req, env);
       else if (req.method === 'POST' && url.pathname === '/api/push/unsubscribe') out = await pushRequest(req, env, true);
       else if (req.method === 'POST' && url.pathname === '/api/ai/meal-photo') out = await runAI(req,env,'mealPhoto',verifyToken,(await readConfig(env)).ai,e=>mealPhoto(req,e));
@@ -126,7 +131,7 @@ function corsHeaders(req, env) {
   return {
     'Access-Control-Allow-Origin': allowed.length === 0 || allowed.includes(origin) ? origin || '*' : allowed[0],
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Admin-Preview, X-Turnstile-Token',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Push-Device, X-Admin-Preview, X-Turnstile-Token',
     Vary: 'Origin',
     'X-Content-Type-Options':'nosniff','Strict-Transport-Security':'max-age=31536000; includeSubDomains','Cache-Control':'no-store',
   };

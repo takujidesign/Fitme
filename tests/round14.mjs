@@ -26,7 +26,7 @@ const p={...getState().profile,location:'db',level:'beginner'};assert(libraryAll
 retainExercise(e);assert.equal(EX[e.id].id,e.id);assert.equal(getState().libraryExercises[e.id].met,4);
 const day=todayISO();setState(s=>{s.profile={...p,startDate:day};s.dayOverrides[day]='train';s.extraExercises[day]=[{id:e.id,sets:3,reps:'10-12',rest:60,phase:'main'}];});assert(sessionFor(getState().profile,day).items.some(i=>i.id===e.id));assert(sessionKcal({items:[{id:e.id,sets:3,reps:'10'}]},70)>0);
 const {personalRecords,detectPRs}=await import('../app/js/records.js');
-const sets=[{id:e.id,kg:10,reps:12},{id:e.id,kg:12,reps:10}];const logs={[day]:{sets}};assert.equal(personalRecords(logs)[e.id].weight,12);assert(detectPRs({},sets).some(pr=>pr.id===e.id));assert.equal(muscleRecovery(logs,EX).biceps.sets,2);
+const sets=[{id:e.id,kg:10,reps:12},{id:e.id,kg:12,reps:10}];const logs={[day]:{sets}};assert.equal(personalRecords(logs)[e.id].weight,12);assert(detectPRs({},sets).some(pr=>pr.id===e.id));assert.equal(muscleRecovery(logs,EX,Date.parse(day+'T13:00:00')).biceps.sets,2);
 const current=sessionFor(getState().profile,day),swapIndex=current.items.findIndex(it=>EX[it.id].group===e.group);if(swapIndex>=0){setState(s=>{s.exSwaps[day]={[swapIndex]:e.id};});assert.equal(sessionFor(getState().profile,day).items[swapIndex].id,e.id);}
 assert(!libraryAllowed({...p,avoidEx:['db_curl']},{...e,aliases:['db_curl']}));
 const host=document.createElement('div');document.body.append(host);await mountExerciseVisual(host,e);assert(host.querySelector('img[loading="lazy"]'));assert(host.textContent.includes('RepDB'));

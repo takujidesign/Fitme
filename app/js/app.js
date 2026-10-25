@@ -1,3 +1,4 @@
+import './health-entry.js';
 import {filterBeta,entryIntegration,integrationEnabled,betaCard} from './beta.js';
 import {adminToken} from './admin-session.js';
 import { preserveView, enterView, offerUpdate } from './render-stability.js';

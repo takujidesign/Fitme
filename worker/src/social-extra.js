@@ -42,12 +42,12 @@ export async function socialExtra(req,env,path,{u,p,now,friends,member}){
   if(req.method==='POST'){const b=await input(req,z.object({user_id:id,accept:z.boolean()}).strict());if(!await friends(env,u.id,b.user_id))throw fail('Friends only',403);if(b.accept)await q(env,'UPDATE buddies SET approved=1 WHERE user_id=? AND buddy_id=?',b.user_id,u.id).run();else await q(env,'DELETE FROM buddies WHERE user_id=? AND buddy_id=?',b.user_id,u.id).run();return {ok:true};}
  }
  if(path==='/api/friends/recap'&&req.method==='GET'){
-  const end=day(now),start=plus(end,-6),state=(await serverState(env,u.id)).json;let workouts=0,minutes=0,prs=0,nutrition=0,logged=0;const best={};
-  for(const [date,log] of Object.entries(state.logs||{}).sort(([a],[b])=>a.localeCompare(b))){if(date>end)continue;const inside=date>=start;if(inside){if(log.done?.workout){workouts++;minutes+=Number(log.workout?.minutes)||0;}if(log.foodLog?.length||log.mealAdherence!==undefined){logged++;nutrition+=Number(challengeDay('food',log,state.profile||{},date));}}
+  const end=day(now),start=plus(end,-6),state=(await serverState(env,u.id)).json;let workouts=0,minutes=0,prs=0,nutrition=0,logged=0,steps=0;const best={};
+  for(const [date,log] of Object.entries(state.logs||{}).sort(([a],[b])=>a.localeCompare(b))){if(date>end)continue;const inside=date>=start;if(inside){steps+=Math.max(0,Number(log.health?.steps)||0);if(log.done?.workout){workouts++;minutes+=Number(log.workout?.minutes)||0;}if(log.foodLog?.length||log.mealAdherence!==undefined){logged++;nutrition+=Number(challengeDay('food',log,state.profile||{},date));}}
    for(const set of log.sets||[]){const score=(Number(set.kg)||0)*(1+(Number(set.reps)||0)/30);if(inside&&best[set.id]&&score>best[set.id])prs++;best[set.id]=Math.max(best[set.id]||0,score);}
   }
   const checkins=(await q(env,'SELECT count(*) n FROM checkins WHERE user_id=? AND created>=? AND created<=?',u.id,Date.parse(start+'T00:00:00Z'),now).first()).n;
-  return {start,end,workouts,minutes,prs,checkins,nutrition:logged?Math.round(nutrition/logged*100):null};
+  return {start,end,workouts,minutes,prs,checkins,steps,nutrition:logged?Math.round(nutrition/logged*100):null};
  }
  const session=path.match(/^\/api\/conversations\/([a-f0-9-]{36})\/session$/);
  if(session){await member(env,session[1],u.id);

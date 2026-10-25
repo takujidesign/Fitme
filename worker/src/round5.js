@@ -1,3 +1,4 @@
+import {healthSnapshot,clearHealth} from './health-data.js';
 import {eraseSocial} from './social-cleanup.js';
 import { aiConfig } from './ai-config.js';
 import { variantFor } from './growth.js';
@@ -24,13 +25,14 @@ const optionalUser = async(req,env)=>/^Bearer\s+\S+/.test(req.headers.get('Autho
 
 export async function accountData(req,env) {
   const u=await user(req,env);
-  if(req.method==='GET') return {aiUsage:await rows(env,'SELECT feature,model,input_tokens,output_tokens,cache_read,cache_write,cost_usd,credits,created FROM ai_usage WHERE owner=?',u.id),user:await q(env,'SELECT id,email,role,created_at,referral_code,pro_until FROM users WHERE id=?',u.id).first(),sessions:await rows(env,'SELECT expires_at FROM sessions WHERE user_id=?',u.id),invites:await rows(env,'SELECT * FROM invites WHERE client_id=?',u.id),trainerAccount:await q(env,'SELECT stripe_id FROM trainer_accounts WHERE user_id=?',u.id).first(),payables:await rows(env,'SELECT * FROM payables WHERE trainer_id=?',u.id),state:await serverState(env,u.id),payments:await rows(env,'SELECT * FROM payments WHERE user_id=?',u.id),links:await rows(env,'SELECT * FROM trainer_links WHERE trainer_id=? OR client_id=?',u.id,u.id),notes:await rows(env,'SELECT * FROM notes WHERE trainer_id=? OR client_id=?',u.id,u.id),referrals:await rows(env,'SELECT * FROM referrals WHERE user_id=? OR referrer_id=?',u.id,u.id),plans:await rows(env,'SELECT * FROM plans WHERE trainer_id=?',u.id),purchases:await rows(env,'SELECT * FROM plan_purchases WHERE user_id=?',u.id),push:await rows(env,'SELECT device_id FROM push_subscriptions WHERE user_id=?',u.id)};
+  if(req.method==='GET') return {health:await healthSnapshot(env,u.id),aiUsage:await rows(env,'SELECT feature,model,input_tokens,output_tokens,cache_read,cache_write,cost_usd,credits,created FROM ai_usage WHERE owner=?',u.id),user:await q(env,'SELECT id,email,role,created_at,referral_code,pro_until FROM users WHERE id=?',u.id).first(),sessions:await rows(env,'SELECT expires_at FROM sessions WHERE user_id=?',u.id),invites:await rows(env,'SELECT * FROM invites WHERE client_id=?',u.id),trainerAccount:await q(env,'SELECT stripe_id FROM trainer_accounts WHERE user_id=?',u.id).first(),payables:await rows(env,'SELECT * FROM payables WHERE trainer_id=?',u.id),state:await serverState(env,u.id),payments:await rows(env,'SELECT * FROM payments WHERE user_id=?',u.id),links:await rows(env,'SELECT * FROM trainer_links WHERE trainer_id=? OR client_id=?',u.id,u.id),notes:await rows(env,'SELECT * FROM notes WHERE trainer_id=? OR client_id=?',u.id,u.id),referrals:await rows(env,'SELECT * FROM referrals WHERE user_id=? OR referrer_id=?',u.id,u.id),plans:await rows(env,'SELECT * FROM plans WHERE trainer_id=?',u.id),purchases:await rows(env,'SELECT * FROM plan_purchases WHERE user_id=?',u.id),push:await rows(env,'SELECT device_id FROM push_subscriptions WHERE user_id=?',u.id)};
   if(req.method!=='DELETE')throw fail('Method not allowed',405);
   const b=await input(req,z.object({email:z.string().email()}).strict());
   if(b.email.trim().toLowerCase()!==u.email)throw fail('Type your email to confirm');
   return deleteAccount(env,u);
 }
 export async function deleteAccount(env,u){
+  await clearHealth(env,u.id);
   // Delete external push records first, so a failure is retryable without losing ownership.
   for(const d of await rows(env,'SELECT device_id FROM push_subscriptions WHERE user_id=?',u.id))await env.PUSH?.delete('device:'+d.device_id);
   const anon=await hash(crypto.randomUUID());

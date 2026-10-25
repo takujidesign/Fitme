@@ -1,3 +1,5 @@
+import {getState} from './store.js';
+import {healthAdjustment} from './health-math.js';
 import { localizedNames } from './i18n/index.js';
 import { hasCondition } from './conditions.js';
 import { healthCalories } from './womens-health.js';
@@ -50,6 +52,8 @@ export function targets(p, isTraining = true, supplementMacros = { kcal: 0, prot
   kcal *= isTraining ? 1.05 : 0.93;
   if (p.calorieFactor) kcal = Math.max(kcal * p.calorieFactor, b * 1.05, p.sex === 'female' ? 1200 : 1500);
   kcal = healthCalories(p,kcal,tdee,iso);
+  const adjustment=healthAdjustment({bmr:b,tdee,kcal},iso?getState().logs[iso]?.health:null);
+  if(iso&&getState().logs[iso]?.health?.active_kcal!=null)kcal=adjustment.kcal;
   const refW = p.bodyFat ? p.weight * (1 - p.bodyFat / 100) / 0.85 : Math.min(p.weight, 25 * (p.height / 100) ** 2);
   const protein = hasCondition(p,'kidney') ? Math.min(Math.round(g.protein * refW), Math.floor(0.8*p.weight)) : Math.round(g.protein * refW);
   let fat = Math.round(Math.max(0.7 * p.weight, (kcal * 0.27) / 9));
@@ -59,7 +63,7 @@ export function targets(p, isTraining = true, supplementMacros = { kcal: 0, prot
   const water = Math.round((p.weight * 35 + (isTraining ? 600 : 0) + (hasCondition(p,'gout') && !hasCondition(p,'kidney') && !hasCondition(p,'heart') ? 500 : 0)) / 50) * 50;
   return {
     bmr: Math.round(b), tdee: Math.round(tdee), kcal: Math.round(kcal), protein, fat, carbs, water,
-    fromSupps: supplementMacros,
+    healthExtra:adjustment.extra, fromSupps: supplementMacros,
     food: { kcal: Math.round(kcal - supplementMacros.kcal), protein: Math.max(0, protein - supplementMacros.protein) },
   };
 }

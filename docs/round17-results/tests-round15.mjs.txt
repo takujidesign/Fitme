@@ -1,0 +1,1 @@
+﻿PASS Round 15: 42 search/filter parity cases, paging/reset, fallback policy, 40 licensed animations + hashes/size caps, lazy static graph, runtime offline cache.

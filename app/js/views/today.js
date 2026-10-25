@@ -82,7 +82,7 @@ views.today = ({ query }) => {
     ${!lastNight && iso === todayISO() ? `<button class="card soft row-card" data-act="sleep-log" data-iso="${iso}">${icon('bed', 22)}<div><b>${L('เมื่อคืนนอนหลับเป็นอย่างไร?', 'How did you sleep?')}</b><small>${L('บันทึกการนอนเพื่อปรับแผนการพักผ่อน', 'Log sleep to tune your recovery')}</small></div>${icon('chev', 18)}</button>` : ''}
     <div data-fasting-clock>${fastingCard(p)}</div>${replanCard()}<h2 class="sec">${L('ไทม์ไลน์วันนี้', 'Today\'s timeline')}</h2>
     ${isLockedDay(iso) ? lockCard() : `<ol class="timeline">${d.events.map((e, i) => eventRow(e, log, iso).replace('<li class="tl', `<li class="tl ${i === nextIdx ? 'next' : ''}`)).join('')}</ol>`}
-    ${d.sm.protein ? `<p class="muted sm center">${L(`อาหารเสริมวันนี้ให้โปรตีน ${d.sm.protein} g / ${d.sm.kcal} kcal (หักออกจากมื้ออาหารแล้ว)`, `Supplements today add ${d.sm.protein} g protein / ${d.sm.kcal} kcal (already deducted from meals)`)}</p>` : ''}${slot('today.secondary')}${slot('today.footer')}`;
+    ${d.t.healthExtra?`<p class="note">${L('เพิ่มเป้าพลังงานจากข้อมูลสุขภาพ','Health activity calorie adjustment')}: +${d.t.healthExtra} kcal</p>`:''}${d.sm.protein ? `<p class="muted sm center">${L(`อาหารเสริมวันนี้ให้โปรตีน ${d.sm.protein} g / ${d.sm.kcal} kcal (หักออกจากมื้ออาหารแล้ว)`, `Supplements today add ${d.sm.protein} g protein / ${d.sm.kcal} kcal (already deducted from meals)`)}</p>` : ''}${slot('today.secondary')}${slot('today.footer')}`;
 };
 
 actions.tick = (el) => {

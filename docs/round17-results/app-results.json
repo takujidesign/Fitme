@@ -1,0 +1,102 @@
+﻿[
+    {
+        "file":  "tests/poses.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round10.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round11.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round12.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round13.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round14.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round15-poses.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round15.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round15b-geometry.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round16.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round17.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round3.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round4-ui.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round4.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round5.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round5b.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round5c.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round6-offline.test.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round6.test.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round7.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round8.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/round9.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/settings.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/test.mjs",
+        "status":  0
+    },
+    {
+        "file":  "tests/ui-test.mjs",
+        "status":  0
+    }
+]

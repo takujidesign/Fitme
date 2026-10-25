@@ -1,3 +1,4 @@
+import {dailyHealthCheckin} from './health-math.js';
 import { equipmentFor, styleGroups, styleAllows } from './training.js';
 import { medicalSession } from './conditions.js';
 import { readinessSession } from './readiness.js';
@@ -66,7 +67,7 @@ export function sessionFor(p, iso) {
   if(!result)return result;
   const extras=(getState().extraExercises?.[iso]||[]).filter(i=>allowed(p,true).some(e=>e.id===i.id));
   const combined={...result,items:[...result.items,...safeItems(p,iso,extras,result.items.length)]};
-  const ready=readinessSession(combined,getState().logs[iso]?.checkin);
+  const ready=readinessSession(combined,dailyHealthCheckin(getState().logs,iso));
   const adjusted=medicalSession(p,healthSession(p,ready,iso));
   const items=adjusted.items.filter(i=>!p.avoidEx?.includes(i.id)&&healthAllowed(p,i.id));
   return {...adjusted,items,minutes:estimateMin(items)};

@@ -1,0 +1,1 @@
+﻿PASS Round 14: mapping, schema failure, original Thai names, aliases, equipment/level/avoid, persistence/planner/calories, image URL allowlist, 3D preference/fallback, attribution and repository licence guard. Synthetic fixtures only.

@@ -12,7 +12,7 @@ const groups=[
  ['เพื่อนและชุมชน','Friends and community',[['friends','เพื่อน','Friends'],['messages','แชต','Chat'],['groups','กลุ่มและชาเลนจ์','Groups and challenges'],['checkin','เช็กอินยิม','Gym check-in']]],
  ['AI','AI',[['ai-settings','เครื่องมือ AI','AI engine'],['ai-usage','การใช้ AI','AI usage'],['ai-summary','หน้าสรุปให้ AI','AI summary']]],
  ['แอป','App',[['!me-lang','ภาษา','Language'],['!theme','ธีมและสี','Theme and colours'],['!notifications','การแจ้งเตือน','Notifications'],['!offline','โหมดออฟไลน์','Offline mode'],['help','ช่วยเหลือและทัวร์','Help and tour']]],
- ['สุขภาพ','Health',[['!medical','โรคประจำตัว','Medical conditions'],['!medications','ยา','Medications'],['wellbeing','ความเป็นอยู่','Wellbeing'],['!consent-withdraw','ถอนความยินยอมสุขภาพ','Withdraw health consent']]],
+ ['สุขภาพ','Health',[['health','ข้อมูลสุขภาพ','Health data'],['!medical','โรคประจำตัว','Medical conditions'],['!medications','ยา','Medications'],['wellbeing','ความเป็นอยู่','Wellbeing'],['!consent-withdraw','ถอนความยินยอมสุขภาพ','Withdraw health consent']]],
  ['บัญชีและข้อมูล','Account and data',[['account','บัญชีและซิงก์','Account and sync'],['!me-backup','สำรองข้อมูล','Back up data'],['!me-restore','กู้คืนข้อมูล','Restore backup'],['!me-pdf','ส่งออก PDF','Export PDF'],['!me-ics','ส่งออก ICS','Export ICS'],['!me-reset','ลบข้อมูลทั้งหมด','Delete all data']]],
  ['สนับสนุน','Support',[['support','สนับสนุน Fixmee','Support Fixmee'],['ideas','เสนอไอเดีย','Ideas'],['credits','เครดิต','Credits'],['privacy','ความเป็นส่วนตัว','Privacy'],['terms','เงื่อนไข','Terms']]]
 ];

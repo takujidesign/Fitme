@@ -1,0 +1,3 @@
+﻿PASS round11 realtime: authenticated membership, hibernation attachments, typing throttle, shared rest state, block enforcement and malformed-event rejection. Mock sockets only.
+(node:54396) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
