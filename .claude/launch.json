@@ -6,6 +6,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "5173", "--directory", "app"],
       "port": 5173
+    },
+    {
+      "name": "fitme-dist",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["web/preview.mjs"],
+      "port": 5199
     }
   ]
 }

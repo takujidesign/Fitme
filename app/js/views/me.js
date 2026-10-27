@@ -1,3 +1,4 @@
+import {featureUsed} from '../telemetry.js';
 import {appVersion,checkUpdate} from '../render-stability.js';
 import { creditCost } from '../ai-credits.js';
 import { slot } from '../slots.js';
@@ -38,7 +39,7 @@ views.me = () => {
   const wk = weeksToGoal(p, avgKcal - t.tdee);
   const done = Object.values(s.logs).filter((l) => l.done?.workout).length;
   return `<header class="top"><div><small class="muted">${L('โปรไฟล์', 'Profile')}</small><h1>${esc(p.name) || L('ฉัน', 'Me')}</h1></div>
-    ${s.account.token?`<button class="btn ghost" data-act="account-logout">${L('ออกจากระบบ','Log out')}</button>`:''}<button class="icon-btn" data-act="me-edit">${icon('settings')}</button></header><section class="card profile">
+    ${s.account.token?`<button class="btn ghost" data-act="account-logout">${L('ออกจากระบบ','Log out')}</button>`:''}<button class="icon-btn" data-act="me-edit">${icon('settings')}</button></header><button class="btn ghost" data-act="me-privacy">${L("ความเป็นส่วนตัว","Privacy")}</button><section class="card profile">
       <div class="sum-grid">
         <div class="stat"><small>${L('น้ำหนัก', 'Weight')}</small><b>${p.weight}</b><span class="tag">kg</span></div>
         <div class="stat"><small>BMI</small><b>${b.toFixed(1)}</b><span class="tag ${bc.c}">${L(bc)}</span></div>
@@ -113,7 +114,7 @@ views.me.mount = async (root) => {
 
 actions['me-edit'] = () => { resetOnboardStep(); go('#/onboarding?edit=1'); };
 actions['me-lang'] = () => sheet(`<h2>${L('ภาษา','Language')}</h2>${enabledLanguages().map(([id,name])=>`<button class="btn ghost block" data-act="language-set" data-lang="${id}">${name}</button>`).join('')}`);
-actions['language-set']=el=>{if(!enabledLanguages().some(([id])=>id===el.dataset.lang))return;setState(s=>s.lang=el.dataset.lang);languageFont(getState().lang);rerender();};
+actions['language-set']=el=>{if(!enabledLanguages().some(([id])=>id===el.dataset.lang))return;setState(s=>s.lang=el.dataset.lang);featureUsed('language_change');languageFont(getState().lang);rerender();};
 actions['me-days'] = (el) => { setState((s) => (s.profile.planDays = Number(el.dataset.v))); rerender(); };
 actions['me-restart'] = () => { if (confirm(L('เริ่มนับแผนใหม่ตั้งแต่วันนี้?', 'Restart the plan from today?'))) { setState((s) => (s.profile.startDate = todayISO())); rerender(); toast(L('เริ่มแผนใหม่แล้ว', 'Plan restarted')); } };
 const gateExport = (fn) => {
@@ -208,3 +209,5 @@ export { fmt, CONFIG };
 actions['me-data']=()=>{const el=document.getElementById('me-data');el.open=true;el.scrollIntoView({behavior:'smooth'});};
 
 actions['check-update']=()=>checkUpdate().then(()=>toast(L('ตรวจแล้ว','Checked'))).catch(e=>toast(e.message,'warn'));
+
+actions['me-privacy']=()=>document.getElementById('usage-privacy')?.scrollIntoView({behavior:'smooth',block:'start'});

@@ -1,3 +1,4 @@
+import {collectUsage,adminUsage,snapshotUsage} from './usage.js';
 import {kieProxy,adminByok,byokConfig} from './byok.js';
 import {healthData} from './health-data.js';
 import {healthOAuth,syncHealthCron} from './health-oauth.js';
@@ -43,7 +44,7 @@ const PRODUCTS = {
 };
 
 export default {
-  async scheduled(event, env) { await pruneSocial(env,event.scheduledTime); await sendScheduled(env, event.scheduledTime); await sendLine(env, event.scheduledTime); if(event.cron==='0 20 * * *'){await syncHealthCron(env);if(await betaAllowed(env,'email'))await winback(env,event.scheduledTime);await backup(env,event.scheduledTime);} },
+  async scheduled(event, env) { await pruneSocial(env,event.scheduledTime); await sendScheduled(env, event.scheduledTime); await sendLine(env, event.scheduledTime); if(event.cron==='0 20 * * *'){await snapshotUsage(env,event.scheduledTime);await syncHealthCron(env);if(await betaAllowed(env,'email'))await winback(env,event.scheduledTime);await backup(env,event.scheduledTime);} },
   async fetch(req, env) {
     // Health must not depend on the normal KV-backed domain configuration read.
     if(req.method==='GET'&&new URL(req.url).pathname==='/api/health')return json(await health(env),200,corsHeaders(req,env));
@@ -81,7 +82,8 @@ export default {
       else if (url.pathname === '/api/groups' || url.pathname.startsWith('/api/groups/')) out = await groups(req,env,url.pathname);
       else if (url.pathname === '/api/shop' || url.pathname.startsWith('/api/shop/') || url.pathname === '/api/admin/shop') out = await shop(req,env,url.pathname);
       else if (url.pathname === '/api/account') out = await accountData(req,env);
-      else if (url.pathname === '/api/telemetry' && req.method === 'POST') out = await telemetry(req,env);
+      else if(url.pathname.startsWith('/api/admin/usage'))out=await adminUsage(req,env);
+      else if (url.pathname === '/api/telemetry' && req.method === 'POST') out = await collectUsage(req,env);
       else if (url.pathname === '/api/referral' && req.method === 'GET') out = await referral(req,env);
       else if (url.pathname === '/api/entitlement' && req.method === 'GET') {
         const u=await user(req,env),row={pro_until:await entitlementUntil(env,u.id)};

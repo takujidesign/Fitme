@@ -2,7 +2,7 @@ name: Deploy web app
 on:
   push:
     branches: [main]
-    paths: ['app/**', 'web/**']
+    paths: ['app/**', 'web/**', 'scripts/build-seo.mjs', 'tests/package*.json', '.github/workflows/deploy-web.yml']
 permissions:
   contents: read
 concurrency:
@@ -32,6 +32,11 @@ jobs:
             echo 'ready=true' >> "$GITHUB_OUTPUT"
           fi
       - run: npm ci --prefix worker
+        if: steps.credentials.outputs.ready == 'true'
+      - run: npm ci --prefix tests
+        if: steps.credentials.outputs.ready == 'true'
+      - name: Install OG language fonts
+        run: sudo apt-get update && sudo apt-get install -y fonts-noto-core fonts-noto-cjk
         if: steps.credentials.outputs.ready == 'true'
       - run: node web/deploy.mjs
         if: steps.credentials.outputs.ready == 'true'

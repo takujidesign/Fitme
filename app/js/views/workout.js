@@ -6,7 +6,7 @@ import { detectPRs } from '../records.js';
 import { muscleMap, exerciseMuscles } from '../muscle-map.js';
 import { supportedForm, startFormCheck, stopFormCheck } from '../form-check.js';
 import { videoToggle } from '../videos.js';
-import { track } from '../telemetry.js';
+import { track, featureUsed } from '../telemetry.js';
 import { speak, stopVoice, voiceButton } from '../voice.js';
 import { parseHeartRate, hrZone, hrCalories, exerciseHistory, historyHTML } from '../progress.js';
 import { actions, views, go, rerender } from '../core.js';
@@ -118,7 +118,7 @@ views.player = ({ params }) => {
   if (isLockedDay(iso)) return `<div class="pad">${lockCard()}</div>`;
   const sess = sessionFor(getState().profile, iso);
   if (!sess?.items.length) { setTimeout(() => go('#/today'), 0); return ''; }
-  if (!P || P.iso !== iso) { disconnectHR(); P = { iso, sess, steps: buildSteps(sess), i: 0, left: 0, paused: false, started: Date.now(), samples: [], sets: [] }; }
+  if (!P || P.iso !== iso) { featureUsed('workout_start'); disconnectHR(); P = { iso, sess, steps: buildSteps(sess), i: 0, left: 0, paused: false, started: Date.now(), samples: [], sets: [] }; }
   return `<div class="player" id="player"></div>`;
 };
 views.player.mount = (root) => { renderStep(root.querySelector('#player')); requestWake(); };

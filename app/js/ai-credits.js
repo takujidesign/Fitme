@@ -1,3 +1,4 @@
+import {featureUsed} from './telemetry.js';
 import {requireIntegration,integrationEnabled,endpointIntegration} from './beta.js';
 import { activeEngine, engineRequest } from './ai-engines.js';
 ﻿import { CONFIG } from './config.js';
@@ -32,6 +33,6 @@ export async function requireCredits(feature){
 export async function aiRequest(path,body){
  requireIntegration(activeEngine()==='claude'?endpointIntegration(path):'byok');
  if(activeEngine()!=='claude')return engineRequest(path,body);
- try{const result=await api(path,body,'POST',aiToken());if(ownerToken!==aiToken()){snapshot=null;ownerToken=aiToken();}snapshot={...snapshot,remaining:result.creditsLeft};checked=0;updateCreditUI();return result;}
+ try{const result=await api(path,body,'POST',aiToken());if(ownerToken!==aiToken()){snapshot=null;ownerToken=aiToken();}featureUsed('claude_credits');featureUsed({'label/analyze':'label_scan','ai/body':'body_photo_ai','ai/meal-photo':'meal_photo_ai','ai/chat':'ai_chat'}[path]);snapshot={...snapshot,remaining:result.creditsLeft};checked=0;updateCreditUI();return result;}
  catch(e){if(e.code==='no_credits')noCredits();throw e;}
 }

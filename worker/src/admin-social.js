@@ -1,3 +1,4 @@
+import {usageReport} from './usage.js';
 import {storedImageType} from './social-images.js';
 import {z} from 'zod/v4';
 import {query as q,serverState} from './accounts.js';
@@ -66,12 +67,7 @@ export async function adminSocial(req,env,section){
   await log(req,env,'broadcast','all');let sent=0;for(const u of await rows(env,'SELECT DISTINCT user_id FROM push_subscriptions'))if(await pushUser(env,u.user_id,{title:b.title,body:b.body,route:'#/today',tag:'announcement'}))sent++;return {sent};
  }
  if(section==='dashboard'&&req.method==='GET'){
-  const windows=[],states=await rows(env,'SELECT user_id,json,updated_at FROM user_state');
-  for(const days of [1,7,30]){const since=days===1?Math.floor(now/86400000)*86400000:now-days*86400000,counts={days,newUsers:(await q(env,'SELECT count(*) n FROM users WHERE created_at>=?',since).first()).n,activeUsers:states.filter(s=>s.updated_at>=since).length,workouts:0,checkins:(await q(env,'SELECT count(*) n FROM checkins WHERE created>=?',since).first()).n,messages:(await q(env,'SELECT count(*) n FROM messages WHERE created>=?',since).first()).n};
-   for(const s of states)for(const [date,v] of Object.entries(JSON.parse(s.json).logs||{}))if(Date.parse(date+'T23:59:59Z')>=since&&date<=new Date(now).toISOString().slice(0,10)&&v.done?.workout)counts.workouts++;
-   counts.ai=await q(env,'SELECT count(*) calls,COALESCE(sum(cost_usd),0) cost FROM ai_usage WHERE created>=?',new Date(since).toISOString()).first();counts.donations=await rows(env,'SELECT currency,sum(amount) amount FROM donations WHERE created>=? GROUP BY currency',since);windows.push(counts);
-  }
-  const queues={reports:(await q(env,"SELECT count(*) n FROM reports WHERE status='open'").first()).n,ideas:(await q(env,"SELECT count(*) n FROM ideas WHERE status='pending'").first()).n,gyms:(await q(env,"SELECT count(*) n FROM gyms WHERE status='pending'").first()).n};return {windows,queues,errors:await rows(env,'SELECT message,count FROM errors ORDER BY count DESC LIMIT 10')};
+  return usageReport(env,30);
  }
  return null;
 }

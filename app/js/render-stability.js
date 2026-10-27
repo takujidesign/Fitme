@@ -1,3 +1,4 @@
+import {featureUsed} from './telemetry.js';
 import {L} from './ui.js';
 export function preserveView(root, enabled=true) {
  if(!enabled)return ()=>{};
@@ -25,7 +26,7 @@ export async function checkUpdate(){
   if(version){appVersion=version;try{const r=await fetch('./sw.js',{cache:'no-store'});const latest=(await r.text()).match(/const VERSION = ['"]([^'"]+)/)?.[1];if(latest&&latest!==version){await registration.update?.();registration.waiting&&applyUpdate();}}catch{}}
  }
 }
-export function applyUpdate(){if(!registration?.waiting)return;applying=true;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(applying&&!reloading){reloading=true;location.reload();}},{once:true});registration.waiting.postMessage({type:'SKIP_WAITING'});document.getElementById('sw-update')?.remove();}
+export function applyUpdate(){featureUsed('update_applied');if(!registration?.waiting)return;applying=true;navigator.serviceWorker.addEventListener('controllerchange',()=>{if(applying&&!reloading){reloading=true;location.reload();}},{once:true});registration.waiting.postMessage({type:'SKIP_WAITING'});document.getElementById('sw-update')?.remove();}
 export function offerUpdate(reg){
  registration=reg;
  const show=()=>{if(!reg.waiting||document.getElementById('sw-update'))return;const b=document.createElement('button');b.id='sw-update';b.className='install btn';b.textContent=L('มีเวอร์ชันใหม่ — แตะเพื่ออัปเดต','New version — tap to update');b.onclick=applyUpdate;document.body.append(b);};

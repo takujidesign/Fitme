@@ -47,7 +47,7 @@ const enrolled=await call('admin/2fa',{secret,code:await totp(secret)},admin);as
 assert.equal((await call('admin/login',{password:env.ADMIN_PASSWORD})).status,401);
 const recovered=await call('admin/login',{password:env.ADMIN_PASSWORD,totp:enrolled.data.recoveryCodes[0]});assert.equal(recovered.status,200);assert.equal((await call('admin/login',{password:env.ADMIN_PASSWORD,totp:enrolled.data.recoveryCodes[0]})).status,401);
 const admin2=recovered.data.token;assert.equal((await call('admin/2fa',{disable:true,code:'000000'},admin2)).status,403);assert.equal((await call('admin/2fa',{disable:true,code:await totp(secret)},admin2)).status,200);
-assert.deepEqual(await health(env),{ok:true,version:'round12',db:true,kv:true,r2:true});assert.equal((await health({...env,MEDIA:undefined})).r2,false);
+env.DEPLOY_SHA='abcd1234';assert.deepEqual(await health(env),{ok:true,version:'abcd1234',db:true,kv:true,r2:true});assert.equal((await health({...env,MEDIA:undefined})).r2,false);
 const h=await call('health');assert.equal(h.headers.get('X-Content-Type-Options'),'nosniff');assert(h.headers.get('Strict-Transport-Security'));
 
 // Across-email IP caps and across-IP email caps use atomic D1 counters.
