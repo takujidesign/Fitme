@@ -37,3 +37,7 @@ jobs:
           rm -f "$RUNNER_TEMP/s.json"
           rb=$(npx wrangler kv key get admin-revoked-before --namespace-id "$id" --remote 2>/dev/null || true)
           if [[ -n "$rb" && "$rb" =~ ^[0-9]+$ ]]; then echo "admin sessions revoked at: $(date -u -d @$((rb/1000)))"; else echo "admin sessions revoked at: never"; fi
+      - name: Account data counts (no personal data)
+        shell: bash
+        run: |
+          npx wrangler d1 execute fixme --remote --json --command "SELECT (SELECT count(*) FROM users) AS users, (SELECT count(*) FROM sessions WHERE expires_at > strftime('%s','now')*1000) AS active_sessions, (SELECT count(*) FROM user_state) AS synced_states, (SELECT max(version) FROM user_state) AS max_version, (SELECT max(length(json)) FROM user_state) AS largest_state_bytes, (SELECT datetime(max(updated_at)/1000,'unixepoch') FROM user_state) AS last_sync_utc, (SELECT count(*) FROM profiles) AS profiles, (SELECT count(*) FROM health_daily) AS health_days" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const j=JSON.parse(s);console.log(JSON.stringify(j[0].results[0]))})"
