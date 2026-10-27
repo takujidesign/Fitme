@@ -42,7 +42,7 @@ export async function syncPush(){
 }
 export function startPushSync(){
   let signature='',timer;
-  const changed=()=>{const s=getState(),next=JSON.stringify([s.profile,s.supplements,s.mealSeed,s.dayOverrides,s.customFoods,s.notifications,s.lang,s.blocks,s.exSwaps,s.logs,s.account?.token]);if(next===signature)return;signature=next;clearTimeout(timer);timer=setTimeout(()=>syncPush().catch(()=>{}),1000);};
+  const changed=()=>{const s=getState(),next=JSON.stringify([s.dailyMenus,s.profile,s.supplements,s.mealSeed,s.dayOverrides,s.customFoods,s.notifications,s.lang,s.blocks,s.exSwaps,s.logs,s.account?.token]);if(next===signature)return;signature=next;clearTimeout(timer);timer=setTimeout(()=>syncPush().catch(()=>{}),1000);};
   subscribe(changed);changed();window.addEventListener('online',()=>syncPush().catch(()=>{}));document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncPush().catch(()=>{});});
 }
 export function notificationState({supported,ios,standalone,permission,publicKey,subscribed}){

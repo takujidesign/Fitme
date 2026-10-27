@@ -1,0 +1,10 @@
+import {getState,setState,addDays,diffDays,uid} from './store.js';
+import {FOOD} from './foods.js';
+export function menuItem(food,g){if(!Number.isFinite(g)||g<=0||g>10000)throw Error('Invalid portion');return {id:food.id,g,food:structuredClone(food)};}
+export function menuMeal(slot,items=[]){for(const it of items)if(it.food)FOOD[it.id]=it.food;return {...slot,custom:true,items,total:Object.fromEntries(['k','p','c','f'].map(k=>[k,Math.round(items.reduce((n,it)=>n+(it.food||FOOD[it.id])[k]*it.g/100,0))])),name:{th:items.map(it=>(it.food||FOOD[it.id]).th).join(' · ')||'เมนูของฉัน',en:items.map(it=>(it.food||FOOD[it.id]).en).join(' · ')||'My menu'}};}
+export function customDay(slots,menu){return slots.map((slot,i)=>menuMeal(slot,menu?.meals?.[i]?.items||[]));}
+export function enableMenu(date,meals){setState(s=>{s.dailyMenus||={};s.dailyMenus[date]={meals:meals.map(m=>({items:m.items.map(it=>menuItem(it.food||FOOD[it.id],it.g))}))};});}
+export function editMenuItem(date,index,itemIndex,item){setState(s=>{const items=(s.dailyMenus[date].meals[index]||={items:[]}).items;if(itemIndex===null)items.push(item);else if(item===null)items.splice(itemIndex,1);else items[itemIndex]=item;});}
+export function copyMenu(date,start,end=start){const count=diffDays(start,end);if(!/^\d{4}-\d{2}-\d{2}$/.test(start)||!Number.isFinite(count)||count<0||count>365)throw Error('Choose up to 366 days');const menu=structuredClone(getState().dailyMenus[date]);setState(s=>{for(let i=0;i<=count;i++)s.dailyMenus[addDays(start,i)]=structuredClone(menu);});}
+export function saveMenuTemplate(date,name){if(!name.trim())throw Error('Enter a template name');const id=uid();setState(s=>{s.menuTemplates||={};s.menuTemplates[id]={name:name.trim().slice(0,80),menu:structuredClone(s.dailyMenus[date])};});return id;}
+export function applyMenuTemplate(date,id){const menu=getState().menuTemplates?.[id]?.menu;if(!menu)throw Error('Unknown template');setState(s=>{s.dailyMenus||={};s.dailyMenus[date]=structuredClone(menu);});}

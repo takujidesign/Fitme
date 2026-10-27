@@ -26,7 +26,7 @@ views.food = ({ params }) => {
   const tot = eaten(d, log);
   const head = `<header class="top"><div><small class="muted">${L('โภชนาการ', 'Nutrition')}</small><h1>${L('แผนอาหาร', 'Meal plan')}</h1></div>
     <button class="icon-btn" data-act="food-prefs" aria-label="prefs">${icon('settings')}</button></header><a class="btn ghost" href="#/recipes">${L('สูตรอาหาร','Recipes')}</a>`;
-  return head + mealLogButtons(iso) + foodLogHTML(iso) + `<button class="btn ghost block" data-act="shopping" data-iso="${iso}">${L('รายการซื้อของ 7 วัน', '7-day shopping list')}</button>${eatingWindow(p) && d.train && !inWindow(Number(p.workoutTime.slice(0,2))*60+Number(p.workoutTime.slice(3)), eatingWindow(p)) ? `<p class="note">${L('เวลาออกกำลังกายอยู่ในช่วงอด ลองเลื่อนมาใกล้เวลาเริ่มกิน', 'Your workout falls in the fast. Consider moving it near the eating window start.')}</p>` : ""}` + weekStrip(iso, '#/food/') + `
+  return head + `<button class="btn primary" data-act="daily-menu" data-iso="${iso}">${L('เมนูของฉัน','My menu')}</button>` + mealLogButtons(iso) + foodLogHTML(iso) + `<button class="btn ghost block" data-act="shopping" data-iso="${iso}">${L('รายการซื้อของ 7 วัน', '7-day shopping list')}</button>${eatingWindow(p) && d.train && !inWindow(Number(p.workoutTime.slice(0,2))*60+Number(p.workoutTime.slice(3)), eatingWindow(p)) ? `<p class="note">${L('เวลาออกกำลังกายอยู่ในช่วงอด ลองเลื่อนมาใกล้เวลาเริ่มกิน', 'Your workout falls in the fast. Consider moving it near the eating window start.')}</p>` : ""}` + weekStrip(iso, '#/food/') + `
     <section class="card">
       <div class="row between"><div><small class="muted">${dateLabel(iso, { weekday: 'long', day: 'numeric', month: 'short' })} · ${d.train ? L('วันออกกำลังกาย', 'Training day') : L('วันพัก', 'Rest day')}</small>
         <h2>${tot.k.toLocaleString()} <small class="muted">/ ${d.t.kcal.toLocaleString()} kcal</small></h2></div>
@@ -68,3 +68,5 @@ const single = (el) => el.parentElement.querySelectorAll('.chip').forEach((c) =>
 actions['fp-diet'] = (el) => { setState((s) => (s.profile.diet = el.dataset.v)); single(el); rerender(); };
 actions['fp-ex'] = (el) => { setState((s) => { const e = new Set(s.profile.exclude); e.has(el.dataset.v) ? e.delete(el.dataset.v) : e.add(el.dataset.v); s.profile.exclude = [...e]; }); el.classList.toggle('on'); rerender(); };
 actions['fp-meals'] = (el) => { setState((s) => (s.profile.mealsPerDay = Number(el.dataset.v))); single(el); rerender(); };
+
+actions['daily-menu']=async el=>(await import('./daily-menu.js')).menuEditor(el.dataset.iso);

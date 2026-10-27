@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict';
+import {createECDH,hkdfSync,createDecipheriv,createPublicKey,verify} from 'node:crypto';
+import {encryptPush,vapidJWT,generateVapidKeys,sendScheduled,pushReminders} from './src/push.js';
+import {testPush} from './src/push-test.js';
+import {auth} from './src/accounts.js';
+import {hash} from './src/security.js';
+import {kieProxy} from './src/byok.js';
+import {testDB} from './test-db.mjs';
+const b=s=>Buffer.from(s,'base64url');
+// RFC 8291 Appendix A public test material, not application credentials.
+const as='BP4z9KsN6nGRTbVYI_c7VJSPQTBtkgcy27mlmlMoZIIgDll6e3vCYLocInmYWAmS6TlzAC8wEqKK6PBru3jl7A8';
+const ua='BCVxsr7N_eNgVRqvHtD0zTZsEc6-VV-JvLexhqUzORcxaOzi6-AYWXvTBHm4bjyPjs7Vd8pZGH6SRpkNtoIAiw4';
+const raw=b(as),privateKey=await crypto.subtle.importKey('jwk',{kty:'EC',crv:'P-256',x:raw.subarray(1,33).toString('base64url'),y:raw.subarray(33).toString('base64url'),d:'yfWPiYE-n46HLnH0KqZOF1fJJU3MYrct3AELtAQ-oRw'},{name:'ECDH',namedCurve:'P-256'},true,['deriveBits']);
+const publicKey=await crypto.subtle.importKey('raw',raw,{name:'ECDH',namedCurve:'P-256'},true,[]);
+const subscription={keys:{p256dh:ua,auth:'BTBZMqHH6r4Tts7J_aSIgg'}};
+const plaintext=b('V2hlbiBJIGdyb3cgdXAsIEkgd2FudCB0byBiZSBhIHdhdGVybWVsb24');
+const body=Buffer.from(await encryptPush(subscription,plaintext,{pair:{privateKey,publicKey},salt:b('DGv6ra1nlYgDCS1FRnbzlw')}));
+assert.equal(body.subarray(0,86).toString('base64url'),'DGv6ra1nlYgDCS1FRnbzlwAAEABBBP4z9KsN6nGRTbVYI_c7VJSPQTBtkgcy27mlmlMoZIIgDll6e3vCYLocInmYWAmS6TlzAC8wEqKK6PBru3jl7A8');
+assert.equal(body.subarray(86).toString('base64url'),'8pfeW0KbunFT06SuDKoJH9Ql87S1QUrdirN6GcG7sFz1y1sqLgVi1VhjVkHsUoEsbI_0LpXMuGvnzQ');
+assert.equal(body.readUInt32BE(16),4096);assert.equal(body[20],65);
+const receiver=createECDH('prime256v1');receiver.setPrivateKey(b('q1dXpw3UpT5VOmu_cf_v6ih07Aems3njxI-JWgLcM94'));
+function decrypt(body){const pub=body.subarray(21,86),salt=body.subarray(0,16),secret=receiver.computeSecret(pub);const ikm=hkdfSync('sha256',secret,b(subscription.keys.auth),Buffer.concat([Buffer.from('WebPush: info\0'),receiver.getPublicKey(),pub]),32);const cek=hkdfSync('sha256',ikm,salt,Buffer.from('Content-Encoding: aes128gcm\0'),16),nonce=hkdfSync('sha256',ikm,salt,Buffer.from('Content-Encoding: nonce\0'),12);const decipher=createDecipheriv('aes-128-gcm',cek,nonce);decipher.setAuthTag(body.subarray(-16));const result=Buffer.concat([decipher.update(body.subarray(86,-16)),decipher.final()]);assert.equal(result.at(-1),2);return result.subarray(0,-1);}
+assert.deepEqual(decrypt(body),plaintext);assert.deepEqual(JSON.parse(decrypt(Buffer.from(await encryptPush(subscription,{title:'Independent decryption'})))),{title:'Independent decryption'});
+const keys=await generateVapidKeys(),env={VAPID_PUBLIC_KEY:keys.publicKey,VAPID_PRIVATE_KEY:keys.privateKey};
+for(const origin of ['https://web.push.apple.com','https://fcm.googleapis.com','https://updates.push.services.mozilla.com']){const now=Date.now(),jwt=await vapidJWT(origin+'/endpoint',env,now),[h,p,s]=jwt.split('.'),payload=JSON.parse(b(p));assert.equal(payload.aud,origin);assert(payload.exp<=now/1000+43200);assert.equal(payload.sub,'https://fixmee.app');assert.equal(b(s).length,64);const pub=b(keys.publicKey);assert.equal(pub.length,65);assert(verify('sha256',Buffer.from(h+'.'+p),{key:createPublicKey({key:{kty:'EC',crv:'P-256',x:pub.subarray(1,33).toString('base64url'),y:pub.subarray(33).toString('base64url')},format:'jwk'}),dsaEncoding:'ieee-p1363'},b(s)));}
+const {db,DB}=testDB();const key='synthetic-provider-key';const req=()=>new Request('https://local/api/ai/byok/kie',{method:'POST',headers:{'X-BYOK-Key':key,'CF-Connecting-IP':'test-ip'},body:JSON.stringify({model:'test',input:[],text:{format:{}},store:false})});
+let calls=0;const proxyEnv={DB,CONFIG:{get:async()=>null}};
+assert.deepEqual(await kieProxy(req(),proxyEnv,async(url,o)=>{calls++;assert.equal(url,'https://api.kie.ai/openai/v1/responses');assert.equal(o.headers.Authorization,'Bearer '+key);return Response.json({output_text:'{"ok":true}'});}),{output_text:'{"ok":true}'});
+await assert.rejects(kieProxy(req(),proxyEnv,async()=>Response.json({output_text:key})),/Invalid provider response/);
+await assert.rejects(kieProxy(req(),proxyEnv,async()=>Response.json({error:key},{status:401})),e=>!e.message.includes(key));
+for(let i=3;i<30;i++)await kieProxy(req(),proxyEnv,async()=>Response.json({output_text:'{}'}));
+await assert.rejects(kieProxy(req(),proxyEnv,async()=>{throw Error('Should not call');}),e=>e.status===429);
+for(const {name} of db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all())assert(!JSON.stringify(db.prepare('SELECT * FROM '+name).all()).includes(key));
+const now=Date.now(),deviceId=crypto.randomUUID(),pushStore=new Map();const pushEnv={...env,DB,PUSH:{get:async k=>JSON.parse(pushStore.get(k)||'null'),put:async(k,v)=>pushStore.set(k,v),delete:async k=>pushStore.delete(k),list:async()=>({keys:[{name:'device:'+deviceId}],list_complete:true})}};
+pushStore.set('device:'+deviceId,JSON.stringify({subscription:{...subscription,endpoint:'https://web.push.apple.com/fake'},tz:'UTC',expires:now+86400000,registeredAt:now,reminders:[{time:new Date(now).toISOString().slice(11,16),title:'Menu reminder',body:'Mock only',category:'meals'}]}));
+globalThis.fetch=async(url,o)=>{assert.equal(o.headers.Urgency,'normal');assert(Number(o.headers.TTL)>0);assert.equal(o.headers['Content-Encoding'],'aes128gcm');assert.match(o.headers.Authorization,/^vapid t=[\w.-]+, k=[\w-]{87}$/);assert(!o.headers.Topic||/^[\w-]{1,32}$/.test(o.headers.Topic));assert(decrypt(Buffer.from(o.body)).length);return Response.json({reason:'BadJwtToken'},{status:403});};
+await sendScheduled(pushEnv,now);assert.equal(JSON.parse(pushStore.get('device:'+deviceId)).lastError.status,403);
+const diagnostics=await pushReminders(new Request('https://local/?deviceId='+deviceId,{headers:{'X-Push-Device':deviceId}}),pushEnv);assert.match(diagnostics.lastError.reason,/BadJwtToken/);
+const testReq=()=>new Request('https://local/api/push/test',{method:'POST',body:JSON.stringify({deviceId})});await assert.rejects(testPush(testReq(),pushEnv),e=>e.code==='push_rejected'&&e.message.includes('BadJwtToken'));
+globalThis.fetch=async()=>new Response(null,{status:201});await testPush(testReq(),pushEnv);assert.equal(JSON.parse(pushStore.get('device:'+deviceId)).lastError,null);
+const userId=crypto.randomUUID(),token='e'.repeat(64);db.prepare('INSERT INTO users(id,email,pass_hash,pass_salt,created_at) VALUES(?,?,?,?,?)').run(userId,'logout@example.test','x','x',now);db.prepare('INSERT INTO sessions VALUES(?,?,?)').run(await hash(token),userId,now+60000);await auth(new Request('https://local/api/auth/logout',{method:'POST',headers:{Authorization:'Bearer '+token},body:'{}'}),{DB},'/api/auth/logout');assert.equal(db.prepare('SELECT count(*) n FROM sessions WHERE token_hash=?').get(await hash(token)).n,0);db.close();
+console.log('PASS Round 18 RFC 8291 exact header/ciphertext; independent ECDH/HKDF/AES decryption; RFC 8292 signatures/origins/expiry/subject; Kie proxy redaction and rate limit');

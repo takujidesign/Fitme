@@ -29,6 +29,7 @@ export const isDemo = () => !CONFIG.API_BASE;
 
 const fields = { freeMode:'freeMode', aiEngines:'aiEngines', donate:'donate', promptpayId: 'PROMPTPAY_ID', promptpayName: 'PROMPTPAY_NAME', receiverName: 'RECEIVER_NAME', products: 'PRODUCTS', freePlanDays: 'FREE_PLAN_DAYS', freeSupplements: 'FREE_SUPPLEMENTS' };
 export function mergeConfig(config) {
+  if(config.byok)CONFIG.byok=config.byok;
   if(config.beta)CONFIG.beta={...betaDefaults(),...config.beta};
   if(config.launch)CONFIG.launch=config.launch;
   if(config.ai)CONFIG.AI=config.ai;

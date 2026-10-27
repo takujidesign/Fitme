@@ -64,8 +64,9 @@ export const getState = () => state;
 
 export function setState(mutator, {remote = false} = {}) {
   const before = remote ? null : Object.fromEntries(syncKeys.map(k=>[k, JSON.stringify(state[k])]));
-  const rows = remote ? null : Object.fromEntries(['logs','foodLog','supplements','weights','measurements','customFoods'].map(k=>[k, structuredClone(state[k] || (['logs','foodLog'].includes(k)?{}:[]))]));
+  const rows = remote ? null : Object.fromEntries(['logs','foodLog','dailyMenus','menuTemplates','supplements','weights','measurements','customFoods'].map(k=>[k, structuredClone(state[k] || (['logs','foodLog','dailyMenus','menuTemplates'].includes(k)?{}:[]))]));
   mutator(state);
+  if(!remote)state.notificationPrefs=Object.fromEntries(Object.entries(state.notifications).filter(([k])=>!['enabled','deviceId','registeredAt','error'].includes(k)));
   if (!remote) {
     const now=Date.now();state.updatedAt ||= {};
     for(const k of syncKeys) if(before[k]!==JSON.stringify(state[k])) {
@@ -80,6 +81,14 @@ export function setState(mutator, {remote = false} = {}) {
   listeners.forEach((fn) => fn(state, {remote}));
 }
 export const subscribe = (fn) => (listeners.add(fn), () => listeners.delete(fn));
+export function replaceAccountState(data={}) {
+  const previous=state;
+  state={...defaults(),...data,profile:{...defaults().profile,...data.profile},account:previous.account};
+  state.notifications={...defaults().notifications,...data.notificationPrefs};
+  clearImageURLs();
+  setState(()=>{},{remote:true});
+}
+export const clearImages=()=>idbClear();
 
 export function dayLog(date) {
   return state.logs[date] || { done: {}, water: 0 };
@@ -129,6 +138,7 @@ export const delImage = (id) => tx('readwrite', (s) => s.delete(id));
 const idbClear = () => tx('readwrite', (s) => s.clear()).catch(() => {});
 
 const urlCache = new Map();
+export function clearImageURLs(){for(const url of urlCache.values())URL.revokeObjectURL(url);urlCache.clear();}
 export async function imageURL(id) {
   if (!id) return null;
   if (urlCache.has(id)) return urlCache.get(id);

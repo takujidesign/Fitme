@@ -1,3 +1,4 @@
+import {kieProxy,adminByok,byokConfig} from './byok.js';
 import {healthData} from './health-data.js';
 import {healthOAuth,syncHealthCron} from './health-oauth.js';
 import {testPush} from './push-test.js';
@@ -58,7 +59,9 @@ export default {
       if(!['GET','HEAD','OPTIONS'].includes(req.method)&&(/^\/api\/(conversations|messages)(?:\/|$)/.test(url.pathname)||url.pathname==='/api/profile/avatar'))await verified(env,await user(req,env));
       if(url.pathname==='/api/friends'&&req.method==='POST'&&(await req.clone().json()).action==='send')await verified(env,await user(req,env));
       if(url.pathname==='/api/checkins'&&req.method==='POST'){const b=await req.clone().json();if(b.visibility!=='only me')await verified(env,await user(req,env));}
-      if(url.pathname.startsWith('/api/health/oauth/'))out=await healthOAuth(req,env,url.pathname);
+      if(url.pathname==='/api/ai/byok/kie')out=await kieProxy(req,env);
+      else if(url.pathname==='/api/admin/byok')out=await adminByok(req,env);
+      else if(url.pathname.startsWith('/api/health/oauth/'))out=await healthOAuth(req,env,url.pathname);
       else if(url.pathname.startsWith('/api/health/')||url.pathname==='/api/admin/health')out=await healthData(req,env,url.pathname);
       else if(['/api/push/test','/api/admin/push-test'].includes(url.pathname))out=await testPush(req,env,url.pathname.startsWith('/api/admin/'));
       else if(url.pathname==='/api/admin/ai-lab/usage')out=await labUsage(req,env);
@@ -131,7 +134,7 @@ function corsHeaders(req, env) {
   return {
     'Access-Control-Allow-Origin': allowed.length === 0 || allowed.includes(origin) ? origin || '*' : allowed[0],
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Push-Device, X-Admin-Preview, X-Turnstile-Token',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Push-Device, X-Admin-Preview, X-Turnstile-Token, X-BYOK-Key',
     Vary: 'Origin',
     'X-Content-Type-Options':'nosniff','Strict-Transport-Security':'max-age=31536000; includeSubDomains','Cache-Control':'no-store',
   };
@@ -283,7 +286,7 @@ async function publicConfig(env) {
   for(const k of ['contactEmail','referralDays','trainerShare'])config[k]=biz[k];
   config.products = Object.fromEntries(Object.entries(config.products).map(([id,p]) => [id,Object.fromEntries(['thb','usd','days','exports','th','en','descTh','descEn','best'].filter(k=>p[k]!==undefined).map(k=>[k,p[k]]))]));
   const launch=await env.CONFIG?.get('launch','json')||{};config.launch={turnstileSiteKey:launch.turnstileSiteKey||'',languages:{th:true,en:true,zh:false,ja:false,vi:false,...launch.languages},verification:await mailReady(env)};
-  config.beta=await betaFlags(env);
+  config.beta=await betaFlags(env);config.byok=await byokConfig(env);
   config.ai={prices:settings.ai.prices,credits:settings.ai.credits};
   config.vapidPublicKey = await getSecret(env, 'vapidPublicKey') || '';
   return { config };

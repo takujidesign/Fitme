@@ -9,8 +9,8 @@ export const showNotifications=()=>{
     root.querySelectorAll('[data-reminder]').forEach(el=>el.onchange=()=>setState(s=>s.notifications[el.dataset.reminder]=el.checked));
     for(const [id,key] of [['push-quiet-start','quietStart'],['push-quiet-end','quietEnd']])root.querySelector('#'+id).onchange=e=>setState(s=>s.notifications[key]=e.target.value);
     const status=msg=>root.querySelector('#push-status').textContent=msg;
-    const refresh=()=>currentNotificationState().then(async s=>{status(pushStateText(s));root.querySelector('#push-self-test').hidden=s!=='active';if(getState().notifications.deviceId){const data=await serverReminders();status(pushStateText(s)+' → '+L('ลงทะเบียนอุปกรณ์เมื่อ','Device registered at')+' '+new Date(data.registeredAt).toLocaleString());root.querySelector('#push-reminders').innerHTML=data.reminders.map(r=>`<p>${esc(r.date||'')} ${esc(r.time)} → ${esc(r.title)}<br><small>${esc(r.route||'')}</small></p>`).join('')||'?';}}).catch(e=>status(e.message));refresh();
-    root.querySelector('#push-self-test').onclick=async()=>{try{await post('test',{deviceId:getState().notifications.deviceId});status(L('บริการ Push รับคำขอแล้ว','Push service accepted the request'));}catch(e){status(e.message);}};
+    const refresh=()=>currentNotificationState().then(async s=>{status(pushStateText(s));root.querySelector('#push-self-test').hidden=s!=='active';if(getState().notifications.deviceId){const data=await serverReminders();status((data.lastError?pushError(data.lastError)+' · ':'')+pushStateText(s)+' → '+L('ลงทะเบียนอุปกรณ์เมื่อ','Device registered at')+' '+new Date(data.registeredAt).toLocaleString());root.querySelector('#push-reminders').innerHTML=data.reminders.map(r=>`<p>${esc(r.date||'')} ${esc(r.time)} → ${esc(r.title)}<br><small>${esc(r.route||'')}</small></p>`).join('')||'?';}}).catch(e=>status(e.message));refresh();
+    root.querySelector('#push-self-test').onclick=async()=>{try{await post('test',{deviceId:getState().notifications.deviceId});status(L('บริการ Push รับคำขอแล้ว','Push service accepted the request'));}catch(e){status(pushError({reason:e.message}));}};
     root.querySelector('#push-enable').onclick=async()=>{try{
       if(!CONFIG.API_BASE)throw Error(L('ต้องมีเซิร์ฟเวอร์','A server is required'));
       if(!('Notification' in window)||!navigator.serviceWorker||!('PushManager' in window))throw Error(L('อุปกรณ์นี้ยังไม่รองรับ Web Push','Web Push is unavailable on this device'));
@@ -26,3 +26,5 @@ export const showNotifications=()=>{
   }});
 };
 
+
+export function pushError(error){let reason=error.reason||'';try{reason=JSON.parse(reason).reason||reason;}catch{}reason=/BadJwtToken|BadWebPushTopic|ExpiredProviderToken/.exec(reason)?.[0]||reason;const detail={BadJwtToken:L('ลายเซ็น VAPID ไม่ถูกต้อง ให้ผู้ดูแลตรวจคีย์','Invalid VAPID signature; ask the admin to check keys'),BadWebPushTopic:L('หัวข้อ Push ไม่ถูกต้อง','Invalid push topic'),ExpiredProviderToken:L('โทเคนหมดอายุ ให้ผู้ดูแลตรวจเวลาเซิร์ฟเวอร์','Token expired; check server clock')}[reason]||reason;return L('บริการ Push ปฏิเสธ: ','Push service rejected: ')+detail;}

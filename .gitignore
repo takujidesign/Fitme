@@ -25,3 +25,6 @@ scripts/illustrations/generate.lock
 
 # Throwaway browser profiles from automated QA
 tests/.round*-chrome/
+
+# Scratch output from automated QA runs
+.tmp/

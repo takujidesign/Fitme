@@ -1,6 +1,7 @@
 // Offline-first service worker. Bump VERSION on every release.
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const SHELL = [
+ './js/i18n/round18.js','./js/views/round10-entry.js','./js/daily-menu.js','./js/views/daily-menu.js','./js/byok.js','./js/views/byok.js','./js/backup.js',
  './js/views/admin-health.js','./js/health-entry.js','./js/i18n/round17.js','./js/notifications-ui.js','./js/health-math.js','./js/health-model.js','./js/health-sync.js','./js/health-parser.js','./js/health-import-worker.js','./js/vendor/fflate.js','./js/views/health-data.js',
   './js/image-upload.js', './js/i18n/round16.js',
   './js/vendor/three/BufferGeometryUtils.js','./js/vendor/three/GLTFLoader.js','./js/vendor/three/OrbitControls.js','./js/vendor/three/meshopt_decoder.module.js','./js/vendor/three/three.core.js','./js/vendor/three/three.module.js',
@@ -57,7 +58,7 @@ self.addEventListener('fetch', (e) => {
     if ((isFont || is3D) && hit) return hit; // fonts/libs: cache-first
     // app files: network-first so releases show up immediately, cache when offline
     try {
-      const res = await fetch(req, { cache: 'no-cache' }); // revalidate, skip stale HTTP cache
+      const res = await fetch(req, { cache: 'no-cache', ...(req.mode==='navigate'?{signal:AbortSignal.timeout(3000)}:{}) }); // revalidate, skip stale HTTP cache
       if (res.ok || res.type === 'opaque') cache.put(req, res.clone());
       return res;
     } catch {
@@ -81,4 +82,4 @@ self.addEventListener('notificationclick', e => {
   }));
 });
 
-self.addEventListener('message',event=>{if(event.data?.type==='APPLY_UPDATE')self.skipWaiting();});
+self.addEventListener('message',event=>{if(['APPLY_UPDATE','SKIP_WAITING'].includes(event.data?.type))self.skipWaiting();if(['GET','GET_VERSION'].includes(event.data?.type))(event.ports?.[0]||event.source)?.postMessage({version:VERSION});});

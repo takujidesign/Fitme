@@ -2,7 +2,7 @@ import './health-entry.js';
 import {filterBeta,entryIntegration,integrationEnabled,betaCard} from './beta.js';
 import {adminToken} from './admin-session.js';
 import { preserveView, enterView, offerUpdate } from './render-stability.js';
-import './views/round10.js';
+import './views/round10-entry.js';
 import {applyTab,setupEffects,parentTab,reducedMotion,animateToday} from './tab-effects.js';
 import './views/ai-usage.js';
 import { refreshCredits } from './ai-credits.js';
