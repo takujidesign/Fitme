@@ -4,3 +4,28 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(self), geolocation=(self), microphone=(), payment=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
+
+/og/*
+  Cache-Control: public, max-age=31536000, immutable
+/*.html
+  Cache-Control: public, max-age=300
+/
+  Cache-Control: public, max-age=300
+/features/*
+  Cache-Control: public, max-age=300
+/exercises/*
+  Cache-Control: public, max-age=300
+/en/*
+  Cache-Control: public, max-age=300
+/zh/*
+  Cache-Control: public, max-age=300
+/ja/*
+  Cache-Control: public, max-age=300
+/vi/*
+  Cache-Control: public, max-age=300
+/privacy
+  Cache-Control: public, max-age=300
+/terms
+  Cache-Control: public, max-age=300
+/guide
+  Cache-Control: public, max-age=300

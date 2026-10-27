@@ -1,3 +1,4 @@
+import {featureUsed} from '../telemetry.js';
 import { creditCost, requireCredits } from '../ai-credits.js';
 import { actions, go, rerender, pickFiles } from '../core.js';
 import { getState, updateLog, compressImage, blobToBase64, putImage, uid } from '../store.js';
@@ -21,7 +22,7 @@ function editor(iso, initial, photos = []) {
       try {
         let photoId;
         if(root.querySelector('#food-keep')?.checked) { photoId='meal-'+uid(); await putImage(photoId,photos[0]); }
-        updateLog(iso,l=>{(l.foodLog ||= []).push({time:new Date().toTimeString().slice(0,5),items,totals:sumItems(items),...(photoId?{photoId}:{})});});
+        featureUsed('meal_logged');updateLog(iso,l=>{(l.foodLog ||= []).push({time:new Date().toTimeString().slice(0,5),items,totals:sumItems(items),...(photoId?{photoId}:{})});});
         closeSheet();rerender();
       } catch(err){toast(err.message,'warn');e.target.disabled=false;}
     };

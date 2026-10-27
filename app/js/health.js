@@ -1,3 +1,4 @@
+import {featureUsed} from './telemetry.js';
 import { getState, setState, todayISO } from './store.js';
 import { L, esc, sheet, toast } from './ui.js';
 import { actions, rerender } from './core.js';
@@ -21,7 +22,7 @@ export function sleepByDate(samples){
   for(const s of samples){if(['awake','inBed'].includes(s.sleepState))continue;const start=Date.parse(s.startDate),end=Date.parse(s.endDate);if(!Number.isFinite(start)||!Number.isFinite(end)||end<=start||end-start>86400000)continue;const date=todayISO(new Date(end));(dates[date]||=[]).push([start,end]);}
   return Object.fromEntries(Object.entries(dates).map(([date,ranges])=>{ranges.sort((a,b)=>a[0]-b[0]);const merged=[];for(const range of ranges){const last=merged.at(-1);if(last&&range[0]<=last[1])last[1]=Math.max(last[1],range[1]);else merged.push([...range]);}return [date,{hours:merged.reduce((n,[a,b])=>n+(b-a)/3600000,0),bed:new Date(merged[0][0]).toTimeString().slice(0,5),wake:new Date(merged.at(-1)[1]).toTimeString().slice(0,5),source:'health'}];}));
 }
-export function importHealth(data){
+export function importHealth(data){featureUsed('health_import');
   setState(s=>{
     const steps={};for(const sample of data.steps||[]){const d=new Date(sample.startDate);if(Number.isFinite(d.getTime())&&Number.isFinite(sample.value)&&sample.value>=0){const date=todayISO(d);steps[date]=(steps[date]||0)+sample.value;}}
     for(const [date,total] of Object.entries(steps)){const log=s.logs[date]||={done:{},water:0};log.health={...log.health,steps:total};}

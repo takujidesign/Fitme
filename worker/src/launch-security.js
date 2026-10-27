@@ -110,5 +110,5 @@ export async function adminLaunch(req,env,path){
 }
 export async function health(env){
  const probe=async fn=>{let timer;try{return await Promise.race([Promise.resolve().then(fn).then(()=>true),new Promise(resolve=>{timer=setTimeout(()=>resolve(false),1000);})]);}catch{return false;}finally{clearTimeout(timer);}};
- const [db,kv,r2]=await Promise.all([probe(()=>env.DB.prepare('SELECT 1').first()),probe(()=>env.CONFIG.get('health-probe')),probe(()=>env.MEDIA.head('health-probe'))]);return {ok:db&&kv&&r2,version:'round12',db,kv,r2};
+ const [db,kv,r2]=await Promise.all([probe(()=>env.DB.prepare('SELECT 1').first()),probe(()=>env.CONFIG.get('health-probe')),probe(()=>env.MEDIA.head('health-probe'))]);return {ok:db&&kv&&r2,version:env.DEPLOY_SHA||'dev',db,kv,r2};
 }

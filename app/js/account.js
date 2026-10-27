@@ -1,3 +1,4 @@
+import {featureUsed,track} from './telemetry.js';
 import {adminToken} from './admin-session.js';
 import {rerender} from './core.js';
 import {challenge} from './turnstile.js';
@@ -60,7 +61,7 @@ export async function signIn(mode,email,password) {
   const ref=localStorage.getItem('fitme:ref');
   const result=await api('auth/'+mode,{email,password,...(mode==='register'?{age16:true,...(ref?{ref}:{})}:{})});
   if(!result.token){toast(result.message);return;}
-  if(mode==='register')localStorage.removeItem('fitme:ref');
+  if(mode==='register'){track('account_created');localStorage.removeItem('fitme:ref');}
   const deviceState=structuredClone(getState()),local=syncCopy(deviceState),previous=deviceState.account.user?.id||localStorage.getItem('fitme:last-account');
   const remote=await api('sync',undefined,'GET',result.token);
   const switched=previous&&previous!==result.user.id;
@@ -92,7 +93,7 @@ function chooseSync(){return new Promise(resolve=>{
  window.addEventListener('hashchange',cancel,{once:true});
  sheet(`<h2>${L('เลือกข้อมูลที่ต้องการเก็บ','Choose data to keep')}</h2>${[['server','เก็บข้อมูลเซิร์ฟเวอร์','Keep server'],['local','เก็บข้อมูลเครื่องนี้','Keep this device'],['merge','รวมข้อมูล','Merge']].map(([v,th,en])=>`<button class="btn primary" data-sync-choice="${v}">${L(th,en)}</button>`).join('')}`,{onMount(root){root.querySelectorAll('[data-sync-choice]').forEach(el=>el.onclick=()=>done(el.dataset.syncChoice));root.parentElement.addEventListener('click',e=>{if(e.target.closest('[data-close]'))done(null);});}});
 });}
-export async function signOut({clearLocal=false,clearKeys=true}={}) {
+export async function signOut({clearLocal=false,clearKeys=true}={}) {featureUsed('logout');
   clearTimeout(timer);
   if(getState().account.user?.id)localStorage.setItem('fitme:last-account',getState().account.user.id);
   await unlinkPush();

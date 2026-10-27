@@ -1,0 +1,37 @@
+import assert from 'node:assert/strict';
+import {testDB} from './test-db.mjs';
+import {collectUsage,activeMetrics,retention,pruneUsage,snapshotUsage,adminUsage} from './src/usage.js';
+import {validEvent,FEATURES,ROUTES} from '../app/js/usage-policy.js';
+import {hash} from './src/security.js';
+const {DB,db}=testDB(),kv=new Map(),env={DB,MASTER_KEY:'round19-synthetic-master-key-000000',CONFIG:{get:async(k,t)=>t==='json'?JSON.parse(kv.get(k)||'null'):kv.get(k),put:async(k,v)=>kv.set(k,v)}};
+const installId=crypto.randomUUID(),open={kind:'event',name:'app_open',dims:{platform:'ios-pwa',lang:'th',theme:'dark',account:'no',version:'abcd1234'}};
+const req=events=>new Request('https://test/api/telemetry',{method:'POST',body:JSON.stringify({installId,events})});
+for(const feature of FEATURES)assert(validEvent({kind:'event',name:'feature_used',dims:{feature}}));
+for(const route of ROUTES)assert(validEvent({kind:'event',name:'screen_view',dims:{route}}));
+for(const bad of [{...open,email:'private'}, {...open,dims:{...open.dims,weight:65}}, {...open,name:'private'}, {...open,dims:{...open.dims,lang:'xx'}}, {...open,dims:{...open.dims,version:'person@example.com'}}, {...open,kind:'error'}, {...open,dims:{...open.dims,version:1234567}}]){assert(!validEvent(bad));await assert.rejects(()=>collectUsage(req([bad]),env));}
+await collectUsage(req([open,open,{kind:'event',name:'workout_done'}]),env);
+const today=new Date().toISOString().slice(0,10);assert.equal(db.prepare("SELECT count FROM usage_daily WHERE name='app_open' AND dim=''").get().count,1);assert.equal(db.prepare("SELECT count FROM usage_daily WHERE name='new_install'").get().count,1);
+assert(!JSON.stringify(db.prepare('SELECT * FROM usage_actives').all()).includes(installId));
+assert.equal((await activeMetrics(env,today)).dau,1);
+await collectUsage(req([{kind:'event',name:'workout_done'}]),env);assert.equal(db.prepare("SELECT count FROM usage_daily WHERE name='first_workout_done'").get().count,1);
+for(let i=0;i<28;i++)await collectUsage(req([{kind:'event',name:'ai_used'}]),env);
+await assert.rejects(()=>collectUsage(req([open]),env),e=>e.status===429);
+await assert.rejects(()=>collectUsage(new Request('https://test',{method:'POST',body:' '.repeat(16001)}),env),e=>e.status===413);
+db.exec('DELETE FROM usage_actives;DELETE FROM usage_installs;');
+for(const id of ['a','b'])db.prepare('INSERT INTO usage_installs VALUES(?,?)').run(id,'2026-09-01');
+for(const [day,id] of [['01','a'],['01','b'],['02','a'],['08','a'],['08','b']])db.prepare('INSERT INTO usage_actives VALUES(?,?)').run('2026-09-'+day,id);
+db.prepare('INSERT INTO usage_actives VALUES(?,?)').run('2026-10-01','a');
+assert.deepEqual(await activeMetrics(env,'2026-09-08'),{dau:2,wau:2,mau:2,stickiness:100});
+const cohort=(await retention(env,'2026-10-01'))[0];assert.equal(cohort.d1,50);assert.equal(cohort.d7,100);assert.equal(cohort.d30,50);assert.equal((await retention(env,'2026-09-08'))[0].d30,null);
+await pruneUsage(env,Date.parse('2027-01-01'));assert.equal(db.prepare('SELECT count(*) n FROM usage_actives').get().n,0);assert.equal(db.prepare('SELECT count(*) n FROM usage_installs').get().n,0);
+await pruneUsage(env,Date.parse('2028-01-01'));assert.equal(db.prepare('SELECT count(*) n FROM usage_daily').get().n,0);
+await assert.rejects(()=>adminUsage(new Request('https://test/api/admin/usage'),env));
+const adminToken='a'.repeat(64);kv.set('admin-session:'+await hash(adminToken),JSON.stringify({created:Date.now(),expires:Date.now()+60000}));
+assert.equal((await adminUsage(new Request('https://test/api/admin/usage?days=7',{headers:{Authorization:'Bearer '+adminToken}}),env)).days,7);
+await assert.rejects(()=>adminUsage(new Request('https://test/api/admin/usage?days=999',{headers:{Authorization:'Bearer '+adminToken}}),env));
+const snapshot=await snapshotUsage(env);assert.equal(snapshot.accounts,0);assert.equal(snapshot.dau,0);
+const fresh=testDB(),rotationKV=new Map(),rotationEnv={...env,DB:fresh.DB,CONFIG:{get:async(k,t)=>t==='json'?JSON.parse(rotationKV.get(k)||'null'):rotationKV.get(k),put:async(k,v)=>rotationKV.set(k,v)}};
+const realNow=Date.now,boundary=(Math.floor(realNow()/(90*86400000))+1)*90*86400000;
+try{Date.now=()=>boundary-2*86400000;await collectUsage(req([open]),rotationEnv);const before=fresh.db.prepare('SELECT install_hash FROM usage_installs').get().install_hash;Date.now=()=>boundary+86400000;await collectUsage(req([open]),rotationEnv);assert.equal(fresh.db.prepare('SELECT count(*) n FROM usage_installs').get().n,1);assert.equal(fresh.db.prepare('SELECT count(*) n FROM usage_actives WHERE install_hash=?').get(before).n,2);}finally{Date.now=realNow;fresh.db.close();}
+const {readFileSync}=await import('node:fs');assert(!readFileSync(new URL('./src/admin-social.js',import.meta.url),'utf8').includes('FROM user_state'));
+console.log('PASS Round 19 strict vocabulary/body limits/rate cap/salted identifiers/atomic dedup/DAU WAU MAU/retention/pruning/admin guard/snapshot');

@@ -1,3 +1,4 @@
+import {featureUsed} from './telemetry.js';
 import { measurementsPrint } from './measurements.js';
 // Plan export: printable PDF view, calendar (.ics) reminders and JSON backup.
 import { getState } from './store.js';
@@ -109,7 +110,7 @@ export function exportICS(days) {
   download(`fixmee-plan-${plan[0].iso}.ics`, lines.join('\r\n'), 'text/calendar');
 }
 
-export async function exportJSON() {
+export async function exportJSON() {featureUsed('backup_export');
   const s = await (await import('./backup.js')).fullBackup();
   if(!confirm(L('สำรองรวมรูปในเครื่อง ไฟล์อาจมีขนาดใหญ่: ','Backup includes local photos and may be large: ')+Math.ceil(JSON.stringify(s).length/1024)+' KB'))return;
   delete s.premium;

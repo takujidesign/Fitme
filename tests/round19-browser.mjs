@@ -1,0 +1,31 @@
+import assert from 'node:assert/strict';
+import {createServer} from 'node:http';
+import {readFile,mkdir,writeFile,stat} from 'node:fs/promises';
+import path from 'node:path';
+import {chromium} from 'playwright-core';
+const dist=path.resolve('web/dist'),out=path.resolve('docs/round19-screens');await mkdir(out,{recursive:true});
+const mime={'.html':'text/html','.js':'application/javascript','.css':'text/css','.svg':'image/svg+xml','.png':'image/png','.webp':'image/webp','.json':'application/json','.webmanifest':'application/manifest+json'};
+const headers=await readFile(path.join(dist,'_headers'),'utf8'),csp=headers.match(/Content-Security-Policy: (.+)/)[1];
+const server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://local').pathname;let file=path.resolve(dist,'.'+decodeURIComponent(pathname));if(!file.startsWith(dist+path.sep)&&file!==dist)throw Error();try{if((await stat(file)).isDirectory())file=path.join(file,'index.html');}catch{if(!path.extname(file))file+='.html';}let body;try{body=await readFile(file);}catch{res.statusCode=404;file=path.join(dist,'404.html');body=await readFile(file);}res.setHeader('Content-Type',mime[path.extname(file)]||'application/octet-stream');res.setHeader('Content-Security-Policy',csp);res.end(body);}catch{res.statusCode=404;res.end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));
+const base='http://127.0.0.1:'+server.address().port;let browser,context;
+try{
+ browser=process.env.ROUND19_CDP?await chromium.connectOverCDP(process.env.ROUND19_CDP):await chromium.launch({headless:true,executablePath:'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',args:['--disable-background-networking']});
+ context=await browser.newContext({viewport:{width:375,height:812},serviceWorkers:'block'});
+ await context.route('**/*',r=>new URL(r.request().url()).hostname==='127.0.0.1'?r.continue():r.fulfill({status:200,contentType:r.request().resourceType()==='stylesheet'?'text/css':'application/json',body:r.request().resourceType()==='stylesheet'?'':'{}'}));
+ const page=await context.newPage(),errors=[],cspErrors=[];page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.text().includes('violates the following Content Security Policy'))cspErrors.push(m.text());});
+ for(const theme of ['light','dark']){
+  await page.emulateMedia({colorScheme:theme});
+  for(const [name,url] of [['landing-th','/'],['landing-en','/en/'],['exercise','/exercises/squat'],['404','/missing-round19']]){const r=await page.goto(base+url);assert.equal(r.status(),name==='404'?404:200);assert(await page.locator('h1').isVisible());await page.screenshot({path:path.join(out,theme+'-'+name+'.png'),fullPage:true});}
+  await page.goto(base+'/#/admin');await page.waitForSelector('#view h1');
+  await page.evaluate(async theme=>{const {setState}=await import('/js/store.js');setState(s=>{s.lang='th';s.theme=theme;s.telemetry=false;});const css=document.createElement('style');css.textContent='#tabbar{display:none}.usage-chart table{width:100%}';document.head.append(css);},theme);
+  for(const panel of ['overview','usage','features','retention','devices']){await page.evaluate(async panel=>{const {usageView}=await import('/js/views/admin-usage.js');const end='2026-10-27',daily=[['app_open','','',120],['new_install','','',30],['workout_done','','',35],['screen_view','route','today',65],['screen_view','route','food',32],['feature_used','feature','meal_logged',47],['feature_used','feature','workout_start',41],['app_open','platform','ios-pwa',70],['app_open','platform','desktop',50],['app_open','lang','th',100],['app_open','lang','en',20],['app_open','version','abcd1234',120],['app_open','theme','light',75],['app_open','theme','dark',45]].map(([name,dim,value,count])=>({date:end,name,dim,value,count}));const snapshots=[{date:end,dau:120,wau:240,mau:600,stickiness:20,newAccounts:15,ai:[{engine:'claude',calls:25,cost:.4}],push:{devices:70,successRate:96},retention:[{cohort:'2026-09-27',installs:40,d1:65,d7:40,d30:25},{cohort:'2026-10-20',installs:30,d1:60,d7:35,d30:null}]}];document.querySelector('#view').innerHTML=usageView({days:30,end,daily,snapshots},panel);},panel);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=375),'375px overflow '+panel);await page.screenshot({path:path.join(out,theme+'-admin-'+panel+'.png'),fullPage:true});if(panel==='usage'){await page.locator('summary').first().click();assert(await page.locator('table').first().isVisible());}}
+ }
+ await page.goto(base+'/');assert(await page.locator('#seo').isVisible());await page.locator('a.cta').first().click();await page.waitForSelector('#view h1');assert(await page.locator('#seo').isHidden());
+ await page.addInitScript(()=>Object.defineProperty(navigator,'standalone',{value:true}));await page.goto(base+'/');await page.waitForSelector('#view h1');assert(await page.locator('#seo').isHidden());
+ await page.evaluate(async()=>{const {setState}=await import('/js/store.js'),{POLICY_VERSION}=await import('/js/legal.js');setState(s=>{s.onboarded=true;s.lang='en';s.theme='light';s.telemetry=false;s.profile.name='Fixmee demo';s.guidance.tourDone=true;s.consents={version:POLICY_VERSION,terms:'demo',health:'demo'};});});
+ const gallery=path.resolve('app/seo/screens');await mkdir(gallery,{recursive:true});
+ for(const name of ['today','workout']){await page.evaluate(name=>location.hash='#/'+name,name);await page.waitForTimeout(300);await page.screenshot({path:path.join(gallery,name+'.png')});}
+ for(const file of ['/index.html','/sw.js','/manifest.webmanifest','/icons/icon.svg'])assert.equal((await page.request.get(base+file)).status(),200);
+ assert.deepEqual(errors,[]);assert.deepEqual(cspErrors,[]);
+ await writeFile(path.join(out,'results.json'),JSON.stringify({screenshots:18,gallery:2,viewport:375,themes:['light','dark'],errors,cspErrors,data:'Synthetic aggregates; external requests mocked; custom local HTTP server, not Cloudflare runtime'},null,2));console.log('PASS 18 mobile screenshots and 2 synthetic app gallery captures; app boot/PWA skip, 404/assets, CSP and table fallback. Rebuild SEO to include gallery captures.');
+}catch(e){await writeFile(path.join(out,'browser-block.txt'),String(e.stack));throw e;}finally{await context?.close();await browser?.close();await new Promise(r=>server.close(r));}

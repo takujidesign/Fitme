@@ -1,3 +1,4 @@
+import {featureUsed} from './telemetry.js';
 import {requireIntegration,integrationEnabled,endpointIntegration} from './beta.js';
 import { CONFIG } from './config.js';
 import { schemas, z } from './ai-schemas.js';
@@ -42,7 +43,7 @@ export async function engineRequest(path,body,{fetcher=fetch,consent=preview,pas
   if(!r.ok)throw Error(L('เรียก Gemini ไม่สำเร็จ ตรวจคีย์และโควตา','Gemini request failed. Check your key and quota.'));
   const d=await r.json();try{value=JSON.parse(d.candidates?.[0]?.content?.parts?.map(p=>p.text||'').join('')||'');}catch{throw Error(L('คำตอบ AI ไม่ถูกต้อง','Invalid AI reply'));}
  }
- value=validate(path,value);
+ value=validate(path,value);featureUsed({gemini:'byok_gemini',openai:'byok_openai',kie:'byok_kie',claude:'claude_credits'}[engine]);featureUsed({'label/analyze':'label_scan','ai/body':'body_photo_ai','ai/meal-photo':'meal_photo_ai','ai/chat':'ai_chat'}[path]);
  if(path==='ai/chat')return {...value,text:human?human+'\n'+value.text:value.text};
  if(path==='label/analyze'){if(!value.isSupplement||!value.rules.length)throw Error('No supplement directions found');return {product:value,human};}
  if(path==='ai/meal-photo')value.totals=Object.fromEntries(['kcal','p','c','f'].map(k=>[k,value.items.reduce((n,i)=>n+i[k],0)]));

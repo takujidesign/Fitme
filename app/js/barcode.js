@@ -1,3 +1,4 @@
+import {featureUsed} from './telemetry.js';
 import { actions, rerender } from './core.js';
 import { getState, setState, updateLog, todayISO } from './store.js';
 import { L, sheet, esc, closeSheet, toast } from './ui.js';
@@ -8,7 +9,7 @@ export function productFood(code,p){
  const f={source:'off',id:'my-barcode-'+code,barcode:code,th:p.product_name||code,en:p.product_name||code,brand:p.brands||'',imageUrl:/^https:\/\//.test(p.image_front_url||'')?p.image_front_url:'',cat:'carb',k:value('energy-kcal'),p:value('proteins'),c:value('carbohydrates'),f:value('fat'),unit:{th:'หน่วยบริโภค',en:'serving',g:grams||100},tags:[],useInPlan:false};
  if(!['k','p','c','f'].every(k=>Number.isFinite(f[k])&&f[k]>=0))return null;return f;
 }
-export async function lookupBarcode(code){
+export async function lookupBarcode(code){featureUsed('food_scan_barcode');
  if(!validBarcode(code))throw Error('Invalid barcode');const own=getState().customFoods.find(f=>f.barcode===code);if(own)return own;
  let cache={};try{cache=JSON.parse(localStorage.getItem('fitme:barcodes')||'{}');}catch{}if(cache[code])return cache[code];
  const r=await fetch('https://world.openfoodfacts.org/api/v2/product/'+code+'.json?fields=product_name,brands,nutriments,serving_size,serving_quantity,image_front_url',{signal:AbortSignal.timeout(12000)});if(!r.ok&&r.status!==404)throw Error('Food lookup unavailable');const data=await r.json(),food=data.status===1?productFood(code,data.product):null;

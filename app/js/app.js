@@ -10,7 +10,7 @@ import { cacheOfflineAssets } from './offline.js';
 import { enabledLanguages, languageFont, languageLoaded, loadLanguage } from './i18n/index.js';
 import { loadVideos } from './videos.js';
 import { consentCurrent } from './legal.js';
-import { startTelemetry } from './telemetry.js';
+import { startTelemetry, screenView, featureUsed } from './telemetry.js';
 import './views/round5.js';
 import './views/admin-round5.js';
 import { startMetrics } from './metrics.js';
@@ -79,6 +79,7 @@ function render() {
   applyTheme();
   languageFont(getState().lang);
   const r = route();
+  screenView(r.name);
   applyTab(r.name);
   let robots=document.querySelector('meta[data-admin-robots]');
   if(r.name==='admin'){if(!robots){robots=document.createElement('meta');robots.name='robots';robots.dataset.adminRobots='';document.head.append(robots);}robots.content='noindex';}else robots?.remove();
@@ -123,6 +124,7 @@ document.addEventListener('click', (e) => {
   const el = e.target.closest('[data-act]');
   if (!el || el.disabled) return;
   const integration=entryIntegration(el);if(integration&&!integrationEnabled(integration))return;
+  const feature={'account-sync':'sync_now','share-card':'share','profile-share':'share','ref-share':'share','theme-set':'theme_change'}[el.dataset.act];if(feature)featureUsed(feature);
   const fn = actions[el.dataset.act];
   if (fn) { e.preventDefault(); fn(el, e); }
 });

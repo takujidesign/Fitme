@@ -1,0 +1,217 @@
+{
+  "landing": {
+    "th": {
+      "title": "Fixmee — วางแผนออกกำลังกายและอาหาร",
+      "description": "จัดแผนฝึก อาหาร อาหารเสริม และบันทึกสุขภาพ เริ่มฟรีบน iPhone, Android และเว็บ พร้อมควบคุมความเป็นส่วนตัว",
+      "hero": "ดูแลตัวเองด้วยแผนที่ทำได้จริง",
+      "intro": "เลือกวันฝึก อุปกรณ์ และอาหารที่เหมาะกับคุณ แล้วติดตามสิ่งที่ทำได้ในแต่ละวัน",
+      "cta": "เริ่มใช้งานฟรี",
+      "how": "ตั้งเป้าหมาย เลือกวันฝึกและอาหาร จากนั้นเปิดแผนวันนี้และบันทึกความคืบหน้า",
+      "install": "iPhone: Safari → แชร์ → เพิ่มไปยังหน้าจอโฮม Android: Chrome → เมนู → ติดตั้งแอป",
+      "faq": "ต้องติดตั้งก่อนหรือไม่?",
+      "answer": "เปิดผ่านเว็บได้ทันที หรือเพิ่มไปหน้าจอโฮมเพื่อเปิดใช้งานสะดวกขึ้น",
+      "screenshots": "ตัวอย่างหน้าจอ"
+    },
+    "en": {
+      "title": "Fixmee — Workout and meal plans for everyday life",
+      "description": "Plan workouts, meals and supplements, and keep your wellness logs together. Start free on iPhone, Android or the web with privacy controls.",
+      "hero": "Build a routine that fits your day",
+      "intro": "Choose your training days, equipment and food preferences. Fixmee brings your daily plan and progress into one place.",
+      "cta": "Start free",
+      "how": "Set your goals, choose training days and food preferences, then follow today's plan and record your progress.",
+      "install": "iPhone: open Safari → Share → Add to Home Screen. Android: open Chrome → menu → Install app.",
+      "faq": "Do I need to install the app?",
+      "answer": "You can start in your browser or add Fixmee to your Home Screen for quick access.",
+      "screenshots": "App screenshots"
+    },
+    "zh": {
+      "title": "Fixmee — 日常训练与饮食计划",
+      "description": "在一个地方安排训练、饮食和补充剂并记录健康生活。支持iPhone、Android及网页，免费开始，自主控制隐私。",
+      "hero": "建立适合你的日常习惯",
+      "intro": "选择训练日期、器材和饮食偏好，用每日计划记录进步。",
+      "cta": "免费开始",
+      "how": "设置目标，选择训练日期和饮食偏好，然后按照每日计划记录进度。",
+      "install": "iPhone：Safari → 分享 → 添加到主屏幕。Android：Chrome → 菜单 → 安装应用。",
+      "faq": "必须安装应用吗？",
+      "answer": "可以直接通过浏览器使用，也可以添加到主屏幕。",
+      "screenshots": "应用截图"
+    },
+    "ja": {
+      "title": "Fixmee — 毎日の運動と食事プラン",
+      "description": "運動、食事、サプリメントと健康記録を一か所に。iPhone、Android、ウェブで無料で始められ、プライバシーも管理できます。",
+      "hero": "毎日に合った習慣をつくる",
+      "intro": "運動日、器具、食事の好みを選び、毎日の計画と進歩を記録しましょう。",
+      "cta": "無料で始める",
+      "how": "目標、運動日、食事の好みを設定して今日の計画に取り組み、進歩を記録します。",
+      "install": "iPhone：Safari → 共有 → ホーム画面に追加。Android：Chrome → メニュー → アプリをインストール。",
+      "faq": "インストールは必要ですか？",
+      "answer": "ブラウザーからすぐに始められます。ホーム画面に追加すると簡単に開けます。",
+      "screenshots": "アプリ画面"
+    },
+    "vi": {
+      "title": "Fixmee — Kế hoạch tập luyện và ăn uống",
+      "description": "Lên lịch tập, bữa ăn, thực phẩm bổ sung và lưu nhật ký sức khỏe. Bắt đầu miễn phí trên iPhone, Android hoặc web với quyền kiểm soát riêng tư.",
+      "hero": "Xây dựng thói quen phù hợp mỗi ngày",
+      "intro": "Chọn ngày tập, dụng cụ và sở thích ăn uống. Theo dõi kế hoạch và tiến bộ hằng ngày.",
+      "cta": "Bắt đầu miễn phí",
+      "how": "Đặt mục tiêu, chọn ngày tập và sở thích ăn uống, rồi làm theo kế hoạch hôm nay và ghi tiến bộ.",
+      "install": "iPhone: Safari → Chia sẻ → Thêm vào màn hình chính. Android: Chrome → Menu → Cài đặt ứng dụng.",
+      "faq": "Tôi có cần cài ứng dụng không?",
+      "answer": "Bạn có thể dùng ngay trong trình duyệt hoặc thêm vào màn hình chính để mở nhanh.",
+      "screenshots": "Ảnh màn hình ứng dụng"
+    }
+  },
+  "features": [
+    {
+      "slug": "workout-plan",
+      "th": {
+        "title": "แผนออกกำลังกาย | Fixmee",
+        "body": "เลือกวันฝึกและอุปกรณ์ แผนจะแบ่งการฝึกตามระดับและเวลา อ่านขั้นตอนก่อนเริ่ม ใช้น้ำหนักที่ควบคุมได้และพักระหว่างเซ็ต"
+      },
+      "en": {
+        "title": "Workout plans | Fixmee",
+        "body": "Choose training days and available equipment. Your plan matches your level and session length. Read the movement cues first, use a manageable load and rest between sets."
+      },
+      "zh": {
+        "title": "训练计划 | Fixmee",
+        "body": "选择训练日期和器材，按照自己的水平安排训练。先阅读动作步骤，使用能控制的重量并在组间休息。"
+      },
+      "ja": {
+        "title": "運動プラン | Fixmee",
+        "body": "運動日と器具を選び、レベルに合わせて計画します。手順を読み、扱える重さでセット間に休憩しましょう。"
+      },
+      "vi": {
+        "title": "Kế hoạch tập | Fixmee",
+        "body": "Chọn ngày tập và dụng cụ theo trình độ. Đọc hướng dẫn, dùng mức tạ kiểm soát được và nghỉ giữa hiệp."
+      }
+    },
+    {
+      "slug": "meal-plan",
+      "th": {
+        "title": "แผนอาหาร | Fixmee",
+        "body": "เลือกอาหารที่กินได้และจำนวนมื้อ ตรวจปริมาณก่อนบันทึก ปรับเมนูรายวันหรือใช้แผนอัตโนมัติ และคัดลอกเมนูเพื่อเตรียมล่วงหน้า"
+      },
+      "en": {
+        "title": "Meal plans | Fixmee",
+        "body": "Choose your food preferences and meal count. Review portions before logging. Edit daily menus or use the automatic plan, then copy menus to prepare ahead."
+      },
+      "zh": {
+        "title": "饮食计划 | Fixmee",
+        "body": "选择食物偏好和餐次数量，记录前核对份量。可以编辑每日菜单，也可以复制到其他日期。"
+      },
+      "ja": {
+        "title": "食事プラン | Fixmee",
+        "body": "好みと食事回数を選び、記録前に量を確認します。毎日のメニューを編集し、別の日にコピーできます。"
+      },
+      "vi": {
+        "title": "Kế hoạch ăn | Fixmee",
+        "body": "Chọn sở thích và số bữa, kiểm tra khẩu phần trước khi ghi. Sửa thực đơn từng ngày hoặc sao chép sang ngày khác."
+      }
+    },
+    {
+      "slug": "ai-coach",
+      "th": {
+        "title": "AI โค้ช | Fixmee",
+        "body": "ขอคำแนะนำเพื่อทบทวนแผน เลือกผู้ให้บริการและตรวจข้อมูลก่อนส่ง การวิเคราะห์รูปเป็นเพียงค่าประเมิน ไม่ใช่การวินิจฉัย"
+      },
+      "en": {
+        "title": "AI coach | Fixmee",
+        "body": "Review your plan with AI guidance. Choose a provider and review information before sending it. Photo estimates are approximate and are not medical diagnoses."
+      },
+      "zh": {
+        "title": "AI指导 | Fixmee",
+        "body": "选择提供商并检查发送的信息。AI可协助回顾计划，但照片估算不能代替医学诊断。"
+      },
+      "ja": {
+        "title": "AIコーチ | Fixmee",
+        "body": "提供者を選び送信内容を確認します。AIは計画の見直しを助けますが、画像の推定は医学的診断ではありません。"
+      },
+      "vi": {
+        "title": "Huấn luyện viên AI | Fixmee",
+        "body": "Chọn nhà cung cấp và xem thông tin trước khi gửi. AI hỗ trợ xem lại kế hoạch; ước tính qua ảnh không phải chẩn đoán."
+      }
+    },
+    {
+      "slug": "supplements",
+      "th": {
+        "title": "จัดตารางอาหารเสริม | Fixmee",
+        "body": "บันทึกข้อมูลจากฉลากจริงและตรวจขนาดหน่วยบริโภค จัดเวลาให้เข้ากับมื้ออาหาร ปรึกษาผู้เชี่ยวชาญหากใช้ยาหรือมีข้อจำกัดสุขภาพ"
+      },
+      "en": {
+        "title": "Supplement schedules | Fixmee",
+        "body": "Record the actual label and check serving sizes. Schedule supplements around your meals. Ask a qualified professional about medications or health restrictions."
+      },
+      "zh": {
+        "title": "补充剂安排 | Fixmee",
+        "body": "按照真实标签记录份量，结合用餐时间安排。服药或有健康限制时请咨询专业人士。"
+      },
+      "ja": {
+        "title": "サプリメント管理 | Fixmee",
+        "body": "実際のラベルに沿って量を記録し、食事に合わせて予定します。服薬中や健康上の制限がある場合は専門家へ相談してください。"
+      },
+      "vi": {
+        "title": "Lịch bổ sung | Fixmee",
+        "body": "Ghi khẩu phần từ nhãn thật và lên lịch cùng bữa ăn. Hỏi chuyên gia nếu đang dùng thuốc hoặc có hạn chế sức khỏe."
+      }
+    },
+    {
+      "slug": "health-import",
+      "th": {
+        "title": "นำเข้าข้อมูลสุขภาพ | Fixmee",
+        "body": "เลือกนำเข้าข้อมูลโดยให้ความยินยอมแยกต่างหาก ตรวจแหล่งข้อมูลและวันที่ก่อนใช้ ถอนความยินยอมหรือลบแหล่งข้อมูลได้จากการตั้งค่า"
+      },
+      "en": {
+        "title": "Health import | Fixmee",
+        "body": "Import health summaries with separate consent. Check the source and date before using them in your plan. Withdraw consent or remove a source in settings."
+      },
+      "zh": {
+        "title": "健康导入 | Fixmee",
+        "body": "另行同意后导入健康摘要。检查来源和日期，可以随时撤回同意或删除来源。"
+      },
+      "ja": {
+        "title": "健康データの取り込み | Fixmee",
+        "body": "別途同意した上で健康の集計を取り込みます。出所と日付を確認し、同意の撤回や出所の削除が可能です。"
+      },
+      "vi": {
+        "title": "Nhập sức khỏe | Fixmee",
+        "body": "Đồng ý riêng trước khi nhập tổng hợp sức khỏe. Kiểm tra nguồn và ngày; có thể rút đồng ý hoặc xóa nguồn."
+      }
+    }
+  ],
+  "exerciseSteps": {
+    "db-Iron_Cross": [
+      "Stand with the feet about shoulder-width apart and a very light dumbbell in each hand. Extend the arms to the sides near shoulder height, with a soft bend in the elbows.",
+      "Bend the hips and knees into a comfortable squat while bringing the arms forward, keeping the palms facing each other.",
+      "Stand up under control while opening the arms back to the sides. Keep the trunk steady rather than swinging the weights.",
+      "Lower the weights safely between sets. Reduce the range or stop if the shoulders or knees are uncomfortable."
+    ],
+    "db-One-Arm_Kettlebell_Swings": [
+      "Stand with feet about shoulder-width and place a light kettlebell in front of you.",
+      "Hinge at the hips with a neutral back, take the handle in one hand and guide it back between your legs.",
+      "Extend the hips to swing the bell forward without lifting it with the shoulder.",
+      "Let the bell return between the legs as you hinge again, then park it safely before changing sides."
+    ],
+    "db-Push_Press": [
+      "Stand with feet hip-width and hold the bar at the front of the shoulders.",
+      "Brace the trunk and make a shallow knee bend with the torso upright.",
+      "Drive through the legs and press the bar overhead only within a comfortable shoulder range.",
+      "Lower the bar under control to the shoulders before the next repetition."
+    ],
+    "db-Side_Bridge": [
+      "Lie on your side with the elbow under the shoulder and the forearm resting on the floor.",
+      "Stack the feet or bend the knees for a shorter lever.",
+      "Brace the trunk and raise the hips until the body forms a straight line.",
+      "Breathe normally, then lower with control and repeat on the other side."
+    ],
+    "db-Side_Jackknife": [
+      "Lie on your side with the legs together and the lower arm supporting your balance.",
+      "Place the upper hand lightly beside the head without pulling the neck.",
+      "Bring the upper torso and legs toward each other through a comfortable range.",
+      "Lower slowly, then change sides after completing controlled repetitions."
+    ]
+  },
+  "screenshots": [
+    "today",
+    "workout"
+  ]
+}

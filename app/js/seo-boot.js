@@ -1,0 +1,3 @@
+let started=false;
+async function boot(){if(started||!document.documentElement.classList.contains('app-mode')&&!location.hash)return;started=true;document.documentElement.classList.add('app-mode');const css=document.createElement('link');css.rel='stylesheet';css.href='/css/app.css';document.head.append(css);await new Promise(resolve=>{css.onload=resolve;css.onerror=resolve;});await import('./app.js');document.getElementById('seo').hidden=true;document.querySelectorAll('link[rel=canonical],link[hreflang],script[type="application/ld+json"]').forEach(el=>el.remove());}
+window.addEventListener('hashchange',boot);boot();

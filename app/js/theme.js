@@ -1,3 +1,4 @@
+import {featureUsed} from './telemetry.js';
 import { adminToken } from './admin-session.js';
 ﻿import {getState,setState,todayISO} from './store.js';
 import {actions} from './core.js';
@@ -16,7 +17,7 @@ actions.theme=()=>{const s=getState(),c=s.colours||{};return sheet(`<h2>${L('ธ
  root.querySelector('#exercise-visual-style').onchange=e=>setState(v=>{v.exerciseVisualStyle=e.target.value;});
  if(supporter()){const block=document.createElement('div');block.className='palette-presets';block.innerHTML=GRADIENTS.map((g,i)=>`<button class="chip" data-gradient="${i}">${esc(g.name)}</button>`).join('');root.append(block);block.querySelectorAll('button').forEach(el=>el.onclick=()=>{setState(v=>{v.colours.mode='single';v.colours.palette=gradientPalette(Number(el.dataset.gradient));});applyTheme();});}
  const update=fn=>{setState(v=>{v.colours??={mode:'tab',locked:[],saved:[]};fn(v.colours);});applyTheme();};
- root.querySelectorAll('[data-theme-value]').forEach(el=>el.onclick=()=>{setState(v=>v.theme=el.dataset.themeValue);applyTheme();actions.theme();});
+ root.querySelectorAll('[data-theme-value]').forEach(el=>el.onclick=()=>{setState(v=>v.theme=el.dataset.themeValue);featureUsed('theme_change');applyTheme();actions.theme();});
  root.querySelectorAll('[data-mode]').forEach(el=>el.onclick=()=>{update(v=>{v.mode=el.dataset.mode;if(v.mode==='random')v.palette??=randomPalette();if(v.mode==='single')v.palette=singlePalette(v.single||'#0284c7');});actions.theme();});
  const colour=value=>update(v=>{v.mode='single';v.single=value;v.palette=singlePalette(value);});
  root.querySelectorAll('[data-colour]').forEach(el=>el.onclick=()=>colour(el.dataset.colour));root.querySelector('#single-colour').oninput=e=>colour(e.target.value);

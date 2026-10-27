@@ -2,7 +2,7 @@ name: Deploy API worker
 on:
   push:
     branches: [main]
-    paths: ['worker/**']
+    paths: ['worker/**', 'app/js/usage-policy.js']
   workflow_dispatch:
 permissions:
   contents: read
@@ -42,4 +42,4 @@ jobs:
         run: npx wrangler d1 migrations apply fixme --remote
       - name: Deploy worker
         if: steps.credentials.outputs.ready == 'true'
-        run: npx wrangler deploy
+        run: npx wrangler deploy --var DEPLOY_SHA:${GITHUB_SHA:0:8}

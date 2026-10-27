@@ -439,3 +439,11 @@ Privacy/terms remain drafts. [PDPA record](docs/PDPA_RECORD.md) identifies owner
 [Exercise data by RepDB (repdb.co)](https://repdb.co/). Runtime-only free-tier data, pinned to `b407c5951a027a27817fb2a5cee9ec9feffc4dc7`, schema 3. [Licence](https://github.com/RepDB/exercise-dataset/blob/b407c5951a027a27817fb2a5cee9ec9feffc4dc7/LICENSE-DATA.md). No RepDB dataset or standalone artwork is vendored in this repository; only original mappings, Thai names and aliases. RepDB images are never used as generative inputs. Premium samples are excluded. Browser runtime caching supports offline use after first library load.
 
 ภาพ 3D ของท่าหลักสร้างด้วย AI (OpenAI image generation ผ่าน Codex). Original text-only prompts; no external image references. Theme settings offer 3D / Illustration / Animation. Approved 3D pairs fall back to existing illustrations and animated figures. See `docs/ROUND14_VALIDATION.md` and `docs/round14-screens/ex3d.html` for reviewed coverage.
+
+## Round 19 — aggregate usage and static SEO
+
+Usage collection uses a shared strict vocabulary and salted installation hashes, with 90-day raw retention and 400-day aggregate retention. Admin Dashboard → Metrics has overview, usage, features, retention and device panels. Me → Privacy controls optional telemetry. Apply migration `0011_round19.sql` through the existing approved release process; no migration or deployment is performed automatically by the build.
+
+Build locally with `node scripts/build-seo.mjs` (requires `npm ci --prefix tests`), or `node web/deploy.mjs --build-only`. Preview generated public pages with `node web/preview.mjs`. The deployment workflow installs the OG generator dependencies and injects the deployed worker SHA. Source worker names, API URL, storage keys and service-worker VERSION placeholder remain unchanged.
+
+See [Round 19 validation](docs/ROUND19_VALIDATION.md) for the complete page list, metric definitions, tests and outstanding browser/Lighthouse/Wrangler sandbox checks. `tests/round19-browser.mjs` captures synthetic landing-gallery images; rebuild SEO after a successful capture. Changes were left uncommitted.

@@ -62,7 +62,7 @@ const admin=(await call('admin/login',{password:'test-admin'})).token;
 assert.equal((await call('admin/social/members?q=alice',undefined,'GET',admin)).items.length,1);
 assert.equal((await call('admin/social/member',{id:ids[0],action:'credits',credits:50},'PUT',admin)).status,200);
 assert.equal((await call('admin/social/member?id='+ids[0],undefined,'GET',admin)).credits[0].granted,50);
-assert.equal((await call('admin/social/dashboard',undefined,'GET',admin)).windows.length,3);
+assert.equal((await call('admin/social/dashboard',undefined,'GET',admin)).days,30);
 const recipe={id:'test-recipe',name:{th:'Test',en:'Test'},ingredients:[{id:'chicken_breast',grams:100}],steps:{th:[],en:[]},servings:1,prepMinutes:10,tags:[]};
 assert.equal((await call('admin/social/recipes',recipe,'POST',admin)).status,200);
 assert.equal((await call('feed/recipes')).items.length,0);

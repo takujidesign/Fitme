@@ -3,7 +3,7 @@ import worker from './src/index.js';
 import {testDB} from './test-db.mjs';
 import {discounted,connectFee,recordPayment,safeError,videoURL} from './src/round5.js';
 const {db,DB}=testDB(),kv=new Map([['beta',JSON.stringify({enabled:false})]]),push=new Map();
-const env={DB,CONFIG:{get:async(k,type)=>kv.has(k)?type==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v)},PUSH:{delete:async k=>push.delete(k)},TOKEN_SECRET:'test-only-signing',ADMIN_PASSWORD:'test-admin',STRIPE_SECRET_KEY:'test-stripe',ALLOWED_ORIGINS:'https://test'};
+const env={DB,MASTER_KEY:"round19-synthetic-master-key-000000",CONFIG:{get:async(k,type)=>kv.has(k)?type==='json'?JSON.parse(kv.get(k)):kv.get(k):null,put:async(k,v)=>kv.set(k,v)},PUSH:{delete:async k=>push.delete(k)},TOKEN_SECRET:'test-only-signing',ADMIN_PASSWORD:'test-admin',STRIPE_SECRET_KEY:'test-stripe',ALLOWED_ORIGINS:'https://test'};
 const request=(path,body,token='',method=body===undefined?'GET':'POST')=>worker.fetch(new Request('https://test/api/'+path,{method,headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:body===undefined?undefined:JSON.stringify(body)}),env);
 const adminSession=(await (await request('admin/login',{password:env.ADMIN_PASSWORD})).json()).token;
 const ok=async r=>{const data=await r.json();assert.equal(r.status,200,JSON.stringify(data));return data;};
@@ -47,11 +47,13 @@ await ok(await request('admin/payout',{id:planQuote.orderId},adminSession));awai
 // Connect onboarding and destination fee are server-owned.
 globalThis.fetch=async(url,options)=>{sent=new URLSearchParams(options?.body);if(url.endsWith('/accounts'))return Response.json({id:'acct_test'});if(url.endsWith('/account_links'))return Response.json({url:'https://connect.stripe.com/setup'});if(url.endsWith('/accounts/acct_test'))return Response.json({charges_enabled:true,payouts_enabled:true});if(url.endsWith('/checkout/sessions'))return Response.json({id:'cs_plan',url:'https://checkout.stripe.com/plan'});throw Error('Unexpected request '+url);};
 await ok(await request('trainer/connect',{returnUrl:'https://test'},trainer.token));const card=await ok(await request('quote',{productId:created.id,currency:'usd'},buyer.token));await ok(await request('stripe/checkout',{orderId:card.orderId,returnUrl:'https://test'},buyer.token));assert.equal(sent.get('payment_intent_data[application_fee_amount]'),'90');assert.equal(sent.get('payment_intent_data[transfer_data][destination]'),'acct_test');
-const event={kind:'error',name:'error',message:'TypeError alice@example.com health diagnosis',file:'private/alice.js',line:3,route:'alice@example.com',version:'round5a',ua:'Other'},installId=crypto.randomUUID();
+const unsafeEvent={kind:'error',name:'error',message:'TypeError alice@example.com health diagnosis',file:'private/alice.js',line:3,route:'alice@example.com',version:'round5a',ua:'Other'},installId=crypto.randomUUID();
+assert.equal((await request('telemetry',{installId,events:[unsafeEvent]})).status,400);
+const event={kind:'error',name:'error',dims:{}};
 for(let i=0;i<30;i++)await ok(await request('telemetry',{installId,events:[event]}));assert.equal((await request('telemetry',{installId,events:[event]})).status,429);
-const errors=JSON.stringify(db.prepare('SELECT * FROM errors').all());assert(!errors.includes('alice'));assert(!errors.includes('diagnosis'));assert(!errors.includes(installId));assert.equal(safeError(event).route,'other');
+const errors=JSON.stringify(db.prepare('SELECT * FROM errors').all());assert(!errors.includes('alice'));assert(!errors.includes('diagnosis'));assert(!errors.includes(installId));assert.equal(safeError(unsafeEvent).route,'other');
 assert.equal((await request('telemetry',{installId,events:[{...event,state:{private:true}}]})).status,400);
-assert.equal((await request('admin/dashboard')).status,401);const dashboard=await ok(await request('admin/dashboard',undefined,adminSession));assert.equal(dashboard.errors.length,1);assert.equal(dashboard.members.total,3);
+assert.equal((await request('admin/dashboard')).status,401);const dashboard=await ok(await request('admin/dashboard',undefined,adminSession));assert.equal(dashboard.errors.length,0);assert.equal(db.prepare("SELECT sum(count) n FROM usage_daily WHERE name='error' AND dim=''").get().n,30);assert.equal(dashboard.members.total,3);
 assert.equal(videoURL('https://www.youtube.com/watch?v=abcdefghijk'),'https://www.youtube-nocookie.com/embed/abcdefghijk');assert.throws(()=>videoURL('javascript:alert(1)'));
 assert.equal((await worker.fetch(new Request('https://test/api/admin/media/squat',{method:'PUT',headers:{'Content-Type':'video/mp4'},body:new Uint8Array(16)}),env)).status,401);
 let uploaded=false;env.MEDIA={put:async()=>{uploaded=true;}};const mp4=new Uint8Array(16);mp4.set(new TextEncoder().encode('ftyp'),4);

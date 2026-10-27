@@ -1,6 +1,7 @@
 // Offline-first service worker. Bump VERSION on every release.
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const SHELL = [
+  './js/usage-labels.js','./js/usage-policy.js','./js/usage-copy.js','./js/usage-copy-data.js','./js/legal-content.js','./js/charts.js','./js/views/admin-usage.js','./js/i18n/round19.js','./js/seo-mode.js','./js/seo-boot.js',
  './js/i18n/round18.js','./js/views/round10-entry.js','./js/daily-menu.js','./js/views/daily-menu.js','./js/byok.js','./js/views/byok.js','./js/backup.js',
  './js/views/admin-health.js','./js/health-entry.js','./js/i18n/round17.js','./js/notifications-ui.js','./js/health-math.js','./js/health-model.js','./js/health-sync.js','./js/health-parser.js','./js/health-import-worker.js','./js/vendor/fflate.js','./js/views/health-data.js',
   './js/image-upload.js', './js/i18n/round16.js',
