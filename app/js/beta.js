@@ -8,14 +8,17 @@ export function requireIntegration(key){if(key&&!integrationEnabled(key))throw O
 export {endpointIntegration};
 export function entryIntegration(el){
  const route=(el.getAttribute('href')||el.dataset.to||'').replace(/^#\//,'').split(/[/?]/)[0],act=el.dataset.act||'';
- if(['coach','ai-settings','ai-usage','ai-guide','ai-summary'].includes(route))return 'ai';
+ if(route==='ai-settings')return integrationEnabled('byok')?'byok':'ai';
+ if(['ai-guide','byok-guide'].includes(route))return 'byok';
+ if(['coach','ai-summary'].includes(route))return (localStorage.getItem('fitme:ai-engine')||'gemini')==='claude'?'ai':'byok';
+ if(route==='ai-usage')return 'ai';
  if(route==='pay'||/^(pay-|plan-buy|plan-free|trainer-connect|subscription-)/.test(act))return 'payments';
  if(route==='support'||/^(donate-|supporter-claim)/.test(act))return 'donations';
  if(/^(line-|.*-line)/.test(act)||route==='line-return')return 'line';
- if(/^(food-photo|meal-photo)/.test(act))return 'mealPhoto';
- if(/^(sp-photo|sp-ai|supp-scan|supp-photo|label-scan)/.test(act))return 'labelScan';
- if(/^(ai-body|body-ai|body-review)/.test(act))return 'bodyPhoto';
- if(/^(ai-|coach-)/.test(act))return 'ai';
+ if(/^(food-photo|meal-photo)/.test(act))return (localStorage.getItem('fitme:ai-engine')||'gemini')==='claude'?'mealPhoto':'byok';
+ if(/^(sp-photo|sp-ai|supp-scan|supp-photo|label-scan)/.test(act))return (localStorage.getItem('fitme:ai-engine')||'gemini')==='claude'?'labelScan':'byok';
+ if(/^(ai-body|body-ai|body-review)/.test(act))return (localStorage.getItem('fitme:ai-engine')||'gemini')==='claude'?'bodyPhoto':'byok';
+ if(/^(ai-|coach-)/.test(act))return (localStorage.getItem('fitme:ai-engine')||'gemini')==='claude'?'ai':'byok';
  if(['forgot','resend-verification'].includes(route)||act==='verification-resend')return 'email';
  return null;
 }

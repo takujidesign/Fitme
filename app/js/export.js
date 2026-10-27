@@ -109,8 +109,9 @@ export function exportICS(days) {
   download(`fixmee-plan-${plan[0].iso}.ics`, lines.join('\r\n'), 'text/calendar');
 }
 
-export function exportJSON() {
-  const s = { ...getState() };
+export async function exportJSON() {
+  const s = await (await import('./backup.js')).fullBackup();
+  if(!confirm(L('สำรองรวมรูปในเครื่อง ไฟล์อาจมีขนาดใหญ่: ','Backup includes local photos and may be large: ')+Math.ceil(JSON.stringify(s).length/1024)+' KB'))return;
   delete s.premium;
   download(`fixmee-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(s, null, 2), 'application/json');
 }

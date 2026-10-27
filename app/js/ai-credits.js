@@ -30,7 +30,7 @@ export async function requireCredits(feature){
  catch(e){toast(L('เชื่อมต่อเพื่อดูเครดิต AI','Connect to check AI credits'),'warn');return false;}
 }
 export async function aiRequest(path,body){
- requireIntegration(endpointIntegration(path));
+ requireIntegration(activeEngine()==='claude'?endpointIntegration(path):'byok');
  if(activeEngine()!=='claude')return engineRequest(path,body);
  try{const result=await api(path,body,'POST',aiToken());if(ownerToken!==aiToken()){snapshot=null;ownerToken=aiToken();}snapshot={...snapshot,remaining:result.creditsLeft};checked=0;updateCreditUI();return result;}
  catch(e){if(e.code==='no_credits')noCredits();throw e;}

@@ -19,7 +19,7 @@ export function eaten(d, log) {
   const total = { k: 0, p: 0, c: 0, f: 0 };
   for (const e of d.events) {
     if (!log.done?.[e.key]) continue;
-    if (e.type === 'meal') for (const k of Object.keys(total)) total[k] += e.meal.total[k] || 0;
+    if (e.type === 'meal'&&!(log.foodLog||[]).some(x=>x.menuKey===e.key)) for (const k of Object.keys(total)) total[k] += e.meal.total[k] || 0;
     if (e.type === 'supp') for (const x of e.list) for (const k of Object.keys(total)) total[k] += (x.prod.nutrition?.[k] || 0) * x.amount;
   }
   for (const entry of log.foodLog || []) for (const k of Object.keys(total)) total[k] += entry.totals?.[k === 'k' ? 'kcal' : k] || 0;
@@ -87,7 +87,8 @@ views.today = ({ query }) => {
 
 actions.tick = (el) => {
   const { iso, k } = el.dataset;
-  updateLog(iso, (l) => { l.done[k] = !l.done[k]; if (k === 'water-am' && l.done[k]) l.water += 500; });
+  const meal=k.startsWith('meal-')?planDay(iso).meals.find(m=>m.key===k.slice(5)&&m.custom):null;
+  updateLog(iso, (l) => { l.done[k] = !l.done[k]; if(meal){l.foodLog=(l.foodLog||[]).filter(e=>e.menuKey!==k);if(l.done[k])l.foodLog.push({menuKey:k,time:Date.now(),name:meal.name,items:meal.items.map(it=>({name:{th:(it.food||FOOD[it.id]).th,en:(it.food||FOOD[it.id]).en},grams:it.g,...Object.fromEntries(['k','p','c','f'].map(k=>[k==='k'?'kcal':k,(it.food||FOOD[it.id])[k]*it.g/100]))})),totals:{kcal:meal.total.k,p:meal.total.p,c:meal.total.c,f:meal.total.f}});} if (k === 'water-am' && l.done[k]) l.water += 500; });
   if (navigator.vibrate) navigator.vibrate(12);
   rerender();
 };

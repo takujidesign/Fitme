@@ -1,3 +1,4 @@
+import {customDay} from './daily-menu.js';
 import { getState } from './store.js';
 import { translate } from './i18n/index.js';
 import { hasCondition } from './conditions.js';
@@ -147,6 +148,7 @@ function mealName(items, r) {
 // Full day of meals for given daily targets (food part, i.e. after supplement macros).
 export function dayMeals(p, dateISO, isTraining, t, seeds = {}) {
   const slots = mealSlots(p, isTraining);
+  const custom=getState().dailyMenus?.[dateISO];if(custom)return customDay(slots,custom);
   if(hasCondition(p,'diabetes'))slots.forEach(s=>{s.share=1/slots.length;s.carbBoost=1;});
   const totalShare = slots.reduce((a, s) => a + s.share * (s.carbBoost || 1), 0);
   // keep at least ~55% of protein from real food even when shakes cover most of the target

@@ -69,7 +69,7 @@ views.onboarding = ({ query }) => {
     },
   ];
   const content = steps[step]();
-  return `<div class="onboard">
+  return `<div class="onboard">${step===0?`<a class="btn ghost" href="#/account">${L('มีบัญชีอยู่แล้ว? เข้าสู่ระบบเพื่อกู้ข้อมูล','Already have an account? Sign in to restore data')}</a>`:''}
     <div class="ob-top">${step > 0 ? `<button class="icon-btn" data-act="ob-back">${icon('back')}</button>` : edit ? `<button class="icon-btn" data-act="ob-cancel">${icon('x')}</button>` : '<span></span>'}
       <div class="dots">${Array.from({ length: STEPS }, (_, i) => `<i class="${i <= step ? 'on' : ''}"></i>`).join('')}</div><span></span></div>
     <div class="ob-body">${content}</div>
@@ -131,6 +131,7 @@ actions['ob-next'] = () => {
   const wasOnboarded = getState().onboarded;
   setState((s) => {
     s.onboarded = true;
+    s.onboardedAt = Date.now();
     if (!wasOnboarded) s.profile.startDate = todayISO();
     if (!s.weights.length || s.weights.at(-1).kg !== s.profile.weight) s.weights.push({ date: todayISO(), kg: s.profile.weight });
   });

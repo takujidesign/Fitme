@@ -1,3 +1,4 @@
+import {appVersion,checkUpdate} from '../render-stability.js';
 import { creditCost } from '../ai-credits.js';
 import { slot } from '../slots.js';
 import { enabledLanguages, LANGUAGES, languageFont } from '../i18n/index.js';
@@ -37,7 +38,7 @@ views.me = () => {
   const wk = weeksToGoal(p, avgKcal - t.tdee);
   const done = Object.values(s.logs).filter((l) => l.done?.workout).length;
   return `<header class="top"><div><small class="muted">${L('โปรไฟล์', 'Profile')}</small><h1>${esc(p.name) || L('ฉัน', 'Me')}</h1></div>
-    <button class="icon-btn" data-act="me-edit">${icon('settings')}</button></header><section class="card profile">
+    ${s.account.token?`<button class="btn ghost" data-act="account-logout">${L('ออกจากระบบ','Log out')}</button>`:''}<button class="icon-btn" data-act="me-edit">${icon('settings')}</button></header><section class="card profile">
       <div class="sum-grid">
         <div class="stat"><small>${L('น้ำหนัก', 'Weight')}</small><b>${p.weight}</b><span class="tag">kg</span></div>
         <div class="stat"><small>BMI</small><b>${b.toFixed(1)}</b><span class="tag ${bc.c}">${L(bc)}</span></div>
@@ -48,7 +49,7 @@ views.me = () => {
       ${p.bodyFat ? `<p class="muted sm">${L('ไขมัน', 'Body fat')} ${p.bodyFat}% ${p.muscle ? `· ${L('กล้ามเนื้อ', 'Muscle')} ${p.muscle} kg` : ''} ${p.bmrScan ? `· BMR ${p.bmrScan}` : ''}</p>` : ''}
     </section>
 
-    ${progressCard(sparkline(s.weights.slice(-20).map(w => ({v:w.kg}))))}
+    <section class="card"><h2>${L('เกี่ยวกับ','About')}</h2><p>${esc(appVersion)}</p><button class="btn ghost" data-act="check-update">${L('ตรวจหาอัปเดต','Check for updates')}</button></section>${progressCard(sparkline(s.weights.slice(-20).map(w => ({v:w.kg}))))}
     <section class="card">
       <div class="row between"><h2>${icon('camera', 20)} ${L('รูปร่าง', 'Body photos')}</h2><button class="btn xs ghost" data-act="me-photo">${icon('plus', 16)} ${L('เพิ่มรูป', 'Add')}</button></div>
       <p class="muted sm">${L('รูปที่บันทึกเก็บในเครื่อง ส่งให้ AI เฉพาะเมื่อยินยอม · ถ่ายมุมเดิม แสงเดิม ทุก 2 สัปดาห์', 'Saved photos stay on this device; AI uploads only with consent · same angle and light every 2 weeks')}</p>
@@ -131,6 +132,8 @@ actions['me-restore'] = async () => {
     const obj = JSON.parse(await f.text());
     if (!obj.profile) throw new Error('invalid');
     delete obj.premium;
+    delete obj.account;
+    await (await import('../backup.js')).restoreImages(obj);
     importState(obj);
     toast(L('กู้คืนข้อมูลแล้ว', 'Backup restored'));
     rerender();
@@ -203,3 +206,5 @@ actions['me-compare'] = async () => {
 export { fmt, CONFIG };
 
 actions['me-data']=()=>{const el=document.getElementById('me-data');el.open=true;el.scrollIntoView({behavior:'smooth'});};
+
+actions['check-update']=()=>checkUpdate().then(()=>toast(L('ตรวจแล้ว','Checked'))).catch(e=>toast(e.message,'warn'));
