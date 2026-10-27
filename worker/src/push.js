@@ -81,7 +81,7 @@ export async function sendScheduled(env,now=Date.now()){
       for(const [key,{r,at}] of Object.entries(record.pending)){
         if(now-at>3600000){delete record.pending[key];continue;}
         let res;try{res=await fetch(record.subscription.endpoint,{method:'POST',redirect:'error',headers:{TTL:'300','Content-Encoding':'aes128gcm','Content-Type':'application/octet-stream',Authorization:`vapid t=${await vapidJWT(record.subscription.endpoint,env,now)}, k=${(await getSecret(env, 'vapidPublicKey'))}`},body:await encryptPush(record.subscription,{title:r.title,body:r.body,route:r.route||'#/today',tag:r.category||'general'})});}catch{continue;}
-        if(res.status===404||res.status===410){await env.PUSH.delete(name);if(env.DB)await query(env,'DELETE FROM push_subscriptions WHERE device_id=?',name.slice(7)).run();expired=true;break;}if(res.ok){record.lastSent[key]=now;delete record.pending[key];}
+        if(res.status===404||res.status===410){await env.PUSH.delete(name);if(env.DB)await query(env,'DELETE FROM push_subscriptions WHERE device_id=?',name.slice(7)).run();expired=true;break;}if(res.ok){record.lastSent[key]=now;delete record.pending[key];record.lastError=null;}else record.lastError={status:res.status,reason:(await res.text().catch(()=>'')).slice(0,300),at:now};
       }
       if(!expired){record.lastSent=Object.fromEntries(Object.entries(record.lastSent).filter(([key,at])=>key==='refresh'||at>now-86400000));await env.PUSH.put(name,JSON.stringify(record),{expirationTtl:Math.max(60,Math.ceil((record.expires-now)/1000))});}
     }catch{ /* One unavailable device must not block the rest. Retry next cron window. */ }}

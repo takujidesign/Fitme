@@ -31,6 +31,6 @@ jobs:
             npx wrangler kv key get "$name" --namespace-id "$id" --remote 2>/dev/null | node -e "
               let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{const r=JSON.parse(s);const sent=Object.values(r.lastSent||{});const last=sent.length?new Date(Math.max(...sent)).toISOString():'never';
               const host=(()=>{try{return new URL(r.subscription.endpoint).host}catch{return '?'}})();
-              console.log('device', '| push service:',host,'| tz:',r.tz,'| reminders:',(r.reminders||[]).length,'| deliveries:',sent.length,'| last delivered:',last,'| expires:',new Date(r.expires).toISOString());}catch{console.log('device | unreadable')}})"
+              console.log('device', '| push service:',host,'| tz:',r.tz,'| reminders:',(r.reminders||[]).length,'| deliveries:',sent.length,'| last delivered:',last,'| expires:',new Date(r.expires).toISOString(),'| last error:',r.lastError?JSON.stringify(r.lastError):'none');}catch{console.log('device | unreadable')}})"
           done
           rm -f "$RUNNER_TEMP/keys.json"
