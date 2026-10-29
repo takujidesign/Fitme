@@ -11,7 +11,7 @@ export async function cap(env,scope,value,max,window){
  await q(env,'DELETE FROM security_limits WHERE expires<?',now).run();
  await q(env,'DELETE FROM auth_tokens WHERE expires<=?',now).run();
  const r=await q(env,'INSERT INTO security_limits VALUES(?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1 WHERE count<?',key,now+window,max).run();
- if(!r.meta.changes)throw fail('Too many attempts; try again later',429);
+ if(!r.meta.changes)throw Object.assign(fail('Too many attempts; try again later',429),{retryAfter:Math.ceil((window-now%window)/1000)});
 }
 export const ip=req=>req.headers.get('CF-Connecting-IP')||'local';
 export async function mailReady(env){return await betaAllowed(env,'email') && !!await getSecret(env,'resendApiKey');}

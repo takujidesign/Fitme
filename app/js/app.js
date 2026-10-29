@@ -156,9 +156,12 @@ if (!window.Capacitor?.isNativePlatform?.() && 'serviceWorker' in navigator && l
   navigator.serviceWorker.register('./sw.js').then(offerUpdate).catch(() => {});
 }
 
+(await import('./offline-core.js')).startOffline();
 await loadConfig();
 await loadVideos();
 startPushSync();
+import('./reminder-runtime.js').then(m=>m.startLocalReminders());
+import('./reminder-ui.js').then(m=>m.startCalendarSync());
 startLineReminders();
 startMetrics();
 startAccountSync();

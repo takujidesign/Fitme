@@ -42,10 +42,10 @@ const pair=await crypto.subtle.generateKey({name:'ECDH',namedCurve:'P-256'},true
 for(const [tz,instant,date,time] of [['Asia/Bangkok','2026-07-01T01:00:00Z','2026-07-01','08:00'],['America/New_York','2026-07-01T12:00:00Z','2026-07-01','08:00'],['America/New_York','2026-01-01T13:00:00Z','2026-01-01','08:00'],['America/New_York','2026-11-01T05:30:00Z','2026-11-01','01:30']]){
  const now=Date.parse(instant),id=crypto.randomUUID();push.clear();push.set('device:'+id,JSON.stringify({subscription,tz,reminders:[{date,time,title:'Mock reminder',body:'Test'}],expires:now+86400000,lastSent:{}}));const before=requests.length;await sendScheduled(env,now);assert.equal(requests.length,before+1,tz);await sendScheduled(env,now+60000);assert.equal(requests.length,before+1,'no duplicates');if(time==='01:30'){await sendScheduled(env,now+3600000);assert.equal(requests.length,before+1,'DST repeated hour not duplicated');}}
 const subscribed=await call('push/subscribe',{subscription,tz:'Asia/Bangkok',reminders:[]},user.token);assert.equal(subscribed.status,200);const deviceId=subscribed.data.deviceId;
-for(let i=0;i<3;i++)assert.equal((await call('push/test',{deviceId},user.token)).status,200);
+for(let i=0;i<5;i++)assert.equal((await call('push/test',{deviceId},user.token)).status,200);
 assert.equal((await call('push/test',{deviceId},user.token)).status,429);
 const other=(await call('auth/register',{email:'other@example.test',password:'test-password-123',age16:true})).data;
 assert.equal((await call('push/test',{deviceId},other.token)).status,403);
 assert.equal((await call('admin/push-test',{deviceId},admin)).status,200);assert.equal((await call('admin/push-test',{userId:user.user.id},admin)).status,200);
-console.log('PASS Round 13 Worker: fail-closed beta, verified admin preview, toggles, skipped mail, mocked Claude/Gemini lab and isolated usage, actual scheduler Bangkok/New York summer/winter/DST deduplication, self-test ownership and 3/hour cap, admin device/user push.');db.close();
+console.log('PASS Round 13 Worker: fail-closed beta, verified admin preview, toggles, skipped mail, mocked Claude/Gemini lab and isolated usage, actual scheduler Bangkok/New York summer/winter/DST deduplication, self-test ownership and 5/hour cap, admin device/user push.');db.close();
 

@@ -1,14 +1,16 @@
+import {buildICS} from './calendar.js';
+import {reminderPlan,deviceZone} from './reminders.js';
 import {featureUsed} from './telemetry.js';
 import { measurementsPrint } from './measurements.js';
 // Plan export: printable PDF view, calendar (.ics) reminders and JSON backup.
-import { getState } from './store.js';
+import { getState,todayISO } from './store.js';
 import { planRange } from './day.js';
 import { EX } from './exercises.js';
 import { FOOD } from './foods.js';
 import { splitName } from './workout.js';
 import { mealKind, unitText } from './meals.js';
 import { GOALS, bmi, sleepNeed, bedtimes, targets } from './calc.js';
-import { L, esc, fmt, dateLabel, toHHMM, toMin } from './ui.js';
+import { fmtSec, L, esc, fmt, dateLabel, toHHMM, toMin } from './ui.js';
 import { figureSVG } from './figure.js';
 
 function download(name, text, type) {
@@ -25,7 +27,7 @@ const exLine = (it) => {
   const ex = EX[it.id];
   return `${L(ex.name)} — ${it.sets}×${it.reps ? it.reps + ' ' + L('ครั้ง', 'reps') : fmtSec(it.sec)}${it.rest ? ` · ${L('พัก', 'rest')} ${it.rest}s` : ''}`;
 };
-export const fmtSec = (s) => (s >= 60 ? `${Math.round(s / 60)} ${L('นาที', 'min')}` : `${s} ${L('วินาที', 'sec')}`);
+export {fmtSec} from './ui.js';
 
 export function printHTML(days) {
   const s = getState(), p = s.profile;
@@ -85,30 +87,7 @@ export function exportPDF(days) {
 }
 
 // ---------- ICS ----------
-const icsDate = (iso, min) => {
-  const d = new Date(iso + 'T00:00:00');
-  d.setMinutes(min);
-  const z = (n) => String(n).padStart(2, '0');
-  return `${d.getFullYear()}${z(d.getMonth() + 1)}${z(d.getDate())}T${z(d.getHours())}${z(d.getMinutes())}00`;
-};
-const icsEsc = (s) => String(s).replace(/<[^>]+>/g, ' ').replace(/[,;\\]/g, (c) => '\\' + c).replace(/\n/g, '\\n').replace(/\s+/g, ' ').trim();
-
-export function exportICS(days) {
-  const plan = planRange(days);
-  const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Fixmee//Plan//TH', 'CALSCALE:GREGORIAN', 'X-WR-CALNAME:Fixmee'];
-  let n = 0;
-  for (const d of plan) {
-    for (const e of d.events) {
-      if (!['meal', 'workout', 'supp', 'sleep', 'fasting', 'medication'].includes(e.type)) continue;
-      const dur = e.type === 'workout' ? e.sess.minutes : 15;
-      const title = e.type === 'medication' ? e.medication.name : e.type === 'fasting' ? eventText(e, getState().lang) : e.type === 'meal' ? `🍽 ${L(mealKind(e.meal.kind))}` : e.type === 'workout' ? `💪 ${L('ออกกำลังกาย', 'Workout')}` : e.type === 'supp' ? `💊 ${L(e.slotInfo)}` : `🌙 ${L('เข้านอน', 'Bedtime')}`;
-      lines.push('BEGIN:VEVENT', `UID:fixmee-${d.iso}-${n++}@fixmee.app`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`, `DTSTART:${icsDate(d.iso, e.min)}`, `DTEND:${icsDate(d.iso, e.min + dur)}`,
-        `SUMMARY:${icsEsc(title)}`, `DESCRIPTION:${icsEsc(eventText(e, getState().lang))}`, 'BEGIN:VALARM', 'ACTION:DISPLAY', 'TRIGGER:-PT5M', `DESCRIPTION:${icsEsc(title)}`, 'END:VALARM', 'END:VEVENT');
-    }
-  }
-  lines.push('END:VCALENDAR');
-  download(`fixmee-plan-${plan[0].iso}.ics`, lines.join('\r\n'), 'text/calendar');
-}
+export function exportICS(days=14) { const ics=buildICS(reminderPlan(todayISO(),undefined,days),{tz:deviceZone()});download('fixmee-reminders.ics',ics,'text/calendar');return ics; }
 
 export async function exportJSON() {featureUsed('backup_export');
   const s = await (await import('./backup.js')).fullBackup();

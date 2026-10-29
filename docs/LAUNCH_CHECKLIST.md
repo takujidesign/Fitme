@@ -144,3 +144,15 @@
 - ตรวจหน้าแรกและท่าออกกำลังกาย ตรวจ canonical และสถานะ 404 ของเส้นทางที่ไม่มีจริง
 - ตรวจ coverage และรายงานการจัดทำดัชนีหลัง 1–2 สัปดาห์ แก้รายการยกเว้นที่ไม่ตั้งใจ
 - เลือกใช้ IndexNow ได้ โดยเจ้าของเป็นผู้ตั้งค่าและส่ง URL
+# Round 20 — การเตือนในเครื่องและออฟไลน์
+
+- เว็บแอป iPhone ที่ปิดอยู่ไม่สามารถตั้งเวลาแจ้งเตือนออฟไลน์ได้ ให้ใช้ปฏิทินหรือแอป native; Web Push ต้องใช้อินเทอร์เน็ต
+- ใช้ `npm ci` ใน `mobile/` เพื่อรับ `@capacitor/local-notifications` ตาม lockfile แล้ว `npm run sync` ก่อน build ทุกครั้ง
+- โฟลเดอร์ native ยังไม่ได้สร้างใน repo นี้: ครั้งแรกใช้ `npx cap add ios` บน Mac หรือ `npx cap add android` บนเครื่องที่มี Android Studio แล้ว `npm run sync`
+- iOS: บน Mac ที่มี Xcode ใช้ `npm run ios` เปิดโปรเจกต์ เลือก Team ของเจ้าของและ Bundle ID `design.takuji.fixme` ตรวจ signing/provisioning และรันบน iPhone จริง เจ้าของต้องสมัคร/ต่ออายุ Apple Developer Program, ยอมรับข้อตกลงในบัญชี และสร้าง App ID/ใบรับรองหรือเปิด automatic signing ด้วยบัญชีของตน ห้ามใส่คีย์หรือใบรับรองใน Git
+- Local Notifications ไม่ต้องใช้ APNs สำหรับการเตือนในเครื่อง ขอสิทธิ์จากหน้าการแจ้งเตือน แล้วทดสอบปิดแอปและเปิดโหมดเครื่องบิน การวางแผนจำกัด 64 รายการถัดไปและเติมใหม่เมื่อเปิดแอปหรือแก้แผน
+- Android: ใช้ `npm run android` เปิด Android Studio ตรวจ application ID และ SDK สร้าง signing keystore ของเจ้าของไว้นอก repo แล้วทดสอบบนเครื่องจริง Android 13+ ต้องอนุญาตการแจ้งเตือน สำหรับเวลาที่ตรงบน Android 12+ ให้เพิ่ม `<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />` ใน manifest ของ native project และเปิดสิทธิ์ Alarms & reminders ในการตั้งค่าเครื่อง หากไม่ให้สิทธิ์ ระบบอาจเลื่อนเวลา ให้ใช้ปฏิทินเป็นทางเลือก
+- ทดสอบแตะการเตือนไปหน้าที่ถูกต้อง, ทำแล้ว/เลื่อน 10 นาที, เวลาเงียบ, เปลี่ยนเขตเวลา และ DST ทั้งก่อนและหลังปิดแอป ไม่ต้องส่ง App Store ในรอบนี้
+- ก่อนเปิดใช้ calendar subscription บนเซิร์ฟเวอร์ ให้เจ้าของนำ migration `worker/migrations/0012_round20.sql` ไปใช้ตามขั้นตอน release ที่อนุมัติไว้ ระบบเก็บเฉพาะ hash ของลิงก์และให้เปลี่ยน/ยกเลิกได้ การยกเลิกลิงก์ไม่ลบกิจกรรมที่ผู้ใช้นำเข้าในเครื่องแล้ว
+- ภายหลังแก้รูปหรือข้อมูลออฟไลน์ ให้อัปเดต `app/offline-manifest.json` ด้วย `node scripts/build-offline-manifest.mjs` รายการนี้ไม่รวม RepDB และไม่อ่านไฟล์ JPG ที่ราก repo
+- การตรวจรอบนี้ไม่ได้ build/sign แอป native, ไม่ apply migration ระยะไกล และไม่ deploy ดูหลักฐานและข้อจำกัดใน `docs/ROUND20_VALIDATION.md`

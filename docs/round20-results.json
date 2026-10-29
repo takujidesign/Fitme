@@ -1,0 +1,207 @@
+{
+  "app": [
+    {
+      "test": "tests/test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/ui-test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/settings.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/poses.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round3.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round4.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round4-ui.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round5.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round5b.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round5c.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round6.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round6-offline.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round7.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round8.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round9.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round10.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round11.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round12.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round13.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round15.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round15-poses.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round15b-geometry.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round16.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round17.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round18.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round19.mjs",
+      "exit": 0
+    },
+    {
+      "test": "tests/round20.mjs",
+      "exit": 0
+    }
+  ],
+  "worker": [
+    {
+      "test": "auth-errors.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "push-redirect.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round10.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round11-realtime.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round11.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round12.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round13.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round16.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round17.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round18.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round19.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round20.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round4.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round5.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round5b.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round5c.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round6.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round8-payments.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "round8.test.mjs",
+      "exit": 0
+    },
+    {
+      "test": "test.mjs",
+      "exit": 0
+    }
+  ],
+  "cache": {
+    "shellRequests": 187,
+    "shellBodyBytes": 1872553,
+    "offlineFiles": 93,
+    "offlineBodyBytes": 5042268,
+    "offlineBudget": 41943040
+  },
+  "blocked": [
+    "round14 uses prohibited RepDB data",
+    "browser screenshots: spawn EPERM; alternate launch blocked by policy",
+    "Wrangler dry-run: spawn EPERM",
+    "native build/signing/device validation unavailable"
+  ]
+}

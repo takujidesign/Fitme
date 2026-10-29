@@ -1,0 +1,374 @@
+[
+  {
+    "url": "./data/exercise-aliases.json",
+    "bytes": 2211
+  },
+  {
+    "url": "./data/exercise-db.json",
+    "bytes": 1144844
+  },
+  {
+    "url": "./data/illustrations-3d.json",
+    "bytes": 8307
+  },
+  {
+    "url": "./data/illustrations.json",
+    "bytes": 8283
+  },
+  {
+    "url": "./data/recipes-th.json",
+    "bytes": 32640
+  },
+  {
+    "url": "./img/ex/bench_press-finish.webp",
+    "bytes": 25108
+  },
+  {
+    "url": "./img/ex/bench_press-start.webp",
+    "bytes": 26128
+  },
+  {
+    "url": "./img/ex/bird_dog-finish.webp",
+    "bytes": 15698
+  },
+  {
+    "url": "./img/ex/bird_dog-start.webp",
+    "bytes": 24088
+  },
+  {
+    "url": "./img/ex/breathing-finish.webp",
+    "bytes": 18418
+  },
+  {
+    "url": "./img/ex/breathing-start.webp",
+    "bytes": 18418
+  },
+  {
+    "url": "./img/ex/bridge-finish-round11.webp",
+    "bytes": 16584
+  },
+  {
+    "url": "./img/ex/bridge-start-round11.webp",
+    "bytes": 15284
+  },
+  {
+    "url": "./img/ex/calf_raise-finish.webp",
+    "bytes": 16302
+  },
+  {
+    "url": "./img/ex/calf_raise-start.webp",
+    "bytes": 15328
+  },
+  {
+    "url": "./img/ex/cat_cow-finish.webp",
+    "bytes": 21792
+  },
+  {
+    "url": "./img/ex/cat_cow-start.webp",
+    "bytes": 23166
+  },
+  {
+    "url": "./img/ex/chair_squat-finish.webp",
+    "bytes": 22538
+  },
+  {
+    "url": "./img/ex/chair_squat-start.webp",
+    "bytes": 16572
+  },
+  {
+    "url": "./img/ex/child_pose-finish.webp",
+    "bytes": 22312
+  },
+  {
+    "url": "./img/ex/child_pose-start.webp",
+    "bytes": 22312
+  },
+  {
+    "url": "./img/ex/crunch-finish-round11.webp",
+    "bytes": 17452
+  },
+  {
+    "url": "./img/ex/crunch-start-round11.webp",
+    "bytes": 17382
+  },
+  {
+    "url": "./img/ex/db_curl-finish.webp",
+    "bytes": 16588
+  },
+  {
+    "url": "./img/ex/db_curl-start.webp",
+    "bytes": 15714
+  },
+  {
+    "url": "./img/ex/db_row-finish-round11.webp",
+    "bytes": 16752
+  },
+  {
+    "url": "./img/ex/db_row-start-round11.webp",
+    "bytes": 19566
+  },
+  {
+    "url": "./img/ex/dead_bug-finish.webp",
+    "bytes": 15648
+  },
+  {
+    "url": "./img/ex/dead_bug-start.webp",
+    "bytes": 21672
+  },
+  {
+    "url": "./img/ex/deadlift-finish.webp",
+    "bytes": 22294
+  },
+  {
+    "url": "./img/ex/deadlift-start.webp",
+    "bytes": 27214
+  },
+  {
+    "url": "./img/ex/forward_fold-finish.webp",
+    "bytes": 22062
+  },
+  {
+    "url": "./img/ex/forward_fold-start.webp",
+    "bytes": 22062
+  },
+  {
+    "url": "./img/ex/goblet_squat-finish-round11.webp",
+    "bytes": 13650
+  },
+  {
+    "url": "./img/ex/goblet_squat-start-round11.webp",
+    "bytes": 14622
+  },
+  {
+    "url": "./img/ex/high_knees-finish.webp",
+    "bytes": 20238
+  },
+  {
+    "url": "./img/ex/high_knees-start.webp",
+    "bytes": 16742
+  },
+  {
+    "url": "./img/ex/jog-finish.webp",
+    "bytes": 19226
+  },
+  {
+    "url": "./img/ex/jog-start.webp",
+    "bytes": 16220
+  },
+  {
+    "url": "./img/ex/jump_rope-finish.webp",
+    "bytes": 18416
+  },
+  {
+    "url": "./img/ex/jump_rope-start.webp",
+    "bytes": 20110
+  },
+  {
+    "url": "./img/ex/jumping_jack-finish.webp",
+    "bytes": 20082
+  },
+  {
+    "url": "./img/ex/jumping_jack-start.webp",
+    "bytes": 20008
+  },
+  {
+    "url": "./img/ex/kegel-finish.webp",
+    "bytes": 16416
+  },
+  {
+    "url": "./img/ex/kegel-start.webp",
+    "bytes": 16416
+  },
+  {
+    "url": "./img/ex/knee_pushup-finish.webp",
+    "bytes": 21956
+  },
+  {
+    "url": "./img/ex/knee_pushup-start.webp",
+    "bytes": 23700
+  },
+  {
+    "url": "./img/ex/lat_pulldown-finish.webp",
+    "bytes": 21762
+  },
+  {
+    "url": "./img/ex/lat_pulldown-start.webp",
+    "bytes": 23240
+  },
+  {
+    "url": "./img/ex/lateral_raise-finish.webp",
+    "bytes": 17566
+  },
+  {
+    "url": "./img/ex/lateral_raise-start.webp",
+    "bytes": 14886
+  },
+  {
+    "url": "./img/ex/leg_raise-finish.webp",
+    "bytes": 20156
+  },
+  {
+    "url": "./img/ex/leg_raise-start.webp",
+    "bytes": 15608
+  },
+  {
+    "url": "./img/ex/lunge-finish.webp",
+    "bytes": 21228
+  },
+  {
+    "url": "./img/ex/lunge-start.webp",
+    "bytes": 16972
+  },
+  {
+    "url": "./img/ex/mountain_climber-finish.webp",
+    "bytes": 25508
+  },
+  {
+    "url": "./img/ex/mountain_climber-start.webp",
+    "bytes": 21174
+  },
+  {
+    "url": "./img/ex/plank-finish.webp",
+    "bytes": 19906
+  },
+  {
+    "url": "./img/ex/plank-start.webp",
+    "bytes": 19906
+  },
+  {
+    "url": "./img/ex/pushup-finish.webp",
+    "bytes": 22032
+  },
+  {
+    "url": "./img/ex/pushup-start.webp",
+    "bytes": 23896
+  },
+  {
+    "url": "./img/ex/quad_stretch-finish.webp",
+    "bytes": 14886
+  },
+  {
+    "url": "./img/ex/quad_stretch-start.webp",
+    "bytes": 14886
+  },
+  {
+    "url": "./img/ex/rdl-finish.webp",
+    "bytes": 18860
+  },
+  {
+    "url": "./img/ex/rdl-start.webp",
+    "bytes": 16212
+  },
+  {
+    "url": "./img/ex/run_interval-finish.webp",
+    "bytes": 23720
+  },
+  {
+    "url": "./img/ex/run_interval-start.webp",
+    "bytes": 19224
+  },
+  {
+    "url": "./img/ex/shoulder_press-finish.webp",
+    "bytes": 14488
+  },
+  {
+    "url": "./img/ex/shoulder_press-start.webp",
+    "bytes": 16938
+  },
+  {
+    "url": "./img/ex/side_plank-finish.webp",
+    "bytes": 19366
+  },
+  {
+    "url": "./img/ex/side_plank-start.webp",
+    "bytes": 19366
+  },
+  {
+    "url": "./img/ex/squat-finish.webp",
+    "bytes": 22554
+  },
+  {
+    "url": "./img/ex/squat-start.webp",
+    "bytes": 16378
+  },
+  {
+    "url": "./img/ex/squat_jump-finish.webp",
+    "bytes": 18066
+  },
+  {
+    "url": "./img/ex/squat_jump-start.webp",
+    "bytes": 18374
+  },
+  {
+    "url": "./img/ex/step_up-finish.webp",
+    "bytes": 16602
+  },
+  {
+    "url": "./img/ex/step_up-start.webp",
+    "bytes": 18298
+  },
+  {
+    "url": "./img/ex/superman-finish.webp",
+    "bytes": 17360
+  },
+  {
+    "url": "./img/ex/superman-start.webp",
+    "bytes": 15636
+  },
+  {
+    "url": "./img/ex/triceps_ext-finish-round11.webp",
+    "bytes": 8892
+  },
+  {
+    "url": "./img/ex/triceps_ext-start-round11.webp",
+    "bytes": 9082
+  },
+  {
+    "url": "./img/ex/walk-finish-round11.webp",
+    "bytes": 17642
+  },
+  {
+    "url": "./img/ex/walk-start-round11.webp",
+    "bytes": 17836
+  },
+  {
+    "url": "./img/ex/wall_pushup-finish.webp",
+    "bytes": 17060
+  },
+  {
+    "url": "./img/ex/wall_pushup-start.webp",
+    "bytes": 17954
+  },
+  {
+    "url": "./js/three-motion.js",
+    "bytes": 15519
+  },
+  {
+    "url": "./js/three-viewer.js",
+    "bytes": 14102
+  },
+  {
+    "url": "./js/vendor/three/BufferGeometryUtils.js",
+    "bytes": 36986
+  },
+  {
+    "url": "./js/vendor/three/GLTFLoader.js",
+    "bytes": 119634
+  },
+  {
+    "url": "./js/vendor/three/OrbitControls.js",
+    "bytes": 40575
+  },
+  {
+    "url": "./js/vendor/three/meshopt_decoder.module.js",
+    "bytes": 29799
+  },
+  {
+    "url": "./js/vendor/three/three.core.js",
+    "bytes": 1462228
+  },
+  {
+    "url": "./js/vendor/three/three.module.js",
+    "bytes": 621364
+  }
+]

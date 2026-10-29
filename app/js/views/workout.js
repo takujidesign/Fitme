@@ -15,7 +15,7 @@ import { L, esc, icon, dateLabel, WEEKDAYS, sheet, toast } from '../ui.js';
 import { sessionFor, splitName, sessionKcal, isTrainingDay } from '../workout.js';
 import { EX, EXERCISES, GROUPS, EQUIP } from '../exercises.js';
 import { figureSVG, animateFigure } from '../figure.js';
-import { fmtSec } from '../export.js';
+import { fmtSec } from '../ui.js';
 import { hasPro } from '../pay.js';
 import { CONFIG } from '../config.js';
 

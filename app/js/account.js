@@ -11,6 +11,7 @@ import { L, toast, sheet, closeSheet } from './ui.js';
 import {friendlyError} from './errors.js';
 export async function api(path, body, method = body === undefined ? 'GET' : 'POST', token = getState().account?.token) {
   if (!CONFIG.API_BASE) throw Error(L('ต้องตั้งค่าเซิร์ฟเวอร์ก่อน ใช้งานในเครื่องได้ตามปกติ','Configure a server first. Local use remains available.'));
+  if(globalThis.navigator?.onLine===false)throw Error(L('ต้องใช้อินเทอร์เน็ต','Internet connection required'));
   const captcha=method==='POST'&&['auth/register','auth/forgot','ideas','reports'].includes(path)?await challenge():'';
   const res = await (path.startsWith('admin/') ? adminFetch : fetch)(CONFIG.API_BASE.replace(/\/$/,'') + '/api/' + path, { method, headers:{'Content-Type':body instanceof Blob?body.type:'application/json',...(adminToken()?{'X-Admin-Preview':adminToken()}:{}),...(captcha?{'X-Turnstile-Token':captcha}:{}),...(token?{Authorization:'Bearer '+token}:{})}, body:body===undefined?undefined:body instanceof Blob?body:JSON.stringify(body),signal:AbortSignal.timeout(30000) }).catch(error=>{error.message=friendlyError(error);throw error;});
   const data = await res.json();
@@ -41,7 +42,7 @@ export async function syncNow() {
       s.supplements.forEach(v=>{if(photoIds.get(v.uid))v.photoId=photoIds.get(v.uid);});
       Object.entries(s.logs).forEach(([date,l])=>(l.foodLog||[]).forEach(v=>{if(foodPhotos.get(date+':'+v.time))v.photoId=foodPhotos.get(date+':'+v.time);}));
       s.notifications={...s.notifications,...merged.notificationPrefs};
-      s.account={...s.account,version:saved.version,lastSync:Date.now(),stats:syncStats(saved.json),error:''};
+      s.account={...s.account,version:saved.version,lastSync:Date.now(),syncedAt:saved.json.updatedAt||{},stats:syncStats(saved.json),error:''};
     },{remote:true});
     if(changed)rerender();
     if(JSON.stringify(merged)!==JSON.stringify(saved.json)){clearTimeout(timer);timer=setTimeout(syncNow,5000);}
@@ -53,7 +54,7 @@ export function startAccountSync() {
   subscribe(()=>{if(applying)return;clearTimeout(timer);timer=setTimeout(syncNow,5000);});
   let lastWake=0;const wake=()=>{if(Date.now()-lastWake<60000)return;lastWake=Date.now();syncNow();};
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')wake();});
-  window.addEventListener('online',wake);
+  window.addEventListener('online',()=>{lastWake=0;wake();});
   if(getState().account.token)api('auth/me').then(r=>setState(s=>{s.account.user=r.user;},{remote:true})).catch(()=>{});
   syncNow();
 }
@@ -75,11 +76,11 @@ export async function signIn(mode,email,password) {
   if(remote.version&&selected.profile&&selected.onboarded===undefined)selected.onboarded=true;
   replaceAccountState(selected);
   if(!switched)setState(s=>{s.photos=deviceState.photos||[];for(const v of s.supplements){const old=deviceState.supplements.find(x=>x.uid===v.uid);if(old?.photoId)v.photoId=old.photoId;}},{remote:true});
-  setState(s=>{s.account={token:result.token,user:result.user,version:remote.version,lastSync:Date.now(),stats:syncStats(remote.json),error:''};},{remote:true});
+  setState(s=>{s.account={token:result.token,user:result.user,version:remote.version,lastSync:Date.now(),syncedAt:remote.json.updatedAt||{},stats:syncStats(remote.json),error:''};},{remote:true});
   localStorage.setItem('fitme:last-account',result.user.id);
   if(choice!=='server'){
     const saved=await api('sync',{json:selected,baseVersion:remote.version},'PUT',result.token);
-    setState(s=>{s.account.version=saved.version;s.account.stats=syncStats(saved.json);},{remote:true});
+    setState(s=>{s.account.version=saved.version;s.account.syncedAt=saved.json.updatedAt||{};s.account.stats=syncStats(saved.json);},{remote:true});
   }
   await refreshEntitlement();
 }

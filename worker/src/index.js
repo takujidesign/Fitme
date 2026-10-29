@@ -1,3 +1,4 @@
+import {calendarRequest} from './calendar.js';
 import {collectUsage,adminUsage,snapshotUsage} from './usage.js';
 import {kieProxy,adminByok,byokConfig} from './byok.js';
 import {healthData} from './health-data.js';
@@ -60,7 +61,8 @@ export default {
       if(!['GET','HEAD','OPTIONS'].includes(req.method)&&(/^\/api\/(conversations|messages)(?:\/|$)/.test(url.pathname)||url.pathname==='/api/profile/avatar'))await verified(env,await user(req,env));
       if(url.pathname==='/api/friends'&&req.method==='POST'&&(await req.clone().json()).action==='send')await verified(env,await user(req,env));
       if(url.pathname==='/api/checkins'&&req.method==='POST'){const b=await req.clone().json();if(b.visibility!=='only me')await verified(env,await user(req,env));}
-      if(url.pathname==='/api/ai/byok/kie')out=await kieProxy(req,env);
+      if(url.pathname==='/api/cal'||url.pathname.startsWith('/api/cal/'))out=await calendarRequest(req,env);
+      else if(url.pathname==='/api/ai/byok/kie')out=await kieProxy(req,env);
       else if(url.pathname==='/api/admin/byok')out=await adminByok(req,env);
       else if(url.pathname.startsWith('/api/health/oauth/'))out=await healthOAuth(req,env,url.pathname);
       else if(url.pathname.startsWith('/api/health/')||url.pathname==='/api/admin/health')out=await healthData(req,env,url.pathname);
@@ -124,7 +126,7 @@ export default {
       if (out instanceof Response) { for (const [key,value] of Object.entries(cors)) out.headers.set(key,value); return out; }
       return json({ ok: true, ...out }, 200, cors);
     } catch (e) {
-      return json({ ok: false, error: e.safe ? e.message : 'Request failed', ...(e.code ? {code:e.code} : {}), ...(e.copy ? {server:e.copy} : {}) }, e.status || 400, cors);
+      return json({ ok: false, error: e.safe ? e.message : 'Request failed', ...(e.retryAfter ? {retryAfter:e.retryAfter} : {}), ...(e.code ? {code:e.code} : {}), ...(e.copy ? {server:e.copy} : {}) }, e.status || 400, cors);
     }
   },
 };
