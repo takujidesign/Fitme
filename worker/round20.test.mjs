@@ -12,8 +12,8 @@ assert.equal((await call('cal',body,'POST','')).status,401);
 let res=await call('cal',body);assert.equal(res.status,200);const first=await res.json(),secret=first.url.match(/cal\/(.*)\.ics/)[1];assert.equal(secret.length,64);
 const stored=db.prepare('SELECT * FROM calendar_feeds').get();assert.equal(stored.token_hash,await hash(secret));assert(!JSON.stringify(stored).includes(secret));
 res=await call('cal/'+secret+'.ics');assert.equal(res.status,200);const ics=await res.text();assert(ics.includes('TRIGGER:PT0M'));assert(ics.includes('X-PUBLISHED-TTL:PT6H'));assert(res.headers.get('Cache-Control'));assert(!ics.includes(uid));assert(!ics.includes('private@example.test'));
-const rotated=await (await call('cal',{...body,rotate:true})).json();assert.notEqual(rotated.url,first.url);assert.equal((await call('cal/'+secret+'.ics')).status,404);
-const path=rotated.url.split('/api/')[1];assert.equal((await call(path)).status,200);await call('cal',undefined,'DELETE');assert.equal((await call(path)).status,404);
+const rotated=await (await call('cal',{...body,rotate:true})).json();assert.notEqual(rotated.url,first.url);{const old=await call('cal/'+secret+'.ics');assert.equal(old.status,200);assert(!(await old.text()).includes('BEGIN:VEVENT'),'rotated link must serve an empty calendar');}
+const path=rotated.url.split('/api/')[1];assert.equal((await call(path)).status,200);await call('cal',undefined,'DELETE');{const gone=await call(path);assert.equal(gone.status,200);assert(!(await gone.text()).includes('BEGIN:VEVENT'),'revoked link must serve an empty calendar');}assert.equal((await call('cal/not-a-token.ics')).status,404);
 for(let i=0;i<60;i++)res=await call('cal/'+'0'.repeat(64)+'.ics');assert.equal(res.status,429);assert((await res.json()).retryAfter>0);
 const keys=await generateVapidKeys();env.VAPID_PUBLIC_KEY=keys.publicKey;env.VAPID_PRIVATE_KEY=keys.privateKey;const id=crypto.randomUUID();
 // A missing subscription is sufficient: count each self-test attempt before delivery.

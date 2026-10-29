@@ -11,8 +11,9 @@ export async function calendarRequest(req,env){
   await cap(env,'calendar-feed',ip(req),60,3600000);
   const token=/^\/api\/cal\/([a-f0-9]{64})\.ics$/.exec(path)?.[1];
   const row=token&&await query(env,'SELECT tz,reminders,sequence FROM calendar_feeds WHERE token_hash=?',await hash(token)).first();
-  if(!row)throw fail('Calendar not found',404);
-  return new Response(buildICS(JSON.parse(row.reminders),{tz:row.tz,sequence:row.sequence}),{headers:{'Content-Type':'text/calendar; charset=utf-8','Cache-Control':'private, max-age=300','X-PUBLISHED-TTL':'PT6H','Referrer-Policy':'no-referrer'}});
+  if(!token)throw fail('Calendar not found',404);
+  // A revoked or rotated link serves an empty calendar so subscribed devices drop the old alarms on their next refresh.
+  return new Response(row?buildICS(JSON.parse(row.reminders),{tz:row.tz,sequence:row.sequence}):buildICS([],{tz:'UTC'}),{headers:{'Content-Type':'text/calendar; charset=utf-8','Cache-Control':'private, max-age=300','X-PUBLISHED-TTL':'PT6H','Referrer-Policy':'no-referrer'}});
  }
  const u=await user(req,env);
  if(req.method==='DELETE'){await query(env,'DELETE FROM calendar_feeds WHERE user_id=?',u.id).run();return {};}
