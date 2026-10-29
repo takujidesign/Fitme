@@ -113,3 +113,5 @@ export function rng(seed) {
 export const pick = (arr, r) => arr[Math.floor(r() * arr.length) % arr.length];
 
 if (typeof window !== 'undefined') window.addEventListener('hashchange',()=>closeSheet(true));
+
+export const fmtSec = (s) => (s >= 60 ? `${Math.round(s / 60)} ${L('นาที', 'min')}` : `${s} ${L('วินาที', 'sec')}`);

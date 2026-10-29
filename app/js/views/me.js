@@ -14,7 +14,6 @@ import { getState, setState, todayISO, addDays, putImage, imageURL, compressImag
 import { L, esc, icon, sheet, closeSheet, toast, dateLabel, fmt } from '../ui.js';
 import { bmi, bmiClass, targets, GOALS, sleepNeed, bedtimes, weeksToGoal } from '../calc.js';
 import { hasPro, canExport, useExport } from '../pay.js';
-import { exportPDF, exportICS, exportJSON } from '../export.js';
 import { resetOnboardStep } from './onboard.js';
 import { CONFIG } from '../config.js';
 
@@ -50,7 +49,7 @@ views.me = () => {
       ${p.bodyFat ? `<p class="muted sm">${L('ไขมัน', 'Body fat')} ${p.bodyFat}% ${p.muscle ? `· ${L('กล้ามเนื้อ', 'Muscle')} ${p.muscle} kg` : ''} ${p.bmrScan ? `· BMR ${p.bmrScan}` : ''}</p>` : ''}
     </section>
 
-    <section class="card"><h2>${L('เกี่ยวกับ','About')}</h2><p>${esc(appVersion)}</p><button class="btn ghost" data-act="check-update">${L('ตรวจหาอัปเดต','Check for updates')}</button></section>${progressCard(sparkline(s.weights.slice(-20).map(w => ({v:w.kg}))))}
+    <section class="card"><h2>${L('เกี่ยวกับ','About')}</h2><p>${esc(appVersion)}</p><div id="offline-readiness"></div><button class="btn ghost" data-act="check-update">${L('ตรวจหาอัปเดต','Check for updates')}</button></section>${progressCard(sparkline(s.weights.slice(-20).map(w => ({v:w.kg}))))}
     <section class="card">
       <div class="row between"><h2>${icon('camera', 20)} ${L('รูปร่าง', 'Body photos')}</h2><button class="btn xs ghost" data-act="me-photo">${icon('plus', 16)} ${L('เพิ่มรูป', 'Add')}</button></div>
       <p class="muted sm">${L('รูปที่บันทึกเก็บในเครื่อง ส่งให้ AI เฉพาะเมื่อยินยอม · ถ่ายมุมเดิม แสงเดิม ทุก 2 สัปดาห์', 'Saved photos stay on this device; AI uploads only with consent · same angle and light every 2 weeks')}</p>
@@ -79,14 +78,14 @@ views.me = () => {
     <details class="card"><summary>${L('สุขภาพและความก้าวหน้า','Health and progress')}</summary><div class="list">${[['muscles','กล้ามเนื้อ','Muscles'],['records','สถิติส่วนตัว','Personal records'],['tools','เครื่องคำนวณ','Calculators']].map(([path,th,en])=>`<a class="list-row" href="#/${path}">${L(th,en)}${icon('chev',16)}</a>`).join('')}</div>${accountCard()}${badgeGrid()}${replanCard()}${healthCard()}${slot('me.secondary')}</details>
     <details class="card" id="me-data"><summary>${L('ข้อมูลและสำรอง','Data & backup')}</summary>    ${CONFIG.freeMode ? '' : `<section class="card premium ${hasPro() ? 'on' : ''}">
       <div class="row between"><h2>${icon('spark', 20)} Fixmee Pro</h2>${hasPro() ? `<span class="tag teal">${L('ใช้งานถึง', 'Active until')} ${dateLabel(s.premium.until.slice(0, 10), { day: 'numeric', month: 'short', year: 'numeric' })}</span>` : ''}</div>
-      ${hasPro() ? '' : `<p class="muted sm">${L('แผนเต็มทุกวัน · อาหารเสริมไม่จำกัด · AI อ่านฉลาก · ดาวน์โหลด PDF/ปฏิทิน', 'Full plan · unlimited supplements · AI label reader · PDF & calendar downloads')}</p><button class="btn primary block" data-act="go" data-to="#/pay">${L('อัปเกรด', 'Upgrade')}</button>`}
+      ${hasPro() ? '' : `<p class="muted sm">${L('แผนเต็มทุกวัน · อาหารเสริมไม่จำกัด · AI อ่านฉลาก · ดาวน์โหลด PDF', 'Full plan · unlimited supplements · AI label reader · PDF downloads')}</p><button class="btn primary block" data-act="go" data-to="#/pay">${L('อัปเกรด', 'Upgrade')}</button>`}
       ${!hasPro() && s.premium.exportsLeft ? `<p class="muted sm">${L(`สิทธิ์ดาวน์โหลดคงเหลือ ${s.premium.exportsLeft} ครั้ง`, `${s.premium.exportsLeft} download(s) left`)}</p>` : ''}
     </section>`}
 
     <section class="card">
       <h2>${icon('download', 20)} ${L('ดาวน์โหลดแผน', 'Download plan')}</h2>
       <div class="seg">${[7, 30, 60, 90].map((n) => `<button class="chip ${p.planDays === n ? 'on' : ''}" data-act="me-days" data-v="${n}">${n} ${L('วัน', 'days')}</button>`).join('')}</div>
-      <div class="row gap"><button class="btn ghost block" data-act="me-pdf">${canExport() ? '' : icon('lock', 16)} PDF</button><button class="btn ghost block" data-act="me-ics">${canExport() ? '' : icon('lock', 16)} ${L('ปฏิทิน', 'Calendar')} .ics</button></div>
+      <div class="row gap"><button class="btn ghost block" data-act="me-pdf">${canExport() ? '' : icon('lock', 16)} PDF</button><button class="btn ghost block" data-act="me-ics"> ${L('ปฏิทิน', 'Calendar')} .ics</button></div>
       <p class="muted sm">${L('PDF: กด "บันทึกเป็น PDF" ในหน้าพิมพ์ · ปฏิทิน: นำเข้า Google/Apple Calendar เพื่อแจ้งเตือนมื้ออาหาร อาหารเสริม และเวลาออกกำลังกาย', 'PDF: choose "Save as PDF" in the print dialog · Calendar: import into Google/Apple Calendar for meal, supplement and workout reminders')}</p>
     </section>
 
@@ -105,6 +104,7 @@ views.me = () => {
     <p class="muted sm center">Fixmee · ${L('คำแนะนำทั่วไป ไม่ใช่คำวินิจฉัยทางการแพทย์', 'General guidance, not medical advice')}</p>${slot('me.footer')}`;
 };
 views.me.mount = async (root) => {
+  const {offlineCard}=await import('../offline-core.js');const readiness=root.querySelector('#offline-readiness');if(readiness)readiness.outerHTML=offlineCard();
   mountTrainerNotes(root);
   for (const el of root.querySelectorAll('[data-img]')) {
     const u = await imageURL(el.dataset.img);
@@ -123,9 +123,9 @@ const gateExport = (fn) => {
   useExport();
   rerender();
 };
-actions['me-pdf'] = () => gateExport(exportPDF);
-actions['me-ics'] = () => gateExport(exportICS);
-actions['me-backup'] = () => exportJSON();
+actions['me-pdf'] = async () => gateExport((await import('../export.js')).exportPDF);
+actions['me-ics'] = () => actions.notifications();
+actions['me-backup'] = async () => (await import('../export.js')).exportJSON();
 actions['me-restore'] = async () => {
   const [f] = await pickFiles({ accept: 'application/json,.json' });
   if (!f) return;

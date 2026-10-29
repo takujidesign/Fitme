@@ -70,7 +70,7 @@ export function setState(mutator, {remote = false} = {}) {
   if (!remote) {
     const now=Date.now();state.updatedAt ||= {};
     for(const k of syncKeys) if(before[k]!==JSON.stringify(state[k])) {
-      state.updatedAt[k]=now;
+      state.updatedAt[k]=Math.max(now,(state.updatedAt[k]||0)+1);
       if(rows[k]) {
         if(Array.isArray(state[k])) { const id=v=>v.uid||v.id||v.date;const old=new Map(rows[k].map(v=>[id(v),JSON.stringify(v)]));for(const v of state[k])if(old.get(id(v))!==JSON.stringify(v))v.updatedAt=now; }
         else for(const [id,v] of Object.entries(state[k]||{}))if(v && typeof v==='object' && JSON.stringify(rows[k][id])!==JSON.stringify(v))v.updatedAt=now;
