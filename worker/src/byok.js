@@ -12,7 +12,7 @@ export async function kieProxy(req,env,fetcher=fetch){
  const key=req.headers.get('X-BYOK-Key')||'';if(!key||key.length>512||/[\r\n]/.test(key))throw fail('Invalid provider key');
  const b=await input(req,z.object({model:z.string().min(1).max(120),input:z.array(z.json()).max(20),text:z.object({format:z.json()}).strict(),store:z.literal(false)}).strict(),6000000);
  const c=await byokConfig(env);if(!config.safeParse(c).success)throw fail('Provider configuration invalid',503);
- let r;try{r=await fetcher('https://api.kie.ai'+c.kiePath,{method:'POST',redirect:'error',headers:{'Content-Type':'application/json',Authorization:'Bearer '+key},body:JSON.stringify(b),signal:AbortSignal.timeout(60000)});}catch{throw fail('Provider connection failed',502);}
+ let r;try{r=await fetcher('https://api.kie.ai'+c.kiePath,{method:'POST',redirect:'manual',headers:{'Content-Type':'application/json',Authorization:'Bearer '+key},body:JSON.stringify(b),signal:AbortSignal.timeout(60000)});}catch{throw fail('Provider connection failed',502);}
  if(!r.ok)throw fail('Provider HTTP '+r.status,r.status>=500?502:r.status);
  // Never relay arbitrary provider errors, headers or a reflected credential.
  let d;try{d=await r.json();}catch{throw fail('Invalid provider response',502);}

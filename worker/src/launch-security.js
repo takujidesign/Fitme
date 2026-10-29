@@ -99,7 +99,7 @@ export async function adminLaunch(req,env,path){
   await cap(env,'test-push',ip(req),3,3600000);
   const {subscription}=await input(req,z.object({subscription:z.object({endpoint:z.string().url().max(4096),expirationTime:z.number().nullable().optional(),keys:z.object({p256dh:z.string().max(200),auth:z.string().max(100)}).strict()}).strict()}).strict());
   if(!validEndpoint(subscription.endpoint))throw fail('Invalid push endpoint');
-  const response=await fetch(subscription.endpoint,{method:'POST',redirect:'error',headers:{TTL:'60','Content-Encoding':'aes128gcm','Content-Type':'application/octet-stream',Authorization:`vapid t=${await vapidJWT(subscription.endpoint,env)}, k=${await getSecret(env,'vapidPublicKey')}`},body:await encryptPush(subscription,{title:'Fixmee',body:'Test notification',route:'#/me'}),signal:AbortSignal.timeout(10000)});
+  const response=await fetch(subscription.endpoint,{method:'POST',redirect:'manual',headers:{TTL:'60','Content-Encoding':'aes128gcm','Content-Type':'application/octet-stream',Authorization:`vapid t=${await vapidJWT(subscription.endpoint,env)}, k=${await getSecret(env,'vapidPublicKey')}`},body:await encryptPush(subscription,{title:'Fixmee',body:'Test notification',route:'#/me'}),signal:AbortSignal.timeout(10000)});
   if(!response.ok)throw fail('Push delivery unavailable',503);return {};
  }
  if(path==='/api/admin/test-email'&&req.method==='POST'){
