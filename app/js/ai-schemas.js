@@ -6,7 +6,7 @@ const Doses = z.object({
   pre: z.number(), post: z.number(), dinner: z.number(), night: z.number(),
 });
 const Bi = z.object({ th: z.string(), en: z.string(),zh:z.string().optional(),ja:z.string().optional(),vi:z.string().optional() });
-const MealItem = z.object({ name: Bi, grams: z.number().positive(), kcal: z.number().nonnegative(), p: z.number().nonnegative(), c: z.number().nonnegative(), f: z.number().nonnegative(), confidence: z.enum(['low', 'medium', 'high']) });
+const MealItem = z.object({name_th:z.string().min(1).max(150),name_en:z.string().min(1).max(150),kind:z.enum(['dish','ingredient','drink','packaged']),portion:z.object({amount:z.number().positive().max(10000),unit:z.enum(['plate','bowl','ladle','piece','glass','g','ml'])}),grams_est:z.number().positive().max(10000),confidence:z.number().min(0).max(1),macros_est:z.object({kcal:z.number().nonnegative().max(50000),p:z.number().nonnegative().max(10000),c:z.number().nonnegative().max(10000),f:z.number().nonnegative().max(10000)}).optional()});
 
 const Product = z.object({
   isSupplement: z.boolean(),

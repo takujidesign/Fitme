@@ -28,3 +28,7 @@ tests/.round*-chrome/
 
 # Scratch output from automated QA runs
 .tmp/
+
+# Private owner food benchmark
+food-eval/*
+!food-eval/labels.example.json
