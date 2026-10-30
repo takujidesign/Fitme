@@ -137,6 +137,7 @@ actions['ob-next'] = () => {
   });
   step = 0;
   go(wasOnboarded ? '#/me' : '#/today');
+  if (!wasOnboarded) import('../install.js').then((m) => m.offerInstall('onboarded'));
 };
 export const resetOnboardStep = () => (step = 0);
 

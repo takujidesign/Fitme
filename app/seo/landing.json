@@ -1,202 +1,1557 @@
 {
  "th": {
-  "nav": ["ฟีเจอร์", "เริ่มยังไง", "ติดตั้ง", "คำถาม", "เปิดแอป"],
+  "nav": [
+   "ฟีเจอร์",
+   "เริ่มยังไง",
+   "ติดตั้ง",
+   "คำถาม",
+   "เปิดแอป"
+  ],
   "eyebrow": "ฟรี · ใช้ผ่านเว็บได้ทันที ไม่ต้องโหลดจาก Store",
-  "h1": ["แผนฝึก อาหาร และวินัย", "จบในแอปเดียว"],
+  "h1": [
+   "แผนฝึก อาหาร และวินัย",
+   "จบในแอปเดียว"
+  ],
   "lead": "บอกเป้าหมาย วันที่ว่าง และอุปกรณ์ที่มี Fixmee จัดตารางวันนี้ให้ครบ ว่าต้องฝึกอะไร กินแค่ไหน ทานวิตามินตอนไหน แล้วเตือนให้ตรงเวลา",
   "cta": "เริ่มใช้งานฟรี",
   "cta2": "ดูว่าทำอะไรได้บ้าง",
-  "chips": ["ไม่ต้องสมัครก็เริ่มได้", "ใช้ได้แม้ไม่มีเน็ต", "iPhone · Android · คอม", "5 ภาษา"],
-  "phone": {"label": "ตัวอย่างหน้าวันนี้ในแอป Fixmee", "day": "พุธ 30 ต.ค.", "today": "วันนี้", "now": "ตอนนี้", "events": [["06:30", "ตื่นนอน + น้ำ 1 แก้ว", ""], ["07:30", "ข้าวต้มปลา + ไข่ต้ม", "420 kcal · โปรตีน 32 g"], ["08:00", "วิตามิน D · โอเมก้า 3", "หลังอาหาร"], ["12:30", "อกไก่ย่าง ข้าวกล้อง", "560 kcal · โปรตีน 45 g"], ["18:00", "ฝึกช่วงบน", "6 ท่า · 45 นาที · ดัมเบล"], ["19:30", "มื้อเย็น", "เหลือ 640 kcal"], ["22:30", "เตรียมนอน", "นอน 23:00"]]},
-  "float": [["ถึงเวลาฝึกแล้ว", "ฝึกช่วงบน · 45 นาที"], ["ทำครบ 5 วันติด", "ฝึกตามแผนสัปดาห์นี้"]],
+  "chips": [
+   "ไม่ต้องสมัครก็เริ่มได้",
+   "ใช้ได้แม้ไม่มีเน็ต",
+   "iPhone · Android · คอม",
+   "5 ภาษา"
+  ],
+  "phone": {
+   "label": "ตัวอย่างหน้าวันนี้ในแอป Fixmee",
+   "day": "พุธ 30 ต.ค.",
+   "today": "วันนี้",
+   "now": "ตอนนี้",
+   "events": [
+    [
+     "06:30",
+     "ตื่นนอน + น้ำ 1 แก้ว",
+     ""
+    ],
+    [
+     "07:30",
+     "ข้าวต้มปลา + ไข่ต้ม",
+     "420 kcal · โปรตีน 32 g"
+    ],
+    [
+     "08:00",
+     "วิตามิน D · โอเมก้า 3",
+     "หลังอาหาร"
+    ],
+    [
+     "12:30",
+     "อกไก่ย่าง ข้าวกล้อง",
+     "560 kcal · โปรตีน 45 g"
+    ],
+    [
+     "18:00",
+     "ฝึกช่วงบน",
+     "6 ท่า · 45 นาที · ดัมเบล"
+    ],
+    [
+     "19:30",
+     "มื้อเย็น",
+     "เหลือ 640 kcal"
+    ],
+    [
+     "22:30",
+     "เตรียมนอน",
+     "นอน 23:00"
+    ]
+   ]
+  },
+  "float": [
+   [
+    "ถึงเวลาฝึกแล้ว",
+    "ฝึกช่วงบน · 45 นาที"
+   ],
+   [
+    "ทำครบ 5 วันติด",
+    "ฝึกตามแผนสัปดาห์นี้"
+   ]
+  ],
   "painsKicker": "ปัญหาที่หลายคนเจอ",
   "painsTitle": "อยากดูแลตัวเอง แต่ไม่รู้จะเริ่มตรงไหน",
-  "pains": [["“เข้ายิมแล้วไม่รู้จะเล่นอะไร”", "Fixmee จัด**ท่าฝึก เซ็ต และเวลาพัก**ตามระดับและอุปกรณ์ที่มี พร้อมภาพอธิบายทุกท่า"], ["“นับแคลอรีแล้วเหนื่อย เลิกทุกที”", "ได้**เมนูแนะนำรายวัน**ที่ปรับได้ สแกนบาร์โค้ด หรือถ่ายรูปอาหารแทนการพิมพ์"], ["“ลืมกินวิตามิน ลืมดื่มน้ำ”", "**เตือนตรงเวลา**ผ่านมือถือ หรือผ่านปฏิทินในเครื่องที่ยังเตือนได้แม้ไม่มีเน็ต"]],
+  "pains": [
+   [
+    "“เข้ายิมแล้วไม่รู้จะเล่นอะไร”",
+    "Fixmee จัด**ท่าฝึก เซ็ต และเวลาพัก**ตามระดับและอุปกรณ์ที่มี พร้อมภาพอธิบายทุกท่า"
+   ],
+   [
+    "“นับแคลอรีแล้วเหนื่อย เลิกทุกที”",
+    "ได้**เมนูแนะนำรายวัน**ที่ปรับได้ สแกนบาร์โค้ด หรือถ่ายรูปอาหารแทนการพิมพ์"
+   ],
+   [
+    "“ลืมกินวิตามิน ลืมดื่มน้ำ”",
+    "**เตือนตรงเวลา**ผ่านมือถือ หรือผ่านปฏิทินในเครื่องที่ยังเตือนได้แม้ไม่มีเน็ต"
+   ]
+  ],
   "featKicker": "ทำอะไรได้บ้าง",
   "featTitle": "ทุกอย่างที่ต้องใช้ในแต่ละวัน",
   "featSub": "ไม่ต้องสลับหลายแอป ทั้งฝึก กิน อาหารเสริม การนอน และความคืบหน้า อยู่ในตารางเดียว",
   "features": [
-   {"pill": "แผนออกกำลังกาย", "title": "แผนฝึกที่เข้ากับชีวิตจริง ไม่ใช่แผนสำเร็จรูป", "body": "เลือกวันที่ว่าง เวลาที่มี และอุปกรณ์ ที่บ้านหรือที่ยิมก็ได้ แผนจะแบ่งการฝึกตามระดับและค่อย ๆ เพิ่มความท้าทาย", "ticks": ["ภาพท่าฝึกทุกท่า พร้อมขั้นตอนและข้อควรระวัง", "โหมดเล่นตามแผน มีตัวนับเซ็ตและเวลาพัก", "เปลี่ยนท่าได้เมื่ออุปกรณ์ไม่ว่างหรือเจ็บ"]},
-   {"pill": "อาหารและแคลอรี", "title": "รู้ว่าวันนี้ควรกินเท่าไร และกินอะไรดี", "body": "Fixmee คำนวณพลังงานและโปรตีนจากเป้าหมายของคุณ แล้วจัดเมนูอาหารไทยที่หาได้จริงให้แต่ละมื้อ", "ticks": ["ฐานข้อมูลอาหารไทย ค้นหาได้แม้ไม่มีเน็ต", "สแกนบาร์โค้ดหรือฉลากโภชนาการ", "ถ่ายรูปจาน ให้ AI ช่วยประเมิน"]},
-   {"pill": "อาหารเสริม ยา และการเตือน", "title": "เตือนตรงเวลา แม้ตอนไม่มีเน็ต", "body": "ตั้งวิตามิน ยา น้ำ เวลานอน หรือช่วง IF ได้ แอปจะเตือนผ่านมือถือ หรือใส่ลงปฏิทินในเครื่องให้เตือนแบบออฟไลน์", "ticks": ["ทานก่อนหรือหลังอาหาร จัดเวลาให้อัตโนมัติ", "ช่วงห้ามรบกวน ไม่เตือนตอนนอน", "ซ่อนชื่อยาบนหน้าจอล็อก เพื่อความเป็นส่วนตัว"]},
-   {"pill": "โค้ช AI", "title": "มีคำถามเมื่อไร ถามโค้ชได้ทันที", "body": "ถามเรื่องท่าฝึก เมนูทดแทน หรือให้ช่วยดูแผนสัปดาห์ AI ตอบจากข้อมูลแผนของคุณเอง ไม่ใช่คำตอบกลาง ๆ", "ticks": ["รีวิวแผนฝึกและรูปร่างจากรูปถ่าย", "เลือกใช้คีย์ AI ของคุณเองได้", "ไม่ใช่คำแนะนำทางการแพทย์ ปรึกษาแพทย์เมื่อจำเป็น"]},
-   {"pill": "ความคืบหน้า", "title": "เห็นผลชัด ๆ ว่าตัวเองเปลี่ยนไปแค่ไหน", "body": "บันทึกน้ำหนัก สัดส่วน และรูปถ่าย ดูกราฟย้อนหลัง หรือดึงข้อมูลจากแอปสุขภาพในมือถือ", "ticks": ["กราฟน้ำหนัก รอบเอว และสถิติการฝึก", "ชวนเพื่อนเป็นบัดดี้ ให้กำลังใจกัน", "สำรองและซิงก์ข้อมูลข้ามเครื่อง"]}
+   {
+    "pill": "แผนออกกำลังกาย",
+    "title": "แผนฝึกที่เข้ากับชีวิตจริง ไม่ใช่แผนสำเร็จรูป",
+    "body": "เลือกวันที่ว่าง เวลาที่มี และอุปกรณ์ ที่บ้านหรือที่ยิมก็ได้ แผนจะแบ่งการฝึกตามระดับและค่อย ๆ เพิ่มความท้าทาย",
+    "ticks": [
+     "ภาพท่าฝึกทุกท่า พร้อมขั้นตอนและข้อควรระวัง",
+     "โหมดเล่นตามแผน มีตัวนับเซ็ตและเวลาพัก",
+     "เปลี่ยนท่าได้เมื่ออุปกรณ์ไม่ว่างหรือเจ็บ"
+    ]
+   },
+   {
+    "pill": "อาหารและแคลอรี",
+    "title": "รู้ว่าวันนี้ควรกินเท่าไร และกินอะไรดี",
+    "body": "Fixmee คำนวณพลังงานและโปรตีนจากเป้าหมายของคุณ แล้วจัดเมนูอาหารไทยที่หาได้จริงให้แต่ละมื้อ",
+    "ticks": [
+     "ฐานข้อมูลอาหารไทย ค้นหาได้แม้ไม่มีเน็ต",
+     "สแกนบาร์โค้ดหรือฉลากโภชนาการ",
+     "ถ่ายรูปจาน ให้ AI ช่วยประเมิน"
+    ]
+   },
+   {
+    "pill": "อาหารเสริม ยา และการเตือน",
+    "title": "เตือนตรงเวลา แม้ตอนไม่มีเน็ต",
+    "body": "ตั้งวิตามิน ยา น้ำ เวลานอน หรือช่วง IF ได้ แอปจะเตือนผ่านมือถือ หรือใส่ลงปฏิทินในเครื่องให้เตือนแบบออฟไลน์",
+    "ticks": [
+     "ทานก่อนหรือหลังอาหาร จัดเวลาให้อัตโนมัติ",
+     "ช่วงห้ามรบกวน ไม่เตือนตอนนอน",
+     "ซ่อนชื่อยาบนหน้าจอล็อก เพื่อความเป็นส่วนตัว"
+    ]
+   },
+   {
+    "pill": "โค้ช AI",
+    "title": "มีคำถามเมื่อไร ถามโค้ชได้ทันที",
+    "body": "ถามเรื่องท่าฝึก เมนูทดแทน หรือให้ช่วยดูแผนสัปดาห์ AI ตอบจากข้อมูลแผนของคุณเอง ไม่ใช่คำตอบกลาง ๆ",
+    "ticks": [
+     "รีวิวแผนฝึกและรูปร่างจากรูปถ่าย",
+     "เลือกใช้คีย์ AI ของคุณเองได้",
+     "ไม่ใช่คำแนะนำทางการแพทย์ ปรึกษาแพทย์เมื่อจำเป็น"
+    ]
+   },
+   {
+    "pill": "ความคืบหน้า",
+    "title": "เห็นผลชัด ๆ ว่าตัวเองเปลี่ยนไปแค่ไหน",
+    "body": "บันทึกน้ำหนัก สัดส่วน และรูปถ่าย ดูกราฟย้อนหลัง หรือดึงข้อมูลจากแอปสุขภาพในมือถือ",
+    "ticks": [
+     "กราฟน้ำหนัก รอบเอว และสถิติการฝึก",
+     "ชวนเพื่อนเป็นบัดดี้ ให้กำลังใจกัน",
+     "สำรองและซิงก์ข้อมูลข้ามเครื่อง"
+    ]
+   }
   ],
-  "mock": {"exStep": "ท่าที่ 2 จาก 6", "exMeta": "ขา · สะโพก · ดัมเบล 12 kg", "rest": "พักก่อนเซ็ตถัดไป", "skip": "ข้าม", "eaten": "วันนี้กินไปแล้ว", "goal": "เป้า 1,980 kcal", "macros": ["โปรตีน", "คาร์บ", "ไขมัน"], "meals": [["🍚 ข้าวกะเพราไก่ ไข่ดาว", "มื้อเที่ยง · ถ่ายรูป", "610"], ["🥛 นมถั่วเหลือง", "ของว่าง · สแกนบาร์โค้ด", "130"]], "lockDate": "วันพุธที่ 30 ตุลาคม", "notes": [["ตอนนี้", "เวลาออกกำลังกาย · ฝึกช่วงบน 45 นาที"], ["2 ชม.ก่อน", "ดื่มน้ำ 1 แก้ว 💧"], ["10 ชม.ก่อน", "Fixmee: ถึงเวลาแล้ว"]], "chat": ["เมื่อวานนอนน้อย วันนี้ควรฝึกหนักไหม", "ถ้านอนไม่ถึง 6 ชั่วโมง ลองลดน้ำหนักลงราว 10–15% และตัดเซ็ตสุดท้ายออก ท่าเดิมคงไว้ได้ แล้วเข้านอนตามแผน 23:00 ครับ", "เปลี่ยนมื้อเย็นเป็นเมนูไม่ใช้เตาได้ไหม", "ได้ครับ สลัดอกไก่พร้อมทาน + ข้าวโพด 1 ฝัก ได้โปรตีนราว 35 g ใกล้เคียงเมนูเดิม"], "weight": "น้ำหนัก", "weeks": "8 สัปดาห์", "chartLabel": "กราฟน้ำหนักลดลงต่อเนื่อง 8 สัปดาห์", "stats": ["เริ่มต้น", "ตอนนี้", "ฝึกไปแล้ว", "27 ครั้ง"], "sample": "ตัวเลขตัวอย่างเพื่อแสดงหน้าจอ", "exAlt": "ท่า Goblet squat"},
+  "mock": {
+   "exStep": "ท่าที่ 2 จาก 6",
+   "exMeta": "ขา · สะโพก · ดัมเบล 12 kg",
+   "rest": "พักก่อนเซ็ตถัดไป",
+   "skip": "ข้าม",
+   "eaten": "วันนี้กินไปแล้ว",
+   "goal": "เป้า 1,980 kcal",
+   "macros": [
+    "โปรตีน",
+    "คาร์บ",
+    "ไขมัน"
+   ],
+   "meals": [
+    [
+     "🍚 ข้าวกะเพราไก่ ไข่ดาว",
+     "มื้อเที่ยง · ถ่ายรูป",
+     "610"
+    ],
+    [
+     "🥛 นมถั่วเหลือง",
+     "ของว่าง · สแกนบาร์โค้ด",
+     "130"
+    ]
+   ],
+   "lockDate": "วันพุธที่ 30 ตุลาคม",
+   "notes": [
+    [
+     "ตอนนี้",
+     "เวลาออกกำลังกาย · ฝึกช่วงบน 45 นาที"
+    ],
+    [
+     "2 ชม.ก่อน",
+     "ดื่มน้ำ 1 แก้ว 💧"
+    ],
+    [
+     "10 ชม.ก่อน",
+     "Fixmee: ถึงเวลาแล้ว"
+    ]
+   ],
+   "chat": [
+    "เมื่อวานนอนน้อย วันนี้ควรฝึกหนักไหม",
+    "ถ้านอนไม่ถึง 6 ชั่วโมง ลองลดน้ำหนักลงราว 10–15% และตัดเซ็ตสุดท้ายออก ท่าเดิมคงไว้ได้ แล้วเข้านอนตามแผน 23:00 ครับ",
+    "เปลี่ยนมื้อเย็นเป็นเมนูไม่ใช้เตาได้ไหม",
+    "ได้ครับ สลัดอกไก่พร้อมทาน + ข้าวโพด 1 ฝัก ได้โปรตีนราว 35 g ใกล้เคียงเมนูเดิม"
+   ],
+   "weight": "น้ำหนัก",
+   "weeks": "8 สัปดาห์",
+   "chartLabel": "กราฟน้ำหนักลดลงต่อเนื่อง 8 สัปดาห์",
+   "stats": [
+    "เริ่มต้น",
+    "ตอนนี้",
+    "ฝึกไปแล้ว",
+    "27 ครั้ง"
+   ],
+   "sample": "ตัวเลขตัวอย่างเพื่อแสดงหน้าจอ",
+   "exAlt": "ท่า Goblet squat"
+  },
   "moreTitle": "และอีกเพียบ",
-  "more": [["📴", "ใช้ได้ไม่มีเน็ต", "เปิดแอป บันทึก และจับเวลาได้ แล้วซิงก์ทีหลัง"], ["⏱️", "IF / อดอาหาร", "ตั้งช่วงกินและเตือนเริ่ม/หยุด"], ["🛒", "รายการซื้อของ", "สร้างจากเมนูทั้งสัปดาห์"], ["👯", "เพื่อนและแชต", "ฝึกพร้อมกัน ส่งผลฝึกให้กัน"], ["📍", "ยิมใกล้คุณ", "ค้นหายิมและเช็กอิน"], ["❤️", "เชื่อมแอปสุขภาพ", "นำเข้าก้าวเดินและน้ำหนัก"], ["🌙", "โหมดมืด/สว่าง", "สบายตาทุกเวลา"], ["🔒", "เป็นส่วนตัว", "ข้อมูลอยู่ในเครื่อง ปิดการส่งสถิติได้"]],
+  "more": [
+   [
+    "📴",
+    "ใช้ได้ไม่มีเน็ต",
+    "เปิดแอป บันทึก และจับเวลาได้ แล้วซิงก์ทีหลัง"
+   ],
+   [
+    "⏱️",
+    "IF / อดอาหาร",
+    "ตั้งช่วงกินและเตือนเริ่ม/หยุด"
+   ],
+   [
+    "🛒",
+    "รายการซื้อของ",
+    "สร้างจากเมนูทั้งสัปดาห์"
+   ],
+   [
+    "👯",
+    "เพื่อนและแชต",
+    "ฝึกพร้อมกัน ส่งผลฝึกให้กัน"
+   ],
+   [
+    "📍",
+    "ยิมใกล้คุณ",
+    "ค้นหายิมและเช็กอิน"
+   ],
+   [
+    "❤️",
+    "เชื่อมแอปสุขภาพ",
+    "นำเข้าก้าวเดินและน้ำหนัก"
+   ],
+   [
+    "🌙",
+    "โหมดมืด/สว่าง",
+    "สบายตาทุกเวลา"
+   ],
+   [
+    "🔒",
+    "เป็นส่วนตัว",
+    "ข้อมูลอยู่ในเครื่อง ปิดการส่งสถิติได้"
+   ]
+  ],
   "howKicker": "เริ่มใน 2 นาที",
   "howTitle": "ง่ายกว่าที่คิด",
-  "steps": [["บอกเป้าหมาย", "ลดไขมัน เพิ่มกล้าม หรือแค่อยากแข็งแรงขึ้น พร้อมน้ำหนักและส่วนสูง"], ["เลือกวันและอุปกรณ์", "วันไหนว่าง ฝึกที่บ้านหรือยิม มีดัมเบลไหม ชอบอาหารแบบไหน"], ["ทำตามแผนวันนี้", "เปิดแอปเจอตารางวันนี้ทันที ติ๊กที่ทำแล้ว แล้วดูความคืบหน้าทุกสัปดาห์"]],
+  "steps": [
+   [
+    "บอกเป้าหมาย",
+    "ลดไขมัน เพิ่มกล้าม หรือแค่อยากแข็งแรงขึ้น พร้อมน้ำหนักและส่วนสูง"
+   ],
+   [
+    "เลือกวันและอุปกรณ์",
+    "วันไหนว่าง ฝึกที่บ้านหรือยิม มีดัมเบลไหม ชอบอาหารแบบไหน"
+   ],
+   [
+    "ทำตามแผนวันนี้",
+    "เปิดแอปเจอตารางวันนี้ทันที ติ๊กที่ทำแล้ว แล้วดูความคืบหน้าทุกสัปดาห์"
+   ]
+  ],
   "installKicker": "ติดตั้งเหมือนแอปจริง",
   "installTitle": "ไม่ต้องโหลดจาก Store",
   "installSub": "เปิดผ่านเว็บได้เลย หรือเพิ่มไว้บนหน้าจอโฮมเพื่อเปิดเร็ว เต็มจอ และรับการแจ้งเตือน",
-  "ios": ["เปิด **fixmee.app** ใน **Safari**", "แตะปุ่ม **แชร์** ⬆︎", "เลือก **เพิ่มไปยังหน้าจอโฮม**"],
-  "android": ["เปิด **fixmee.app** ใน **Chrome**", "แตะเมนู **⋮**", "เลือก **ติดตั้งแอป**"],
+  "ios": [
+   "เปิด **fixmee.app** ใน **Safari**",
+   "แตะปุ่ม **แชร์** ⬆︎",
+   "เลือก **เพิ่มไปยังหน้าจอโฮม**"
+  ],
+  "android": [
+   "เปิด **fixmee.app** ใน **Chrome**",
+   "แตะเมนู **⋮**",
+   "เลือก **ติดตั้งแอป**"
+  ],
   "faqTitle": "คำถามที่พบบ่อย",
-  "faq": [["ใช้ฟรีจริงไหม", "ฟีเจอร์หลัก ทั้งแผนฝึก แผนอาหาร อาหารเสริม การเตือน และบันทึกความคืบหน้า ใช้ได้ฟรี บางฟีเจอร์ AI อาจมีค่าใช้จ่าย หรือใช้คีย์ AI ของคุณเองได้"], ["ต้องสมัครสมาชิกก่อนไหม", "ไม่ต้อง เริ่มได้ทันทีและข้อมูลเก็บในเครื่อง ถ้าอยากซิงก์ข้ามเครื่องหรือแชตกับเพื่อนค่อยสร้างบัญชีทีหลัง"], ["ต้องติดตั้งแอปไหม", "ไม่จำเป็น ใช้ผ่านเว็บได้เลย แต่แนะนำให้เพิ่มไว้บนหน้าจอโฮม จะเปิดเร็วและรับการแจ้งเตือนได้ (iPhone ต้อง iOS 16.4 ขึ้นไป)"], ["มือใหม่ไม่เคยเข้ายิมใช้ได้ไหม", "ได้ เลือกระดับเริ่มต้นและฝึกที่บ้านได้ ทุกท่ามีภาพและขั้นตอนอธิบาย แผนจะค่อย ๆ เพิ่มความยาก"], ["ข้อมูลสุขภาพของฉันปลอดภัยไหม", "ข้อมูลอยู่ในเครื่องของคุณเป็นหลัก ถ้าสร้างบัญชีจะซิงก์แบบเข้ารหัส สถิติการใช้งานเป็นแบบไม่ระบุตัวตนและปิดได้ ลบบัญชีได้ตลอดเวลา"]],
-  "final": ["เริ่มวันแรกของคุณ", "วันนี้"],
+  "faq": [
+   [
+    "ใช้ฟรีจริงไหม",
+    "ฟีเจอร์หลัก ทั้งแผนฝึก แผนอาหาร อาหารเสริม การเตือน และบันทึกความคืบหน้า ใช้ได้ฟรี บางฟีเจอร์ AI อาจมีค่าใช้จ่าย หรือใช้คีย์ AI ของคุณเองได้"
+   ],
+   [
+    "ต้องสมัครสมาชิกก่อนไหม",
+    "ไม่ต้อง เริ่มได้ทันทีและข้อมูลเก็บในเครื่อง ถ้าอยากซิงก์ข้ามเครื่องหรือแชตกับเพื่อนค่อยสร้างบัญชีทีหลัง"
+   ],
+   [
+    "ต้องติดตั้งแอปไหม",
+    "ไม่จำเป็น ใช้ผ่านเว็บได้เลย แต่แนะนำให้เพิ่มไว้บนหน้าจอโฮม จะเปิดเร็วและรับการแจ้งเตือนได้ (iPhone ต้อง iOS 16.4 ขึ้นไป)"
+   ],
+   [
+    "มือใหม่ไม่เคยเข้ายิมใช้ได้ไหม",
+    "ได้ เลือกระดับเริ่มต้นและฝึกที่บ้านได้ ทุกท่ามีภาพและขั้นตอนอธิบาย แผนจะค่อย ๆ เพิ่มความยาก"
+   ],
+   [
+    "ข้อมูลสุขภาพของฉันปลอดภัยไหม",
+    "ข้อมูลอยู่ในเครื่องของคุณเป็นหลัก ถ้าสร้างบัญชีจะซิงก์แบบเข้ารหัส สถิติการใช้งานเป็นแบบไม่ระบุตัวตนและปิดได้ ลบบัญชีได้ตลอดเวลา"
+   ]
+  ],
+  "final": [
+   "เริ่มวันแรกของคุณ",
+   "วันนี้"
+  ],
   "finalSub": "ใช้เวลาตั้งค่าไม่ถึง 2 นาที ไม่ต้องใช้บัตร ไม่ต้องสมัคร",
-  "footer": ["ท่าออกกำลังกาย", "คู่มือ", "ความเป็นส่วนตัว", "ข้อกำหนด"]
+  "footer": [
+   "ท่าออกกำลังกาย",
+   "คู่มือ",
+   "ความเป็นส่วนตัว",
+   "ข้อกำหนด"
+  ],
+  "installLink": "อยากติดตั้งเป็นแอป? ดูวิธี →"
  },
  "en": {
-  "nav": ["Features", "How it works", "Install", "FAQ", "Open app"],
+  "nav": [
+   "Features",
+   "How it works",
+   "Install",
+   "FAQ",
+   "Open app"
+  ],
   "eyebrow": "Free · Works in your browser · No app store needed",
-  "h1": ["Workouts, meals and habits", "in one simple app"],
+  "h1": [
+   "Workouts, meals and habits",
+   "in one simple app"
+  ],
   "lead": "Tell Fixmee your goal, the days you are free and the equipment you have. It builds today for you: what to train, how much to eat, when to take your vitamins, and reminds you on time.",
   "cta": "Start free",
   "cta2": "See what it does",
-  "chips": ["No sign-up needed", "Works offline", "iPhone · Android · desktop", "5 languages"],
-  "phone": {"label": "Example of the Today screen in Fixmee", "day": "Wed, Oct 30", "today": "Today", "now": "Now", "events": [["06:30", "Wake up + a glass of water", ""], ["07:30", "Oatmeal + boiled eggs", "420 kcal · 32 g protein"], ["08:00", "Vitamin D · Omega-3", "After meal"], ["12:30", "Grilled chicken, brown rice", "560 kcal · 45 g protein"], ["18:00", "Upper body", "6 exercises · 45 min · dumbbells"], ["19:30", "Dinner", "640 kcal left"], ["22:30", "Wind down", "Bed at 23:00"]]},
-  "float": [["Time to train", "Upper body · 45 min"], ["5-day streak", "On plan this week"]],
+  "chips": [
+   "No sign-up needed",
+   "Works offline",
+   "iPhone · Android · desktop",
+   "5 languages"
+  ],
+  "phone": {
+   "label": "Example of the Today screen in Fixmee",
+   "day": "Wed, Oct 30",
+   "today": "Today",
+   "now": "Now",
+   "events": [
+    [
+     "06:30",
+     "Wake up + a glass of water",
+     ""
+    ],
+    [
+     "07:30",
+     "Oatmeal + boiled eggs",
+     "420 kcal · 32 g protein"
+    ],
+    [
+     "08:00",
+     "Vitamin D · Omega-3",
+     "After meal"
+    ],
+    [
+     "12:30",
+     "Grilled chicken, brown rice",
+     "560 kcal · 45 g protein"
+    ],
+    [
+     "18:00",
+     "Upper body",
+     "6 exercises · 45 min · dumbbells"
+    ],
+    [
+     "19:30",
+     "Dinner",
+     "640 kcal left"
+    ],
+    [
+     "22:30",
+     "Wind down",
+     "Bed at 23:00"
+    ]
+   ]
+  },
+  "float": [
+   [
+    "Time to train",
+    "Upper body · 45 min"
+   ],
+   [
+    "5-day streak",
+    "On plan this week"
+   ]
+  ],
   "painsKicker": "Sound familiar?",
   "painsTitle": "You want to get healthier, but where do you start?",
-  "pains": [["“I go to the gym and don’t know what to do”", "Fixmee sets your **exercises, sets and rest times** for your level and equipment, with an illustration for every move."], ["“Counting calories wears me out”", "Get a **daily meal plan** you can adjust. Scan a barcode or snap a photo instead of typing."], ["“I forget my vitamins and water”", "**On-time reminders** on your phone, or through your phone calendar, which still alerts without internet."]],
+  "pains": [
+   [
+    "“I go to the gym and don’t know what to do”",
+    "Fixmee sets your **exercises, sets and rest times** for your level and equipment, with an illustration for every move."
+   ],
+   [
+    "“Counting calories wears me out”",
+    "Get a **daily meal plan** you can adjust. Scan a barcode or snap a photo instead of typing."
+   ],
+   [
+    "“I forget my vitamins and water”",
+    "**On-time reminders** on your phone, or through your phone calendar, which still alerts without internet."
+   ]
+  ],
   "featKicker": "What you get",
   "featTitle": "Everything you need, every day",
   "featSub": "No more switching apps. Training, food, supplements, sleep and progress live in one daily plan.",
   "features": [
-   {"pill": "Workout plan", "title": "A plan that fits your real life", "body": "Pick the days you are free, how long you have and your equipment, at home or at the gym. The plan matches your level and slowly gets harder.", "ticks": ["An illustration, steps and safety notes for every exercise", "Guided player with set counter and rest timer", "Swap an exercise when equipment is busy or something hurts"]},
-   {"pill": "Food and calories", "title": "Know how much to eat today, and what", "body": "Fixmee works out your calories and protein from your goal, then suggests real meals for each part of the day.", "ticks": ["Food database that searches offline", "Scan barcodes and nutrition labels", "Snap your plate and let AI estimate it"]},
-   {"pill": "Supplements, medicines and reminders", "title": "On-time reminders, even offline", "body": "Set vitamins, medicines, water, bedtime or a fasting window. Get reminded on your phone, or add them to your phone calendar for offline alerts.", "ticks": ["Before or after meals, timed for you", "Quiet hours, so nothing wakes you up", "Hide medicine names on the lock screen"]},
-   {"pill": "AI coach", "title": "Got a question? Ask your coach", "body": "Ask about an exercise, a meal swap or your week. The AI answers from your own plan, not generic advice.", "ticks": ["Plan and body review from photos", "Use your own AI key if you prefer", "Not medical advice; see a doctor when needed"]},
-   {"pill": "Progress", "title": "See clearly how far you have come", "body": "Log weight, measurements and photos, see the trends, or import from your phone health app.", "ticks": ["Weight, waist and training charts", "Invite a friend as your accountability buddy", "Back up and sync across devices"]}
+   {
+    "pill": "Workout plan",
+    "title": "A plan that fits your real life",
+    "body": "Pick the days you are free, how long you have and your equipment, at home or at the gym. The plan matches your level and slowly gets harder.",
+    "ticks": [
+     "An illustration, steps and safety notes for every exercise",
+     "Guided player with set counter and rest timer",
+     "Swap an exercise when equipment is busy or something hurts"
+    ]
+   },
+   {
+    "pill": "Food and calories",
+    "title": "Know how much to eat today, and what",
+    "body": "Fixmee works out your calories and protein from your goal, then suggests real meals for each part of the day.",
+    "ticks": [
+     "Food database that searches offline",
+     "Scan barcodes and nutrition labels",
+     "Snap your plate and let AI estimate it"
+    ]
+   },
+   {
+    "pill": "Supplements, medicines and reminders",
+    "title": "On-time reminders, even offline",
+    "body": "Set vitamins, medicines, water, bedtime or a fasting window. Get reminded on your phone, or add them to your phone calendar for offline alerts.",
+    "ticks": [
+     "Before or after meals, timed for you",
+     "Quiet hours, so nothing wakes you up",
+     "Hide medicine names on the lock screen"
+    ]
+   },
+   {
+    "pill": "AI coach",
+    "title": "Got a question? Ask your coach",
+    "body": "Ask about an exercise, a meal swap or your week. The AI answers from your own plan, not generic advice.",
+    "ticks": [
+     "Plan and body review from photos",
+     "Use your own AI key if you prefer",
+     "Not medical advice; see a doctor when needed"
+    ]
+   },
+   {
+    "pill": "Progress",
+    "title": "See clearly how far you have come",
+    "body": "Log weight, measurements and photos, see the trends, or import from your phone health app.",
+    "ticks": [
+     "Weight, waist and training charts",
+     "Invite a friend as your accountability buddy",
+     "Back up and sync across devices"
+    ]
+   }
   ],
-  "mock": {"exStep": "Exercise 2 of 6", "exMeta": "Legs · glutes · 12 kg dumbbell", "rest": "Rest before next set", "skip": "Skip", "eaten": "Eaten today", "goal": "Goal 1,980 kcal", "macros": ["Protein", "Carbs", "Fat"], "meals": [["🥗 Chicken rice bowl", "Lunch · photo", "610"], ["🥛 Soy milk", "Snack · barcode", "130"]], "lockDate": "Wednesday, October 30", "notes": [["now", "Workout time · Upper body, 45 min"], ["2h ago", "Drink a glass of water 💧"], ["10h ago", "Fixmee: reminder due"]], "chat": ["I slept badly last night. Should I train hard today?", "If you slept under 6 hours, lower the weight by about 10–15% and skip the last set. Keep the same exercises, then go to bed at 23:00 as planned.", "Can I swap dinner for something with no cooking?", "Sure. A ready-to-eat chicken salad plus one corn cob gives about 35 g protein, close to the original meal."], "weight": "Weight", "weeks": "8 weeks", "chartLabel": "Weight trending down over 8 weeks", "stats": ["Start", "Now", "Workouts", "27"], "sample": "Sample numbers for illustration", "exAlt": "Goblet squat exercise"},
+  "mock": {
+   "exStep": "Exercise 2 of 6",
+   "exMeta": "Legs · glutes · 12 kg dumbbell",
+   "rest": "Rest before next set",
+   "skip": "Skip",
+   "eaten": "Eaten today",
+   "goal": "Goal 1,980 kcal",
+   "macros": [
+    "Protein",
+    "Carbs",
+    "Fat"
+   ],
+   "meals": [
+    [
+     "🥗 Chicken rice bowl",
+     "Lunch · photo",
+     "610"
+    ],
+    [
+     "🥛 Soy milk",
+     "Snack · barcode",
+     "130"
+    ]
+   ],
+   "lockDate": "Wednesday, October 30",
+   "notes": [
+    [
+     "now",
+     "Workout time · Upper body, 45 min"
+    ],
+    [
+     "2h ago",
+     "Drink a glass of water 💧"
+    ],
+    [
+     "10h ago",
+     "Fixmee: reminder due"
+    ]
+   ],
+   "chat": [
+    "I slept badly last night. Should I train hard today?",
+    "If you slept under 6 hours, lower the weight by about 10–15% and skip the last set. Keep the same exercises, then go to bed at 23:00 as planned.",
+    "Can I swap dinner for something with no cooking?",
+    "Sure. A ready-to-eat chicken salad plus one corn cob gives about 35 g protein, close to the original meal."
+   ],
+   "weight": "Weight",
+   "weeks": "8 weeks",
+   "chartLabel": "Weight trending down over 8 weeks",
+   "stats": [
+    "Start",
+    "Now",
+    "Workouts",
+    "27"
+   ],
+   "sample": "Sample numbers for illustration",
+   "exAlt": "Goblet squat exercise"
+  },
   "moreTitle": "And much more",
-  "more": [["📴", "Works offline", "Open, log and time workouts, then sync later"], ["⏱️", "Intermittent fasting", "Set your eating window and get reminded"], ["🛒", "Shopping list", "Built from your weekly menu"], ["👯", "Friends and chat", "Train together and share results"], ["📍", "Gyms near you", "Find gyms and check in"], ["❤️", "Health app import", "Bring in steps and weight"], ["🌙", "Light and dark", "Easy on the eyes"], ["🔒", "Private", "Data stays on your device; turn off stats"]],
+  "more": [
+   [
+    "📴",
+    "Works offline",
+    "Open, log and time workouts, then sync later"
+   ],
+   [
+    "⏱️",
+    "Intermittent fasting",
+    "Set your eating window and get reminded"
+   ],
+   [
+    "🛒",
+    "Shopping list",
+    "Built from your weekly menu"
+   ],
+   [
+    "👯",
+    "Friends and chat",
+    "Train together and share results"
+   ],
+   [
+    "📍",
+    "Gyms near you",
+    "Find gyms and check in"
+   ],
+   [
+    "❤️",
+    "Health app import",
+    "Bring in steps and weight"
+   ],
+   [
+    "🌙",
+    "Light and dark",
+    "Easy on the eyes"
+   ],
+   [
+    "🔒",
+    "Private",
+    "Data stays on your device; turn off stats"
+   ]
+  ],
   "howKicker": "Ready in 2 minutes",
   "howTitle": "Easier than you think",
-  "steps": [["Set your goal", "Lose fat, build muscle or just feel stronger, plus your height and weight"], ["Pick days and equipment", "Which days you are free, home or gym, dumbbells or not, what food you like"], ["Follow today", "Open the app to see today, tick off what you did, and watch your weekly progress"]],
+  "steps": [
+   [
+    "Set your goal",
+    "Lose fat, build muscle or just feel stronger, plus your height and weight"
+   ],
+   [
+    "Pick days and equipment",
+    "Which days you are free, home or gym, dumbbells or not, what food you like"
+   ],
+   [
+    "Follow today",
+    "Open the app to see today, tick off what you did, and watch your weekly progress"
+   ]
+  ],
   "installKicker": "Installs like a real app",
   "installTitle": "No app store needed",
   "installSub": "Use it in your browser right away, or add it to your home screen to open it fast, full screen, with notifications.",
-  "ios": ["Open **fixmee.app** in **Safari**", "Tap **Share** ⬆︎", "Choose **Add to Home Screen**"],
-  "android": ["Open **fixmee.app** in **Chrome**", "Tap the **⋮** menu", "Choose **Install app**"],
+  "ios": [
+   "Open **fixmee.app** in **Safari**",
+   "Tap **Share** ⬆︎",
+   "Choose **Add to Home Screen**"
+  ],
+  "android": [
+   "Open **fixmee.app** in **Chrome**",
+   "Tap the **⋮** menu",
+   "Choose **Install app**"
+  ],
   "faqTitle": "Frequently asked questions",
-  "faq": [["Is it really free?", "The core features are free: workout plans, meal plans, supplements, reminders and progress tracking. Some AI features may cost extra, or you can use your own AI key."], ["Do I need to sign up?", "No. Start right away and your data stays on your device. Create an account later if you want to sync devices or chat with friends."], ["Do I need to install anything?", "No. It works in your browser. Adding it to your home screen makes it open faster and lets it send notifications (iPhone needs iOS 16.4 or later)."], ["I am a beginner. Will it work for me?", "Yes. Choose the beginner level and train at home. Every exercise has an illustration and steps, and the plan gets harder gradually."], ["Is my health data safe?", "Your data lives mainly on your device. With an account it syncs encrypted. Usage stats are anonymous and can be turned off, and you can delete your account at any time."]],
-  "final": ["Start your first day ", "today"],
+  "faq": [
+   [
+    "Is it really free?",
+    "The core features are free: workout plans, meal plans, supplements, reminders and progress tracking. Some AI features may cost extra, or you can use your own AI key."
+   ],
+   [
+    "Do I need to sign up?",
+    "No. Start right away and your data stays on your device. Create an account later if you want to sync devices or chat with friends."
+   ],
+   [
+    "Do I need to install anything?",
+    "No. It works in your browser. Adding it to your home screen makes it open faster and lets it send notifications (iPhone needs iOS 16.4 or later)."
+   ],
+   [
+    "I am a beginner. Will it work for me?",
+    "Yes. Choose the beginner level and train at home. Every exercise has an illustration and steps, and the plan gets harder gradually."
+   ],
+   [
+    "Is my health data safe?",
+    "Your data lives mainly on your device. With an account it syncs encrypted. Usage stats are anonymous and can be turned off, and you can delete your account at any time."
+   ]
+  ],
+  "final": [
+   "Start your first day ",
+   "today"
+  ],
   "finalSub": "Set up in under 2 minutes. No card, no sign-up.",
-  "footer": ["Exercises", "Guide", "Privacy", "Terms"]
+  "footer": [
+   "Exercises",
+   "Guide",
+   "Privacy",
+   "Terms"
+  ],
+  "installLink": "Want it as an app? See how →"
  },
  "zh": {
-  "nav": ["功能", "如何开始", "安装", "常见问题", "打开应用"],
+  "nav": [
+   "功能",
+   "如何开始",
+   "安装",
+   "常见问题",
+   "打开应用"
+  ],
   "eyebrow": "免费 · 浏览器即用 · 无需应用商店",
-  "h1": ["训练、饮食与好习惯", "一个应用全搞定"],
+  "h1": [
+   "训练、饮食与好习惯",
+   "一个应用全搞定"
+  ],
   "lead": "告诉 Fixmee 你的目标、空闲的日子和可用的器材，它会为你安排好今天：练什么、吃多少、什么时候吃维生素，并准时提醒你。",
   "cta": "免费开始",
   "cta2": "看看能做什么",
-  "chips": ["无需注册", "离线可用", "iPhone · Android · 电脑", "5 种语言"],
-  "phone": {"label": "Fixmee 今日页面示例", "day": "10月30日 周三", "today": "今天", "now": "现在", "events": [["06:30", "起床 + 一杯水", ""], ["07:30", "燕麦粥 + 水煮蛋", "420 kcal · 蛋白质 32 g"], ["08:00", "维生素 D · 鱼油", "饭后"], ["12:30", "烤鸡胸 + 糙米饭", "560 kcal · 蛋白质 45 g"], ["18:00", "上肢训练", "6 个动作 · 45 分钟 · 哑铃"], ["19:30", "晚餐", "剩余 640 kcal"], ["22:30", "准备睡觉", "23:00 就寝"]]},
-  "float": [["该训练了", "上肢 · 45 分钟"], ["连续 5 天", "本周按计划完成"]],
+  "chips": [
+   "无需注册",
+   "离线可用",
+   "iPhone · Android · 电脑",
+   "5 种语言"
+  ],
+  "phone": {
+   "label": "Fixmee 今日页面示例",
+   "day": "10月30日 周三",
+   "today": "今天",
+   "now": "现在",
+   "events": [
+    [
+     "06:30",
+     "起床 + 一杯水",
+     ""
+    ],
+    [
+     "07:30",
+     "燕麦粥 + 水煮蛋",
+     "420 kcal · 蛋白质 32 g"
+    ],
+    [
+     "08:00",
+     "维生素 D · 鱼油",
+     "饭后"
+    ],
+    [
+     "12:30",
+     "烤鸡胸 + 糙米饭",
+     "560 kcal · 蛋白质 45 g"
+    ],
+    [
+     "18:00",
+     "上肢训练",
+     "6 个动作 · 45 分钟 · 哑铃"
+    ],
+    [
+     "19:30",
+     "晚餐",
+     "剩余 640 kcal"
+    ],
+    [
+     "22:30",
+     "准备睡觉",
+     "23:00 就寝"
+    ]
+   ]
+  },
+  "float": [
+   [
+    "该训练了",
+    "上肢 · 45 分钟"
+   ],
+   [
+    "连续 5 天",
+    "本周按计划完成"
+   ]
+  ],
   "painsKicker": "你是否也这样",
   "painsTitle": "想照顾好自己，却不知从何开始",
-  "pains": [["“去了健身房不知道练什么”", "Fixmee 根据你的水平和器材安排**动作、组数和休息时间**，每个动作都有图解。"], ["“计算卡路里太累，总是放弃”", "获得可调整的**每日菜单**，扫描条码或拍照即可记录。"], ["“总忘记吃维生素、喝水”", "通过手机**准时提醒**，或加入手机日历，没有网络也会提醒。"]],
+  "pains": [
+   [
+    "“去了健身房不知道练什么”",
+    "Fixmee 根据你的水平和器材安排**动作、组数和休息时间**，每个动作都有图解。"
+   ],
+   [
+    "“计算卡路里太累，总是放弃”",
+    "获得可调整的**每日菜单**，扫描条码或拍照即可记录。"
+   ],
+   [
+    "“总忘记吃维生素、喝水”",
+    "通过手机**准时提醒**，或加入手机日历，没有网络也会提醒。"
+   ]
+  ],
   "featKicker": "功能一览",
   "featTitle": "每天需要的一切",
   "featSub": "不用在多个应用间切换。训练、饮食、补剂、睡眠和进度都在一张日程里。",
   "features": [
-   {"pill": "训练计划", "title": "贴合真实生活的训练计划", "body": "选择空闲日、可用时间和器材，在家或健身房都行。计划按你的水平安排，并逐步提高难度。", "ticks": ["每个动作都有图解、步骤和注意事项", "跟练模式，带组数计数和休息计时", "器材被占或身体不适时可替换动作"]},
-   {"pill": "饮食与热量", "title": "知道今天该吃多少、吃什么", "body": "Fixmee 根据你的目标计算热量和蛋白质，并为每一餐推荐实际可得的菜单。", "ticks": ["食物数据库，离线也能搜索", "扫描条码或营养标签", "拍下餐盘，由 AI 帮你估算"]},
-   {"pill": "补剂、药物与提醒", "title": "准时提醒，离线也可以", "body": "设置维生素、药物、喝水、睡觉或轻断食时段。通过手机提醒，或加入手机日历离线提醒。", "ticks": ["饭前或饭后，自动安排时间", "免打扰时段，睡觉时不提醒", "锁屏隐藏药物名称，保护隐私"]},
-   {"pill": "AI 教练", "title": "有问题，随时问教练", "body": "问动作、替换菜单，或让它看看你这周的计划。AI 根据你自己的计划回答，而不是泛泛而谈。", "ticks": ["根据照片点评计划和体型", "也可以使用你自己的 AI 密钥", "非医疗建议，必要时请咨询医生"]},
-   {"pill": "进度", "title": "清楚看到自己的变化", "body": "记录体重、围度和照片，查看趋势图，或从手机健康应用导入数据。", "ticks": ["体重、腰围和训练统计图", "邀请朋友成为互相督促的伙伴", "跨设备备份和同步"]}
+   {
+    "pill": "训练计划",
+    "title": "贴合真实生活的训练计划",
+    "body": "选择空闲日、可用时间和器材，在家或健身房都行。计划按你的水平安排，并逐步提高难度。",
+    "ticks": [
+     "每个动作都有图解、步骤和注意事项",
+     "跟练模式，带组数计数和休息计时",
+     "器材被占或身体不适时可替换动作"
+    ]
+   },
+   {
+    "pill": "饮食与热量",
+    "title": "知道今天该吃多少、吃什么",
+    "body": "Fixmee 根据你的目标计算热量和蛋白质，并为每一餐推荐实际可得的菜单。",
+    "ticks": [
+     "食物数据库，离线也能搜索",
+     "扫描条码或营养标签",
+     "拍下餐盘，由 AI 帮你估算"
+    ]
+   },
+   {
+    "pill": "补剂、药物与提醒",
+    "title": "准时提醒，离线也可以",
+    "body": "设置维生素、药物、喝水、睡觉或轻断食时段。通过手机提醒，或加入手机日历离线提醒。",
+    "ticks": [
+     "饭前或饭后，自动安排时间",
+     "免打扰时段，睡觉时不提醒",
+     "锁屏隐藏药物名称，保护隐私"
+    ]
+   },
+   {
+    "pill": "AI 教练",
+    "title": "有问题，随时问教练",
+    "body": "问动作、替换菜单，或让它看看你这周的计划。AI 根据你自己的计划回答，而不是泛泛而谈。",
+    "ticks": [
+     "根据照片点评计划和体型",
+     "也可以使用你自己的 AI 密钥",
+     "非医疗建议，必要时请咨询医生"
+    ]
+   },
+   {
+    "pill": "进度",
+    "title": "清楚看到自己的变化",
+    "body": "记录体重、围度和照片，查看趋势图，或从手机健康应用导入数据。",
+    "ticks": [
+     "体重、腰围和训练统计图",
+     "邀请朋友成为互相督促的伙伴",
+     "跨设备备份和同步"
+    ]
+   }
   ],
-  "mock": {"exStep": "第 2 / 6 个动作", "exMeta": "腿 · 臀 · 12 kg 哑铃", "rest": "下一组前休息", "skip": "跳过", "eaten": "今天已摄入", "goal": "目标 1,980 kcal", "macros": ["蛋白质", "碳水", "脂肪"], "meals": [["🍚 鸡肉饭", "午餐 · 拍照", "610"], ["🥛 豆浆", "加餐 · 扫码", "130"]], "lockDate": "10月30日 星期三", "notes": [["现在", "训练时间 · 上肢 45 分钟"], ["2 小时前", "喝一杯水 💧"], ["10 小时前", "Fixmee: 提醒时间到了"]], "chat": ["昨晚睡得少，今天要练得重吗？", "如果睡眠不足 6 小时，把重量减少约 10–15%，并去掉最后一组。动作不变，然后按计划 23:00 睡觉。", "晚餐能换成不用开火的吗？", "可以。即食鸡胸沙拉加一根玉米，大约 35 g 蛋白质，和原来的菜单接近。"], "weight": "体重", "weeks": "8 周", "chartLabel": "8 周体重持续下降", "stats": ["开始", "现在", "已训练", "27 次"], "sample": "示例数据，仅用于展示", "exAlt": "高脚杯深蹲动作"},
+  "mock": {
+   "exStep": "第 2 / 6 个动作",
+   "exMeta": "腿 · 臀 · 12 kg 哑铃",
+   "rest": "下一组前休息",
+   "skip": "跳过",
+   "eaten": "今天已摄入",
+   "goal": "目标 1,980 kcal",
+   "macros": [
+    "蛋白质",
+    "碳水",
+    "脂肪"
+   ],
+   "meals": [
+    [
+     "🍚 鸡肉饭",
+     "午餐 · 拍照",
+     "610"
+    ],
+    [
+     "🥛 豆浆",
+     "加餐 · 扫码",
+     "130"
+    ]
+   ],
+   "lockDate": "10月30日 星期三",
+   "notes": [
+    [
+     "现在",
+     "训练时间 · 上肢 45 分钟"
+    ],
+    [
+     "2 小时前",
+     "喝一杯水 💧"
+    ],
+    [
+     "10 小时前",
+     "Fixmee: 提醒时间到了"
+    ]
+   ],
+   "chat": [
+    "昨晚睡得少，今天要练得重吗？",
+    "如果睡眠不足 6 小时，把重量减少约 10–15%，并去掉最后一组。动作不变，然后按计划 23:00 睡觉。",
+    "晚餐能换成不用开火的吗？",
+    "可以。即食鸡胸沙拉加一根玉米，大约 35 g 蛋白质，和原来的菜单接近。"
+   ],
+   "weight": "体重",
+   "weeks": "8 周",
+   "chartLabel": "8 周体重持续下降",
+   "stats": [
+    "开始",
+    "现在",
+    "已训练",
+    "27 次"
+   ],
+   "sample": "示例数据，仅用于展示",
+   "exAlt": "高脚杯深蹲动作"
+  },
   "moreTitle": "还有更多",
-  "more": [["📴", "离线可用", "打开、记录和计时，稍后同步"], ["⏱️", "轻断食", "设置进食窗口并提醒"], ["🛒", "购物清单", "根据一周菜单生成"], ["👯", "好友与聊天", "一起训练，分享成果"], ["📍", "附近健身房", "查找健身房并签到"], ["❤️", "连接健康应用", "导入步数和体重"], ["🌙", "深色/浅色", "随时护眼"], ["🔒", "注重隐私", "数据保存在设备上，可关闭统计"]],
+  "more": [
+   [
+    "📴",
+    "离线可用",
+    "打开、记录和计时，稍后同步"
+   ],
+   [
+    "⏱️",
+    "轻断食",
+    "设置进食窗口并提醒"
+   ],
+   [
+    "🛒",
+    "购物清单",
+    "根据一周菜单生成"
+   ],
+   [
+    "👯",
+    "好友与聊天",
+    "一起训练，分享成果"
+   ],
+   [
+    "📍",
+    "附近健身房",
+    "查找健身房并签到"
+   ],
+   [
+    "❤️",
+    "连接健康应用",
+    "导入步数和体重"
+   ],
+   [
+    "🌙",
+    "深色/浅色",
+    "随时护眼"
+   ],
+   [
+    "🔒",
+    "注重隐私",
+    "数据保存在设备上，可关闭统计"
+   ]
+  ],
   "howKicker": "2 分钟开始",
   "howTitle": "比你想的更简单",
-  "steps": [["设定目标", "减脂、增肌或只是想更健康，并填写身高体重"], ["选择日期和器材", "哪天有空，在家还是健身房，有没有哑铃，喜欢吃什么"], ["跟着今天做", "打开应用就能看到今天的安排，完成就打勾，每周查看进度"]],
+  "steps": [
+   [
+    "设定目标",
+    "减脂、增肌或只是想更健康，并填写身高体重"
+   ],
+   [
+    "选择日期和器材",
+    "哪天有空，在家还是健身房，有没有哑铃，喜欢吃什么"
+   ],
+   [
+    "跟着今天做",
+    "打开应用就能看到今天的安排，完成就打勾，每周查看进度"
+   ]
+  ],
   "installKicker": "像真正的应用一样安装",
   "installTitle": "无需应用商店",
   "installSub": "直接在浏览器中使用，或添加到主屏幕，打开更快、全屏显示并可接收通知。",
-  "ios": ["在 **Safari** 中打开 **fixmee.app**", "点按 **分享** ⬆︎", "选择 **添加到主屏幕**"],
-  "android": ["在 **Chrome** 中打开 **fixmee.app**", "点按菜单 **⋮**", "选择 **安装应用**"],
+  "ios": [
+   "在 **Safari** 中打开 **fixmee.app**",
+   "点按 **分享** ⬆︎",
+   "选择 **添加到主屏幕**"
+  ],
+  "android": [
+   "在 **Chrome** 中打开 **fixmee.app**",
+   "点按菜单 **⋮**",
+   "选择 **安装应用**"
+  ],
   "faqTitle": "常见问题",
-  "faq": [["真的免费吗？", "核心功能免费，包括训练计划、饮食计划、补剂、提醒和进度记录。部分 AI 功能可能收费，也可以使用你自己的 AI 密钥。"], ["需要先注册吗？", "不需要。马上就能开始，数据保存在你的设备上。想跨设备同步或和朋友聊天时再创建账号。"], ["需要安装吗？", "不需要，浏览器就能用。建议添加到主屏幕，打开更快并可接收通知（iPhone 需要 iOS 16.4 或以上）。"], ["新手也能用吗？", "可以。选择入门级别，在家也能练。每个动作都有图解和步骤，计划会逐步加大难度。"], ["我的健康数据安全吗？", "数据主要保存在你的设备上。创建账号后会加密同步。使用统计是匿名的，可以关闭，也可以随时删除账号。"]],
-  "final": ["今天就开始", "第一天"],
+  "faq": [
+   [
+    "真的免费吗？",
+    "核心功能免费，包括训练计划、饮食计划、补剂、提醒和进度记录。部分 AI 功能可能收费，也可以使用你自己的 AI 密钥。"
+   ],
+   [
+    "需要先注册吗？",
+    "不需要。马上就能开始，数据保存在你的设备上。想跨设备同步或和朋友聊天时再创建账号。"
+   ],
+   [
+    "需要安装吗？",
+    "不需要，浏览器就能用。建议添加到主屏幕，打开更快并可接收通知（iPhone 需要 iOS 16.4 或以上）。"
+   ],
+   [
+    "新手也能用吗？",
+    "可以。选择入门级别，在家也能练。每个动作都有图解和步骤，计划会逐步加大难度。"
+   ],
+   [
+    "我的健康数据安全吗？",
+    "数据主要保存在你的设备上。创建账号后会加密同步。使用统计是匿名的，可以关闭，也可以随时删除账号。"
+   ]
+  ],
+  "final": [
+   "今天就开始",
+   "第一天"
+  ],
   "finalSub": "2 分钟内完成设置。无需银行卡，无需注册。",
-  "footer": ["训练动作", "指南", "隐私", "条款"]
+  "footer": [
+   "训练动作",
+   "指南",
+   "隐私",
+   "条款"
+  ],
+  "installLink": "想安装为应用？查看方法 →"
  },
  "ja": {
-  "nav": ["機能", "始め方", "インストール", "よくある質問", "アプリを開く"],
+  "nav": [
+   "機能",
+   "始め方",
+   "インストール",
+   "よくある質問",
+   "アプリを開く"
+  ],
   "eyebrow": "無料 · ブラウザですぐ使える · ストア不要",
-  "h1": ["トレーニングも食事も習慣も", "ひとつのアプリで"],
+  "h1": [
+   "トレーニングも食事も習慣も",
+   "ひとつのアプリで"
+  ],
   "lead": "目標、空いている日、使える器具を伝えるだけ。何を鍛えて、どれだけ食べて、いつビタミンを飲むか、Fixmee が今日の予定を組み立てて時間どおりに知らせます。",
   "cta": "無料で始める",
   "cta2": "できることを見る",
-  "chips": ["登録なしで始められる", "オフラインでも使える", "iPhone · Android · PC", "5 言語対応"],
-  "phone": {"label": "Fixmee の今日の画面の例", "day": "10月30日(水)", "today": "今日", "now": "今", "events": [["06:30", "起床 + 水を1杯", ""], ["07:30", "おかゆ + ゆで卵", "420 kcal · たんぱく質 32 g"], ["08:00", "ビタミンD · オメガ3", "食後"], ["12:30", "グリルチキン + 玄米", "560 kcal · たんぱく質 45 g"], ["18:00", "上半身トレーニング", "6種目 · 45分 · ダンベル"], ["19:30", "夕食", "残り 640 kcal"], ["22:30", "寝る準備", "23:00 就寝"]]},
-  "float": [["トレーニングの時間です", "上半身 · 45分"], ["5日連続達成", "今週は計画どおり"]],
+  "chips": [
+   "登録なしで始められる",
+   "オフラインでも使える",
+   "iPhone · Android · PC",
+   "5 言語対応"
+  ],
+  "phone": {
+   "label": "Fixmee の今日の画面の例",
+   "day": "10月30日(水)",
+   "today": "今日",
+   "now": "今",
+   "events": [
+    [
+     "06:30",
+     "起床 + 水を1杯",
+     ""
+    ],
+    [
+     "07:30",
+     "おかゆ + ゆで卵",
+     "420 kcal · たんぱく質 32 g"
+    ],
+    [
+     "08:00",
+     "ビタミンD · オメガ3",
+     "食後"
+    ],
+    [
+     "12:30",
+     "グリルチキン + 玄米",
+     "560 kcal · たんぱく質 45 g"
+    ],
+    [
+     "18:00",
+     "上半身トレーニング",
+     "6種目 · 45分 · ダンベル"
+    ],
+    [
+     "19:30",
+     "夕食",
+     "残り 640 kcal"
+    ],
+    [
+     "22:30",
+     "寝る準備",
+     "23:00 就寝"
+    ]
+   ]
+  },
+  "float": [
+   [
+    "トレーニングの時間です",
+    "上半身 · 45分"
+   ],
+   [
+    "5日連続達成",
+    "今週は計画どおり"
+   ]
+  ],
   "painsKicker": "こんな悩みありませんか",
   "painsTitle": "健康になりたいけど、何から始めればいい？",
-  "pains": [["「ジムに行っても何をすればいいかわからない」", "レベルと器具に合わせて**種目・セット数・休憩時間**を Fixmee が組み立て。すべての種目にイラスト付き。"], ["「カロリー計算に疲れて続かない」", "調整できる**毎日のメニュー**を提案。バーコードや写真で記録できます。"], ["「ビタミンや水分補給を忘れる」", "スマホで**時間どおりにお知らせ**。端末のカレンダーならネットなしでも通知。"]],
+  "pains": [
+   [
+    "「ジムに行っても何をすればいいかわからない」",
+    "レベルと器具に合わせて**種目・セット数・休憩時間**を Fixmee が組み立て。すべての種目にイラスト付き。"
+   ],
+   [
+    "「カロリー計算に疲れて続かない」",
+    "調整できる**毎日のメニュー**を提案。バーコードや写真で記録できます。"
+   ],
+   [
+    "「ビタミンや水分補給を忘れる」",
+    "スマホで**時間どおりにお知らせ**。端末のカレンダーならネットなしでも通知。"
+   ]
+  ],
   "featKicker": "できること",
   "featTitle": "毎日に必要なすべてを",
   "featSub": "アプリを切り替える必要はありません。トレーニング、食事、サプリ、睡眠、進捗がひとつの予定に。",
   "features": [
-   {"pill": "トレーニングプラン", "title": "実際の生活に合うプラン", "body": "空いている日、使える時間、器具を選ぶだけ。自宅でもジムでも。レベルに合わせて少しずつ負荷を上げます。", "ticks": ["全種目にイラスト・手順・注意点", "セット数カウントと休憩タイマー付きのガイド", "器具が空いていない時や痛む時は種目を変更"]},
-   {"pill": "食事とカロリー", "title": "今日どれだけ、何を食べればいいか", "body": "目標からカロリーとたんぱく質を計算し、各食事に実際に用意できるメニューを提案します。", "ticks": ["オフラインでも検索できる食品データベース", "バーコードや栄養成分表示をスキャン", "料理の写真を撮って AI が推定"]},
-   {"pill": "サプリ・薬・リマインダー", "title": "オフラインでも時間どおりに通知", "body": "ビタミン、薬、水分、就寝、断食の時間を設定。スマホに通知、または端末のカレンダーに追加してオフラインで通知。", "ticks": ["食前・食後を自動でスケジュール", "おやすみ時間は通知しない", "ロック画面で薬の名前を隠せる"]},
-   {"pill": "AI コーチ", "title": "疑問はすぐコーチに", "body": "種目のこと、代わりのメニュー、今週のプランについて質問できます。AI はあなた自身のプランをもとに答えます。", "ticks": ["写真からプランと体型をレビュー", "自分の AI キーも使える", "医療アドバイスではありません。必要に応じて医師へ"]},
-   {"pill": "進捗", "title": "どれだけ変わったか一目で", "body": "体重、サイズ、写真を記録してグラフで確認。スマホのヘルスケアアプリから取り込むこともできます。", "ticks": ["体重・ウエスト・トレーニングのグラフ", "友達をバディに誘って励まし合う", "端末間でバックアップと同期"]}
+   {
+    "pill": "トレーニングプラン",
+    "title": "実際の生活に合うプラン",
+    "body": "空いている日、使える時間、器具を選ぶだけ。自宅でもジムでも。レベルに合わせて少しずつ負荷を上げます。",
+    "ticks": [
+     "全種目にイラスト・手順・注意点",
+     "セット数カウントと休憩タイマー付きのガイド",
+     "器具が空いていない時や痛む時は種目を変更"
+    ]
+   },
+   {
+    "pill": "食事とカロリー",
+    "title": "今日どれだけ、何を食べればいいか",
+    "body": "目標からカロリーとたんぱく質を計算し、各食事に実際に用意できるメニューを提案します。",
+    "ticks": [
+     "オフラインでも検索できる食品データベース",
+     "バーコードや栄養成分表示をスキャン",
+     "料理の写真を撮って AI が推定"
+    ]
+   },
+   {
+    "pill": "サプリ・薬・リマインダー",
+    "title": "オフラインでも時間どおりに通知",
+    "body": "ビタミン、薬、水分、就寝、断食の時間を設定。スマホに通知、または端末のカレンダーに追加してオフラインで通知。",
+    "ticks": [
+     "食前・食後を自動でスケジュール",
+     "おやすみ時間は通知しない",
+     "ロック画面で薬の名前を隠せる"
+    ]
+   },
+   {
+    "pill": "AI コーチ",
+    "title": "疑問はすぐコーチに",
+    "body": "種目のこと、代わりのメニュー、今週のプランについて質問できます。AI はあなた自身のプランをもとに答えます。",
+    "ticks": [
+     "写真からプランと体型をレビュー",
+     "自分の AI キーも使える",
+     "医療アドバイスではありません。必要に応じて医師へ"
+    ]
+   },
+   {
+    "pill": "進捗",
+    "title": "どれだけ変わったか一目で",
+    "body": "体重、サイズ、写真を記録してグラフで確認。スマホのヘルスケアアプリから取り込むこともできます。",
+    "ticks": [
+     "体重・ウエスト・トレーニングのグラフ",
+     "友達をバディに誘って励まし合う",
+     "端末間でバックアップと同期"
+    ]
+   }
   ],
-  "mock": {"exStep": "6種目中2種目め", "exMeta": "脚 · お尻 · ダンベル 12 kg", "rest": "次のセットまで休憩", "skip": "スキップ", "eaten": "今日の摂取", "goal": "目標 1,980 kcal", "macros": ["たんぱく質", "炭水化物", "脂質"], "meals": [["🍚 チキンライス", "昼食 · 写真", "610"], ["🥛 豆乳", "間食 · バーコード", "130"]], "lockDate": "10月30日 水曜日", "notes": [["今", "トレーニングの時間 · 上半身 45分"], ["2時間前", "水を1杯飲みましょう 💧"], ["10時間前", "Fixmee: リマインダーの時間です"]], "chat": ["昨夜あまり眠れなかった。今日は強めに鍛えるべき？", "睡眠が6時間未満なら、重量を10〜15%ほど下げて最後のセットを省きましょう。種目はそのままで、予定どおり23:00に寝てください。", "夕食を火を使わないメニューに変えられる？", "できます。調理済みのチキンサラダとトウモロコシ1本で、たんぱく質は約35 g。元のメニューに近い内容です。"], "weight": "体重", "weeks": "8週間", "chartLabel": "8週間で体重が順調に減少", "stats": ["開始時", "現在", "トレーニング", "27回"], "sample": "表示用のサンプル数値です", "exAlt": "ゴブレットスクワットの種目"},
+  "mock": {
+   "exStep": "6種目中2種目め",
+   "exMeta": "脚 · お尻 · ダンベル 12 kg",
+   "rest": "次のセットまで休憩",
+   "skip": "スキップ",
+   "eaten": "今日の摂取",
+   "goal": "目標 1,980 kcal",
+   "macros": [
+    "たんぱく質",
+    "炭水化物",
+    "脂質"
+   ],
+   "meals": [
+    [
+     "🍚 チキンライス",
+     "昼食 · 写真",
+     "610"
+    ],
+    [
+     "🥛 豆乳",
+     "間食 · バーコード",
+     "130"
+    ]
+   ],
+   "lockDate": "10月30日 水曜日",
+   "notes": [
+    [
+     "今",
+     "トレーニングの時間 · 上半身 45分"
+    ],
+    [
+     "2時間前",
+     "水を1杯飲みましょう 💧"
+    ],
+    [
+     "10時間前",
+     "Fixmee: リマインダーの時間です"
+    ]
+   ],
+   "chat": [
+    "昨夜あまり眠れなかった。今日は強めに鍛えるべき？",
+    "睡眠が6時間未満なら、重量を10〜15%ほど下げて最後のセットを省きましょう。種目はそのままで、予定どおり23:00に寝てください。",
+    "夕食を火を使わないメニューに変えられる？",
+    "できます。調理済みのチキンサラダとトウモロコシ1本で、たんぱく質は約35 g。元のメニューに近い内容です。"
+   ],
+   "weight": "体重",
+   "weeks": "8週間",
+   "chartLabel": "8週間で体重が順調に減少",
+   "stats": [
+    "開始時",
+    "現在",
+    "トレーニング",
+    "27回"
+   ],
+   "sample": "表示用のサンプル数値です",
+   "exAlt": "ゴブレットスクワットの種目"
+  },
   "moreTitle": "ほかにもたくさん",
-  "more": [["📴", "オフライン対応", "記録やタイマーもOK、あとで同期"], ["⏱️", "断食 (IF)", "食事時間を設定して通知"], ["🛒", "買い物リスト", "1週間のメニューから作成"], ["👯", "友達とチャット", "一緒に鍛えて結果を共有"], ["📍", "近くのジム", "ジムを探してチェックイン"], ["❤️", "ヘルスケア連携", "歩数や体重を取り込み"], ["🌙", "ダーク/ライト", "いつでも目にやさしい"], ["🔒", "プライバシー", "データは端末に。統計はオフにできる"]],
+  "more": [
+   [
+    "📴",
+    "オフライン対応",
+    "記録やタイマーもOK、あとで同期"
+   ],
+   [
+    "⏱️",
+    "断食 (IF)",
+    "食事時間を設定して通知"
+   ],
+   [
+    "🛒",
+    "買い物リスト",
+    "1週間のメニューから作成"
+   ],
+   [
+    "👯",
+    "友達とチャット",
+    "一緒に鍛えて結果を共有"
+   ],
+   [
+    "📍",
+    "近くのジム",
+    "ジムを探してチェックイン"
+   ],
+   [
+    "❤️",
+    "ヘルスケア連携",
+    "歩数や体重を取り込み"
+   ],
+   [
+    "🌙",
+    "ダーク/ライト",
+    "いつでも目にやさしい"
+   ],
+   [
+    "🔒",
+    "プライバシー",
+    "データは端末に。統計はオフにできる"
+   ]
+  ],
   "howKicker": "2分で始められる",
   "howTitle": "思ったより簡単",
-  "steps": [["目標を決める", "減量、筋肉をつける、健康になりたいなど。身長と体重も入力"], ["日と器具を選ぶ", "空いている日、自宅かジムか、ダンベルの有無、好きな食事"], ["今日の予定どおりに", "アプリを開けば今日の予定。できたらチェックして毎週の進捗を確認"]],
+  "steps": [
+   [
+    "目標を決める",
+    "減量、筋肉をつける、健康になりたいなど。身長と体重も入力"
+   ],
+   [
+    "日と器具を選ぶ",
+    "空いている日、自宅かジムか、ダンベルの有無、好きな食事"
+   ],
+   [
+    "今日の予定どおりに",
+    "アプリを開けば今日の予定。できたらチェックして毎週の進捗を確認"
+   ]
+  ],
   "installKicker": "本物のアプリのようにインストール",
   "installTitle": "ストアは不要",
   "installSub": "ブラウザですぐ使えます。ホーム画面に追加すれば、すばやく全画面で開けて通知も受け取れます。",
-  "ios": ["**Safari** で **fixmee.app** を開く", "**共有** ⬆︎ をタップ", "**ホーム画面に追加** を選ぶ"],
-  "android": ["**Chrome** で **fixmee.app** を開く", "メニュー **⋮** をタップ", "**アプリをインストール** を選ぶ"],
+  "ios": [
+   "**Safari** で **fixmee.app** を開く",
+   "**共有** ⬆︎ をタップ",
+   "**ホーム画面に追加** を選ぶ"
+  ],
+  "android": [
+   "**Chrome** で **fixmee.app** を開く",
+   "メニュー **⋮** をタップ",
+   "**アプリをインストール** を選ぶ"
+  ],
   "faqTitle": "よくある質問",
-  "faq": [["本当に無料ですか？", "トレーニングプラン、食事プラン、サプリ、リマインダー、進捗記録などの主な機能は無料です。一部の AI 機能は有料の場合があり、自分の AI キーを使うこともできます。"], ["登録は必要ですか？", "不要です。すぐに始められ、データは端末に保存されます。端末間の同期や友達とのチャットをしたくなったらアカウントを作成できます。"], ["インストールは必要ですか？", "必要ありません。ブラウザで使えます。ホーム画面に追加するとすばやく開けて通知も受け取れます（iPhone は iOS 16.4 以降）。"], ["初心者でも使えますか？", "はい。初級レベルを選べば自宅でもトレーニングできます。全種目にイラストと手順があり、プランは少しずつ難しくなります。"], ["健康データは安全ですか？", "データは主にあなたの端末に保存されます。アカウントを作ると暗号化して同期します。利用統計は匿名でオフにでき、アカウントはいつでも削除できます。"]],
-  "final": ["最初の一日を", "今日から"],
+  "faq": [
+   [
+    "本当に無料ですか？",
+    "トレーニングプラン、食事プラン、サプリ、リマインダー、進捗記録などの主な機能は無料です。一部の AI 機能は有料の場合があり、自分の AI キーを使うこともできます。"
+   ],
+   [
+    "登録は必要ですか？",
+    "不要です。すぐに始められ、データは端末に保存されます。端末間の同期や友達とのチャットをしたくなったらアカウントを作成できます。"
+   ],
+   [
+    "インストールは必要ですか？",
+    "必要ありません。ブラウザで使えます。ホーム画面に追加するとすばやく開けて通知も受け取れます（iPhone は iOS 16.4 以降）。"
+   ],
+   [
+    "初心者でも使えますか？",
+    "はい。初級レベルを選べば自宅でもトレーニングできます。全種目にイラストと手順があり、プランは少しずつ難しくなります。"
+   ],
+   [
+    "健康データは安全ですか？",
+    "データは主にあなたの端末に保存されます。アカウントを作ると暗号化して同期します。利用統計は匿名でオフにでき、アカウントはいつでも削除できます。"
+   ]
+  ],
+  "final": [
+   "最初の一日を",
+   "今日から"
+  ],
   "finalSub": "設定は2分以内。カードも登録も不要です。",
-  "footer": ["トレーニング種目", "ガイド", "プライバシー", "利用規約"]
+  "footer": [
+   "トレーニング種目",
+   "ガイド",
+   "プライバシー",
+   "利用規約"
+  ],
+  "installLink": "アプリとして使いたい？方法を見る →"
  },
  "vi": {
-  "nav": ["Tính năng", "Bắt đầu", "Cài đặt", "Hỏi đáp", "Mở ứng dụng"],
+  "nav": [
+   "Tính năng",
+   "Bắt đầu",
+   "Cài đặt",
+   "Hỏi đáp",
+   "Mở ứng dụng"
+  ],
   "eyebrow": "Miễn phí · Dùng ngay trên trình duyệt · Không cần kho ứng dụng",
-  "h1": ["Tập luyện, ăn uống và thói quen", "gói gọn trong một ứng dụng"],
+  "h1": [
+   "Tập luyện, ăn uống và thói quen",
+   "gói gọn trong một ứng dụng"
+  ],
   "lead": "Cho Fixmee biết mục tiêu, những ngày bạn rảnh và dụng cụ bạn có. Ứng dụng lên lịch hôm nay cho bạn: tập gì, ăn bao nhiêu, uống vitamin lúc nào, và nhắc bạn đúng giờ.",
   "cta": "Bắt đầu miễn phí",
   "cta2": "Xem có thể làm gì",
-  "chips": ["Không cần đăng ký", "Dùng được khi không có mạng", "iPhone · Android · máy tính", "5 ngôn ngữ"],
-  "phone": {"label": "Ví dụ màn hình Hôm nay trong Fixmee", "day": "Thứ Tư, 30/10", "today": "Hôm nay", "now": "Bây giờ", "events": [["06:30", "Thức dậy + 1 ly nước", ""], ["07:30", "Cháo yến mạch + trứng luộc", "420 kcal · 32 g đạm"], ["08:00", "Vitamin D · Omega-3", "Sau bữa ăn"], ["12:30", "Ức gà nướng, gạo lứt", "560 kcal · 45 g đạm"], ["18:00", "Thân trên", "6 bài · 45 phút · tạ đơn"], ["19:30", "Bữa tối", "Còn 640 kcal"], ["22:30", "Chuẩn bị ngủ", "Ngủ lúc 23:00"]]},
-  "float": [["Đến giờ tập rồi", "Thân trên · 45 phút"], ["Chuỗi 5 ngày", "Đúng kế hoạch tuần này"]],
+  "chips": [
+   "Không cần đăng ký",
+   "Dùng được khi không có mạng",
+   "iPhone · Android · máy tính",
+   "5 ngôn ngữ"
+  ],
+  "phone": {
+   "label": "Ví dụ màn hình Hôm nay trong Fixmee",
+   "day": "Thứ Tư, 30/10",
+   "today": "Hôm nay",
+   "now": "Bây giờ",
+   "events": [
+    [
+     "06:30",
+     "Thức dậy + 1 ly nước",
+     ""
+    ],
+    [
+     "07:30",
+     "Cháo yến mạch + trứng luộc",
+     "420 kcal · 32 g đạm"
+    ],
+    [
+     "08:00",
+     "Vitamin D · Omega-3",
+     "Sau bữa ăn"
+    ],
+    [
+     "12:30",
+     "Ức gà nướng, gạo lứt",
+     "560 kcal · 45 g đạm"
+    ],
+    [
+     "18:00",
+     "Thân trên",
+     "6 bài · 45 phút · tạ đơn"
+    ],
+    [
+     "19:30",
+     "Bữa tối",
+     "Còn 640 kcal"
+    ],
+    [
+     "22:30",
+     "Chuẩn bị ngủ",
+     "Ngủ lúc 23:00"
+    ]
+   ]
+  },
+  "float": [
+   [
+    "Đến giờ tập rồi",
+    "Thân trên · 45 phút"
+   ],
+   [
+    "Chuỗi 5 ngày",
+    "Đúng kế hoạch tuần này"
+   ]
+  ],
   "painsKicker": "Bạn có gặp điều này?",
   "painsTitle": "Muốn khỏe hơn nhưng không biết bắt đầu từ đâu",
-  "pains": [["“Đến phòng tập mà không biết tập gì”", "Fixmee sắp xếp **bài tập, số hiệp và thời gian nghỉ** theo trình độ và dụng cụ của bạn, có hình minh họa cho từng động tác."], ["“Đếm calo mệt quá, lần nào cũng bỏ”", "Nhận **thực đơn mỗi ngày** có thể điều chỉnh. Quét mã vạch hoặc chụp ảnh thay vì gõ."], ["“Hay quên uống vitamin, quên uống nước”", "**Nhắc đúng giờ** trên điện thoại, hoặc qua lịch trên máy vẫn nhắc khi không có mạng."]],
+  "pains": [
+   [
+    "“Đến phòng tập mà không biết tập gì”",
+    "Fixmee sắp xếp **bài tập, số hiệp và thời gian nghỉ** theo trình độ và dụng cụ của bạn, có hình minh họa cho từng động tác."
+   ],
+   [
+    "“Đếm calo mệt quá, lần nào cũng bỏ”",
+    "Nhận **thực đơn mỗi ngày** có thể điều chỉnh. Quét mã vạch hoặc chụp ảnh thay vì gõ."
+   ],
+   [
+    "“Hay quên uống vitamin, quên uống nước”",
+    "**Nhắc đúng giờ** trên điện thoại, hoặc qua lịch trên máy vẫn nhắc khi không có mạng."
+   ]
+  ],
   "featKicker": "Bạn nhận được gì",
   "featTitle": "Mọi thứ bạn cần mỗi ngày",
   "featSub": "Không phải chuyển qua lại nhiều ứng dụng. Tập luyện, ăn uống, thực phẩm bổ sung, giấc ngủ và tiến độ nằm trong một lịch.",
   "features": [
-   {"pill": "Kế hoạch tập luyện", "title": "Kế hoạch hợp với cuộc sống thật", "body": "Chọn ngày rảnh, thời gian bạn có và dụng cụ, ở nhà hay phòng tập đều được. Kế hoạch theo trình độ và tăng dần độ khó.", "ticks": ["Hình minh họa, các bước và lưu ý cho mọi bài tập", "Chế độ tập theo hướng dẫn, đếm hiệp và hẹn giờ nghỉ", "Đổi bài khi dụng cụ bận hoặc bị đau"]},
-   {"pill": "Ăn uống và calo", "title": "Biết hôm nay nên ăn bao nhiêu, ăn gì", "body": "Fixmee tính calo và đạm từ mục tiêu của bạn, rồi gợi ý món ăn thực tế cho từng bữa.", "ticks": ["Cơ sở dữ liệu món ăn, tìm được khi không có mạng", "Quét mã vạch hoặc nhãn dinh dưỡng", "Chụp ảnh đĩa ăn để AI ước tính"]},
-   {"pill": "Thực phẩm bổ sung, thuốc và nhắc nhở", "title": "Nhắc đúng giờ, kể cả khi không có mạng", "body": "Đặt vitamin, thuốc, uống nước, giờ ngủ hoặc khung nhịn ăn. Nhắc trên điện thoại, hoặc thêm vào lịch trên máy để nhắc khi không có mạng.", "ticks": ["Trước hay sau bữa ăn, tự động xếp giờ", "Giờ yên lặng, không làm phiền khi ngủ", "Ẩn tên thuốc trên màn hình khóa"]},
-   {"pill": "Huấn luyện viên AI", "title": "Có câu hỏi? Hỏi ngay huấn luyện viên", "body": "Hỏi về bài tập, món thay thế hoặc kế hoạch tuần. AI trả lời dựa trên kế hoạch của chính bạn, không phải lời khuyên chung chung.", "ticks": ["Đánh giá kế hoạch và vóc dáng từ ảnh", "Có thể dùng khóa AI của riêng bạn", "Không phải lời khuyên y tế; hỏi bác sĩ khi cần"]},
-   {"pill": "Tiến độ", "title": "Thấy rõ bạn đã thay đổi bao nhiêu", "body": "Ghi cân nặng, số đo và ảnh, xem biểu đồ, hoặc nhập từ ứng dụng sức khỏe trên điện thoại.", "ticks": ["Biểu đồ cân nặng, vòng eo và buổi tập", "Mời bạn bè làm bạn đồng hành", "Sao lưu và đồng bộ giữa các thiết bị"]}
+   {
+    "pill": "Kế hoạch tập luyện",
+    "title": "Kế hoạch hợp với cuộc sống thật",
+    "body": "Chọn ngày rảnh, thời gian bạn có và dụng cụ, ở nhà hay phòng tập đều được. Kế hoạch theo trình độ và tăng dần độ khó.",
+    "ticks": [
+     "Hình minh họa, các bước và lưu ý cho mọi bài tập",
+     "Chế độ tập theo hướng dẫn, đếm hiệp và hẹn giờ nghỉ",
+     "Đổi bài khi dụng cụ bận hoặc bị đau"
+    ]
+   },
+   {
+    "pill": "Ăn uống và calo",
+    "title": "Biết hôm nay nên ăn bao nhiêu, ăn gì",
+    "body": "Fixmee tính calo và đạm từ mục tiêu của bạn, rồi gợi ý món ăn thực tế cho từng bữa.",
+    "ticks": [
+     "Cơ sở dữ liệu món ăn, tìm được khi không có mạng",
+     "Quét mã vạch hoặc nhãn dinh dưỡng",
+     "Chụp ảnh đĩa ăn để AI ước tính"
+    ]
+   },
+   {
+    "pill": "Thực phẩm bổ sung, thuốc và nhắc nhở",
+    "title": "Nhắc đúng giờ, kể cả khi không có mạng",
+    "body": "Đặt vitamin, thuốc, uống nước, giờ ngủ hoặc khung nhịn ăn. Nhắc trên điện thoại, hoặc thêm vào lịch trên máy để nhắc khi không có mạng.",
+    "ticks": [
+     "Trước hay sau bữa ăn, tự động xếp giờ",
+     "Giờ yên lặng, không làm phiền khi ngủ",
+     "Ẩn tên thuốc trên màn hình khóa"
+    ]
+   },
+   {
+    "pill": "Huấn luyện viên AI",
+    "title": "Có câu hỏi? Hỏi ngay huấn luyện viên",
+    "body": "Hỏi về bài tập, món thay thế hoặc kế hoạch tuần. AI trả lời dựa trên kế hoạch của chính bạn, không phải lời khuyên chung chung.",
+    "ticks": [
+     "Đánh giá kế hoạch và vóc dáng từ ảnh",
+     "Có thể dùng khóa AI của riêng bạn",
+     "Không phải lời khuyên y tế; hỏi bác sĩ khi cần"
+    ]
+   },
+   {
+    "pill": "Tiến độ",
+    "title": "Thấy rõ bạn đã thay đổi bao nhiêu",
+    "body": "Ghi cân nặng, số đo và ảnh, xem biểu đồ, hoặc nhập từ ứng dụng sức khỏe trên điện thoại.",
+    "ticks": [
+     "Biểu đồ cân nặng, vòng eo và buổi tập",
+     "Mời bạn bè làm bạn đồng hành",
+     "Sao lưu và đồng bộ giữa các thiết bị"
+    ]
+   }
   ],
-  "mock": {"exStep": "Bài 2 / 6", "exMeta": "Chân · mông · tạ đơn 12 kg", "rest": "Nghỉ trước hiệp tiếp theo", "skip": "Bỏ qua", "eaten": "Đã ăn hôm nay", "goal": "Mục tiêu 1,980 kcal", "macros": ["Đạm", "Tinh bột", "Chất béo"], "meals": [["🍚 Cơm gà", "Bữa trưa · chụp ảnh", "610"], ["🥛 Sữa đậu nành", "Bữa phụ · mã vạch", "130"]], "lockDate": "Thứ Tư, 30 tháng 10", "notes": [["bây giờ", "Giờ tập · Thân trên 45 phút"], ["2 giờ trước", "Uống 1 ly nước 💧"], ["10 giờ trước", "Fixmee: Đã đến giờ nhắc nhở"]], "chat": ["Tối qua tôi ngủ ít. Hôm nay có nên tập nặng không?", "Nếu ngủ dưới 6 tiếng, hãy giảm mức tạ khoảng 10–15% và bỏ hiệp cuối. Giữ nguyên bài tập, rồi đi ngủ lúc 23:00 như kế hoạch.", "Có thể đổi bữa tối sang món không cần nấu không?", "Được. Salad ức gà ăn liền cộng 1 bắp ngô cho khoảng 35 g đạm, gần với thực đơn ban đầu."], "weight": "Cân nặng", "weeks": "8 tuần", "chartLabel": "Cân nặng giảm đều trong 8 tuần", "stats": ["Bắt đầu", "Hiện tại", "Đã tập", "27 buổi"], "sample": "Số liệu mẫu để minh họa", "exAlt": "Bài tập goblet squat"},
+  "mock": {
+   "exStep": "Bài 2 / 6",
+   "exMeta": "Chân · mông · tạ đơn 12 kg",
+   "rest": "Nghỉ trước hiệp tiếp theo",
+   "skip": "Bỏ qua",
+   "eaten": "Đã ăn hôm nay",
+   "goal": "Mục tiêu 1,980 kcal",
+   "macros": [
+    "Đạm",
+    "Tinh bột",
+    "Chất béo"
+   ],
+   "meals": [
+    [
+     "🍚 Cơm gà",
+     "Bữa trưa · chụp ảnh",
+     "610"
+    ],
+    [
+     "🥛 Sữa đậu nành",
+     "Bữa phụ · mã vạch",
+     "130"
+    ]
+   ],
+   "lockDate": "Thứ Tư, 30 tháng 10",
+   "notes": [
+    [
+     "bây giờ",
+     "Giờ tập · Thân trên 45 phút"
+    ],
+    [
+     "2 giờ trước",
+     "Uống 1 ly nước 💧"
+    ],
+    [
+     "10 giờ trước",
+     "Fixmee: Đã đến giờ nhắc nhở"
+    ]
+   ],
+   "chat": [
+    "Tối qua tôi ngủ ít. Hôm nay có nên tập nặng không?",
+    "Nếu ngủ dưới 6 tiếng, hãy giảm mức tạ khoảng 10–15% và bỏ hiệp cuối. Giữ nguyên bài tập, rồi đi ngủ lúc 23:00 như kế hoạch.",
+    "Có thể đổi bữa tối sang món không cần nấu không?",
+    "Được. Salad ức gà ăn liền cộng 1 bắp ngô cho khoảng 35 g đạm, gần với thực đơn ban đầu."
+   ],
+   "weight": "Cân nặng",
+   "weeks": "8 tuần",
+   "chartLabel": "Cân nặng giảm đều trong 8 tuần",
+   "stats": [
+    "Bắt đầu",
+    "Hiện tại",
+    "Đã tập",
+    "27 buổi"
+   ],
+   "sample": "Số liệu mẫu để minh họa",
+   "exAlt": "Bài tập goblet squat"
+  },
   "moreTitle": "Và còn nhiều nữa",
-  "more": [["📴", "Dùng khi không có mạng", "Mở, ghi chép và hẹn giờ, đồng bộ sau"], ["⏱️", "Nhịn ăn gián đoạn", "Đặt khung ăn và nhận nhắc nhở"], ["🛒", "Danh sách mua sắm", "Tạo từ thực đơn cả tuần"], ["👯", "Bạn bè và trò chuyện", "Tập cùng nhau, chia sẻ kết quả"], ["📍", "Phòng tập gần bạn", "Tìm phòng tập và check-in"], ["❤️", "Kết nối ứng dụng sức khỏe", "Nhập số bước và cân nặng"], ["🌙", "Sáng/tối", "Dễ chịu cho mắt"], ["🔒", "Riêng tư", "Dữ liệu trên máy, tắt được thống kê"]],
+  "more": [
+   [
+    "📴",
+    "Dùng khi không có mạng",
+    "Mở, ghi chép và hẹn giờ, đồng bộ sau"
+   ],
+   [
+    "⏱️",
+    "Nhịn ăn gián đoạn",
+    "Đặt khung ăn và nhận nhắc nhở"
+   ],
+   [
+    "🛒",
+    "Danh sách mua sắm",
+    "Tạo từ thực đơn cả tuần"
+   ],
+   [
+    "👯",
+    "Bạn bè và trò chuyện",
+    "Tập cùng nhau, chia sẻ kết quả"
+   ],
+   [
+    "📍",
+    "Phòng tập gần bạn",
+    "Tìm phòng tập và check-in"
+   ],
+   [
+    "❤️",
+    "Kết nối ứng dụng sức khỏe",
+    "Nhập số bước và cân nặng"
+   ],
+   [
+    "🌙",
+    "Sáng/tối",
+    "Dễ chịu cho mắt"
+   ],
+   [
+    "🔒",
+    "Riêng tư",
+    "Dữ liệu trên máy, tắt được thống kê"
+   ]
+  ],
   "howKicker": "Bắt đầu trong 2 phút",
   "howTitle": "Dễ hơn bạn nghĩ",
-  "steps": [["Đặt mục tiêu", "Giảm mỡ, tăng cơ hay chỉ muốn khỏe hơn, kèm chiều cao và cân nặng"], ["Chọn ngày và dụng cụ", "Ngày nào rảnh, tập ở nhà hay phòng tập, có tạ không, thích ăn gì"], ["Làm theo hôm nay", "Mở ứng dụng là thấy lịch hôm nay, đánh dấu việc đã làm và xem tiến độ mỗi tuần"]],
+  "steps": [
+   [
+    "Đặt mục tiêu",
+    "Giảm mỡ, tăng cơ hay chỉ muốn khỏe hơn, kèm chiều cao và cân nặng"
+   ],
+   [
+    "Chọn ngày và dụng cụ",
+    "Ngày nào rảnh, tập ở nhà hay phòng tập, có tạ không, thích ăn gì"
+   ],
+   [
+    "Làm theo hôm nay",
+    "Mở ứng dụng là thấy lịch hôm nay, đánh dấu việc đã làm và xem tiến độ mỗi tuần"
+   ]
+  ],
   "installKicker": "Cài đặt như ứng dụng thật",
   "installTitle": "Không cần kho ứng dụng",
   "installSub": "Dùng ngay trên trình duyệt, hoặc thêm vào màn hình chính để mở nhanh, toàn màn hình và nhận thông báo.",
-  "ios": ["Mở **fixmee.app** trong **Safari**", "Chạm **Chia sẻ** ⬆︎", "Chọn **Thêm vào Màn hình chính**"],
-  "android": ["Mở **fixmee.app** trong **Chrome**", "Chạm menu **⋮**", "Chọn **Cài đặt ứng dụng**"],
+  "ios": [
+   "Mở **fixmee.app** trong **Safari**",
+   "Chạm **Chia sẻ** ⬆︎",
+   "Chọn **Thêm vào Màn hình chính**"
+  ],
+  "android": [
+   "Mở **fixmee.app** trong **Chrome**",
+   "Chạm menu **⋮**",
+   "Chọn **Cài đặt ứng dụng**"
+  ],
   "faqTitle": "Câu hỏi thường gặp",
-  "faq": [["Có thật sự miễn phí không?", "Các tính năng chính đều miễn phí: kế hoạch tập, thực đơn, thực phẩm bổ sung, nhắc nhở và theo dõi tiến độ. Một số tính năng AI có thể tính phí, hoặc bạn có thể dùng khóa AI của riêng mình."], ["Có cần đăng ký không?", "Không. Bắt đầu ngay, dữ liệu lưu trên máy của bạn. Tạo tài khoản sau nếu muốn đồng bộ thiết bị hoặc trò chuyện với bạn bè."], ["Có cần cài đặt không?", "Không bắt buộc, dùng được trên trình duyệt. Thêm vào màn hình chính sẽ mở nhanh hơn và nhận được thông báo (iPhone cần iOS 16.4 trở lên)."], ["Người mới bắt đầu có dùng được không?", "Được. Chọn trình độ cơ bản và tập tại nhà. Mỗi bài có hình minh họa và các bước, kế hoạch sẽ tăng độ khó dần dần."], ["Dữ liệu sức khỏe của tôi có an toàn không?", "Dữ liệu chủ yếu nằm trên máy của bạn. Khi có tài khoản, dữ liệu được đồng bộ có mã hóa. Thống kê sử dụng là ẩn danh và có thể tắt, bạn có thể xóa tài khoản bất cứ lúc nào."]],
-  "final": ["Bắt đầu ngày đầu tiên ", "ngay hôm nay"],
+  "faq": [
+   [
+    "Có thật sự miễn phí không?",
+    "Các tính năng chính đều miễn phí: kế hoạch tập, thực đơn, thực phẩm bổ sung, nhắc nhở và theo dõi tiến độ. Một số tính năng AI có thể tính phí, hoặc bạn có thể dùng khóa AI của riêng mình."
+   ],
+   [
+    "Có cần đăng ký không?",
+    "Không. Bắt đầu ngay, dữ liệu lưu trên máy của bạn. Tạo tài khoản sau nếu muốn đồng bộ thiết bị hoặc trò chuyện với bạn bè."
+   ],
+   [
+    "Có cần cài đặt không?",
+    "Không bắt buộc, dùng được trên trình duyệt. Thêm vào màn hình chính sẽ mở nhanh hơn và nhận được thông báo (iPhone cần iOS 16.4 trở lên)."
+   ],
+   [
+    "Người mới bắt đầu có dùng được không?",
+    "Được. Chọn trình độ cơ bản và tập tại nhà. Mỗi bài có hình minh họa và các bước, kế hoạch sẽ tăng độ khó dần dần."
+   ],
+   [
+    "Dữ liệu sức khỏe của tôi có an toàn không?",
+    "Dữ liệu chủ yếu nằm trên máy của bạn. Khi có tài khoản, dữ liệu được đồng bộ có mã hóa. Thống kê sử dụng là ẩn danh và có thể tắt, bạn có thể xóa tài khoản bất cứ lúc nào."
+   ]
+  ],
+  "final": [
+   "Bắt đầu ngày đầu tiên ",
+   "ngay hôm nay"
+  ],
   "finalSub": "Thiết lập chưa đến 2 phút. Không cần thẻ, không cần đăng ký.",
-  "footer": ["Bài tập", "Hướng dẫn", "Quyền riêng tư", "Điều khoản"]
+  "footer": [
+   "Bài tập",
+   "Hướng dẫn",
+   "Quyền riêng tư",
+   "Điều khoản"
+  ],
+  "installLink": "Muốn cài như ứng dụng? Xem cách →"
  }
 }
