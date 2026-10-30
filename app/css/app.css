@@ -626,3 +626,12 @@ body:has(.admin-layout) #app{max-width:1200px}
 .three-stage canvas{display:block;width:100%;height:100%;}
 .three-controls{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
 .three-controls select{min-height:44px;background:var(--surface);color:inherit;border:1px solid currentColor;border-radius:8px;}
+
+/* Install guidance */
+.inst-why { list-style: none; padding: 0; margin: 4px 0 14px; display: grid; gap: 8px; }
+.inst-why li { background: var(--surface2); border-radius: 12px; padding: 10px 12px; font-size: 14px; }
+.inst-steps { list-style: none; padding: 0; margin: 0 0 12px; display: grid; gap: 10px; }
+.inst-step { display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 12px; font-size: 14px; }
+.inst-n { width: 30px; height: 30px; border-radius: 10px; background: var(--accent); color: var(--accent-on); font-weight: 700; display: grid; place-items: center; }
+.inst-g { width: 34px; height: 34px; border-radius: 10px; background: var(--surface2); display: grid; place-items: center; color: var(--text); }
+.inst-why ~ .btn { margin-top: 8px; }

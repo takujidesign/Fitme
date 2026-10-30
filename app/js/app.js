@@ -102,8 +102,7 @@ function render() {
   restore();
   if(r.name==='today' && first)animateToday(viewEl);
   if(viewEl.querySelector('[data-ai-balance],[data-ai-cost]'))refreshCredits().catch(()=>{});
-  tabEl.innerHTML = TABS.map(([name, ic, label]) => `<a href="#/${name}" class="${parentTab(r.name) === name ? 'on' : ''}">${icon(ic, 22)}<span>${L(label)}</span></a>`).join('')
-    + (installEvt ? '' : '');
+  tabEl.innerHTML = TABS.map(([name, ic, label]) => `<a href="#/${name}" class="${parentTab(r.name) === name ? 'on' : ''}">${icon(ic, 22)}<span>${L(label)}</span></a>`).join('');
   document.documentElement.lang = getState().lang;
   pageGuidance(viewEl,r.name);
 }
@@ -130,27 +129,9 @@ document.addEventListener('click', (e) => {
 });
 
 // ---- PWA install ----
-let installEvt = null;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  installEvt = e;
-  showInstall();
-});
-function showInstall() {
-  if (document.getElementById('install') || matchMedia('(display-mode: standalone)').matches) return;
-  const ios = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
-  if (!installEvt && !ios) return;
-  try { if (localStorage.getItem('fitme:install-dismissed')) return; } catch {}
-  const b = document.createElement('div');
-  b.id = 'install';
-  b.className = 'install';
-  b.innerHTML = `${icon('download', 20)}<div><b>${L('ติดตั้ง Fixmee เป็นแอป', 'Install Fixmee')}</b><small>${installEvt ? L('ใช้งานแบบออฟไลน์ เปิดจากหน้าจอโฮม', 'Works offline, opens from your home screen') : L('แตะ แชร์ ⬆ แล้วเลือก "เพิ่มไปยังหน้าจอโฮม"', 'Tap Share ⬆ then "Add to Home Screen"')}</small></div>
-    ${installEvt ? `<button class="btn primary xs" id="inst-go">${L('ติดตั้ง', 'Install')}</button>` : ''}<button class="icon-btn" id="inst-x">${icon('x', 18)}</button>`;
-  document.body.appendChild(b);
-  b.querySelector('#inst-go')?.addEventListener('click', async () => { installEvt.prompt(); await installEvt.userChoice; installEvt = null; b.remove(); });
-  b.querySelector('#inst-x').addEventListener('click', () => { try { localStorage.setItem('fitme:install-dismissed', '1'); } catch {} b.remove(); });
-}
-setTimeout(showInstall, 4000);
+// Capture the prompt early; the install module itself loads later to keep first-load JS small.
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();window.fitmeInstallEvent=e;});
+import('./install.js').then(m=>m.startInstall()).catch(()=>{});
 
 if (!window.Capacitor?.isNativePlatform?.() && 'serviceWorker' in navigator && location.protocol !== 'file:') {
   navigator.serviceWorker.register('./sw.js').then(offerUpdate).catch(() => {});
