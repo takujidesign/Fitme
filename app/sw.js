@@ -2,7 +2,7 @@
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const OFFLINE_CACHE = VERSION+'-offline-r20';
 const DELIVERY_CACHE = 'fitme-reminder-delivery-v1';
-const SHELL = [
+const SHELL = [ './js/push-routes.js','./js/push-storage.js','./js/reminder-privacy.js','./js/push-actions.js',
  './js/i18n/round20.js','./offline.html','./offline-manifest.json','./js/reminders.js','./js/calendar.js','./js/reminder-runtime.js','./js/reminder-ui.js','./js/offline-core.js',
   './js/usage-labels.js','./js/usage-policy.js','./js/usage-copy.js','./js/usage-copy-data.js','./js/legal-content.js','./js/charts.js','./js/views/admin-usage.js','./js/i18n/round19.js','./js/seo-mode.js','./js/seo-boot.js',
  './js/i18n/round18.js','./js/views/round10-entry.js','./js/daily-menu.js','./js/views/daily-menu.js','./js/byok.js','./js/views/byok.js','./js/backup.js',
@@ -74,30 +74,60 @@ self.addEventListener('fetch', (e) => {
   }));
 });
 
+function pushStorage(value){return new Promise((resolve,reject)=>{const request=indexedDB.open('fitme-push-v1',1);request.onupgradeneeded=()=>request.result.createObjectStore('state');request.onerror=()=>reject(request.error);request.onsuccess=()=>{const db=request.result,tx=db.transaction('state',value===undefined?'readonly':'readwrite'),store=tx.objectStore('state'),op=value===undefined?store.get('registration'):store.put(value,'registration');let result;op.onsuccess=()=>result=op.result;tx.oncomplete=()=>{db.close?.();resolve(result);};tx.onerror=()=>{db.close?.();reject(tx.error);};};});}
+
+const PUSH_ROUTE = /^#\/(today|food|workout|supps|me|help|friends|friend-challenges|together|player\/\d{4}-\d{2}-\d{2}|messages\/[A-Za-z0-9_-]{1,64})$/;
+const safeRoute=route=>typeof route==='string'&&PUSH_ROUTE.test(route)?route:'#/today';
 let deliveryQueue=Promise.resolve();
 function deliver(data){
  deliveryQueue=deliveryQueue.catch(()=>{}).then(async()=>{
-  const cache=await caches.open(DELIVERY_CACHE),key=new URL('./__reminder/'+encodeURIComponent(data.tag),self.registration.scope);
-  if(data.tag&&await cache.match(key))return;
+  const cache=await caches.open(DELIVERY_CACHE),key=new URL('./__reminder/'+encodeURIComponent(data.reminder?.id||data.tag),self.registration.scope);
+  if(data.tag&&await cache.match(key)&&data.reminder?.category!=='chat')return;
+  const saved=typeof indexedDB!=='undefined'?await pushStorage().catch(()=>null):null,mode=saved?.prefs?.privacy??data.privacy??'medications';
+  if(mode==='all'||mode==='medications'&&data.reminder?.category==='medications'){data={...data,title:({th:'Fixmee: ถึงเวลาแล้ว',en:'Fixmee: reminder due',zh:'Fixmee: 提醒时间到了',ja:'Fixmee: リマインダーの時間です',vi:'Fixmee: Đã đến giờ nhắc nhở'}[saved?.prefs?.lang||data.lang]||'Fixmee: reminder due'),body:''};if(data.reminder)data.reminder={...data.reminder,title:data.title,body:''};}
   await self.registration.showNotification(data.title||'Fixmee',{body:data.body||'',icon:'./icons/icon-192.png',badge:'./icons/icon-192.png',tag:data.tag,data:{route:data.route,reminder:data.reminder},actions:[{action:'done',title:'✓ Done / ทำแล้ว'},{action:'snooze',title:'+10 min / เลื่อน'}]});
-  if(data.tag){await cache.put(key,Response.json({at:Date.now()}));for(const client of await self.clients.matchAll())client.postMessage({type:'REMINDER_DELIVERED',id:data.tag});}
+  await workerBadge(saved,data);
+  if(data.tag){await cache.put(key,Response.json({at:Date.now()}));for(const client of await self.clients.matchAll())client.postMessage({type:'REMINDER_DELIVERED',id:data.reminder?.id||data.tag});}
  });return deliveryQueue;
 }
 self.addEventListener('push', e => {
   let data; try { data = e.data?.json(); } catch {}
-  const route = /^#\/(today|food|workout|supps|me|player\/\d{4}-\d{2}-\d{2})$/.test(data?.route) ? data.route : '#/today';
+  const route = safeRoute(data?.route);
   e.waitUntil(deliver({...data,route}));
 });
 self.addEventListener('notificationclick', e => {
   e.notification.close();
-  if(e.action==='done')return;
-  const route = /^#\/(today|food|workout|supps|me|player\/\d{4}-\d{2}-\d{2})$/.test(e.notification.data?.route) ? e.notification.data.route : '#/today';
+  if(e.action==='done'){e.waitUntil(workerAck(e.notification,'done'));return;}
+  const route = safeRoute(e.notification.data?.route);
   const url = new URL('./', self.registration.scope); url.hash = route;
   e.waitUntil(self.clients.matchAll({type:'window',includeUncontrolled:true}).then(async clients => {
-    if(e.action==='snooze'&&e.notification.data?.reminder){const cache=await caches.open(DELIVERY_CACHE);await cache.put(new URL('./__snooze/'+encodeURIComponent(e.notification.tag),self.registration.scope),Response.json({reminder:e.notification.data.reminder,at:Date.now()+600000}));}
+    if(e.action==='snooze'&&e.notification.data?.reminder){await workerAck(e.notification,'snooze');const cache=await caches.open(DELIVERY_CACHE);await cache.put(new URL('./__snooze/'+encodeURIComponent(e.notification.tag),self.registration.scope),Response.json({reminder:e.notification.data.reminder,at:Date.now()+600000}));}
     const client = clients.find(c => c.url.startsWith(self.registration.scope));
     if(client){await client.navigate(url.href);await client.focus();}else await self.clients.openWindow(url.href);
   }));
 });
 
 self.addEventListener('message',event=>{if(event.data?.type==='LOCAL_REMINDER')event.waitUntil(deliver(event.data.payload).then(()=>event.ports?.[0]?.postMessage({ok:true})).catch(()=>event.ports?.[0]?.postMessage({ok:false})));if(['APPLY_UPDATE','SKIP_WAITING'].includes(event.data?.type))self.skipWaiting();if(['GET','GET_VERSION'].includes(event.data?.type))(event.ports?.[0]||event.source)?.postMessage({version:VERSION});});
+
+self.addEventListener('pushsubscriptionchange',e=>e.waitUntil((async()=>{
+ const saved=await pushStorage();if(!saved?.deviceId||!saved.publicKey)return;
+ const applicationServerKey=Uint8Array.from(atob(saved.publicKey.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
+ const sub=e.newSubscription||await self.registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey});
+ const body={deviceId:saved.deviceId,subscription:sub.toJSON(),tz:saved.tz,prefs:saved.prefs,reminders:saved.reminders};
+ const response=await fetch(saved.api+'/api/push/subscribe',{method:'POST',headers:{'Content-Type':'application/json','X-Push-Device':saved.deviceId},body:JSON.stringify(body)});
+ if(!response.ok)throw Error('Push renewal failed');await pushStorage({...saved,...body,registeredAt:Date.now()});
+})()));
+async function workerAck(notification,action){
+ const saved=typeof indexedDB!=='undefined'?await pushStorage().catch(()=>null):null,id=notification.data?.reminder?.id||notification.tag;
+ if(!id)return;const cache=await caches.open(DELIVERY_CACHE);await cache.put(new URL('./__ack/'+encodeURIComponent(id),self.registration.scope),Response.json({id,action,at:Date.now()}));
+ if(saved){saved.acks={...saved.acks,[id]:Date.now()};await pushStorage(saved);await workerBadge(saved);if(saved.deviceId)try{await fetch(saved.api+'/api/push/ack',{method:'POST',headers:{'Content-Type':'application/json','X-Push-Device':saved.deviceId},body:JSON.stringify({id,action,at:Date.now()})});}catch{}}
+ for(const client of await self.clients.matchAll())client.postMessage({type:'REMINDER_ACK',id,action});
+}
+async function workerBadge(saved,data){
+ if(typeof navigator==='undefined'||!navigator.setAppBadge)return;
+ if(saved?.prefs?.badge===false||data?.badge===false){await navigator.clearAppBadge?.();return;}
+ const parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:saved?.tz||'UTC',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date()).map(p=>[p.type,p.value]));
+ const date=parts.year+'-'+parts.month+'-'+parts.day,time=parts.hour+':'+parts.minute;
+ const count=(saved?.reminders||[]).filter(r=>r.date===date&&r.time<=time&&!saved.acks?.[r.id]).length;
+ if(count)await navigator.setAppBadge(count);else await navigator.clearAppBadge?.();
+}

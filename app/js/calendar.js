@@ -1,3 +1,4 @@
+import {privateReminder} from './reminder-privacy.js';
 // RFC 5545, shared with the Worker. No account identifiers or reminder bodies.
 const encoder=new TextEncoder();
 export const escapeICS=s=>String(s).replace(/\\/g,'\\\\').replace(/\r?\n/g,'\\n').replace(/;/g,'\\;').replace(/,/g,'\\,');
@@ -16,9 +17,9 @@ export function timezoneLines(tz,year){
 }
 // Two independent hashes keep UIDs compact without exposing titles in identifiers.
 export function stableHash(s){let a=2166136261,b=5381;for(const c of s){a=Math.imul(a^c.codePointAt(0),16777619);b=Math.imul(b,33)^c.codePointAt(0);}return (a>>>0).toString(16)+(b>>>0).toString(16);}
-export function buildICS(reminders,{tz='UTC',earlier=0,now=Date.now(),sequence=0}={}){
- const sorted=[...reminders].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)),groups=new Map();
- for(const r of sorted){const recurring=['water','sleep','supplements'].includes(r.category),key=(recurring?'daily':r.date)+':'+r.time+':'+r.category+':'+r.title;const group=groups.get(key)||[];group.push(r);groups.set(key,group);}
+export function buildICS(reminders,{tz='UTC',earlier=0,now=Date.now(),sequence=0,privacy='medications',lang='en'}={}){
+ const sorted=reminders.map(r=>privateReminder(r,{privacy,lang})).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)),groups=new Map();
+ for(const r of sorted){const recurring=['water','sleep','supplements'].includes(r.category),key=(recurring?'daily':r.date)+':'+r.time+':'+r.category+':'+r.title+(r.category==='medications'?':'+(r.id||''):'');const group=groups.get(key)||[];group.push(r);groups.set(key,group);}
  const lines=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Fixmee//Reminders//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH','X-WR-CALNAME:Fixmee','X-PUBLISHED-TTL:PT6H',...timezoneLines(tz,Number((sorted[0]?.date||new Date(now).toISOString()).slice(0,4)))];
  for(const [key,group] of groups){
   // Only compress truly consecutive daily occurrences; changing/gapped plans stay singles.

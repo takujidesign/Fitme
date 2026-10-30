@@ -1,3 +1,5 @@
+import {acknowledge} from '../push-actions.js';
+import {reminderPlan} from '../reminders.js';
 import {featureUsed} from '../telemetry.js';
 import { slot } from '../slots.js';
 import { foodWarnings } from '../conditions.js';
@@ -90,6 +92,7 @@ actions.tick = (el) => {
   const { iso, k } = el.dataset;
   const meal=k.startsWith('meal-')?planDay(iso).meals.find(m=>m.key===k.slice(5)&&m.custom):null;
   updateLog(iso, (l) => { l.done[k] = !l.done[k]; if(meal){l.foodLog=(l.foodLog||[]).filter(e=>e.menuKey!==k);if(l.done[k])l.foodLog.push({menuKey:k,time:Date.now(),name:meal.name,items:meal.items.map(it=>({name:{th:(it.food||FOOD[it.id]).th,en:(it.food||FOOD[it.id]).en},grams:it.g,...Object.fromEntries(['k','p','c','f'].map(k=>[k==='k'?'kcal':k,(it.food||FOOD[it.id])[k]*it.g/100]))})),totals:{kcal:meal.total.k,p:meal.total.p,c:meal.total.c,f:meal.total.f}});} if (k === 'water-am' && l.done[k]) l.water += 500; });
+  if(getState().logs[iso]?.done[k])for(const r of reminderPlan(iso,undefined,1,true))if(r.eventKey===k)acknowledge(r.id);
   if(k.startsWith('meal-')&&getState().logs[iso]?.done[k])featureUsed('meal_logged');
   if (navigator.vibrate) navigator.vibrate(12);
   rerender();

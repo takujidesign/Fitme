@@ -87,7 +87,7 @@ export function exportPDF(days) {
 }
 
 // ---------- ICS ----------
-export function exportICS(days=14) { const ics=buildICS(reminderPlan(todayISO(),undefined,days),{tz:deviceZone()});download('fixmee-reminders.ics',ics,'text/calendar');return ics; }
+export function exportICS(days=14) { const ics=buildICS(reminderPlan(todayISO(),undefined,days),{tz:deviceZone(),privacy:getState().notifications.privacy,lang:getState().lang});download('fixmee-reminders.ics',ics,'text/calendar');return ics; }
 
 export async function exportJSON() {featureUsed('backup_export');
   const s = await (await import('./backup.js')).fullBackup();

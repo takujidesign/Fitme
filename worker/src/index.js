@@ -1,3 +1,4 @@
+import {pushAck,pushDiagnostics} from './push-policy.js';
 import {calendarRequest} from './calendar.js';
 import {collectUsage,adminUsage,snapshotUsage} from './usage.js';
 import {kieProxy,adminByok,byokConfig} from './byok.js';
@@ -46,7 +47,7 @@ const PRODUCTS = {
 
 export default {
   async scheduled(event, env) { await pruneSocial(env,event.scheduledTime); await sendScheduled(env, event.scheduledTime); await sendLine(env, event.scheduledTime); if(event.cron==='0 20 * * *'){await snapshotUsage(env,event.scheduledTime);await syncHealthCron(env);if(await betaAllowed(env,'email'))await winback(env,event.scheduledTime);await backup(env,event.scheduledTime);} },
-  async fetch(req, env) {
+  async fetch(req, env, ctx={waitUntil:p=>p.catch(()=>{})}) {
     // Health must not depend on the normal KV-backed domain configuration read.
     if(req.method==='GET'&&new URL(req.url).pathname==='/api/health')return json(await health(env),200,corsHeaders(req,env));
     env = await domainEnv(env);
@@ -74,7 +75,7 @@ export default {
       else if(['/api/admin/launch','/api/admin/2fa','/api/admin/test-email','/api/admin/test-push'].includes(url.pathname))out=await adminLaunch(req,env,url.pathname);
       else if(['/api/auth/forgot','/api/auth/reset','/api/auth/verify','/api/auth/resend','/api/auth/password','/api/auth/sessions','/api/auth/logout-all'].includes(url.pathname))out=await authSecurity(req,env,url.pathname);
       else
-      if (/^\/api\/(profile(?:\/|$)|profiles\/|friends(?:\/|$)|reports$|conversations(?:\/|$)|messages\/|gyms(?:\/|$)|checkins$|feed(?:\/|$)|admin\/social\/)/.test(url.pathname)) out = await social(req,env,url.pathname);
+      if (/^\/api\/(profile(?:\/|$)|profiles\/|friends(?:\/|$)|reports$|conversations(?:\/|$)|messages\/|gyms(?:\/|$)|checkins$|feed(?:\/|$)|admin\/social\/)/.test(url.pathname)) out = await social(req,env,url.pathname,ctx);
       else if (['/api/stripe/webhook','/api/stripe/subscribe','/api/stripe/portal','/api/subscription'].includes(url.pathname)) out = await billing(req,env,url.pathname,stripe);
       else if (/^\/api\/(ideas(?:\/|$)|donate\/|supporter(?:\/|$)|admin\/(?:ideas|donations)$)/.test(url.pathname)) out = await round10(req,env,url.pathname,readConfig,verifyAmount);
       else if (['/api/admin/backups','/api/backups/download'].includes(url.pathname)) out = await backupRoute(req,env);
@@ -116,6 +117,8 @@ export default {
       else if (req.method === 'PUT' && url.pathname === '/api/admin/config') out = await saveConfig(req, env);
       else if (req.method === 'POST' && ['/api/ai/plan-review', '/api/ai/body'].includes(url.pathname)) out = await runAI(req,env,url.pathname.endsWith('/body')?'bodyReview':'planReview',verifyToken,(await readConfig(env)).ai,e=>coach(req,e,url.pathname.endsWith('/body')));
       else if (req.method === 'POST' && url.pathname === '/api/label/analyze') out = await runAI(req,env,'labelRead',verifyToken,(await readConfig(env)).ai,e=>analyzeLabel(req,e));
+      else if(url.pathname==='/api/push/ack')out=await pushAck(req,env);
+      else if(req.method==='GET'&&url.pathname==='/api/admin/push/diagnostics')out=await pushDiagnostics(req,env);
       else if(req.method==='GET'&&url.pathname==='/api/push/reminders')out=await pushReminders(req,env);
       else if (req.method === 'POST' && url.pathname === '/api/push/subscribe') out = await pushRequest(req, env);
       else if (req.method === 'POST' && url.pathname === '/api/push/unsubscribe') out = await pushRequest(req, env, true);

@@ -1,0 +1,9 @@
+Attempted in worker/:
+npx wrangler deploy --dry-run
+npx wrangler d1 migrations apply fixme --local
+Both: Error: spawn EPERM at ChildProcess.spawn, worker/node_modules/wrangler/bin/wrangler.js:24.
+No bundle, local Wrangler migration, remote migration or deployment occurred.
+
+node tests/round21-browser.mjs:
+browserType.launch: spawn EPERM launching C:\Program Files\Google\Chrome\Application\chrome.exe.
+No PNG screenshots were captured. HTML fixtures are not screenshots.

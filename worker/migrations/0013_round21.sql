@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS push_failures (id TEXT PRIMARY KEY, device TEXT NOT NULL, host TEXT NOT NULL, status INTEGER NOT NULL, reason TEXT NOT NULL, at INTEGER NOT NULL);
+CREATE INDEX IF NOT EXISTS push_failures_at ON push_failures(at);

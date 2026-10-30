@@ -1,0 +1,17 @@
+[
+  {
+    "file": "tests/round21.mjs",
+    "code": 0,
+    "output": "PASS Round21 privacy migration/five languages/ICS/native/SW, missed ack filtering, badge open/done/push/zero/unsupported, shared routes/chat tap/injection, SW renewal same device\n"
+  },
+  {
+    "file": "worker/round20.test.mjs",
+    "code": 0,
+    "output": "PASS Round 20 local migration; calendar authentication/hash/rotation/revocation/privacy/rate limit; self-test five attempts/retryAfter\n(node:40384) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  },
+  {
+    "file": "worker/round21.test.mjs",
+    "code": 0,
+    "output": "PASS Round21 routes, receiver timezones, midnight quiet/coalescing, dedup, categories, device renewal, cross-device/anonymous ack, rate limit, admin-only capped/private/pruned diagnostics\n(node:22028) ExperimentalWarning: SQLite is an experimental feature and might change at any time\n(Use `node --trace-warnings ...` to show where the warning was created)\n"
+  }
+]
