@@ -12,6 +12,12 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["web/preview.mjs"],
       "port": 5199
+    },
+    {
+      "name": "repo-root",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "5181"],
+      "port": 5181
     }
   ]
 }
