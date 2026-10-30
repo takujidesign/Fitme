@@ -65,7 +65,9 @@ db.prepare('INSERT INTO user_state(user_id,json,updated_at,version) VALUES(?,?,?
 db.prepare('INSERT INTO invites(code,client_id,expires_at) VALUES(?,?,?)').run('ABCDEF',buyer.user.id,Date.now()+1000);
 const exported=await ok(await request('account',undefined,buyer.token));assert.equal(exported.payments.length,3);assert(!JSON.stringify(exported).includes('pass_hash'));
 assert.equal((await request('account',{email:'wrong@example.com'},buyer.token,'DELETE')).status,400);
+db.prepare('INSERT INTO calendar_feeds(user_id,token_hash,tz,reminders,sequence) VALUES(?,?,?,?,0)').run(buyer.user.id,'synthetic-calendar-hash','UTC','[]');
 await ok(await request('account',{email:buyer.user.email},buyer.token,'DELETE'));
+assert.equal(db.prepare('SELECT count(*) n FROM calendar_feeds WHERE user_id=?').get(buyer.user.id).n,0);
 for(const table of ['sessions','user_state','push_subscriptions','referrals','plan_purchases','orders'])assert.equal(db.prepare(`SELECT count(*) AS n FROM ${table} WHERE user_id=?`).get(buyer.user.id).n,0,table);
 assert.equal(db.prepare('SELECT count(*) AS n FROM notes').get().n,0);assert.equal(db.prepare('SELECT count(*) AS n FROM trainer_links').get().n,0);assert.equal(db.prepare('SELECT count(*) AS n FROM invites').get().n,0);assert.equal(push.size,0);
 assert.equal(db.prepare('SELECT count(*) AS n FROM payments WHERE user_id=?').get(buyer.user.id).n,0);assert.equal(db.prepare('SELECT count(*) AS n FROM payments').get().n,3);assert.equal((await request('auth/me',undefined,buyer.token)).status,401);

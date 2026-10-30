@@ -9,7 +9,7 @@ import {adminContent} from './admin-content.js';
 const id=z.string().uuid(),rows=async(env,sql,...args)=>(await q(env,sql,...args).all()).results;
 const actor=req=>hash(req.headers.get('Authorization')||'');
 async function log(req,env,action,target,detail={}){await q(env,'INSERT INTO admin_audit VALUES(?,?,?,?,?,?)',crypto.randomUUID(),(await actor(req)).slice(0,16),action,target,JSON.stringify(detail),Date.now()).run();}
-export async function adminSocial(req,env,section){
+export async function adminSocial(req,env,section,ctx={waitUntil:p=>p.catch(()=>{})}){
  const content=await adminContent(req,env,section);if(content)return content;
  const url=new URL(req.url),now=Date.now();
  if(section==='members'&&req.method==='GET'){
@@ -47,7 +47,7 @@ export async function adminSocial(req,env,section){
    await env.DB.batch(changes[report.target_type].map(sql=>q(env,sql,report.target_id)));
   }
   if(b.action==='suspend')await q(env,'UPDATE profiles SET suspended=1 WHERE user_id=?',target.owner).run();
-  if(b.action==='warn')await pushUser(env,target.owner,{title:'Fixmee',body:'A moderator reviewed a report about your content. Please follow the community safety guidelines.',route:'#/help',tag:'moderation'});
+  if(b.action==='warn')ctx.waitUntil(pushUser(env,target.owner,{title:'Fixmee',body:'A moderator reviewed a report about your content. Please follow the community safety guidelines.',route:'#/help',tag:'moderation',id:'moderation-'+b.id}));
   await q(env,'UPDATE reports SET status=? WHERE id=?',b.action,b.id).run();await log(req,env,'report',b.id,{action:b.action});return {ok:true};
  }
  if(section==='gym-edit'&&req.method==='PUT'){
@@ -64,7 +64,7 @@ export async function adminSocial(req,env,section){
  if(section==='broadcast'&&req.method==='POST'){
   const b=await input(req,z.object({title:z.string().min(1).max(80),body:z.string().min(1).max(300),confirm:z.literal(true)}).strict());
   if(await q(env,"SELECT 1 FROM admin_audit WHERE action='broadcast' AND created>?",now-3600000).first())throw fail('One broadcast per hour',429);
-  await log(req,env,'broadcast','all');let sent=0;for(const u of await rows(env,'SELECT DISTINCT user_id FROM push_subscriptions'))if(await pushUser(env,u.user_id,{title:b.title,body:b.body,route:'#/today',tag:'announcement'}))sent++;return {sent};
+  await log(req,env,'broadcast','all');const recipients=await rows(env,'SELECT DISTINCT user_id FROM push_subscriptions');ctx.waitUntil(Promise.all(recipients.map(u=>pushUser(env,u.user_id,{title:b.title,body:b.body,route:'#/today',tag:'announcement',id:'announcement-'+now}))));return {sent:recipients.length};
  }
  if(section==='dashboard'&&req.method==='GET'){
   return usageReport(env,30);

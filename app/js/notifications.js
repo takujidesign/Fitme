@@ -1,3 +1,4 @@
+import {pushStorage} from './push-storage.js';
 import { getState, setState, subscribe } from './store.js';
 import { L } from './ui.js';
 import { CONFIG } from './config.js';
@@ -7,22 +8,27 @@ import {reminderPlan} from './reminders.js';
 export {reminderPlan} from './reminders.js';
 export async function post(path,body){const r=await fetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/push/'+path,{method:'POST',headers:{'Content-Type':'application/json',...(getState().notifications.deviceId?{'X-Push-Device':getState().notifications.deviceId}:{}),...(getState().account?.token?{Authorization:'Bearer '+getState().account.token}:{})},body:JSON.stringify(body)});const data=await r.json();if(!r.ok)throw Object.assign(Error(data.error||L('บันทึกไม่ได้','Could not save')),{status:r.status,retryAfter:data.retryAfter});return data;}
 let syncing=false,again=false;
-export async function syncPush(){
+export async function syncPush(opening=false){
   if(syncing){again=true;return;}if(window.Capacitor?.isNativePlatform?.()||!getState().notifications.enabled||!CONFIG.API_BASE||!navigator.serviceWorker)return;
   syncing=true;
   try{
+    if(globalThis.Notification?.permission==='denied'){const id=getState().notifications.deviceId;if(id)await post('unsubscribe',{deviceId:id});await pushStorage(null).catch(()=>{});setState(s=>{s.notifications.enabled=false;s.notifications.deviceId=null;s.notifications.explanation='Notification permission denied';});return;}
     if(globalThis.Notification?.permission!=='granted')return;
+    const prefs=Object.fromEntries(['quietStart','quietEnd','chat','social','privacy','badge'].map(k=>[k,getState().notifications[k]]).concat([['lang',getState().lang]])),tz=Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const saved=await pushStorage().catch(()=>null),existing=await (await navigator.serviceWorker.ready).pushManager.getSubscription();
+    if(opening&&existing&&existing.endpoint===saved?.subscription?.endpoint&&Date.now()-saved.registeredAt<86400000&&saved.tz===tz&&JSON.stringify(saved.prefs)===JSON.stringify(prefs))return;
     const response=await fetch(CONFIG.API_BASE.replace(/\/$/,'')+'/api/push/key');if(!response.ok)throw Error('Push server not ready');const publicKey=(await response.json()).publicKey;if(!publicKey)throw Error('Push server not ready');
     const reg=await navigator.serviceWorker.ready,subscription=await ensureSubscription(reg,publicKey);CONFIG.VAPID_PUBLIC_KEY=publicKey;
-    const body={...(getState().notifications.deviceId?{deviceId:getState().notifications.deviceId}:{}),subscription:subscription.toJSON(),tz:Intl.DateTimeFormat().resolvedOptions().timeZone,reminders:reminderPlan()};
+    const body={...(getState().notifications.deviceId?{deviceId:getState().notifications.deviceId}:{}),subscription:subscription.toJSON(),tz,prefs,reminders:reminderPlan()};
     let result;try{result=await post('subscribe',body);}catch(e){if(e.status!==404)throw e;result=await post('subscribe',{...body,deviceId:undefined});}
+    await pushStorage({...saved,...body,deviceId:result.deviceId,publicKey,api:CONFIG.API_BASE.replace(/\/$/,''),registeredAt:result.registeredAt||Date.now()}).catch(()=>{});
     pushRegistration={registeredAt:result.registeredAt||Date.now(),error:''};if(result.deviceId!==getState().notifications.deviceId)setState(s=>s.notifications.deviceId=result.deviceId);
   }catch(e){pushRegistration.error=e.message;throw e;}finally{syncing=false;if(again){again=false;syncPush().catch(()=>{});}}
 }
 export function startPushSync(){
   let signature='',timer;
   const changed=()=>{const s=getState(),next=JSON.stringify([Intl.DateTimeFormat().resolvedOptions().timeZone,s.dailyMenus,s.profile,s.supplements,s.mealSeed,s.dayOverrides,s.customFoods,s.notifications,s.lang,s.blocks,s.exSwaps,s.logs,s.account?.token]);if(next===signature)return;signature=next;clearTimeout(timer);timer=setTimeout(()=>syncPush().catch(()=>{}),1000);};
-  subscribe(changed);changed();window.addEventListener('online',()=>syncPush().catch(()=>{}));document.addEventListener('visibilitychange',()=>{if(!document.hidden){changed();syncPush().catch(()=>{});}});
+  subscribe(changed);signature=JSON.stringify([Intl.DateTimeFormat().resolvedOptions().timeZone,getState().dailyMenus,getState().profile,getState().supplements,getState().mealSeed,getState().dayOverrides,getState().customFoods,getState().notifications,getState().lang,getState().blocks,getState().exSwaps,getState().logs,getState().account?.token]);syncPush(true).catch(()=>{});window.addEventListener('online',()=>syncPush(true).catch(()=>{}));document.addEventListener('visibilitychange',()=>{if(!document.hidden){changed();syncPush(true).catch(()=>{});}});
 }
 export function notificationState({supported,ios,standalone,permission,publicKey,subscribed}){
  if(!supported||(ios&&!standalone))return 'unsupported';if(permission==='denied')return 'denied';if(!publicKey)return 'unconfigured';return permission==='granted'&&subscribed?'active':'inactive';

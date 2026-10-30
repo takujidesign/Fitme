@@ -28,11 +28,11 @@ export async function pruneSocial(env,now=Date.now()){
  await q(env,'DELETE FROM social_invites WHERE expires<=?',now).run();
  await nudgeBuddies(env,now,friends);
 }
-async function notifyChat(env,conversation,sender){
+async function notifyChat(env,conversation,sender,messageId){
  try{if(env.CONVERSATIONS)await env.CONVERSATIONS.get(env.CONVERSATIONS.idFromName(conversation)).fetch('https://conversation/notify',{method:'POST'});}catch{}
- try{const peers=(await q(env,'SELECT user_id FROM conversation_members WHERE conversation_id=? AND user_id<>? AND muted=0 AND invited=0',conversation,sender).all()).results;for(const peer of peers)if(!await blocked(env,sender,peer.user_id))await pushUser(env,peer.user_id,{title:'Fixmee',body:'New message from a friend',route:'#/messages/'+conversation,tag:'chat-'+conversation});}catch{/* A push failure must not change the result of a persisted message. */}
+ try{const peers=(await q(env,'SELECT user_id FROM conversation_members WHERE conversation_id=? AND user_id<>? AND muted=0 AND invited=0',conversation,sender).all()).results;for(const peer of peers)if(!await blocked(env,sender,peer.user_id))await pushUser(env,peer.user_id,{title:'Fixmee',body:'New message from a friend',route:'#/messages/'+conversation,tag:'chat-'+conversation,id:messageId},{category:'chat'});}catch{/* A push failure must not change the result of a persisted message. */}
 }
-export async function social(req,env,path){
+export async function social(req,env,path,ctx={waitUntil:p=>p.catch(()=>{})}){
  if(!env.DB)throw fail('Database unavailable',503);
  const url=new URL(req.url),now=Date.now();
  const publicResult=await publicContent(req,env,path);if(publicResult)return publicResult;
@@ -45,7 +45,7 @@ export async function social(req,env,path){
  }
  if(path.startsWith('/api/admin/social/')){
   await admin(req,env);const actor=(await hash(req.headers.get('Authorization')||'')).slice(0,16),section=path.split('/').at(-1);
-  const result=await adminSocial(req,env,section);if(result)return result;
+  const result=await adminSocial(req,env,section,ctx);if(result)return result;
   if(req.method==='GET'){
    const tables={reports:'reports',gyms:'gyms',audit:'admin_audit',members:'profiles',announcements:'announcements'};
    if(tables[section])return {items:(await q(env,`SELECT * FROM ${tables[section]} ${['audit','reports','announcements'].includes(section)?'ORDER BY '+(section==='announcements'?'start':'created')+' DESC':''} LIMIT 300`).all()).results};
@@ -122,7 +122,7 @@ export async function social(req,env,path){
   if(cm[2]==='photo'&&req.method==='POST'){
    const {bytes,type,extension}=await readImage(req,1000000,{legacy:true});if(!env.MEDIA)throw fail('Media unavailable',503);
    const mid=crypto.randomUUID(),key=`chat/${cm[1]}/${mid}.${extension}`;await env.MEDIA.put(key,bytes,{httpMetadata:{contentType:type},customMetadata:{expires:String(now+86400000)}});
-   try{const r=await q(env,"INSERT INTO messages(id,conversation_id,sender,body,kind,media_key,expires,created) SELECT ?,?,?,'','photo',?,?,? WHERE (SELECT count(*) FROM messages WHERE sender=? AND created>?)<30",mid,cm[1],u.id,key,now+86400000,now,u.id,now-60000).run();if(!r.meta.changes)throw fail('30 messages per minute',429);}catch(e){await env.MEDIA.delete(key);throw e;}await notifyChat(env,cm[1],u.id);return {id:mid,expires:now+86400000};
+   try{const r=await q(env,"INSERT INTO messages(id,conversation_id,sender,body,kind,media_key,expires,created) SELECT ?,?,?,'','photo',?,?,? WHERE (SELECT count(*) FROM messages WHERE sender=? AND created>?)<30",mid,cm[1],u.id,key,now+86400000,now,u.id,now-60000).run();if(!r.meta.changes)throw fail('30 messages per minute',429);}catch(e){await env.MEDIA.delete(key);throw e;}ctx.waitUntil(notifyChat(env,cm[1],u.id,mid));return {id:mid,expires:now+86400000};
   }
   if(req.method==='GET'){const result={messages:(await q(env,'SELECT id,sender,body,kind,expires,created,deleted,reply_to FROM messages WHERE conversation_id=? AND (expires IS NULL OR expires>?) AND created>? ORDER BY created DESC LIMIT 100',cm[1],now,now-180*86400000).all()).results.reverse(),members:(await q(env,'SELECT user_id,CASE WHEN receipts=1 THEN read_at ELSE NULL END read_at FROM conversation_members WHERE conversation_id=?',cm[1]).all()).results,preferences:await q(env,'SELECT muted,receipts FROM conversation_members WHERE conversation_id=? AND user_id=?',cm[1],u.id).first()};for(const message of result.messages)message.reactions=(await q(env,'SELECT emoji,count(*) n FROM reactions WHERE target_id=? GROUP BY emoji',message.id).all()).results;return result;}
   if(cm[2]==='read'&&req.method==='PUT'){const b=await input(req,z.object({muted:z.boolean(),receipts:z.boolean()}).strict()),latest=(await q(env,'SELECT COALESCE(max(created),0) t FROM messages WHERE conversation_id=?',cm[1]).first()).t;const changed=await q(env,'UPDATE conversation_members SET muted=?,receipts=?,read_at=MAX(read_at,?) WHERE conversation_id=? AND user_id=? AND (muted<>? OR receipts<>? OR read_at<?)',Number(b.muted),Number(b.receipts),latest,cm[1],u.id,Number(b.muted),Number(b.receipts),latest).run();if(changed.meta.changes&&env.CONVERSATIONS)try{await env.CONVERSATIONS.get(env.CONVERSATIONS.idFromName(cm[1])).fetch('https://conversation/notify',{method:'POST'});}catch{}return {ok:true};}
@@ -130,7 +130,7 @@ export async function social(req,env,path){
    const b=await input(req,z.object({body:z.string().trim().min(1).max(2000),kind:z.enum(['text','workout','pr','meal','recipe','checkin']).default('text'),reply_to:id.nullable().default(null)}).strict());
    if((settings.profanity||['fuck','shit','เหี้ย','สัส']).some(w=>b.body.toLowerCase().includes(w.toLowerCase())))throw fail('Please edit your message');
    if(b.reply_to&&!await q(env,'SELECT 1 FROM messages WHERE id=? AND conversation_id=? AND deleted=0',b.reply_to,cm[1]).first())throw fail('Reply unavailable');
-   const mid=crypto.randomUUID(),r=await q(env,'INSERT INTO messages(id,conversation_id,sender,body,kind,created,reply_to) SELECT ?,?,?,?,?,?,? WHERE (SELECT count(*) FROM messages WHERE sender=? AND created>?)<30',mid,cm[1],u.id,b.body,b.kind,now,b.reply_to,u.id,now-60000).run();if(!r.meta.changes)throw fail('30 messages per minute',429);await notifyChat(env,cm[1],u.id);return {id:mid};
+   const mid=crypto.randomUUID(),r=await q(env,'INSERT INTO messages(id,conversation_id,sender,body,kind,created,reply_to) SELECT ?,?,?,?,?,?,? WHERE (SELECT count(*) FROM messages WHERE sender=? AND created>?)<30',mid,cm[1],u.id,b.body,b.kind,now,b.reply_to,u.id,now-60000).run();if(!r.meta.changes)throw fail('30 messages per minute',429);ctx.waitUntil(notifyChat(env,cm[1],u.id,mid));return {id:mid};
   }
  }
  const media=path.match(/^\/api\/messages\/([a-f0-9-]{36})\/photo$/);if(media&&req.method==='GET'){const m=await q(env,'SELECT * FROM messages WHERE id=? AND deleted=0 AND expires>?',media[1],now).first();if(!m?.media_key)throw fail('Photo expired',404);await member(env,m.conversation_id,u.id);const object=await env.MEDIA?.get(m.media_key);if(!object)throw fail('Photo expired',404);return new Response(object.body,{headers:{'Content-Type':storedImageType(object,m.media_key),'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});}
