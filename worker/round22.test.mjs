@@ -29,4 +29,9 @@ const adminRequest=b=>new Request('https://test/api/admin/ai-tiers',{method:'PUT
 response=await worker.fetch(adminRequest({...TIER_DEFAULTS,freeMealPhotosPerDay:2}),env);assert.equal(response.status,200);assert.equal((await response.json()).config.freeMealPhotosPerDay,2);
 response=await worker.fetch(adminRequest({...TIER_DEFAULTS,workersAiNeuronsBudget:10000}),env);assert.equal(response.status,400);
 assert.equal(JSON.parse(config.get('ai-tiers')).freeMealPhotosPerDay,2);
-console.log('PASS Round22 migration, quota identity, atomic ceilings, DST reset, provider order/fallback/schema, no secret, exhaustion routes, no persisted images, admin validation/authenticated save');
+// Owner-clicked Meta licence acceptance sends exactly {prompt:'agree'} and records the date.
+let agreed;env.AI.run=async(model,inputs)=>{agreed=[model,inputs];return {response:'ok'};};
+response=await worker.fetch(new Request('https://test/api/admin/ai-tiers',{method:'POST',headers:{Authorization:'Bearer '+adminToken,'Content-Type':'application/json'},body:JSON.stringify({action:'accept-meta-license'})}),env);assert.equal(response.status,200);
+assert.deepEqual(agreed,['@cf/meta/llama-3.2-11b-vision-instruct',{prompt:'agree'}]);assert((await response.json()).metaLicense.acceptedAt);
+response=await worker.fetch(new Request('https://test/api/admin/ai-tiers',{method:'POST',headers:{Authorization:'Bearer '+adminToken,'Content-Type':'application/json'},body:JSON.stringify({action:'other'})}),env);assert.equal(response.status,400);
+console.log('PASS Round22 migration, quota identity, atomic ceilings, DST reset, provider order/fallback/schema, no secret, exhaustion routes, no persisted images, admin validation/authenticated save, Meta licence accept');

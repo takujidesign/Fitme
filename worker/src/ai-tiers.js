@@ -68,9 +68,16 @@ export async function freeMealPhoto(req,env){
 export async function adminTiers(req,env){
  await admin(req,env);
  if(req.method==='PUT')await env.CONFIG.put('ai-tiers',JSON.stringify(await input(req,TierConfig)));
+ else if(req.method==='POST'){
+  // The owner clicks this in admin to accept Meta's licence; Workers AI only records it from a raw {prompt:'agree'} call.
+  await input(req,z.object({action:z.literal('accept-meta-license')}).strict());
+  if(!env.AI)throw fail('Workers AI binding missing',503);
+  try{await env.AI.run(CF_MODEL,{prompt:'agree'});}catch(e){if(!/5016/.test(String(e?.message)))throw fail('Workers AI: '+String(e?.message||e).slice(0,200),502);throw fail('Licence not accepted yet: '+String(e.message).slice(0,200),502);}
+  await env.CONFIG.put('ai-meta-license',JSON.stringify({acceptedAt:new Date().toISOString()}));
+ }
  else if(req.method!=='GET')throw fail('Method not allowed',405);
  const day=new Date().toISOString().slice(0,10);
- return {config:await tierConfig(env),day,usage:(await q(env,"SELECT scope,used,calls,errors FROM ai_free_counts WHERE day=? AND scope LIKE 'provider:%'",day).all()).results,credits:await q(env,"SELECT count(*) calls,COALESCE(sum(credits),0) credits,COALESCE(sum(CASE WHEN credits=0 THEN 1 ELSE 0 END),0) zeroCreditCalls FROM ai_usage WHERE substr(created,1,10)=?",day).first(),byok:(await q(env,"SELECT replace(value,'_error','') provider,sum(CASE WHEN value LIKE '%_error' THEN 0 ELSE count END) calls,sum(CASE WHEN value LIKE '%_error' THEN count ELSE 0 END) errors FROM usage_daily WHERE date=? AND name='feature_used' AND dim='feature' AND value IN ('byok_gemini','byok_openai','byok_kie','byok_gemini_error','byok_openai_error','byok_kie_error') GROUP BY replace(value,'_error','')",day).all()).results,groqAvailable:!!env.GROQ_API_KEY};
+ return {config:await tierConfig(env),day,usage:(await q(env,"SELECT scope,used,calls,errors FROM ai_free_counts WHERE day=? AND scope LIKE 'provider:%'",day).all()).results,credits:await q(env,"SELECT count(*) calls,COALESCE(sum(credits),0) credits,COALESCE(sum(CASE WHEN credits=0 THEN 1 ELSE 0 END),0) zeroCreditCalls FROM ai_usage WHERE substr(created,1,10)=?",day).first(),byok:(await q(env,"SELECT replace(value,'_error','') provider,sum(CASE WHEN value LIKE '%_error' THEN 0 ELSE count END) calls,sum(CASE WHEN value LIKE '%_error' THEN count ELSE 0 END) errors FROM usage_daily WHERE date=? AND name='feature_used' AND dim='feature' AND value IN ('byok_gemini','byok_openai','byok_kie','byok_gemini_error','byok_openai_error','byok_kie_error') GROUP BY replace(value,'_error','')",day).all()).results,groqAvailable:!!env.GROQ_API_KEY,metaLicense:await env.CONFIG?.get('ai-meta-license','json')};
 }
 
 export async function creditMeal(env,fn){
