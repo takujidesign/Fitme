@@ -73,7 +73,7 @@ export function planDay(iso) {
   const foodTotal = meals.reduce((a, m) => ({ k: a.k + m.total.k, p: a.p + m.total.p, c: a.c + m.total.c, f: a.f + m.total.f }), { k: 0, p: 0, c: 0, f: 0 });
   return { iso, train, t, sm, sess, meals, events, foodTotal };
 }
-const order = (e) => ({ wake: 0, water: 1, supp: 3, meal: 2, workout: 4, note: 5, sleep: 6 }[e.type] ?? 9);
+const order = (e) => e.type === 'fasting' ? (e.eating ? 1.5 : 5.5) : ({ wake: 0, water: 1, supp: 3, meal: 2, workout: 4, note: 5, sleep: 6 }[e.type] ?? 9);
 
 export function planRange(days, from) {
   const p = getState().profile;

@@ -2,7 +2,7 @@
 const VERSION = 'fitme-v1'; // replaced with the commit SHA by the deploy workflow
 const OFFLINE_CACHE = VERSION+'-offline-r20';
 const DELIVERY_CACHE = 'fitme-reminder-delivery-v1';
-const SHELL = [ './js/food-match.js','./js/meal-tiers.js','./js/meal-photo-image.js','./js/views/meal-photo.js','./js/views/admin-ai-tiers.js', './js/landing.js','./js/install.js','./js/i18n/round22.js','./js/push-routes.js','./js/push-storage.js','./js/reminder-privacy.js','./js/push-actions.js',
+const SHELL = [ './js/food-match.js','./js/meal-tiers.js','./js/meal-photo-image.js','./js/views/meal-photo.js','./js/views/admin-ai-tiers.js', './js/landing.js','./js/install.js','./js/fasting-sync.js','./js/i18n/round22.js','./js/push-routes.js','./js/push-storage.js','./js/reminder-privacy.js','./js/push-actions.js',
  './js/i18n/round20.js','./offline.html','./offline-manifest.json','./js/reminders.js','./js/calendar.js','./js/reminder-runtime.js','./js/reminder-ui.js','./js/offline-core.js',
   './js/usage-labels.js','./js/usage-policy.js','./js/usage-copy.js','./js/usage-copy-data.js','./js/legal-content.js','./js/charts.js','./js/views/admin-usage.js','./js/i18n/round19.js','./js/seo-mode.js','./js/seo-boot.js',
  './js/i18n/round18.js','./js/views/round10-entry.js','./js/daily-menu.js','./js/views/daily-menu.js','./js/byok.js','./js/views/byok.js','./js/backup.js',

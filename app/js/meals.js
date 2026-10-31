@@ -2,7 +2,7 @@ import {customDay} from './daily-menu.js';
 import { getState } from './store.js';
 import { translate } from './i18n/index.js';
 import { hasCondition } from './conditions.js';
-import { eatingWindow, windowMinute } from './fasting.js';
+import { eatingWindow, eatingRange, windowMinute } from './fasting.js';
 // Meal timing and portion solver.
 import { allowedFoods, FOOD } from './foods.js';
 import { toMin, toHHMM, rng, pick, L } from './ui.js';
@@ -24,16 +24,37 @@ const SHARES = {
   6: [['breakfast', 0.2], ['snack', 0.1], ['lunch', 0.25], ['snack', 0.13], ['dinner', 0.22], ['snack', 0.1]],
 };
 
+// Up to n meal times spread evenly over [lo, hi] minus the blocked intervals, on 15-minute marks and at least 2 h apart.
+export function spreadAround(lo, hi, n, blocks = []) {
+  let free = [[lo, hi]];
+  for (const [a, b] of blocks) free = free.flatMap(([x, y]) => b <= x || a >= y ? [[x, y]] : [[x, Math.min(y, a)], [Math.max(x, b), y]].filter(([u, v]) => v >= u));
+  if (!free.length) free = [[lo, hi]];
+  const total = free.reduce((t, [x, y]) => t + y - x, 0);
+  n = Math.max(1, Math.min(n, 1 + Math.floor(total / 120) + free.length - 1));
+  const at = (d) => { for (const [x, y] of free) { if (d <= y - x) return [x, y, x + d]; d -= y - x; } const [x, y] = free[free.length - 1]; return [x, y, y]; };
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const [x, y, t] = at(n === 1 ? 0 : i * total / (n - 1));
+    let m = Math.round(t / 15) * 15; if (m < x) m += 15; if (m > y) m -= 15; m = Math.min(y, Math.max(x, m));
+    if (!out.length || m - out[out.length - 1] >= 90) out.push(m);
+  }
+  return out;
+}
+
 export function mealSlots(p, isTraining) {
   const w = eatingWindow(p);
   if (w) {
     const cap = { '16:8': 3, '18:6': 3, '20:4': 2, omad: 1 }[p.fasting] || 6;
-    const n = Math.max(1, Math.min(cap, p.mealsPerDay));
-    const list = Array.from({length:n}, (_,i) => ({kind: n === 1 ? 'lunch' : i === 0 ? 'breakfast' : i === n-1 ? 'dinner' : 'lunch', share:1/n, min:Math.round(w.start + (n === 1 ? 0 : i*(w.length-30)/(n-1)))}));
-    const end = windowMinute(toMin(p.workoutTime),w) + Number(p.sessionMin);
-    if (isTraining && end < w.end) {
+    // Meals sit inside the waking part of the window, at least 2 h apart; fewer meals when it is short.
+    const {lo, hi} = eatingRange(p, w);
+    const gym = windowMinute(toMin(p.workoutTime),w), end = gym + Number(p.sessionMin);
+    const blocks = isTraining ? [gym, gym - 1440].map((a) => [a - 45, a + Number(p.sessionMin) + 30]) : [];
+    const times = spreadAround(lo, hi, Math.min(cap, p.mealsPerDay), blocks), n = times.length;
+    const list = times.map((min,i) => ({kind: n === 1 ? 'lunch' : i === 0 ? 'breakfast' : i === n-1 ? 'dinner' : 'lunch', share:1/n, min}));
+    if (isTraining && end >= lo && end <= hi) {
       const post = list.reduce((a,b) => Math.abs(a.min-end) < Math.abs(b.min-end) ? a : b);
-      post.min = end; post.post = true; post.carbBoost = 1.25;
+      const i = list.indexOf(post), prev = list[i-1], next = list[i+1];
+      if ((!prev || end - prev.min >= 90) && (!next || next.min - end >= 90)) { post.min = end; post.post = true; post.carbBoost = 1.25; }
     }
     return list.sort((a,b)=>a.min-b.min).map((m,i)=>({...m,key:`m${i}`,time:toHHMM(m.min)}));
   }
@@ -51,6 +72,12 @@ export function mealSlots(p, isTraining) {
   if (isTraining) {
     const w = toMin(p.workoutTime);
     const end = w + p.sessionMin;
+    // When a meal lands in the session, respread them around it (lunch loses its noon nudge in that case).
+    const block = [w - 45, end + 30];
+    if (list.some((m) => m.min > block[0] && m.min < block[1])) {
+      const times = spreadAround(first, last, n, [block]);
+      if (times.length === n) list.forEach((m, i) => { m.min = times[i]; });
+    }
     const post = list.filter((m) => m.min >= end).sort((a, b) => a.min - b.min)[0];
     if (post && post.min - end <= 150) { post.min = Math.max(post.min, end + 30); post.post = true; post.carbBoost = 1.25; }
     const pre = list.filter((m) => m.min <= w - 45 && m.min >= w - 180 && m !== post).sort((a, b) => b.min - a.min)[0];
