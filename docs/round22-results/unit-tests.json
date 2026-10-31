@@ -1,0 +1,214 @@
+[
+  {
+    "file": "tests/poses.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round10.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round11.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round12.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round13.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round14.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round15-poses.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round15.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round15b-geometry.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round16.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round17.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round18.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round19-http.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round19.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round20.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round21.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round22.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round3.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round4-ui.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round4.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round5.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round5b.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round5c.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round6-offline.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round6.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round7.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round8.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/round9.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/settings.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/test.mjs",
+    "status": 0
+  },
+  {
+    "file": "tests/ui-test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/auth-errors.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/push-redirect.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round10.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round11-realtime.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round11.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round12.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round13.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round16.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round17.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round18.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round19.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round20.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round21.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round22.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round4.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round5.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round5b.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round5c.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round6.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round8-payments.test.mjs",
+    "status": 0
+  },
+  {
+    "file": "worker/round8.test.mjs",
+    "status": 0
+  }
+]

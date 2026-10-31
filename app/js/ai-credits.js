@@ -31,6 +31,7 @@ export async function requireCredits(feature){
  catch(e){toast(L('เชื่อมต่อเพื่อดูเครดิต AI','Connect to check AI credits'),'warn');return false;}
 }
 export async function aiRequest(path,body){
+ if(path==='ai/meal-photo')return (await import('./meal-tiers.js')).requestMeal(body);
  requireIntegration(activeEngine()==='claude'?endpointIntegration(path):'byok');
  if(activeEngine()!=='claude')return engineRequest(path,body);
  try{const result=await api(path,body,'POST',aiToken());if(ownerToken!==aiToken()){snapshot=null;ownerToken=aiToken();}featureUsed('claude_credits');featureUsed({'label/analyze':'label_scan','ai/body':'body_photo_ai','ai/meal-photo':'meal_photo_ai','ai/chat':'ai_chat'}[path]);snapshot={...snapshot,remaining:result.creditsLeft};checked=0;updateCreditUI();return result;}

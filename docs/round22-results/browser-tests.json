@@ -1,0 +1,72 @@
+[
+  {
+    "file": "tests/browser.mjs",
+    "status": 1,
+    "reason": "Bundled Playwright browser executable is not installed"
+  },
+  {
+    "file": "tests/round10-browser-capture.mjs",
+    "status": 1,
+    "reason": "Chrome subprocess spawn EPERM"
+  },
+  {
+    "file": "tests/round11-browser-capture.mjs",
+    "status": 1,
+    "reason": "Chrome subprocess spawn EPERM"
+  },
+  {
+    "file": "tests/round14-browser.mjs",
+    "status": 1,
+    "reason": "Chrome subprocess spawn EPERM"
+  },
+  {
+    "file": "tests/round15-browser.mjs",
+    "status": 1,
+    "reason": "Chrome subprocess spawn EPERM"
+  },
+  {
+    "file": "tests/round17-browser.mjs",
+    "status": 1,
+    "reason": "Chrome subprocess spawn EPERM"
+  },
+  {
+    "file": "tests/round18-browser.mjs",
+    "status": 1,
+    "reason": "Chrome subprocess spawn EPERM"
+  },
+  {
+    "file": "tests/round19-browser.mjs",
+    "status": 1,
+    "reason": "Chrome subprocess spawn EPERM"
+  },
+  {
+    "file": "tests/round20-browser.mjs",
+    "status": 1,
+    "reason": "Chrome subprocess spawn EPERM"
+  },
+  {
+    "file": "tests/round21-browser.mjs",
+    "status": 1,
+    "reason": "Chrome subprocess spawn EPERM"
+  },
+  {
+    "file": "tests/round5-browser.mjs",
+    "status": 1,
+    "reason": "Bundled Playwright browser executable is not installed"
+  },
+  {
+    "file": "tests/round5c-browser.mjs",
+    "status": 1,
+    "reason": "Bundled Playwright browser executable is not installed"
+  },
+  {
+    "file": "tests/round9-browser.mjs",
+    "status": 1,
+    "reason": "Chrome subprocess spawn EPERM"
+  },
+  {
+    "file": "tests/round22-browser.mjs",
+    "status": 1,
+    "reason": "Chrome subprocess spawn EPERM"
+  }
+]

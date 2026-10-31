@@ -1,0 +1,17 @@
+[
+ ["ข้าวมันไก่","out_chicken_rice"],["Hainanese chicken rice","out_chicken_rice"],["khao man gai","out_chicken_rice"],["Hainanese chiken rice","out_chicken_rice"],
+ ["ข้าวผัดไก่","out_fried_rice"],["Chicken fried rice","out_fried_rice"],["chiken fried rice","out_fried_rice"],["ข้าวผัดไก","out_fried_rice"],
+ ["กะเพราไก่ไข่ดาว","out_basil"],["กระเพราไก่ไข่ดาว","out_basil"],["Basil chicken rice and fried egg","out_basil"],["basil chiken rice and fried egg","out_basil"],
+ ["ราดหน้าไก่","out_rad_na"],["Noodles in gravy","out_rad_na"],["noodles in gravyy","out_rad_na"],["ราดหน้าไก","out_rad_na"],
+ ["ผัดซีอิ๊ว","out_see_ew"],["Soy stir-fried noodles","out_see_ew"],["soy stir fried noodles","out_see_ew"],["ผัดซีอิ้ว","out_see_ew"],
+ ["ก๋วยเตี๋ยวไก่","out_noodles"],["Chicken noodle soup","out_noodles"],["chiken noodle soup","out_noodles"],["ก๋วยเตี๋ยวไก","out_noodles"],
+ ["สุกี้น้ำไก่","out_suki"],["Chicken suki soup","out_suki"],["chicken suki soupp","out_suki"],["สุกี้น้ำไก","out_suki"],
+ ["อกไก่","chicken_breast"],["Chicken breast","chicken_breast"],["chiken breast","chicken_breast"],["CHICKEN BREAST!","chicken_breast"],
+ ["ข้าวหอมมะลิ","jasmine_rice"],["Jasmine rice","jasmine_rice"],["jasmin rice","jasmine_rice"],["ข้าวหอมมะล","jasmine_rice"],
+ ["ข้าวกล้อง","brown_rice"],["Brown rice","brown_rice"],["brown ricee","brown_rice"],["ข้าวกล้อ","brown_rice"],
+ ["แซลมอน","salmon"],["Salmon","salmon"],["salmom","salmon"],[" SALMON ","salmon"],
+ ["กล้วยหอม","banana"],["Banana","banana"],["bananna","banana"],["กล้วยหอ","banana"],
+ ["นมถั่วเหลือง","out_soy_drink"],["Soy milk carton","out_soy_drink"],["soy milk cartonn","out_soy_drink"],["นมถั่วเหลือ","out_soy_drink"],
+ ["แซนด์วิชไก่","out_sandwich"],["Chicken sandwich","out_sandwich"],["chiken sandwich","out_sandwich"],["แซนด์วิชไก","out_sandwich"],
+ ["ชาบูชุดไก่และผัก","out_shabu"],["Chicken and vegetable shabu","out_shabu"],["chicken and vegetable shabuu","out_shabu"],["ชาบูชุดไก่และผั","out_shabu"]
+]

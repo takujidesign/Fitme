@@ -1,0 +1,5 @@
+[
+  {"file":"chicken-rice.jpg","dishes":["ข้าวมันไก่"],"grams":[350]},
+  {"file":"milk.jpg","dishes":["นมถั่วเหลือง"],"grams":[250]},
+  {"file":"mixed-plate.jpg","dishes":["อกไก่","ข้าวหอมมะลิ"],"grams":[120,180]}
+]
