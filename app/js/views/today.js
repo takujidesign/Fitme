@@ -39,13 +39,15 @@ function eventRow(e, log, iso) {
   if (e.type === 'water') { ic = 'drop'; title = L(`ดื่มน้ำ ${e.ml} มล.`, `Drink ${e.ml} ml water`); sub = L('ช่วยกระตุ้นระบบเผาผลาญหลังตื่นนอน', 'Rehydrate after sleep'); }
   if (e.type === 'meal') { ic = mealKind(e.meal.kind).icon; title = L(mealKind(e.meal.kind)); sub = `${esc(L(e.meal.name))} · <b>${e.meal.total.k}</b> kcal · P${e.meal.total.p}g`; act = `data-act="meal-open" data-iso="${iso}" data-k="${e.meal.key}"`; }
   if (e.type === 'supp') { ic = 'pill'; title = L(e.slotInfo); sub = e.list.map((x) => `<span class="dot" style="background:${x.prod.color || 'var(--teal)'}"></span>${esc(L(x.prod.name).split('(')[0])} ×${x.amount}`).join(' '); }
-  if (e.type === 'workout') { ic = e.sess.type === 'train' ? 'dumbbell' : 'walk'; title = e.sess.type === 'train' ? L(splitName(e.sess.split)) : L('ฟื้นฟูร่างกาย', 'Active recovery'); sub = `${e.sess.minutes} ${L('นาที', 'min')} · ~${e.kcal} kcal`; act = `data-act="go" data-to="#/workout/${iso}"`; }
+  if (e.type === 'workout') { ic = e.sess.type === 'train' ? 'dumbbell' : 'walk'; title = e.sess.type === 'train' ? L(splitName(e.sess.split)) : L('ฟื้นฟูร่างกาย', 'Active recovery'); sub = `${e.sess.minutes} ${L('นาที', 'min')} · ~${e.kcal} kcal`; act = `data-act="routine-time" data-iso="${iso}" data-key="workout"`; }
+  if(e.type==='activity'){title=esc(e.activity.label);sub=e.activity.start+'\u2013'+e.activity.end;act=`data-act="routine-time" data-iso="${iso}" data-key="${e.key}"`;}
+  if(e.type==='suggestion'){ic='food';title=L('ของว่างหลังซ้อม (ไม่บังคับ)','Post-workout snack (optional)');}
   if (e.type === 'note') { ic = e.note === 'caffeine' ? 'warn' : 'moon'; title = e.note === 'caffeine' ? L('งดคาเฟอีนหลังจากนี้', 'Caffeine cut-off') : L('ปิดจอ เตรียมนอน', 'Screens off'); sub = e.note === 'caffeine' ? L('ช่วยให้หลับลึกขึ้น', 'Protects deep sleep') : L('หรี่ไฟ อาบน้ำอุ่น ยืดเหยียดเบาๆ', 'Dim lights, warm shower, light stretch'); }
   if (e.type === 'sleep') { ic = 'bed'; title = L('เข้านอน', 'Lights out'); sub = L(`เป้าหมาย ${sleepNeed(getState().profile.age).join('-')} ชม.`, `Target ${sleepNeed(getState().profile.age).join('-')} h`); }
   if (e.type === 'workout' && e.sess.type === 'rest') ic = 'sun';
   return `<li class="tl t-${cls} ${done ? 'done' : ''}">
     <time>${e.time}</time><span class="tl-ic">${icon(ic, 18)}</span>
-    <div class="tl-body" ${act}><b>${title}</b><small>${sub}</small></div>
+    <div class="tl-body" ${act}><b>${e.fixed?'\u{1f4cc} ':''}${title}</b><small>${sub}</small></div>
     ${check ? `<button class="tick ${done ? 'on' : ''}" data-act="tick" data-iso="${iso}" data-k="${e.key}" aria-label="done">${icon('check', 16)}</button>` : ''}
   </li>`;
 }
@@ -84,7 +86,7 @@ views.today = ({ query }) => {
     ${slot('today.readiness',{query})}
     ${!lastNight && iso === todayISO() ? `<button class="card soft row-card" data-act="sleep-log" data-iso="${iso}">${icon('bed', 22)}<div><b>${L('เมื่อคืนนอนหลับเป็นอย่างไร?', 'How did you sleep?')}</b><small>${L('บันทึกการนอนเพื่อปรับแผนการพักผ่อน', 'Log sleep to tune your recovery')}</small></div>${icon('chev', 18)}</button>` : ''}
     <div data-fasting-clock>${fastingCard(p)}</div>${replanCard()}<h2 class="sec">${L('ไทม์ไลน์วันนี้', 'Today\'s timeline')}</h2>
-    ${isLockedDay(iso) ? lockCard() : `<ol class="timeline">${d.events.map((e, i) => eventRow(e, log, iso).replace('<li class="tl', `<li class="tl ${i === nextIdx ? 'next' : ''}`)).join('')}</ol>`}
+    ${d.routineProfile?`<div data-routine-summary data-iso="${iso}"></div>`:''}${isLockedDay(iso) ? lockCard() : `<ol class="timeline">${d.events.map((e, i) => eventRow(e, log, iso).replace('<li class="tl', `<li class="tl ${i === nextIdx ? 'next' : ''}`)).join('')}</ol>`}
     ${d.t.healthExtra?`<p class="note">${L('เพิ่มเป้าพลังงานจากข้อมูลสุขภาพ','Health activity calorie adjustment')}: +${d.t.healthExtra} kcal</p>`:''}${d.sm.protein ? `<p class="muted sm center">${L(`อาหารเสริมวันนี้ให้โปรตีน ${d.sm.protein} g / ${d.sm.kcal} kcal (หักออกจากมื้ออาหารแล้ว)`, `Supplements today add ${d.sm.protein} g protein / ${d.sm.kcal} kcal (already deducted from meals)`)}</p>` : ''}${slot('today.secondary')}${slot('today.footer')}`;
 };
 
@@ -112,7 +114,7 @@ actions['meal-open'] = (el) => {
 export function mealSheet(m, iso) {
   const lang = getState().lang;
   sheet(`<div class="sheet-head"><div><small class="muted">${m.time} · ${L(mealKind(m.kind))}</small><h2>${esc(L(m.name))}</h2></div><button class="icon-btn" data-close>${icon('x')}</button></div>
-    ${mealLogButtons(iso)}<div class="macro-row"><div><b>${m.total.k}</b><small>kcal</small></div><div><b>${m.total.p}g</b><small>${L('โปรตีน', 'Protein')}</small></div><div><b>${m.total.c}g</b><small>${L('คาร์บ', 'Carbs')}</small></div><div><b>${m.total.f}g</b><small>${L('ไขมัน', 'Fat')}</small></div></div>
+    <button class="btn ghost" data-act="routine-time" data-iso="${iso}" data-key="meal-${m.key}">${L('เปลี่ยนเวลาวันนี้','Change time today')}</button>${mealLogButtons(iso)}<div class="macro-row"><div><b>${m.total.k}</b><small>kcal</small></div><div><b>${m.total.p}g</b><small>${L('โปรตีน', 'Protein')}</small></div><div><b>${m.total.c}g</b><small>${L('คาร์บ', 'Carbs')}</small></div><div><b>${m.total.f}g</b><small>${L('ไขมัน', 'Fat')}</small></div></div>
     <ul class="food-list">${m.items.map((it) => { const f = FOOD[it.id]; return `<li><span class="fcat ${f.cat}"></span><div><b>${esc(L({ th: f.th, en: f.en }))}</b><small>${esc(unitText(f, it.g, lang))} ${foodWarnings(getState().profile,f).map(w=>esc(L(w))).join(' · ')}</small></div><em>${it.g} g</em></li>`; }).join('')}</ul>
     ${m.post ? `<p class="note">${icon('info', 16)} ${L('มื้อหลังออกกำลังกาย: เน้นคาร์บ + โปรตีน ภายใน 1-2 ชม. เพื่อฟื้นฟูกล้ามเนื้อ', 'Post-workout: carbs + protein within 1-2 h to recover')}</p>` : ''}
     ${m.pre ? `<p class="note">${icon('info', 16)} ${L('มื้อก่อนออกกำลังกาย: ทานก่อน 60-90 นาที ไขมันต่ำ ย่อยง่าย', 'Pre-workout: 60-90 min before, low fat, easy to digest')}</p>` : ''}
@@ -164,4 +166,8 @@ export function updateTodayClock(root){
  const index=iso===todayISO()?d.events.findIndex(e=>e.min>=now-20&&!log.done[e.key]):-1;
  root.querySelectorAll('.timeline>.tl').forEach((el,i)=>el.classList.toggle('next',i===index));
 }
-views.today.mount = root => {clearInterval(clockTimer);const inner=root.querySelector('.v-today')||root;clockTimer=setInterval(()=>{if(!inner.isConnected||!root.querySelector('.timeline')){clearInterval(clockTimer);return;}updateTodayClock(root);},60000);};
+views.today.mount = root => {const summary=root.querySelector('[data-routine-summary]');if(summary)import('./routine.js').then(m=>{if(summary.isConnected)m.mountSummary(summary,summary.dataset.iso);});clearInterval(clockTimer);const inner=root.querySelector('.v-today')||root;clockTimer=setInterval(()=>{if(!inner.isConnected||!root.querySelector('.timeline')){clearInterval(clockTimer);return;}updateTodayClock(root);},60000);};
+
+actions['routine-time']=async el=>(await import('./routine.js')).showTimeChange(el.dataset.iso,el.dataset.key);
+
+actions['routine-fix']=async el=>(await import('./routine.js')).fixToday(el.dataset.iso,el.dataset.key);

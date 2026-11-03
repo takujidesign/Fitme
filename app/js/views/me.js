@@ -211,3 +211,5 @@ actions['me-data']=()=>{const el=document.getElementById('me-data');el.open=true
 actions['check-update']=()=>checkUpdate().then(()=>toast(L('ตรวจแล้ว','Checked'))).catch(e=>toast(e.message,'warn'));
 
 actions['me-privacy']=()=>document.getElementById('usage-privacy')?.scrollIntoView({behavior:'smooth',block:'start'});
+
+actions.routine=async el=> (await import('./routine.js')).showRoutine(el?.dataset?.iso);

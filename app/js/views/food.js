@@ -1,3 +1,4 @@
+import {resizeRoutine} from '../routine-plan.js';
 import { creditCost } from '../ai-credits.js';
 import { slot } from '../slots.js';
 import { foodWarnings } from '../conditions.js';
@@ -56,17 +57,17 @@ actions['meal-open2'] = (el) => {
 actions['food-prefs'] = () => {
   const p = getState().profile;
   sheet(`<div class="sheet-head"><h2>${L('ความชอบด้านอาหาร', 'Food preferences')}</h2><button class="icon-btn" data-close>${icon('x')}</button></div>
-    <button class="btn ghost block" data-act="custom-foods">${L('เมนูของฉัน', 'My foods')}</button><h3>${L('รูปแบบการกิน', 'Eating style')}</h3>
+    <button class="btn ghost block" data-act="routine">${L('กิจวัตรของฉัน','My routine')}</button><button class="btn ghost block" data-act="custom-foods">${L('เมนูของฉัน', 'My foods')}</button><h3>${L('รูปแบบการกิน', 'Eating style')}</h3>
     <div class="chips">${Object.entries(DIETS).map(([k, d]) => `<button class="chip ${p.diet === k ? 'on' : ''}" data-act="fp-diet" data-v="${k}">${L(d)}</button>`).join('')}</div>
     <h3>${L('ไม่ทาน / แพ้', 'Exclude')}</h3>
     <div class="chips">${Object.entries(EXCLUDES).map(([k, d]) => `<button class="chip ${p.exclude.includes(k) ? 'on' : ''}" data-act="fp-ex" data-v="${k}">${L(d)}</button>`).join('')}</div>
     ${fastingFields(p)}<h3>${L('มื้อต่อวัน', 'Meals per day')}</h3>
-    <div class="seg">${[3, 4, 5, 6].map((n) => `<button class="chip ${p.mealsPerDay === n ? 'on' : ''}" data-act="fp-meals" data-v="${n}">${n}</button>`).join('')}</div>`, { onMount(root) { root.querySelectorAll('[data-bind]').forEach(el => el.addEventListener('change', () => { setState(s => { s.profile[el.dataset.bind] = el.value; if (s.profile.age < 18) s.profile.fasting = 'none'; }); rerender(); })); } });
+    <div class="seg">${[1, 2, 3, 4, 5, 6].map((n) => `<button class="chip ${p.mealsPerDay === n ? 'on' : ''}" data-act="fp-meals" data-v="${n}">${n}</button>`).join('')}</div>`, { onMount(root) { root.querySelectorAll('[data-bind]').forEach(el => el.addEventListener('change', () => { setState(s => { s.profile[el.dataset.bind] = el.value; if (s.profile.age < 18) s.profile.fasting = 'none'; }); rerender(); })); } });
 };
 // Toggle chips in place so the sheet stays open while the plan underneath re-renders.
 const single = (el) => el.parentElement.querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c === el));
 actions['fp-diet'] = (el) => { setState((s) => (s.profile.diet = el.dataset.v)); single(el); rerender(); };
 actions['fp-ex'] = (el) => { setState((s) => { const e = new Set(s.profile.exclude); e.has(el.dataset.v) ? e.delete(el.dataset.v) : e.add(el.dataset.v); s.profile.exclude = [...e]; }); el.classList.toggle('on'); rerender(); };
-actions['fp-meals'] = (el) => { setState((s) => (s.profile.mealsPerDay = Number(el.dataset.v))); single(el); rerender(); };
+actions['fp-meals'] = (el) => { setState((s) => {s.profile.mealsPerDay = Number(el.dataset.v);resizeRoutine(s.profile);}); single(el); rerender(); };
 
 actions['daily-menu']=async el=>(await import('./daily-menu.js')).menuEditor(el.dataset.iso);

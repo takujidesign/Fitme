@@ -4,6 +4,7 @@ import { toMin, toHHMM, L, ring } from './ui.js';
 export const FASTING = { 'none': 0, '12:12': 12, '14:10': 10, '16:8': 8, '18:6': 6, '20:4': 4, 'omad': 1 };
 export function eatingWindow(p) {
   if((noFasting(p) || medicalNoFasting(p)))return null;
+  if(p._window)return p._window;
   const hours = Number(p.age) >= 18 ? FASTING[p.fasting] : 0;
   if (!hours) return null;
   const start = toMin(p.eatStart || '12:00');

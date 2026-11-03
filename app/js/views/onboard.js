@@ -1,3 +1,4 @@
+import {resizeRoutine} from '../routine-plan.js';
 import { trainingControls, toggleStyle, toggleEquipment } from '../training-controls.js';
 import { slot } from '../slots.js';
 import { enabledLanguages, LANGUAGES } from '../i18n/index.js';
@@ -50,8 +51,8 @@ views.onboarding = ({ query }) => {
       <h3>${L('ไม่ทาน / แพ้', 'Exclude / allergies')}</h3>
       <div class="chips">${Object.entries(EXCLUDES).map(([k, d]) => chip('ob-ex', k, p.exclude.includes(k), L(d))).join('')}</div>
       ${fastingFields(p)}<h3>${L('จำนวนมื้อต่อวัน', 'Meals per day')}</h3>
-      <div class="seg">${[3, 4, 5, 6].map((n) => chip('ob-set', 'mealsPerDay:' + n, p.mealsPerDay === n, n + ' ' + L('มื้อ', 'meals'))).join('')}</div>
-      <div class="grid2">${field('wake', L('ตื่นนอน', 'Wake up'), p.wake, { type: 'time' })}${field('bed', L('เข้านอน', 'Bedtime'), p.bed, { type: 'time' })}</div>`,
+      <div class="seg">${[1, 2, 3, 4, 5, 6].map((n) => chip('ob-set', 'mealsPerDay:' + n, p.mealsPerDay === n, n + ' ' + L('มื้อ', 'meals'))).join('')}</div>
+      <button class="btn ghost" data-act="ob-routine">${L('ตั้งเวลามื้อเอง (ไม่บังคับ)','Set meal times (optional)')}</button><div class="grid2">${field('wake', L('ตื่นนอน', 'Wake up'), p.wake, { type: 'time' })}${field('bed', L('เข้านอน', 'Bedtime'), p.bed, { type: 'time' })}</div>`,
     () => {
       const t = targets(p, true), tr = targets(p, false), b = bmi(p), bc = bmiClass(b), m = bmr(p);
       return `<h2>${L('แผนของคุณพร้อมแล้ว', 'Your plan is ready')}</h2>
@@ -92,7 +93,7 @@ actions['ob-lang'] = (el) => { if(!enabledLanguages().some(([id])=>id===el.datas
 actions['ob-set'] = (el) => {
   readInputs();
   const [k, v] = el.dataset.v.split(':');
-  setState((s) => (s.profile[k] = isNaN(Number(v)) ? v : Number(v)));
+  setState((s) => {s.profile[k] = isNaN(Number(v)) ? v : Number(v);if(k==='mealsPerDay')resizeRoutine(s.profile);});
   rerender();
 };
 actions['ob-day'] = (el) => {
@@ -143,3 +144,5 @@ export const resetOnboardStep = () => (step = 0);
 
 actions['ob-style']=el=>{readInputs();setState(s=>toggleStyle(s.profile,el.dataset.id));rerender();};
 actions['ob-equipment']=el=>{readInputs();setState(s=>toggleEquipment(s.profile,el.dataset.id));rerender();};
+
+actions['ob-routine']=async()=>{readInputs();(await import('./routine.js')).showRoutine();};

@@ -48,3 +48,28 @@ let saved;eat.addEventListener('change',()=>saved=eat.value);fast.value='19:00';
 // The reported case: 05:30–21:30 sleep, 14:10 from 12:00 used to put dinner at 21:30, on top of bedtime.
 const meals=planDay(iso).meals.map(m=>m.time);assert(meals.every(t=>t<='18:30'),meals.join());
 console.log('PASS timeline audit:',runs,'plans,',asleep,'plans with a warned window (inside sleep or workout)');
+// Round 23 deterministic anchor/override sweep, in addition to the unchanged legacy sweep.
+const {routineProfile,inBusy}=await import('../app/js/routine-plan.js');
+let seed=23023;const random=()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);
+const hh=m=>String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+let anchoredRuns=0;
+for(let run=0;run<320;run++){
+ const n=1+Math.floor(random()*6),fixed=Array.from({length:n},()=>({time:random()<.55?hh(360+Math.floor(random()*780)):null}));
+ const activities=random()<.6?[{id:'job',label:'Work',start:'09:00',end:'17:00',days:[0,1,2,3,4,5,6],kind:random()<.8?'busy':'free'}]:[];
+ const overrides=random()<.5?{['meal-m'+Math.floor(random()*n)]:hh(360+Math.floor(random()*780))}:{};
+ if(random()<.3)overrides.workout=hh(300+Math.floor(random()*1000));
+ setState(s=>{Object.assign(s.profile,{age:30,wake:'05:30',bed:'22:30',sessionMin:45,workoutTime:'17:30',fasting:run%3?'none':'16:8',eatStart:'10:00',mealsPerDay:n,trainDays:[0,1,2,3,4,5,6],startDate:iso,routine:{meals:fixed,activities}});s.logs[iso]={done:{},timeOverrides:overrides};s.supplements=[{uid:'b',productId:'vistra_bcomplex',startDate:iso},{uid:'l',productId:'vistra_astaxanthin',startDate:iso},{uid:'d',productId:'amarit_collagen',startDate:iso}];});
+ const d=planDay(iso),p=d.routineProfile,has=(code,key)=>d.warnings.some(w=>w.code===code&&w.key===key);
+ const gym=((toMin(p.workoutTime)-330+1440)%1440)+330;
+ for(let i=0;i<n;i++){const expected=Object.hasOwn(overrides,'meal-m'+i)?overrides['meal-m'+i]:fixed[i].time;if(expected)assert.equal(d.meals.find(m=>m.key==='m'+i)?.time,expected);}
+ for(const m of d.meals){const key='meal-'+m.key;
+  const rules={wake:m.min<350,bed:m.min>1230,spacing:d.meals.some(x=>x!==m&&Math.abs(x.min-m.min)<60),busy:inBusy(m.min,p),workout:m.min>gym-45&&m.min<gym+75,if:!!eatingWindow(p)&&windowMinute(m.min,eatingWindow(p))>=eatingWindow(p).end&&m.min!==eatingWindow(p).end};
+  for(const [code,broken] of Object.entries(rules))if(broken)assert(has(code,key),run+' missing warning '+code);
+  if(!m.fixed){assert(m.min>=350&&m.min<=1170);assert(!inBusy(m.min,p));assert(!(m.min>gym-45&&m.min<gym+75));for(const other of d.meals)if(other!==m)assert(Math.abs(m.min-other.min)>=90);}
+ }
+ for(const e of d.events.filter(e=>e.type==='supp'||e.type==='water'||e.type==='note'))assert(!inBusy(e.min,p),run+' automatic '+e.key+' in busy block');
+ if(gym+45>1350)assert(has('sleep','workout'));
+ if(overrides.workout)assert.equal(d.events.find(e=>e.key==='workout').time,overrides.workout);
+ anchoredRuns++;
+}
+console.log('PASS Round 23 randomized audit:',anchoredRuns,'anchored plans, fixed times, automatic spacing, busy blocks, warnings and overrides');
