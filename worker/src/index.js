@@ -78,7 +78,7 @@ export default {
       else
       if (/^\/api\/(profile(?:\/|$)|profiles\/|friends(?:\/|$)|reports$|conversations(?:\/|$)|messages\/|gyms(?:\/|$)|checkins$|feed(?:\/|$)|admin\/social\/)/.test(url.pathname)) out = await social(req,env,url.pathname,ctx);
       else if (['/api/stripe/webhook','/api/stripe/subscribe','/api/stripe/portal','/api/subscription'].includes(url.pathname)) out = await billing(req,env,url.pathname,stripe);
-      else if (/^\/api\/(ideas(?:\/|$)|donate\/|supporter(?:\/|$)|admin\/(?:ideas|donations)$)/.test(url.pathname)) out = await round10(req,env,url.pathname,readConfig,verifyAmount);
+      else if (/^\/api\/(ideas(?:\/|$)|donate\/|supporter(?:\/|$)|admin\/(?:ideas|donations)$)/.test(url.pathname)) out = await round10(req,env,url.pathname,readConfig,stripe);
       else if (['/api/admin/backups','/api/backups/download'].includes(url.pathname)) out = await backupRoute(req,env);
       else if (['/api/admin/growth','/api/admin/organisations','/api/admin/experiments','/api/experiment','/api/trial','/api/engagement','/api/org','/api/org/join','/api/org/challenge','/api/org/scores'].includes(url.pathname)) out = await growth(req,env,url.pathname,issue);
       else if (url.pathname.startsWith('/api/auth/line/') || url.pathname === '/api/admin/line') out = await lineAuth(req,env,url.pathname);

@@ -2,6 +2,7 @@ import { z } from 'zod/v4';
 import { input, fail, getSecret, enc } from './security.js';
 import { user, query as q } from './accounts.js';
 import { growthSettings } from './growth.js';
+import { recordDonation } from './round10.js';
 // https://docs.stripe.com/webhooks/signature -- verify the exact raw bytes before parsing.
 export async function verifySignature(raw,header,secret,now=Date.now()){
  if(!secret||!header)return false;const parts=header.split(','),t=parts.find(s=>s.startsWith('t='))?.slice(2),signatures=parts.filter(s=>s.startsWith('v1=')).map(s=>s.slice(3));if(!/^\d+$/.test(t||'')||Math.abs(now/1000-Number(t))>300)return false;
@@ -11,6 +12,7 @@ export async function billing(req,env,path,stripe){
  if(path==='/api/stripe/webhook'){
   if(req.method!=='POST')throw fail('Method not allowed',405);const raw=await req.text();if(raw.length>1048576)throw fail('Request too large',413);if(!await verifySignature(raw,req.headers.get('Stripe-Signature'),await getSecret(env,'stripeWebhookSecret')))throw fail('Invalid Stripe signature',401);
   const event=z.object({id:z.string().max(255),type:z.string(),created:z.number().int(),data:z.object({object:z.record(z.string(),z.unknown())})}).parse(JSON.parse(raw));if(await q(env,'SELECT 1 FROM stripe_events WHERE id=?',event.id).first())return {};
+  const o0=event.data.object;if(['checkout.session.completed','checkout.session.async_payment_succeeded'].includes(event.type)&&o0.metadata?.kind==='donation'){if(o0.payment_status==='paid')await recordDonation(env,o0);await q(env,'INSERT OR IGNORE INTO stripe_events VALUES(?,?)',event.id,event.created*1000).run();return {};}
   if(!['checkout.session.completed','invoice.paid','customer.subscription.updated','customer.subscription.deleted'].includes(event.type))return {};
   const o=event.data.object,sid=event.type.startsWith('customer.subscription.')?o.id:o.subscription||o.parent?.subscription_details?.subscription;if(!sid||!/^sub_[A-Za-z0-9]+$/.test(sid))return {};
   // Retrieve current state so delayed/out-of-order notifications never restore a cancelled subscription.
