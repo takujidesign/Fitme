@@ -1,3 +1,4 @@
+import {routineMealSlots,routineProfile,mealCount} from './routine-plan.js';
 import {customDay} from './daily-menu.js';
 import { getState } from './store.js';
 import { translate } from './i18n/index.js';
@@ -41,7 +42,9 @@ export function spreadAround(lo, hi, n, blocks = []) {
   return out;
 }
 
-export function mealSlots(p, isTraining) {
+export function mealSlots(p, isTraining, iso) {
+  if(!p._routine&&(p.routine||mealCount(p)<3))p=routineProfile(p,iso||new Date().toISOString().slice(0,10));
+  if(p._routine)return routineMealSlots(p,isTraining,spreadAround);
   const w = eatingWindow(p);
   if (w) {
     const cap = { '16:8': 3, '18:6': 3, '20:4': 2, omad: 1 }[p.fasting] || 6;
@@ -174,7 +177,7 @@ function mealName(items, r) {
 
 // Full day of meals for given daily targets (food part, i.e. after supplement macros).
 export function dayMeals(p, dateISO, isTraining, t, seeds = {}) {
-  const slots = mealSlots(p, isTraining);
+  const slots = mealSlots(p, isTraining, dateISO);
   const custom=getState().dailyMenus?.[dateISO];if(custom)return customDay(slots,custom);
   if(hasCondition(p,'diabetes'))slots.forEach(s=>{s.share=1/slots.length;s.carbBoost=1;});
   const totalShare = slots.reduce((a, s) => a + s.share * (s.carbBoost || 1), 0);

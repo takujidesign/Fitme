@@ -8,7 +8,7 @@ import {api} from '../account.js';
 views['body-progress']=views.me;
 const groups=[
  ['ความคืบหน้า','Progress',[['!me-weight','น้ำหนัก','Weight'],['body-progress','รูปและความคืบหน้า','Body photos and progress'],['!measurements','สัดส่วน','Measurements'],['records','สถิติส่วนตัว','Personal records'],['muscles','กล้ามเนื้อ','Muscles'],['weekly-recap','สรุปประจำสัปดาห์','Weekly recap']]],
- ['แผนของฉัน','My plan',[['training-settings','ตั้งค่าการฝึก','Training settings'],['!food-prefs','ตั้งค่าอาหาร','Food preferences'],['supps','อาหารเสริม','Supplements'],['!plan-length','ความยาวแผน','Plan length'],['!me-edit','ข้อมูลและเป้าหมาย','Profile and goals'],['!me-restart','เริ่มแผนใหม่','Restart plan']]],
+ ['แผนของฉัน','My plan',[['training-settings','ตั้งค่าการฝึก','Training settings'],['!routine','กิจวัตรของฉัน','My routine'],['!food-prefs','ตั้งค่าอาหาร','Food preferences'],['supps','อาหารเสริม','Supplements'],['!plan-length','ความยาวแผน','Plan length'],['!me-edit','ข้อมูลและเป้าหมาย','Profile and goals'],['!me-restart','เริ่มแผนใหม่','Restart plan']]],
  ['เพื่อนและชุมชน','Friends and community',[['friends','เพื่อน','Friends'],['messages','แชต','Chat'],['groups','กลุ่มและชาเลนจ์','Groups and challenges'],['checkin','เช็กอินยิม','Gym check-in']]],
  ['AI','AI',[['ai-settings','เครื่องมือ AI','AI engine'],['ai-usage','การใช้ AI','AI usage'],['ai-summary','หน้าสรุปให้ AI','AI summary']]],
  ['แอป','App',[['!me-lang','ภาษา','Language'],['!theme','ธีมและสี','Theme and colours'],['!notifications','การแจ้งเตือน','Notifications'],['!offline','โหมดออฟไลน์','Offline mode'],['help','ช่วยเหลือและทัวร์','Help and tour']]],

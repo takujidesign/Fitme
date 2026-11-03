@@ -1,3 +1,4 @@
+import {inBusy} from './routine-plan.js';
 import {privateReminder} from './reminder-privacy.js';
 import {stableHash} from './calendar.js';
 import {getState,todayISO,addDays} from './store.js';
@@ -20,9 +21,9 @@ export function reminderPlan(start=todayISO(),preferences,days=7,details=false) 
       if(e.type==='workout'&&d.train&&d.sess?.type!=='rest')add(iso,e.min,L('เวลาออกกำลังกาย','Workout time'),'Fixmee','#/player/'+iso,'workout',e.key);
       if(e.type==='fasting')add(iso,e.min,e.eating?L('เริ่มกินได้','Eating window starts'):L('เริ่ม IF','Fasting starts'),'Fixmee','#/today','fasting',e.key);
     }
-    let bed=toMin(p.bed),wake=toMin(p.wake);if(bed<=wake)bed+=1440;
+    const effective=d.routineProfile||p;let bed=toMin(effective.bed),wake=toMin(effective.wake);if(bed<=wake)bed+=1440;
     if(prefs.wake)add(iso,wake,L('ตื่นนอน','Wake up'),'Fixmee','#/today','wake');
-    if(prefs.water)for(let min=wake;min<bed;min+=120)add(iso,min,L('ดื่มน้ำ','Drink water'),'Fixmee','#/today','water');
+    if(prefs.water)for(let min=wake;min<bed;min+=120)if(!d.routineProfile||!inBusy(min,d.routineProfile))add(iso,min,L('ดื่มน้ำ','Drink water'),'Fixmee','#/today','water');
     if(prefs.sleep){add(iso,bed-30,L('เตรียมนอน','Prepare for sleep'),'Fixmee','#/today','sleep');add(iso,bed,L('เวลานอน','Bedtime'),'Fixmee','#/today','sleep');}
   }
   if(s.premium?.until){const expires=new Date(s.premium.until);if(Number.isFinite(expires.getTime())){const day=addDays(expires.toISOString().slice(0,10),-1);if(day>=start&&day<=addDays(start,days-1))add(day,9*60,L('สมาชิกใกล้หมดอายุ','Membership expires soon'),L('ตรวจสอบสถานะสมาชิกและการต่ออายุ','Check your membership and renewal status'),'#/me');}}
