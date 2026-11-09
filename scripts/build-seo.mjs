@@ -2,6 +2,7 @@
 import {readFileSync,writeFileSync,mkdirSync,existsSync,cpSync,rmSync} from 'node:fs';
 import {resolve,dirname,join} from 'node:path';
 import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import {EXERCISES,EQUIP} from '../app/js/exercises.js';
@@ -23,7 +24,8 @@ export async function buildSEO(dist=join(root,'web/dist')){
  const write=(path,text)=>{const dest=join(dist,path);mkdirSync(dirname(dest),{recursive:true});writeFileSync(dest,text);};
  const sw=join(dist,'sw.js');writeFileSync(sw,readFileSync(sw,'utf8').replace("const VERSION = 'fitme-v1';",`const VERSION = 'fitme-${sha}';`));
  const template=readFileSync(join(app,'seo/og.svg'),'utf8'),icon='data:image/svg+xml;base64,'+readFileSync(join(app,'icons/icon.svg')).toString('base64');
- const pages=[],og=(id,title)=>{const path='/og/'+id+'-'+sha+'.png';const svg=template.replace('{{icon}}',icon).replace('{{title}}',Array.from(title).reduce((lines,c,i)=>{const line=Math.floor(i/38);lines[line]=(lines[line]||'')+c;return lines;},[]).map((line,i)=>`<tspan x="70" dy="${i?64:0}">${esc(line)}</tspan>`).join(''));write(path.slice(1),new Resvg(svg,{font:{loadSystemFonts:true}}).render().asPng());return path;};
+ // Image names follow their content, so a deploy never turns an already crawled image URL into a 404.
+ const pages=[],og=(id,title)=>{const svg=template.replace('{{icon}}',icon).replace('{{title}}',Array.from(title).reduce((lines,c,i)=>{const line=Math.floor(i/38);lines[line]=(lines[line]||'')+c;return lines;},[]).map((line,i)=>`<tspan x="70" dy="${i?64:0}">${esc(line)}</tspan>`).join(''));const path='/og/'+id+'-'+createHash('sha256').update(svg).digest('hex').slice(0,8)+'.png';write(path.slice(1),new Resvg(svg,{font:{loadSystemFonts:true}}).render().asPng());return path;};
  const defaultOG=og('fixmee','Fixmee');
  const navigation=()=>`<nav><a href="/">Fixmee</a> · <a href="/exercises/">Exercises</a> · <a href="/guide">Guide</a> · <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a></nav>`;
  const css=`:root{color-scheme:light dark;--bg:#f4f6f3;--fg:#13231c;--card:#fff;--accent:#246845}@media(prefers-color-scheme:dark){:root{--bg:#0b0f14;--fg:#edf3ef;--card:#16231f;--accent:#b8f564}}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.7 system-ui,sans-serif}main,footer,body>nav{max-width:960px;margin:auto;padding:24px}h1{font-size:clamp(2rem,6vw,3.5rem);line-height:1.2}a{color:var(--accent);overflow-wrap:anywhere}img{max-width:100%;height:auto;border-radius:20px}.cta{display:inline-block;padding:12px 24px;background:var(--accent);color:var(--bg);border-radius:30px;text-decoration:none}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}article,details{background:var(--card);padding:20px;border-radius:20px;margin:16px 0}nav{display:flex;gap:14px;flex-wrap:wrap}.hero{max-width:220px;float:right;margin:0 0 24px 24px}@media(max-width:560px){.hero{float:none;display:block;max-width:120px;margin:0 0 16px}}footer{clear:both}#app{display:none}html.app-mode #seo,html.app-mode .seo-only{display:none}html.app-mode #app{display:block}`;
